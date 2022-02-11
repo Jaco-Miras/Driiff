@@ -1,11 +1,11 @@
 import momentTZ from "moment-timezone";
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+//import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
 import { useSettings, useTimeFormat, useToaster, useTranslationActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
@@ -13,8 +13,8 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
-import { putLoginSettings } from "../../../redux/actions/adminActions";
-import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
+//import { putLoginSettings } from "../../../redux/actions/adminActions";
+//import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
 
 const Wrapper = styled.div`
   .card {
@@ -93,17 +93,17 @@ const ProfileSettings = (props) => {
 
   const {
     generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
-    chatSettings: { order_channel, sound_enabled, preview_message, virtualization, translate },
+    chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
-    driffSettings,
+    // driffSettings,
   } = useSettings();
 
-  const loginSettings = useSelector((state) => state.admin.login);
-  const domains = useSelector((state) => state.settings.driff.domains);
+  // const loginSettings = useSelector((state) => state.admin.login);
+  // const domains = useSelector((state) => state.settings.driff.domains);
 
   const [triggerRender, setTriggerRender] = useState(false);
 
@@ -211,15 +211,15 @@ const ProfileSettings = (props) => {
         </>
       ),
     },
-    {
-      value: "de",
-      label: (
-        <>
-          <Flag countryAbbr="de" className="mr-2" width="18" />
-          {_t("LANGUAGE.GERMAN", "German")}
-        </>
-      ),
-    },
+    // {
+    //   value: "de",
+    //   label: (
+    //     <>
+    //       <Flag countryAbbr="de" className="mr-2" width="18" />
+    //       {_t("LANGUAGE.GERMAN", "German")}
+    //     </>
+    //   ),
+    // },
   ];
 
   const ChatLanguageOptions = [

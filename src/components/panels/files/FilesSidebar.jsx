@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { ProgressBar } from "../common";
-import { FolderList, GoogleDrive } from "./index";
+import { FolderList } from "./index";
 import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
@@ -96,13 +96,13 @@ const FileSidebar = (props) => {
   const fileSizeUnit = actions.getFileSizeUnit(wsFiles.storage);
   const storageAmount = wsFiles.storage === 0 ? 0 : wsFiles.storage < 1e9 / 10 ? 1e9 / 10 : wsFiles.storage;
 
-  const handleGoogleDriveSelect = (data) => {
-    if (data.action === "picked") {
-      data.docs.forEach((doc) => {
-        actions.uploadWorkspaceGoogleDriveFile(params.workspaceId, doc);
-      });
-    }
-  };
+  // const handleGoogleDriveSelect = (data) => {
+  //   if (data.action === "picked") {
+  //     data.docs.forEach((doc) => {
+  //       actions.uploadWorkspaceGoogleDriveFile(params.workspaceId, doc);
+  //     });
+  //   }
+  // };
 
   let dictionary = {
     uploadFiles: _t("FILE.UPLOAD_FILES", "Upload files"),
@@ -153,7 +153,7 @@ const FileSidebar = (props) => {
                 </ul>
               </Filter>
             )}
-            <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} />
+            {/* <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} /> */}
             <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"} className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="monitor" />
               {dictionary.recentlyEdited}

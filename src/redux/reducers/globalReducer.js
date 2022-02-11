@@ -76,6 +76,7 @@ const INITIAL_STATE = {
     requirement: "",
   },
   dontShowIds: [],
+  showNotificationStatusBar: false,
 };
 
 const getLink = (t) => {

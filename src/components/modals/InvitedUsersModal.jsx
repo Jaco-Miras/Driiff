@@ -80,6 +80,18 @@ const StyledTable = styled.table`
   overflow: unset;
 `;
 
+const SelectUserBody = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  .col-md-6 {
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+`;
+
 // const InvalidPhoneLabel = styled.label`
 //   width: 100%;
 //   margin-top: 0.25rem;
@@ -107,6 +119,7 @@ const InvitedUsersModal = (props) => {
   const teams = useSelector((state) => state.users.teams);
   const [registerMode, setRegisterMode] = useState({});
   const [countryCode, setCountryCode] = useState(null);
+  const [selectType, setSelectType] = useState(null);
 
   const dictionary = {
     closeButton: _t("BUTTON.CLOSE", "Close"),
@@ -119,20 +132,25 @@ const InvitedUsersModal = (props) => {
     addUserToteams: _t("INVITE_USERS.ADD_USER_TO_TEAMS", "Add user to teams"),
     teamLabel: _t("TEAM", "Team"),
     email: _t("LOGIN.EMAIL_PHONE", "Email / Phone number"),
+    guestInvitations: _t("LABEL.GUEST_INVITATIONS", "Guest invitations"),
+    guestExplainerBody: _t("LABEL.GUEST_EXPLAINER_BODY", "Guests are invited via a workspace. Add a workspace and click “add guests”"),
+    employee: _t("EMPLOYEE", "Employee"),
+    guestAccount: _t("GUEST_ACCOUNT", "Guest account"),
+    employeeExplainer: _t("INVITE.EMPLOYEE_DESCRIPTION", "Explainer text what employee account can do"),
+    guestExplainer: _t("INVITE.GUEST_DESCRIPTION", "Explainer text what guest account can do"),
+    selectUserType: _t("INVITE.SELECT_USER_TYPE", "Select user type"),
   };
 
   const teamOptions = !fromRegister
-    ? Object.values(teams)
-        .filter((t) => !t.member_ids.some((id) => id === user.id))
-        .map((u) => {
-          return {
-            ...u,
-            value: u.id,
-            label: `${dictionary.teamLabel} ${u.name}`,
-            useLabel: true,
-            type: "TEAM",
-          };
-        })
+    ? Object.values(teams).map((u) => {
+        return {
+          ...u,
+          value: u.id,
+          label: `${dictionary.teamLabel} ${u.name}`,
+          useLabel: true,
+          type: "TEAM",
+        };
+      })
     : [];
 
   const handleInputChange = (e) => {
@@ -360,12 +378,52 @@ const InvitedUsersModal = (props) => {
     });
   };
 
+  const handleSelectEmployee = () => setSelectType("employee");
+  const handleSelectGuest = () => setSelectType("guest");
+
   return (
-    <ModalWrapper isOpen={modal} toggle={toggle} size={"xl"} centered>
+    <ModalWrapper
+      isOpen={modal}
+      toggle={toggle}
+      size={
+        (!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && !(user.role.name === "owner" || user.role.name === "admin")) || (!fromRegister && selectType === "guest")
+          ? "md"
+          : "xl"
+      }
+      centered
+    >
       <ModalHeaderSection toggle={toggle} className={"invited-users-modal"}>
-        {dictionary.userInvitations}
+        {!fromRegister && selectType === "guest" ? dictionary.guestInvitations : !fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin") ? dictionary.selectUserType : dictionary.userInvitations}
       </ModalHeaderSection>
-      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
+      {!fromRegister && !selectType && (user.role.name === "owner" || user.role.name === "admin") && (
+        <ModalBody>
+          <SelectUserBody className="row">
+            <div className="col-md-6 d-flex justify-content-center">
+              <button className="btn btn-primary" onClick={handleSelectEmployee}>
+                {dictionary.employee}
+              </button>
+              <span className="mt-3">{dictionary.employeeExplainer}</span>
+            </div>
+            <div className="col-md-6 d-flex justify-content-center" onClick={handleSelectGuest}>
+              <button className="btn btn-primary">{dictionary.guestAccount}</button>
+              <span className="mt-3">{dictionary.guestExplainer}</span>
+            </div>
+          </SelectUserBody>
+        </ModalBody>
+      )}
+      {!fromRegister && selectType === "guest" && (
+        <>
+          <ModalBody>
+            <div>{dictionary.guestExplainerBody}</div>
+          </ModalBody>
+          <ModalFooter>
+            <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
+              {dictionary.closeButton}
+            </Button>
+          </ModalFooter>
+        </>
+      )}
+      {(fromRegister || (!fromRegister && selectType === "employee" && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalBody>
           <StyledTable className="table table-responsive">
             <tr>
@@ -475,7 +533,7 @@ const InvitedUsersModal = (props) => {
           </StyledTable>
         </ModalBody>
       )}
-      {(fromRegister || (!fromRegister && (user.role.name === "owner" || user.role.name === "admin"))) && (
+      {(fromRegister || (!fromRegister && selectType === "employee" && (user.role.name === "owner" || user.role.name === "admin"))) && (
         <ModalFooter>
           <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {cancelText}

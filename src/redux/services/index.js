@@ -25,6 +25,8 @@ export {
   resetCompanyLogo,
   putPostAccess,
   getPostAccess,
+  getNotificationSettings,
+  putNotificationSettings,
 } from "./admin";
 export {
   getGlobalRecipients,
@@ -115,6 +117,7 @@ export {
   addTeamMember,
   removeTeamMember,
   createTeamChannel,
+  searchUsers,
 } from "./user";
 
 export {

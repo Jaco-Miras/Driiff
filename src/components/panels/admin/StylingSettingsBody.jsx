@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster, useOutsideClick } from "../../hooks";
@@ -6,7 +6,9 @@ import { DropDocument } from "../../dropzone/DropDocument";
 import { updateThemeColors } from "../../../redux/actions/settingsActions";
 import { putLoginSettings } from "../../../redux/actions/adminActions";
 import { BlockPicker } from "react-color";
+import { CustomInput } from "reactstrap";
 import colorWheel from "../../../assets/img/svgs/RGB_color_wheel_12.svg";
+import { putNotificationSettings, getNotificationSettings } from "../../../redux/actions/adminActions";
 
 const Wrapper = styled.div`
   display: flex;
@@ -19,6 +21,50 @@ const Wrapper = styled.div`
     margin-left: 5px;
     height: 1rem;
     width: 1rem;
+  }
+  .custom-switch {
+    padding: 0;
+    justify-content: left;
+    align-items: center;
+    display: flex;
+    min-height: 38px;
+    .custom-control-label::after {
+      right: -11px;
+      left: auto;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 100%;
+      top: 2px;
+    }
+
+    input[type="checkbox"]:checked + .custom-control-label::after {
+      right: -23px;
+    }
+
+    .custom-control-label::before {
+      right: -2.35rem;
+      left: auto;
+      width: 3rem;
+      height: 1.5rem;
+      border-radius: 48px;
+      top: 0;
+    }
+
+    input {
+      cursor: pointer;
+    }
+    label {
+      cursor: pointer;
+      width: auto;
+      min-height: 25px;
+      display: flex;
+      align-items: center;
+
+      span {
+        display: block;
+        margin-right: 2rem;
+      }
+    }
   }
 `;
 
@@ -83,6 +129,12 @@ function StylingSettingsBody() {
     sidebarTextColorLabel: _t("LABEL.SIDEBAR_TEXT_COLOR", "Sidebar text color"),
     submitBtn: _t("BTN.SUBMIT", "Submit"),
     resetPreviewBtn: _t("BTN.RESET_DEFAULT_COLORS", "Reset default colors"),
+    email: _t("EMAIL", "Email"),
+    webPush: _t("WEBPUSH", "Web push"),
+    apn: _t("APN_IOS", "Apple push notification"),
+    saveNotification: _t("BUTTON.SAVE_NOTIFICATION", "Save notification"),
+    notifications: _t("NOTIFICATIONS", "Notifications"),
+    styling: _t("STYLING", "Styling"),
   };
 
   const iconDropZone = useRef(null);
@@ -103,6 +155,22 @@ function StylingSettingsBody() {
     fourth: false,
     fifth: false,
   });
+  const notificationSettings = useSelector((state) => state.admin.notifications);
+  const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
+  const [notifications, setNotifications] = useState(notificationSettings);
+  const [savingNotifications, setSavingNotifications] = useState(false);
+
+  useEffect(() => {
+    if (!notificationsLoaded) {
+      dispatch(
+        getNotificationSettings({}, (err, res) => {
+          if (err) return;
+          console.log(res.data);
+          setNotifications(res.data);
+        })
+      );
+    }
+  }, []);
 
   const handleUploadIcon = (file, fileUrl) => {
     let payload = {
@@ -215,10 +283,44 @@ function StylingSettingsBody() {
   useOutsideClick(pickerRefFifth, () => setShowColorPicker({ ...showColorPicker, fifth: !showColorPicker.fifth }), showColorPicker.fifth);
   useOutsideClick(pickerRefSidebarTextColor, () => setShowColorPicker({ ...showColorPicker, sidebarTextColor: !showColorPicker.sidebarTextColor }), showColorPicker.sidebarTextColor);
 
+  const handleToggleEmailNotification = () => {
+    setNotifications({
+      ...notifications,
+      email: !notifications.email,
+    });
+    //toast.success(notifications.email ? "Email notifications are now disabled" : "Email notifications are now enabled");
+  };
+  const handleToggleWebpushNotification = () => {
+    setNotifications({
+      ...notifications,
+      webpush: !notifications.webpush,
+    });
+    //toast.success(notifications.webpush ? "Web push notifications are now disabled" : "Web push notifications are now enabled");
+  };
+  const handleToggleApnNotification = () => {
+    setNotifications({
+      ...notifications,
+      apn: !notifications.apn,
+    });
+    // toast.success(notifications.apn ? "APN notifications are now disabled" : "APN notifications are now enabled");
+  };
+  const handleSaveNotificationSettings = () => {
+    setSavingNotifications(true);
+    dispatch(
+      putNotificationSettings(notifications, (err, res) => {
+        setSavingNotifications(false);
+        if (err) return;
+        if (res) {
+          toast.success("Notification settings updated");
+        }
+      })
+    );
+  };
+
   return (
     <div>
       <Wrapper theme={theme}>
-        <h4>{dictionary.companyLogo}</h4>
+        <h4 className="mt-2">{dictionary.companyLogo}</h4>
         <h6>{dictionary.companyLogoDescription}</h6>
         <div>
           <label className="mb-0">{dictionary.companyLogoRequirement}</label>
@@ -245,7 +347,7 @@ function StylingSettingsBody() {
             </button>
           )}
         </div>
-        <h4 className="mt-3">Styling</h4>
+        <h4 className="mt-3">{dictionary.styling}</h4>
         {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
         <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p> */}
         <ColorInputWrapper>
@@ -391,6 +493,45 @@ function StylingSettingsBody() {
           </SubmitButton> */}
           <SubmitButton className="btn btn-primary" onClick={handleResetPreview}>
             {dictionary.resetPreviewBtn}
+          </SubmitButton>
+        </div>
+        <h4 className="mt-3">{dictionary.notifications}</h4>
+        <CustomInput
+          className="cursor-pointer text-muted"
+          checked={notifications.email}
+          type="switch"
+          id="email"
+          name="email"
+          data-success-message={`${notifications.email ? "Email notifications are now enabled" : "Email notifications are now disabled"}`}
+          onChange={handleToggleEmailNotification}
+          label={<span>{dictionary.email}</span>}
+          disabled={notificationsLoaded === false}
+        />
+        <CustomInput
+          className="cursor-pointer text-muted"
+          checked={notifications.webpush}
+          type="switch"
+          id="webpush"
+          name="webpush"
+          //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
+          onChange={handleToggleWebpushNotification}
+          label={<span>{dictionary.webPush}</span>}
+          disabled={notificationsLoaded === false}
+        />
+        <CustomInput
+          className="cursor-pointer text-muted"
+          checked={notifications.apn}
+          type="switch"
+          id="apn"
+          name="apn"
+          //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
+          onChange={handleToggleApnNotification}
+          label={<span>{dictionary.apn}</span>}
+          disabled={notificationsLoaded === false}
+        />
+        <div className="d-flex align-items-center mt-2">
+          <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || !notificationsLoaded}>
+            {dictionary.saveNotification}
           </SubmitButton>
         </div>
       </Wrapper>

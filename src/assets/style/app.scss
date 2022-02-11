@@ -22392,14 +22392,14 @@ body > div#transition-popper {
 
 ul#menu-list-icon-more {
   //chat option
-  li:nth-child(2):nth-last-child(3) {
+  li:nth-child(2):nth-last-child(4) {
     color: red;
     display:none;
   }
-  // li:first-child:nth-last-child(3) {
-  //   color:blue;
-  //   //display:none;
-  // }
+  li:first-child:nth-last-child(3) {
+    color:blue;
+    display:none;
+  }
 }
 
 ul#menu-list-icon-security {
@@ -22417,4 +22417,12 @@ ul#menu-list-icon-security {
     min-height: 80px;
     max-height: 120px;
   }
+}
+
+.top-40 {
+  top: 40px;
+}
+
+.mt-40 {
+  margin-top: 40px;
 }

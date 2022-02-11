@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
@@ -121,6 +122,9 @@ const PeopleListItem = (props) => {
     cardBody: useRef(null),
     content: useRef(null),
   };
+
+  const notificationSettings = useSelector((state) => state.admin.notifications);
+  const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
 
   const handleOnNameClick = () => {
     if (onNameClick) onNameClick(user);
@@ -250,6 +254,17 @@ const PeopleListItem = (props) => {
     if (onDeleteTeamMember) onDeleteTeamMember(user);
   };
 
+  const renderUserName = ({ user }) => {
+    if (loggedUser.type === "external") {
+      return <span className="mr-2">{user.name !== "" ? user.name : user.email}</span>;
+    }
+    return (
+      <ToolTip content={user.email}>
+        <span className="mr-2">{user.name !== "" ? user.name : user.email}</span>
+      </ToolTip>
+    );
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-lg-4 col-md-6 ${className}`}>
       <div className="col-12">
@@ -270,18 +285,14 @@ const PeopleListItem = (props) => {
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
                     <h6 className="user-name mb-0">
-                      <ToolTip content={user.email}>
-                        <div className="mr-2 people-text-truncate">{user.name !== "" ? user.name : user.email}</div>
-                      </ToolTip>
+                      {renderUserName({ user })}
                       <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
                       <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
-                        <ToolTip content={user.email}>
-                          <span className="mr-2">{user.name}</span>
-                        </ToolTip>
+                        {renderUserName({ user })}
                         {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
                         {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
                           <ToolTip content={"This is an administrator account"}>
@@ -330,7 +341,7 @@ const PeopleListItem = (props) => {
                       (user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external") ? (
                         <div onClick={handleDeleteUser}>{dictionary.deleteUser}</div>
                       ) : null}
-                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && notificationsLoaded && notificationSettings.email && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}

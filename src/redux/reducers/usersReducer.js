@@ -449,6 +449,20 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    case "SEARCH_USERS_SUCCESS": {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          ...Object.values(action.data.users).reduce((acc, user) => {
+            if (!state.users[user.id]) {
+              acc[user.id] = user;
+            }
+            return acc;
+          }, {}),
+        },
+      };
+    }
     default:
       return state;
   }

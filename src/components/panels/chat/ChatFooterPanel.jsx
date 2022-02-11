@@ -2,11 +2,11 @@ import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
-import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote } from "../../hooks";
+import { useIsMember, useTimeFormat, useToaster, useTranslationActions, useSelectQuote, useZoomActions } from "../../hooks";
 import ChatQuote from "../../list/chat/ChatQuote";
 import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
@@ -179,6 +179,7 @@ const ChatFooterPanel = (props) => {
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
 
+  //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
 
   const handleSend = () => {
@@ -300,6 +301,62 @@ const ChatFooterPanel = (props) => {
     });
   };
 
+  const zoomActions = useZoomActions();
+
+  const handleStartZoomMeeting = (callback = () => {}) => {
+    //setStartingZoom(true);
+    let payload = {
+      channel_id: selectedChannel.id,
+    };
+
+    dispatch(
+      createZoomMeeting(payload, (err, res) => {
+        if (err) return;
+        if (res.data) {
+          let sigPayload = {
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+          const zoomCreateConfig = {
+            password: res.data.zoom_data.data.password,
+            meetingNumber: res.data.zoom_data.data.id,
+            role: 1,
+          };
+
+          dispatch(
+            generateZoomSignature(
+              {
+                ...sigPayload,
+                channel_id: selectedChannel.id,
+                system_message: `ZOOM_MEETING::${JSON.stringify({
+                  author: {
+                    id: user.id,
+                    name: user.name,
+                    first_name: user.first_name,
+                    partial_name: user.partial_name,
+                    profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+                  },
+                  password: res.data.zoom_data.data.password,
+                  meetingNumber: res.data.zoom_data.data.id,
+                  channel_id: selectedChannel.id,
+                })}`,
+              },
+              (e, r) => {
+                if (callback) callback();
+                if (e) return;
+                if (r) {
+                  //zoomActions.createMessage(selectedChannel.id, zoomCreateConfig);
+                  zoomActions.startMeeting(r.data.signature, zoomCreateConfig);
+                  //setStartingZoom(false);
+                }
+              }
+            )
+          );
+        }
+      })
+    );
+  };
+
   const handleZoomMeet = () => {
     const meetingSDKELement = document.getElementById("meetingSDKElement");
     const meetingSDKELementFirstChild = meetingSDKELement.firstChild;
@@ -310,8 +367,21 @@ const ChatFooterPanel = (props) => {
 
       dispatch(addToModals(modalPayload));
     } else {
+      // let modalPayload = {
+      //   type: "confirmation",
+      //   cancelText: dictionary.no,
+      //   headerText: dictionary.zoomMeeting,
+      //   submitText: dictionary.yes,
+      //   bodyText: dictionary.zoomMeetingConfirmation,
+      //   actions: {
+      //     onSubmit: handleStartZoomMeeting,
+      //   },
+      // };
       let modalPayload = {
         type: "zoom_confirmation",
+        actions: {
+          onSubmit: handleStartZoomMeeting,
+        },
       };
 
       dispatch(addToModals(modalPayload));

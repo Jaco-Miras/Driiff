@@ -172,3 +172,18 @@ export function getPostAccess(payload) {
     url: "/v2/post-access-users",
   });
 }
+
+export function getNotificationSettings(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/notification-settings",
+  });
+}
+
+export function putNotificationSettings(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/notification-settings",
+    data: payload,
+  });
+}

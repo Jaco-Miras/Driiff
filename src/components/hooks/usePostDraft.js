@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { saveDraft, updateDraft, deleteDraftReducer, deleteDraft } from "../../redux/actions/globalActions";
+import axios from "axios";
 
 const usePostDraft = (props) => {
-  const { draftId, initTimestamp, isExternalUser, item, form, is_personal, params, responsible_ids, user, topicId, toaster, setDraftId, savingDraft, setSavingDraft } = props;
+  const { draftId, initTimestamp, isExternalUser, item, form, is_personal, params, responsible_ids, user, topicId, toaster, setDraftId, savingDraft, setSavingDraft, cancelToken } = props;
 
   const updateCountRef = useRef(0);
   const [triggerUpdate, setTriggerUpdate] = useState(false);
@@ -47,12 +48,16 @@ const usePostDraft = (props) => {
       };
       setSavingDraft(true);
 
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
+
       if (draftId) {
         payload = {
           ...payload,
           draft_id: draftId,
           id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
           post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+          cancelToken: cancelToken.current.token,
         };
         dispatch(
           updateDraft(payload, (err, res) => {
@@ -67,7 +72,7 @@ const usePostDraft = (props) => {
         );
       } else {
         dispatch(
-          saveDraft(payload, (err, res) => {
+          saveDraft({ ...payload, cancelToken: cancelToken.current.token }, (err, res) => {
             setSavingDraft(false);
             if (err) return;
             setDraftId(res.data.id);
@@ -85,45 +90,41 @@ const usePostDraft = (props) => {
   const handleDeleteDraft = (showDeleteToaster = false) => {
     if (draftId) {
       dispatch(
-        deleteDraft(
-          {
-            type: "draft_post",
-            draft_id: draftId,
-          },
-          (err, res) => {
-            if (params) {
-              dispatch(
-                deleteDraftReducer(
-                  {
-                    topic_id: topicId,
-                    draft_type: "draft_post",
-                    draft_id: draftId,
-                    id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-                    post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-                  },
-                  (err, res) => {
-                    if (showDeleteToaster) toaster.success("Draft successfully removed.");
-                  }
-                )
-              );
-            } else {
-              dispatch(
-                deleteDraftReducer(
-                  {
-                    draft_type: "draft_post",
-                    draft_id: draftId,
-                    id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-                    post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
-                  },
-                  (err, res) => {
-                    if (showDeleteToaster) toaster.success("Draft successfully removed.");
-                  }
-                )
-              );
-            }
-          }
-        )
+        deleteDraft({
+          type: "draft_post",
+          draft_id: draftId,
+        })
       );
+      if (params) {
+        dispatch(
+          deleteDraftReducer(
+            {
+              topic_id: topicId,
+              draft_type: "draft_post",
+              draft_id: draftId,
+              id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+              post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+            },
+            (err, res) => {
+              if (showDeleteToaster) toaster.success("Draft successfully removed.");
+            }
+          )
+        );
+      } else {
+        dispatch(
+          deleteDraftReducer(
+            {
+              draft_type: "draft_post",
+              draft_id: draftId,
+              id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+              post_id: item.hasOwnProperty("draft") ? item.draft.post_id : initTimestamp,
+            },
+            (err, res) => {
+              if (showDeleteToaster) toaster.success("Draft successfully removed.");
+            }
+          )
+        );
+      }
     }
   };
 
