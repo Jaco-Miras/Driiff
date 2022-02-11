@@ -39,6 +39,7 @@ const Wrapper = styled.div`
 const ShortcutsCard = (props) => {
   const { dictionary } = props;
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
+  const linksFetched = useSelector((state) => state.global.linksFetched);
   return (
     <Wrapper>
       <span>
@@ -47,6 +48,7 @@ const ShortcutsCard = (props) => {
           <SvgIconFeather icon="info" />
         </ToolTip>
       </span>
+      {links.length === 0 && linksFetched && <span className="mt-3">{dictionary.noQuickLinks}</span>}
       <ul className="mt-3">
         {links.map((l) => {
           return (
