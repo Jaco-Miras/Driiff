@@ -29,6 +29,9 @@ const Wrapper = styled.div`
     }
     li:not(:last-child) {
       border-bottom: 1px solid #f1f2f7;
+      .dark & {
+        border-bottom: 1px solid rgba(155, 155, 155, 0.1);
+      }
     }
   }
   a {

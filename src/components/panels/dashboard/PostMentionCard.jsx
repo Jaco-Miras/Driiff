@@ -39,6 +39,9 @@ const Wrapper = styled.div`
 
 const PostBtn = styled.button`
   border: 1px solid;
+  .dark & {
+    color: #fff;
+  }
   :hover {
     cursor: pointer;
   }
