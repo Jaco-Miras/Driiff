@@ -57,8 +57,9 @@ const CommentCounters = (props) => {
     let filter_post_read = [];
     if (post.post_reads) {
       return post.post_reads.filter((u) => u.last_read_timestamp >= comment.updated_at.timestamp);
+    } else {
+      return filter_post_read;
     }
-    return filter_post_read;
   };
 
   return (
