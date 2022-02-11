@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useSortChannels, useChannelActions } from "../../hooks";

@@ -435,7 +435,7 @@ const useUserActions = () => {
             //   });
             // }
             if (res) {
-              login(res.data, "/chat");
+              login(res.data, "/dashboard");
             }
             callback(err, res);
           })

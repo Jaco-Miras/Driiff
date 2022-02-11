@@ -62,7 +62,7 @@ const FavWorkspaceList = (props) => {
   return (
     <Wrapper onClick={handleSelectWorkspace}>
       <WorkspaceIcon avatarClassName="avatar-sm" workspace={workspace} isCompanyWs={isCompanyWs} companyName={companyName} />
-      <WorkspaceTitleFolder>
+      <WorkspaceTitleFolder className="workspace-title-folder">
         <WorkspaceTitle>
           <span className="text-truncate">{isCompanyWs && companyName ? companyName : workspace.name}</span>
           {workspace.is_lock === 1 && <Icon icon="lock" />}

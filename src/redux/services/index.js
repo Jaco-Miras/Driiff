@@ -30,6 +30,8 @@ export {
   getSecuritySettings,
   putSecuritySettings,
   sendRequestPassword,
+  uploadDashboardBg,
+  putCompanyDescription,
 } from "./admin";
 export {
   getGlobalRecipients,

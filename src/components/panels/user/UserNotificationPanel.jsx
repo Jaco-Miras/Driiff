@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+//import { useHistory } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings } from "../../hooks";
@@ -22,7 +22,6 @@ const UserNotificationPanel = (props) => {
   const { className = "" } = props;
 
   const user = useSelector((state) => state.session.user);
-  const history = useHistory();
   const actions = useNotificationActions();
   const { notifications, unreadNotifications } = useNotifications();
   const { _t } = useTranslationActions();
@@ -58,7 +57,7 @@ const UserNotificationPanel = (props) => {
               <div className="card-body " style={{ padding: "0px" }}>
                 <div className="timeline">
                   {notif.map((n) => {
-                    return <NotificationTimelineItem key={n.id} notification={n} actions={actions} history={history} redirect={redirect} user={user} _t={_t} darkMode={dark_mode} />;
+                    return <NotificationTimelineItem key={n.id} notification={n} />;
                   })}
                 </div>
               </div>

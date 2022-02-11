@@ -27,6 +27,8 @@ import {
   getSecuritySettings as getSecuritySettingsService,
   putSecuritySettings as putSecuritySettingsService,
   sendRequestPassword as sendRequestPasswordService,
+  uploadDashboardBg as uploadDashboardBgService,
+  putCompanyDescription as putCompanyDescriptionService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -159,4 +161,20 @@ export function putSecuritySettings(payload, callback) {
 
 export function sendRequestPassword(payload, callback) {
   return dispatchActionToReducer(sendRequestPasswordService(payload), "SEND_REQUEST_PASSWORD_START", "SEND_REQUEST_PASSWORD_SUCCESS", "SEND_REQUEST_PASSWORD_FAILURE", callback);
+}
+
+export function uploadDashboardBg(payload, callback) {
+  return dispatchActionToReducer(uploadDashboardBgService(payload), "UPLOAD_DASHBOARD_BACKGROUND_START", "UPLOAD_DASHBOARD_BACKGROUND_SUCCESS", "UPLOAD_DASHBOARD_BACKGROUND_FAILURE", callback);
+}
+
+export function putCompanyDescription(payload, callback) {
+  return dispatchActionToReducer(putCompanyDescriptionService(payload), "PUT_COMPANY_DESCRIPTION_START", "PUT_COMPANY_DESCRIPTION_SUCCESS", "PUT_COMPANY_DESCRIPTION_FAILURE", callback);
+}
+
+export function incomingCompanyDescription(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DESCRIPTION", payload, callback);
+}
+
+export function incomingCompanyDashboardBackground(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_COMPANY_DASHBOARD_BACKGROUND", payload, callback);
 }
