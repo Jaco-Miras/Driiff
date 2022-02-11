@@ -163,9 +163,9 @@ const WrapperDiv = styled(InputGroup)`
   .add-guest-checkbox {
     label {
       cursor: ${(props) => (props.hasGuestAccess ? "pointer" : "not-allowed")};
-      color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,90%)")} !important;
+      color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,70%)")} !important;
       :hover {
-        color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,90%)")} !important;
+        color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,70%)")} !important;
       }
     }
   }
