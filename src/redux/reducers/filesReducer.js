@@ -168,12 +168,14 @@ export default (state = INITIAL_STATE, action) => {
       if (folderItems[action.data.folder_id]) {
         folderItems[action.data.folder_id].files.push(action.data.file_id);
       } else {
-        folderItems[action.data.folder_id] = {
-          init: false,
-          skip: 0,
-          limit: 100,
-          files: [action.data.file_id],
-        };
+        if (action.data.folder_id) {
+          folderItems[action.data.folder_id] = {
+            init: false,
+            skip: 0,
+            limit: 100,
+            files: [action.data.file_id],
+          };
+        }
       }
 
       if (action.data.original_folder_id && folderItems[action.data.original_folder_id]) {
@@ -1721,21 +1723,32 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].folder_id = action.data.folder_id;
-        if (newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.original_folder_id) && newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].hasOwnProperty("files")) {
+        newWorkspaceFiles[action.data.topic_id] = {
+          ...newWorkspaceFiles[action.data.topic_id],
+          files: {
+            ...newWorkspaceFiles[action.data.topic_id].files,
+            ...(typeof newWorkspaceFiles[action.data.topic_id].files[action.data.file_id] !== "undefined" && {
+              [action.data.file_id]: {
+                ...newWorkspaceFiles[action.data.topic_id].files[action.data.file_id],
+                folder_id: action.data.folder_id,
+              },
+            }),
+          },
+        };
+        if (
+          action.data.folder_id &&
+          newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.original_folder_id) &&
+          newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].hasOwnProperty("files")
+        ) {
           newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].files = newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].files.filter((id) => id !== action.data.file_id);
         }
-        if (newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id) && newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].hasOwnProperty("loaded")) {
+        if (action.data.folder_id && newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id) && newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].hasOwnProperty("loaded")) {
           newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, action.data.file_id];
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
-        } else {
-          return {
-            ...state,
-            workspaceFiles: newWorkspaceFiles,
-          };
         }
+        return {
+          ...state,
+          workspaceFiles: newWorkspaceFiles,
+        };
       } else {
         return state;
       }

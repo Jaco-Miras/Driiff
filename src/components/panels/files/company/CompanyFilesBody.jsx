@@ -286,22 +286,13 @@ const CompanyFilesBody = (props) => {
                         <div className="row">
                           <DriveLinks disableOptions={disableOptions} />
                           {files &&
-                            fileIds.map((f) => {
-                              if (files.files.hasOwnProperty(f)) {
+                            Object.values(files.files)
+                              .filter((f) => f.folder_id === parseInt(params.folderId))
+                              .map((f) => {
                                 return (
-                                  <CompanyFileListItem
-                                    key={f}
-                                    scrollRef={scrollRef}
-                                    actions={actions}
-                                    folders={folders}
-                                    className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
-                                    file={files.files[f]}
-                                    files={files.files}
-                                    disableOptions={disableOptions}
-                                  />
+                                  <CompanyFileListItem key={f.id} scrollRef={scrollRef} actions={actions} folders={folders} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} files={files.files} disableOptions={disableOptions} />
                                 );
-                              } else return null;
-                            })}
+                              })}
                         </div>
                         {files && fileIds.length === 0 && (
                           <EmptyState>
