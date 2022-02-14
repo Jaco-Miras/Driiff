@@ -302,3 +302,7 @@ export function incomingWorkpaceNotificationStatus(payload, callback) {
 export function setUnreadPostIds(payload, callback) {
   return SimpleDispatchActionToReducer("SET_UNREAD_POST_IDS", payload, callback);
 }
+
+export function setPostIsSelected(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SELECTED_POST", payload, callback);
+}
