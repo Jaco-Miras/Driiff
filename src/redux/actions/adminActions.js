@@ -159,6 +159,10 @@ export function putSecuritySettings(payload, callback) {
   return dispatchActionToReducer(putSecuritySettingsService(payload), "PUT_SECURITY_SETTINGS_START", "PUT_SECURITY_SETTINGS_SUCCESS", "PUT_SECURITY_SETTINGS_FAILURE", callback);
 }
 
+export function sendRequestPassword(payload, callback) {
+  return dispatchActionToReducer(sendRequestPasswordService(payload), "SEND_REQUEST_PASSWORD_START", "SEND_REQUEST_PASSWORD_SUCCESS", "SEND_REQUEST_PASSWORD_FAILURE", callback);
+}
+
 export function uploadDashboardBg(payload, callback) {
   return dispatchActionToReducer(uploadDashboardBgService(payload), "UPLOAD_DASHBOARD_BACKGROUND_START", "UPLOAD_DASHBOARD_BACKGROUND_SUCCESS", "UPLOAD_DASHBOARD_BACKGROUND_FAILURE", callback);
 }
@@ -173,8 +177,4 @@ export function incomingCompanyDescription(payload, callback) {
 
 export function incomingCompanyDashboardBackground(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_DASHBOARD_BACKGROUND", payload, callback);
-}
-
-export function sendRequestPassword(payload, callback) {
-  return dispatchActionToReducer(sendRequestPasswordService(payload), "SEND_REQUEST_PASSWORD_START", "SEND_REQUEST_PASSWORD_SUCCESS", "SEND_REQUEST_PASSWORD_FAILURE", callback);
 }

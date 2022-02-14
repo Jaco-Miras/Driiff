@@ -35,6 +35,16 @@ const Wrapper = styled.div`
       border-bottom: 1px solid #f1f2f7;
       padding: 10px;
       margin-bottom: 0;
+      .dark & {
+        border-bottom: 1px solid rgba(155, 155, 155, 0.1);
+        color: #fff;
+      }
+    }
+  }
+  .workspace-title-folder > div,
+  .workspace-title-folder svg {
+    .dark & {
+      color: #fff;
     }
   }
 `;
@@ -50,6 +60,9 @@ const FavEmptyState = styled.div`
 
 const BrowseAll = styled.button`
   border: 1px solid;
+  .dark & {
+    color: #fff;
+  }
   :hover {
     cursor: pointer;
   }

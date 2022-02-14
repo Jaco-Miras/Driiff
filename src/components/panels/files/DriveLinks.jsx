@@ -7,14 +7,14 @@ const DriveLinks = (props) => {
   const { disableOptions } = props;
   const params = useParams();
   const driveLinks = useSelector((state) => (params && params.workspaceId && state.files.workspaceFiles[params.workspaceId] ? state.files.workspaceFiles[params.workspaceId].driveLinks : state.files.companyFiles.driveLinks));
-
+  console.log(driveLinks);
   if (driveLinks) {
     return Object.values(driveLinks)
       .filter((dl) => {
-        if (params && params.folderId) {
-          return dl.folder_id === parseInt(params.folderId);
-        } else if (params && params.fileFolderId) {
+        if (params && params.workspaceId && params.fileFolderId) {
           return dl.folder_id === parseInt(params.fileFolderId);
+        } else if (params && !params.workspaceId && params.folderId) {
+          return dl.folder_id === parseInt(params.folderId);
         } else {
           return dl.folder_id === null;
         }

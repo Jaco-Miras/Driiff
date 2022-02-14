@@ -90,7 +90,7 @@ const useTodos = (fetchTodosOnMount = false) => {
             }
             return false;
           } else {
-            if (t.workspace && !t.assigned_to) return false;
+            //if (t.workspace && !t.assigned_to) return false;
             if (t.user && t.user === loggedUser.id) return true;
             if (t.assigned_to && t.assigned_to.id !== loggedUser.id) return false;
             //if (t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id) return false;

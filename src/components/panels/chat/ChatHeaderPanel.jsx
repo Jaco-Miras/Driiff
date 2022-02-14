@@ -253,7 +253,7 @@ const StyledChannelIcon = styled(ChannelIcon)`
     right -10px;
   }
   &.chat-header-icon > svg {
-    right: -5px;
+    right: 5px;
   }
 `;
 
