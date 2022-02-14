@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather, Loader } from "../../common";
+import { SvgIconFeather, Loader, Loading } from "../../common";
 import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
@@ -227,6 +227,7 @@ const CompanyPostsPanel = (props) => {
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
+    loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
   };
 
   const handleLoadMore = () => {
@@ -313,6 +314,7 @@ const CompanyPostsPanel = (props) => {
     };
     actions.setCompanyFilterPosts(payload);
   };
+  console.log(loading);
 
   //if (posts === null) return <></>;
   return (
@@ -408,6 +410,7 @@ const CompanyPostsPanel = (props) => {
               )}
             </>
           )}
+          {loading && <Loading text={dictionary.loadingPosts} />}
           <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>

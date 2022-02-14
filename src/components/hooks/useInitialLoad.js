@@ -52,6 +52,7 @@ const useInitialLoad = () => {
       dispatch(getGlobalRecipients());
       dispatch(getNotificationSettings());
       dispatch(getSecuritySettings());
+      if (user && user.type === "internal") dispatch(getCompanyChannel());
     };
 
     if (user && user.type === "internal") dispatch(getCompanyChannel());

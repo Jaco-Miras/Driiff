@@ -9,6 +9,7 @@ import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { Loading } from "../../common";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -257,11 +258,13 @@ const WorkspacePostsPanel = (props) => {
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
+    loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
   };
 
   useEffect(() => {
     if (filter === "star") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -277,7 +280,7 @@ const WorkspacePostsPanel = (props) => {
               favourites: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -293,6 +296,7 @@ const WorkspacePostsPanel = (props) => {
       );
     } else if (filter === "my_posts") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -308,7 +312,7 @@ const WorkspacePostsPanel = (props) => {
               myPosts: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -334,6 +338,7 @@ const WorkspacePostsPanel = (props) => {
       };
       let cb = (err, res) => {
         setLoadPosts(false);
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -347,7 +352,7 @@ const WorkspacePostsPanel = (props) => {
             filters: {
               unreadPosts: {
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -359,7 +364,6 @@ const WorkspacePostsPanel = (props) => {
 
   const handleLoadMore = () => {
     if (search === "" && !post) {
-      setLoading(true);
       loadMoreUnreadPosts();
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
@@ -377,6 +381,7 @@ const WorkspacePostsPanel = (props) => {
         if (filters.myPosts && !filters.myPosts.hasMore) return;
       }
 
+      setLoading(true);
       let cb = (err, res) => {
         if (componentIsMounted.current) {
           setLoading(false);
@@ -397,28 +402,28 @@ const WorkspacePostsPanel = (props) => {
                 all: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
               ...(filter === "archive" && {
                 archived: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
               ...(filter === "star" && {
                 favourites: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
               ...(filter === "myPosts" && {
                 myPosts: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
             },
@@ -629,6 +634,7 @@ const WorkspacePostsPanel = (props) => {
               )}
             </>
           )}
+          {loading && <Loading text={dictionary.loadingPosts} />}
           <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>
