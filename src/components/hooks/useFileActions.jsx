@@ -117,6 +117,7 @@ const useFileActions = (params = null) => {
     removeHeaderFolder: _t("FILES.REMOVE_HEADER", "Remove folder for everyone?"),
     removeBodyFolder: _t("FILES.REMOVE_BODY", "This folder will be moved to the recycle bin and will be permanently removed after thirty (30) days."),
     removeConfirmation: _t("FILES.REMOVE_HEADER", "This folder will be removed permanently."),
+    rootFolder: _t("OPTIONS.ROOT_FOLDER", "Root folder"),
   };
 
   const fetchCompanyFiles = (payload, callback) => {
@@ -763,6 +764,7 @@ const useFileActions = (params = null) => {
         submitText: "Move",
         cancelText: "Cancel",
         bodyText: file.search,
+        rootFolder: dictionary.rootFolder,
       },
       file: file,
       folder_id: null,

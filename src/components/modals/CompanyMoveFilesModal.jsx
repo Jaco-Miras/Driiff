@@ -65,7 +65,7 @@ const CompanyMoveFilesModal = (props) => {
       {
         name: file.search,
         file_id: file.id,
-        folder_id: selectedFolder.id,
+        folder_id: selectedFolder.value,
       },
       () => {
         setLoading(false);
@@ -94,9 +94,12 @@ const CompanyMoveFilesModal = (props) => {
         ...f,
         id: f.id,
         label: f.search,
+        value: f.id,
       };
     })
     .sort((a, b) => a.search.localeCompare(b.search));
+
+  options = [{ label: dictionary.rootFolder, value: null }, ...options].filter((f) => f.value !== parseInt(folder_id));
 
   const {
     generalSettings: { dark_mode },
