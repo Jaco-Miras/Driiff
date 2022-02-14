@@ -6,7 +6,7 @@ import { DescriptionInput } from "../forms";
 import { ModalHeaderSection } from "./index";
 import { clearModal } from "../../redux/actions/globalActions";
 import { putCompanyDescription } from "../../redux/actions/adminActions";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useToaster } from "../hooks";
 
 const WrapperDiv = styled.div`
   display: flex;
@@ -71,6 +71,7 @@ const CompanyWorkspaceModal = (props) => {
   const { type, mode } = props.data;
 
   const dispatch = useDispatch();
+  const toaster = useToaster();
 
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const recipients = useSelector((state) => state.global.recipients);
@@ -107,6 +108,7 @@ const CompanyWorkspaceModal = (props) => {
     save: _t("MODAL.SAVE", "Save"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     editCompanyDescription: _t("MODAL.EDIT_COMPANY_DESCRIPTION", "Edit company description"),
+    updatedDescription: _t("TOASTER.COMPANY_DESCRIPTION_SUCCESS", "Company description updated."),
   };
 
   const toggle = () => {
@@ -149,7 +151,12 @@ const CompanyWorkspaceModal = (props) => {
     //   dispatch(updateWorkspace(payload));
     // }
     if (companyWs) {
-      dispatch(putCompanyDescription({ id: 4, description: form.description }));
+      dispatch(
+        putCompanyDescription({ id: companyWs.id, description: form.description }, (err, res) => {
+          if (err) return;
+          toaster.success(dictionary.updatedDescription);
+        })
+      );
       toggle();
     }
   };

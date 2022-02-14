@@ -34,6 +34,10 @@ const Wrapper = styled.div`
         border-bottom: 1px solid rgba(155, 155, 155, 0.1);
       }
     }
+    .channel-info {
+      max-width: calc(100% - 60px);
+      overflow: hidden;
+    }
   }
 `;
 
