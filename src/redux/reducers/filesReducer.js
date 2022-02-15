@@ -2054,6 +2054,39 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
+    case "REMOVE_COMPANY_FILES_UPLOADING_BAR": {
+      return {
+        ...state,
+        companyFiles: {
+          ...state.companyFiles,
+          items: Object.values(state.companyFiles.items)
+            .filter((f) => !action.data.fileIds.some((id) => id === f.id))
+            .reduce((acc, file) => {
+              acc[file.id] = file;
+              return acc;
+            }, {}),
+        },
+      };
+    }
+    case "REMOVE_WORKSPACE_FILES_UPLOADING_BAR": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: Object.values(state.workspaceFiles[action.data.topic_id].files)
+                .filter((f) => !action.data.fileIds.some((id) => id === f.id))
+                .reduce((acc, file) => {
+                  acc[file.id] = file;
+                  return acc;
+                }, {}),
+            },
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

@@ -58,6 +58,8 @@ import {
   uploadCompanyFilesReducer,
   uploadFilesReducer,
   uploadWorkspaceFiles,
+  removeCompanyFilesUploadingBar,
+  removeWorkspaceFilesUploadingBar,
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
@@ -155,8 +157,16 @@ const useFileActions = (params = null) => {
     dispatch(postCompanyUploadFiles(payload, callback));
   };
 
-  const uploadCompanyBulkFiles = (payload, callback) => {
-    dispatch(postCompanyUploadBulkFiles(payload, callback));
+  const deleteCompanyFilesUpload = (payload) => {
+    dispatch(removeCompanyFilesUploadingBar(payload));
+  };
+
+  const uploadCompanyBulkFiles = (payload, ids) => {
+    dispatch(
+      postCompanyUploadBulkFiles(payload, (err, res) => {
+        deleteCompanyFilesUpload({ fileIds: ids });
+      })
+    );
   };
 
   const viewCompanyFile = (payload, callback) => {
@@ -975,6 +985,10 @@ const useFileActions = (params = null) => {
     dispatch(incomingFileThumbnailData(payload, callback));
   };
 
+  const deleteWorkspaceFilesUpload = (payload) => {
+    dispatch(removeWorkspaceFilesUploadingBar(payload));
+  };
+
   return {
     addGoogleDriveFile,
     clearSearch,
@@ -1041,6 +1055,8 @@ const useFileActions = (params = null) => {
     setGifSrc,
     setFileSrc,
     setFileThumbnailSrc,
+    deleteCompanyFilesUpload,
+    deleteWorkspaceFilesUpload,
   };
 };
 

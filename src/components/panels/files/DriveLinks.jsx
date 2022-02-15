@@ -7,7 +7,7 @@ const DriveLinks = (props) => {
   const { disableOptions } = props;
   const params = useParams();
   const driveLinks = useSelector((state) => (params && params.workspaceId && state.files.workspaceFiles[params.workspaceId] ? state.files.workspaceFiles[params.workspaceId].driveLinks : state.files.companyFiles.driveLinks));
-  console.log(driveLinks);
+
   if (driveLinks) {
     return Object.values(driveLinks)
       .filter((dl) => {
