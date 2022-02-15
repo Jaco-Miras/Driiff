@@ -630,6 +630,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
           //userIds={mentionedUserIds}
           quillMentions={quillMentions}
           postRecipients={post.recipients}
+          postAuthor={post.author}
           workspaceMembers={[]}
           type="post"
         />
