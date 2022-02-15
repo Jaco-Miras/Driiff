@@ -7,8 +7,11 @@ import { updateThemeColors } from "../../../redux/actions/settingsActions";
 import { putLoginSettings } from "../../../redux/actions/adminActions";
 import { BlockPicker } from "react-color";
 import { CustomInput } from "reactstrap";
+import Select from "react-select";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import colorWheel from "../../../assets/img/svgs/RGB_color_wheel_12.svg";
 import { putNotificationSettings, getNotificationSettings } from "../../../redux/actions/adminActions";
+import Flag from "../../common/Flag";
 
 const Wrapper = styled.div`
   display: flex;
@@ -97,6 +100,15 @@ const ColorWheelIcon = styled.img`
   cursor: pointer;
 `;
 
+const LabelInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  label {
+    margin: 0 !important;
+  }
+  margin-bottom: 0.5rem;
+`;
+
 function StylingSettingsBody() {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
@@ -161,13 +173,48 @@ function StylingSettingsBody() {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const [notifications, setNotifications] = useState(notificationSettings);
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(null);
+  //const [selectedLogin, setSelectedLogin] = useState(null);
+  const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { dark_mode } = generalSettings;
+
+  const languageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+  ];
+
+  // const loginOptions = [
+  //   {
+  //     value: "mobile",
+  //     label: "Mobile",
+  //   },
+  //   {
+  //     value: "email",
+  //     label: "Email",
+  //   },
+  // ];
 
   useEffect(() => {
     if (!notificationsLoaded) {
       dispatch(
         getNotificationSettings({}, (err, res) => {
           if (err) return;
-          console.log(res.data);
           setNotifications(res.data);
         })
       );
@@ -348,6 +395,10 @@ function StylingSettingsBody() {
     );
   };
 
+  const handleSelectLanguage = (e) => {
+    setSelectedLanguage(e);
+  };
+
   return (
     <div>
       <Wrapper theme={theme}>
@@ -393,6 +444,13 @@ function StylingSettingsBody() {
           <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
             Upload background
           </button>
+        </div>
+        <h4 className="mt-3">Language</h4>
+        <div>
+          <LabelInfoWrapper>
+            <label>Default language</label>
+          </LabelInfoWrapper>
+          <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} value={selectedLanguage} onChange={handleSelectLanguage} options={languageOptions} />
         </div>
         <h4 className="mt-3">{dictionary.styling}</h4>
         {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
