@@ -621,6 +621,7 @@ const PostInput = forwardRef((props, ref) => {
           //userIds={mentionedUserIds}
           quillMentions={quillMentions}
           postRecipients={post.recipients}
+          postAuthor={post.author}
           workspaceMembers={workspaceMembers}
           type="post"
         />
