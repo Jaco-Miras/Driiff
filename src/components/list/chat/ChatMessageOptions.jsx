@@ -111,7 +111,7 @@ const ChatMessageOptions = (props) => {
     if (!redirecting) {
       const callback = (data) => {
         if (data && data.id) {
-          chatMessageActions.setQuote({ ...replyData, channel_id: data.id });
+          chatMessageActions.setQuote({ ...replyData, channel_id: teamChannelId.id });
           //need history push
           let pathname = match.url;
           if (match.path === "/chat/:code") {

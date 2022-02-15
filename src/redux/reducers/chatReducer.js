@@ -1063,7 +1063,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         chatQuotes: {
           ...state.chatQuotes,
-          [state.selectedChannel.id]: { ...action.data, channel_id: state.selectedChannel.id },
+          //[state.selectedChannel.id]: { ...action.data, channel_id: state.selectedChannel.id },
+          [action.data.channel_id]: action.data,
         },
       };
     }
