@@ -183,6 +183,7 @@ export function putCompanyPosts(payload) {
  * @param {number} payload.post_id
  * @param {number} payload.personalized_for_id
  * @param {number} payload.parent_id
+ * @param {number} payload.channel_id
  * @param {number} payload.reference_id
  * @returns {Promise<*>}
  */
@@ -383,7 +384,7 @@ export function fetchTagCounter(payload) {
  * @returns {Promise<*>}
  */
 export function fetchPosts(payload) {
-  const { skip = 0, limit = 25 } = payload;
+  const { skip = 0, limit = 15 } = payload;
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${skip}&limit=${limit}`;
   if (payload.search !== undefined) {
     url += `&search=${payload.search}`;

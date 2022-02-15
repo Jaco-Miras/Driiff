@@ -6,6 +6,7 @@ const INITIAL_STATE = {
   user: null,
   i18nLoaded: false,
   recipients: [],
+  recipientsLoaded: false,
   isLoading: false,
   isBrowserActive: true,
   modals: {},
@@ -114,6 +115,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_ALL_RECIPIENTS_SUCCESS": {
       return {
         ...state,
+        recipientsLoaded: true,
         recipients: action.data.recipients.filter((r) => {
           if (typeof r.name === "string" || r.name instanceof String) {
             return true;
@@ -294,6 +296,7 @@ export default (state = INITIAL_STATE, action) => {
         todos: {
           ...state.todos,
           is_snooze: action.data.is_snooze,
+          items: items,
           show_notification: true,
           count: action.data.reduce((res, c) => {
             res[c.status.toLowerCase()] = c.count;
@@ -502,6 +505,7 @@ export default (state = INITIAL_STATE, action) => {
         }
       }
       items[action.data.id].is_snooze = false;
+      //items[action.data.id].snooze_time = getCurrentTimestamp();
       return {
         ...state,
         todos: {
@@ -522,7 +526,6 @@ export default (state = INITIAL_STATE, action) => {
         //   count[action.data.status.toLowerCase()] += 1;
         //   count[items[action.data.id].status.toLowerCase()] -= 1;
         // }
-
         items[action.data.id] = {
           ...items[action.data.id],
           is_snooze: false,
@@ -779,6 +782,18 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: action.data,
+      };
+    }
+    case "CLEAR_ZOOM_DATA": {
+      return {
+        ...state,
+        zoomData: null,
+      };
+    }
     case "REMOVE_REMINDER_NOTIFICATION": {
       return {
         ...state,
@@ -793,15 +808,6 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
         },
-      };
-    }
-    case "CREATE_QUICK_LINKS_SUCCESS":
-    case "PUT_QUICK_LINKS_SUCCESS": {
-      const links = [...state.links, ...action.data.quick_links];
-      let uniqLinks = [...new Map(links.map((item) => [item["id"], item])).values()];
-      return {
-        ...state,
-        links: uniqLinks,
       };
     }
     case "GET_ALL_SNOOZED_NOTIFICATION_SUCCESS": {
@@ -879,18 +885,6 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
         },
-      };
-    }
-    case "INCOMING_ZOOM_DATA": {
-      return {
-        ...state,
-        zoomData: action.data,
-      };
-    }
-    case "CLEAR_ZOOM_DATA": {
-      return {
-        ...state,
-        zoomData: null,
       };
     }
     case "SHOW_NEW_DRIFF_BAR": {

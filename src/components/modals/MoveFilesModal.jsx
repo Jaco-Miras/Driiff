@@ -8,7 +8,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
-import { useSettings } from "../hooks";
+import { useSettings, useTranslationActions } from "../hooks";
 
 const Wrapper = styled(Modal)`
   .react-select__control,
@@ -45,6 +45,11 @@ const MoveFilesModal = (props) => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    rootFolder: _t("OPTIONS.ROOT_FOLDER", "Root folder"),
+  };
 
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
   const [selectedFolder, setSelectedFolder] = useState(null);
@@ -54,7 +59,7 @@ const MoveFilesModal = (props) => {
     .filter((f) => {
       if (typeof f.payload !== "undefined") return false;
 
-      if (folder_id && f.id === folder_id) return false;
+      // if (folder_id && f.id === folder_id) return false;
 
       return !f.is_archived;
     })
@@ -63,9 +68,18 @@ const MoveFilesModal = (props) => {
         ...f,
         id: f.id,
         label: f.search,
+        value: f.id,
       };
     })
     .sort((a, b) => a.search.localeCompare(b.search));
+
+  options = [{ label: dictionary.rootFolder, value: null }, ...options].filter((f) => {
+    if (folder_id) {
+      return f.value !== parseInt(folder_id);
+    } else {
+      return f.value !== null;
+    }
+  });
 
   const toggle = () => {
     dispatch(clearModal({ type: type }));
@@ -107,7 +121,7 @@ const MoveFilesModal = (props) => {
           name: file.name,
           link: file.link,
           topic_id: topic_id,
-          folder_id: selectedFolder.id,
+          folder_id: selectedFolder.value,
         };
         dispatch(putDriveLink(payload, cb));
       } else {
@@ -116,7 +130,7 @@ const MoveFilesModal = (props) => {
             {
               file_id: file.id,
               topic_id: topic_id,
-              folder_id: selectedFolder.id,
+              folder_id: selectedFolder.value,
             },
             cb
           )

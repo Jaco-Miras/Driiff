@@ -39,8 +39,23 @@ const ChatMessageOptions = (props) => {
     dispatch(addToModals(payload));
   };
 
+  function convertFavis(content) {
+    return content.replace(/(<a [^>]*(href="([^>^\"]*)")[^>]*>)((?:.(?!\<\/a\>))*.)(<\/a>)/g, function (fullText, beforeLink, anchorContent, href, lnkUrl, linkText, endAnchor) {
+      return href;
+    });
+  }
+
   const handleEditReply = () => {
-    chatMessageActions.setEdit(replyData);
+    let newReplyData = replyData;
+    let body = newReplyData.body;
+    var div = document.createElement("div");
+    div.innerHTML = body;
+    var elements = div.getElementsByClassName("fancied");
+    while (elements[0]) elements[0].parentNode.removeChild(elements[0]);
+    var repl = div.innerHTML;
+
+    newReplyData.body = convertFavis(repl);
+    chatMessageActions.setEdit(newReplyData);
   };
 
   const handleQuoteReply = () => {
@@ -64,6 +79,17 @@ const ChatMessageOptions = (props) => {
 
   const handleEditHuddle = () => {
     chatMessageActions.setHuddleAnswers({ id: replyData.id, channel_id: replyData.channel_id, huddle_log: replyData.huddle_log });
+  };
+
+  const handleUnskip = () => {
+    // const huddleStorage = localStorage.getItem("huddle");
+    // //setCurrentTime(currentDate.getTime());
+    // if (huddleStorage) {
+    //   const { day, channels } = JSON.parse(huddleStorage);
+    //   localStorage.setItem("huddle", JSON.stringify({ channels: channels.filter((id) => id !== replyData.channel_id), day: day }));
+    //   chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
+    // }
+    chatMessageActions.addSkip({ channel_id: replyData.channel_id, id: replyData.id });
   };
 
   const handleReply = () => {
@@ -166,10 +192,16 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && <div onClick={handleCopyLink}>{dictionary.copyMessageLink}</div>}
       {!replyData.hasOwnProperty("huddle_log") && !hasDeletedFile && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={handleImportant}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
-      {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>{dictionary.editHuddle}</div>}
-      {replyData.user && replyData.user.type !== "BOT" && loggedUser.type === "internal" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code !== "huddle_bot" && isInternalUser && (
-        <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
-      )}
+      {replyData.user && replyData.user.code && replyData.user.code.includes("huddle_bot") && replyData.body.includes("<div><p>Your Unpublished") && <div onClick={handleEditHuddle}>{dictionary.editHuddle}</div>}
+      {replyData.body.startsWith("HUDDLE_SKIP::") && <div onClick={handleUnskip}>Unskip</div>}
+      {replyData.user &&
+        replyData.user.type !== "BOT" &&
+        loggedUser.type === "internal" &&
+        replyData.user.id !== loggedUser.id &&
+        selectedChannel.type !== "DIRECT" &&
+        replyData.user.code &&
+        replyData.user.code !== "huddle_bot" &&
+        isInternalUser && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
       {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>{dictionary.discussOnTeamChat}</div>}
       {showDownloadAll && <div onClick={handleDownloadAll}>{dictionary.downloadAll}</div>}
     </MoreOptions>

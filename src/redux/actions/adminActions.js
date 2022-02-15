@@ -26,9 +26,9 @@ import {
   putNotificationSettings as putNotificationSettingsService,
   getSecuritySettings as getSecuritySettingsService,
   putSecuritySettings as putSecuritySettingsService,
-  sendRequestPassword as sendRequestPasswordService,
   uploadDashboardBg as uploadDashboardBgService,
   putCompanyDescription as putCompanyDescriptionService,
+  sendRequestPassword as sendRequestPasswordService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {

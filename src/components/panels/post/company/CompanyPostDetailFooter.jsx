@@ -51,6 +51,10 @@ const ChatInputContainer = styled.div`
   .feather-smile {
     border-radius: 4px;
     cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    transition: color 0.15s ease-in-out;
+    color: #cacaca;
     &.active {
       color: ${(props) => props.theme.colors.primary};
     }
@@ -141,6 +145,11 @@ const NoReply = styled.div`
   .request-approval {
     color: ${(props) => props.theme.colors.primary};
   }
+  .alert-primary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const ClosedLabel = styled.div`
@@ -202,13 +211,19 @@ const OverviewNextLink = styled.span`
 
 const CompanyPostDetailFooter = (props) => {
   const { className = "", onShowFileDialog, dropAction, post, posts, filter, parentId = null, commentActions, userMention = null, handleClearUserMention = null, commentId = null, innerRef = null, mainInput } = props;
-
+  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
   const postActions = usePostActions();
   const history = useHistory();
   const ref = {
     picker: useRef(),
     postInput: useRef(null),
   };
+
+  const user = useSelector((state) => state.session.user);
+  const users = useSelector((state) => state.users.users);
+  const editPostComment = useSelector((state) => state.posts.editPostComment);
+  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
+
   const rewardRef = useRef();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -221,15 +236,12 @@ const CompanyPostDetailFooter = (props) => {
   const [showApprover, setShowApprover] = useState(false);
   const [approvers, setApprovers] = useState([]);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const [disableButtons, setDisableButtons] = useState(hasExternalWorkspace && post.shared_with_client && user.type === "internal" ? true : false);
+  const [commentType, setCommentType] = useState(!post.shared_with_client ? "internal" : null);
   const [imageLoading, setImageLoading] = useState(null);
 
-  const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.users.users);
-  const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
-
   const handleSend = () => {
-    setSent(true);
+    if (!disableButtons) setSent(true);
   };
 
   const handleClearSent = () => {
@@ -237,7 +249,7 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const handleShowEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
+    if (!disableButtons) setShowEmojiPicker(!showEmojiPicker);
   };
 
   const onSelectEmoji = (e) => {
@@ -300,18 +312,20 @@ const CompanyPostDetailFooter = (props) => {
     disagree: _t("POST.DISAGREE", "Disagree"),
     overview: _t("POST.OVERVIEW", "Overview"),
     archivePostOpenNext: _t("POST.ARCHIVE_POST_OPEN_NEXT", "Archive Post & open next"),
+    send: _t("TOOLTIP.SEND", "Send"),
+    closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
     userClosedPost: _t("POST.USER_CLOSED_POST", "::username:: has closed this message", { username: post && typeof post.post_close === "object" && post.post_close.initiator ? post.post_close.initiator.name : "" }),
   };
 
   const handleQuillImage = () => {
-    if (ref.postInput) {
+    if (ref.postInput && !disableButtons) {
       const imgBtn = ref.postInput.current.parentNode.querySelector("button.ql-image");
       if (imgBtn) imgBtn.click();
     }
   };
 
   const toggleApprover = () => {
-    setShowApprover((prevState) => !prevState);
+    if (!disableButtons) setShowApprover((prevState) => !prevState);
   };
 
   // const privateWsOnly = post.recipients.filter((r) => {
@@ -404,6 +418,12 @@ const CompanyPostDetailFooter = (props) => {
             };
           })
         );
+      }
+      setDisableButtons(false);
+      if (!editPostComment.shared_with_client) {
+        setCommentType("internal");
+      } else {
+        setCommentType("external");
       }
     }
   }, [editPostComment]);
@@ -570,6 +590,12 @@ const CompanyPostDetailFooter = (props) => {
     postActions.close(post);
   };
 
+  const handleCommentType = (type) => {
+    if (type) setDisableButtons(false);
+    else setDisableButtons(true);
+    setCommentType(type);
+  };
+
   return (
     <Wrapper className={`company-post-detail-footer card-body ${className}`}>
       {
@@ -618,7 +644,7 @@ const CompanyPostDetailFooter = (props) => {
       )}
       {!post.is_close && !post.is_read_only && (
         <Dflex className="d-flex align-items-end" backgroundSend={backgroundSend} cursor={cursor} fillSend={fillSend}>
-          <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer">
+          <ChatInputContainer ref={innerRef} className="flex-grow-1 chat-input-footer" disableButtons={disableButtons}>
             <CompanyPostInput
               handleClearSent={handleClearSent}
               sent={sent}
@@ -633,7 +659,6 @@ const CompanyPostDetailFooter = (props) => {
               selectedEmoji={selectedEmoji}
               onClearEmoji={onClearEmoji}
               dropAction={dropAction}
-              members={post.users_responsible}
               onActive={onActive}
               onClosePicker={onClosePicker}
               ref={ref.postInput}
@@ -643,6 +668,10 @@ const CompanyPostDetailFooter = (props) => {
               onSubmitCallback={requestForChangeCallback}
               isApprover={(approving.change && hasPendingAproval) || (changeRequestedComment && commentId && commentId === changeRequestedComment.id)}
               mainInput={mainInput}
+              //readOnly={disableButtons}
+              readOnly={false}
+              onToggleCommentType={handleCommentType}
+              commentType={commentType}
               imageLoading={imageLoading}
               setImageLoading={setImageLoading}
             />
@@ -655,9 +684,13 @@ const CompanyPostDetailFooter = (props) => {
               toggleApprover={toggleApprover}
               editPostComment={editPostComment}
               mainInput={mainInput}
+              //disableButtons={disableButtons}
+              disableButtons={false}
+              commentType={commentType}
+              dictionary={dictionary}
             />
           </ChatInputContainer>
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.send}>
             <IconButton onClick={handleSend} icon="send" />
           </Tooltip>
 

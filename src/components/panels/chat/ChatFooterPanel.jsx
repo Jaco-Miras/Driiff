@@ -18,6 +18,7 @@ const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 const Wrapper = styled.div`
   position: relative;
   z-index: 3;
+  padding-top: 0 !important;
   .feather-send {
     border: 1px solid #e1e1e1;
     height: 100%;
@@ -246,6 +247,10 @@ const ChatFooterPanel = (props) => {
     yes: _t("YES", "Yes"),
     no: _t("NO", "No"),
     googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
+    send: _t("TOOLTIP.SEND", "Send"),
+    attachFiles: _t("TOOLTIP.ATTACH_FILES", "Attach files"),
+    closeEdit: _t("TOOLTIP.CLOSE_EDIT", "Close edit"),
+    errorSendingChat: _t("CHAT.ERROR_SENDING", "Error sending chat"),
     zoomMeeting: _t("CONFIRMATION.ZOOM_MEETING", "Zoom meeting"),
     zoomMeetingConfirmation: _t("CONFIRMATION.ZOOM_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Do you want to start this meeting?", {
       number: selectedChannel ? selectedChannel.members.length : "",
@@ -419,6 +424,7 @@ const ChatFooterPanel = (props) => {
                     selectedEmoji={selectedEmoji}
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
+                    dictionary={dictionary}
                     //test
                   />
                   <ChatInputButtons
@@ -429,11 +435,13 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
+                    dictionary={dictionary}
+                    //startingZoom={startingZoom}
                   />
                 </Dflex>
               </ChatInputContainer>
 
-              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.send}>
                 <SvgIconFeather onClick={handleSend} icon="send" />
               </Tooltip>
             </React.Fragment>

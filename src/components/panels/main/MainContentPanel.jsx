@@ -49,7 +49,6 @@ const MainContentPanel = (props) => {
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
-          {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
           {(isOwner || isAdmin) && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
           <Redirect
             from="*"

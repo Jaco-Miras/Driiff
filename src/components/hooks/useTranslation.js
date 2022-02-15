@@ -29,10 +29,10 @@ export const useTranslation = () => {
   const { REACT_APP_dictionary_file } = process.env;
   const dictionaryAPIUrl = registeredDriff ? REACT_APP_dictionary_file.replace("{{driffName}}", registeredDriff) : REACT_APP_dictionary_file.replace("{{driffName}}.", "");
 
-  const browserLang = {
-    main: (navigator.language || navigator.userLanguage).split("-")[0],
-    exact: navigator.language || navigator.userLanguage,
-  };
+  // const browserLang = {
+  //   main: (navigator.language || navigator.userLanguage).split("-")[0],
+  //   exact: navigator.language || navigator.userLanguage,
+  // };
 
   useEffect(() => {
     if (init || !session.checked || (session.authenticated && language === null)) return;
@@ -60,7 +60,14 @@ export const useTranslation = () => {
     dispatch(
       getTranslationObject(
         {
-          url: language && driffSettings.settings.custom_translation ? `${dictionaryAPIUrl}/${language}` : language ? `https://driff.io/api/lang/${language}` : `https://driff.io/api/lang/${browserLang.main}`,
+          url:
+            language && driffSettings.settings.custom_translation
+              ? `${dictionaryAPIUrl}/${language}`
+              : language
+              ? `https://driff.io/api/lang/${language}`
+              : driffSettings.companyLanguage
+              ? `https://driff.io/api/lang/${driffSettings.companyLanguage}`
+              : "https://driff.io/api/lang/nl",
         },
         (err, res) => {
           if (err) {

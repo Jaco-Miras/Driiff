@@ -38,14 +38,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "READ_ALL_NOTIFICATION_REDUCER": {
-      // let updatedNotifications = { ...state.notifications };
-      // Object.values(updatedNotifications).forEach((n) => {
-      //   updatedNotifications[n.id].is_read = 1;
-      //   if (updatedNotifications[n.data.id].type === "POST_MENTION") {
-      //     updatedNotifications[n.id].is_snooze = false;
-      //     updatedNotifications[n.id].snooze_time = getCurrentTimestamp();
-      //   }
-      // });
       return {
         ...state,
         notifications: Object.values(state.notifications).reduce((acc, notif) => {
@@ -483,6 +475,26 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "NOTIFICATION_SNOOZE_ALL": {
+      let notifications = { ...state.notifications };
+      Object.values(notifications).forEach((n) => {
+        notifications[n.id].is_snooze = action.data.is_snooze;
+        notifications[n.id].snooze_time = action.data.snooze_time;
+      });
+      return {
+        ...state,
+        notifications: notifications,
+      };
+    }
+    case "NOTIFICATION_SNOOZE": {
+      let notifications = { ...state.notifications };
+      notifications[action.data.id].is_snooze = action.data.is_snooze;
+      notifications[action.data.id].snooze_time = action.data.snooze_time;
+      return {
+        ...state,
+        notifications: notifications,
+      };
+    }
     case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
@@ -502,26 +514,6 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
-      };
-    }
-    case "NOTIFICATION_SNOOZE_ALL": {
-      let notifications = { ...state.notifications };
-      Object.values(notifications).forEach((n) => {
-        notifications[n.id].is_snooze = action.data.is_snooze;
-        notifications[n.id].snooze_time = action.data.snooze_time;
-      });
-      return {
-        ...state,
-        notifications: notifications,
-      };
-    }
-    case "NOTIFICATION_SNOOZE": {
-      let notifications = { ...state.notifications };
-      notifications[action.data.id].is_snooze = action.data.is_snooze;
-      notifications[action.data.id].snooze_time = action.data.snooze_time;
-      return {
-        ...state,
-        notifications: notifications,
       };
     }
     case "INCOMING_UPDATED_POST": {

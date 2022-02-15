@@ -4,10 +4,12 @@ import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import {
   addQuote,
+  addSkipId,
   deleteChatMessage,
   getChatMessages,
   getChatStar,
   postChatMessage,
+  postChatMessageTranslate,
   postChatReaction,
   putChatMessage,
   putChatStar,
@@ -17,10 +19,9 @@ import {
   setLastChatVisibility,
   setEditHuddleAnswers,
   setTranslatedBody,
+  setChannelTranslateState,
   resetTranslatedBody,
   setFancyLink,
-  postChatMessageTranslate,
-  setChannelTranslateState,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
 import useChannelActions from "./useChannelActions";
@@ -342,13 +343,16 @@ const useChatMessageActions = () => {
     dispatch(setEditHuddleAnswers(payload));
   };
 
+  const addSkip = (payload) => {
+    dispatch(addSkipId(payload));
+  };
   /**
    * @param {object} payload
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const saveTranslationBody = (payload) => {
-    dispatch(setTranslatedBody(payload));
+  const saveChannelTranslateState = (payload) => {
+    dispatch(setChannelTranslateState(payload));
   };
 
   /**
@@ -356,10 +360,6 @@ const useChatMessageActions = () => {
    * @parm number payload.message_id chat.id
    * @param {function} [callback]
    */
-  const saveFancyContent = (payload) => {
-    dispatch(setFancyLink(payload));
-  };
-
   const setTranslationBody = (payload) => {
     dispatch(setTranslatedBody(payload));
   };
@@ -373,17 +373,12 @@ const useChatMessageActions = () => {
     dispatch(resetTranslatedBody(payload));
   };
 
-  const saveTranslation = (payload) => {
-    dispatch(postChatMessageTranslate(payload));
+  const saveFancyContent = (payload) => {
+    dispatch(setFancyLink(payload));
   };
 
-  /**
-   * @param {object} payload
-   * @parm number payload.message_id chat.id
-   * @param {function} [callback]
-   */
-  const saveChannelTranslateState = (payload) => {
-    dispatch(setChannelTranslateState(payload));
+  const saveTranslation = (payload) => {
+    dispatch(postChatMessageTranslate(payload));
   };
 
   return {
@@ -405,13 +400,13 @@ const useChatMessageActions = () => {
     getStars,
     setStar,
     setHuddleAnswers,
-    saveTranslationBody,
+    addSkip,
+    resetTranslationBody,
+    saveChannelTranslateState,
     viewFiles,
     saveFancyContent,
     setTranslationBody,
-    resetTranslationBody,
     saveTranslation,
-    saveChannelTranslateState,
   };
 };
 

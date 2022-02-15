@@ -11,6 +11,7 @@ import {
   updateHuddleAnswer,
   clearEditHuddle,
   putUnpublishedAnswers,
+  postSkipHuddle,
   snoozeHuddle,
   snoozeSkipHuddle,
   snoozeHuddleAll,
@@ -64,6 +65,10 @@ const useHuddleChatbot = () => {
     dispatch(putUnpublishedAnswers(payload, callback));
   };
 
+  const skipHuddle = (payload, callback = () => {}) => {
+    dispatch(postSkipHuddle(payload, callback));
+  };
+
   const snooze = (payload) => {
     dispatch(snoozeHuddle(payload));
   };
@@ -92,6 +97,7 @@ const useHuddleChatbot = () => {
     updateAnswer,
     clearHuddle,
     updateUnpublishedAnswers,
+    skipHuddle,
     snooze,
     snoozeSkip,
     snoozeAll,

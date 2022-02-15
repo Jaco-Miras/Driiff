@@ -5,7 +5,6 @@ import styled from "styled-components";
 import { clearModal, createReleaseAnnouncement, updateReleaseAnnouncement, deleteReleaseAnnouncement, saveDraft, deleteDraft, updateDraft, incomingDeletedAnnouncement } from "../../redux/actions/globalActions";
 import { useQuillModules } from "../hooks";
 import { ModalHeaderSection } from "./index";
-// import quillHelper from "../../helpers/quillHelper";
 import { FormInput, QuillEditor, CheckBox } from "../forms";
 
 const Wrapper = styled(Modal)`

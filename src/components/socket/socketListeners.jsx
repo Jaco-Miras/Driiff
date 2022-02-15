@@ -34,6 +34,7 @@ import {
   unreadChannelReducer,
   updateChannelMembersTitle,
   clearUnpublishedAnswer,
+  incomingHuddleSkip,
   transferChannelMessages,
   removeWorkspaceChannel,
   removeWorkspaceChannelMembers,
@@ -186,7 +187,20 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, updateSecuritySettings, incomingCompanyDescription, incomingCompanyDashboardBackground } from "../../redux/actions/adminActions";
+import {
+  incomingWIP,
+  incomingWIPSubject,
+  incomingWIPComment,
+  incomingWIPFileComment,
+  incomingReplacedWIPFile,
+  incomingNewFileVersion,
+  incomingUpdatedWIPFileComment,
+  incomingClosedFileComments,
+  incomingApprovedFileVersion,
+  incomingUpdatedWIPComment,
+  incomingProposalClap,
+} from "../../redux/actions/wipActions";
+import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, incomingCompanyDescription, incomingCompanyDashboardBackground, updateSecuritySettings } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -201,10 +215,6 @@ class SocketListeners extends Component {
     this.publishChannelId = React.createRef(null);
   }
 
-  refetchPosts = () => {
-    this.props.refetchPosts({ skip: 0, limit: 10 });
-  };
-
   refetchPostComments = () => {
     Object.keys(this.props.postComments).forEach((post_id) => {
       this.props.refetchPostComments({ post_id: post_id });
@@ -212,7 +222,15 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+    this.props.getUnreadNotificationCounterEntries({}, (err, res) => {
+      if (err) return;
+      if (res) {
+        const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
+        if (generalPost && generalPost.count > 0) {
+          this.props.refetchPosts({ skip: 0, limit: generalPost.count });
+        }
+      }
+    });
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
@@ -260,7 +278,7 @@ class SocketListeners extends Component {
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
       this.refetchOtherMessages();
-      this.refetchPosts();
+      //this.refetchPosts();
       this.refetchPostComments();
       this.props.getFavoriteWorkspaceCounters();
     });
@@ -274,6 +292,53 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".proposal-version-upload-new-notification", (e) => {
+        console.log(e, "new version");
+        this.props.incomingNewFileVersion(e.data);
+      })
+      .listen(".proposal-version-replace-notification", (e) => {
+        console.log(e, "replace image");
+        this.props.incomingReplacedWIPFile(e.data);
+      })
+      .listen(".proposal-version-approved-notification", (e) => {
+        console.log(e, "approve file");
+        this.props.incomingApprovedFileVersion(e);
+      })
+      .listen(".proposal-version-comment-closed-notification", (e) => {
+        console.log(e, "closed file comment");
+        this.props.incomingClosedFileComments(e);
+      })
+      .listen(".proposal-version-comment-notification", (e) => {
+        this.props.incomingWIPFileComment(e);
+      })
+      .listen(".proposal-version-comment-updated", (e) => {
+        console.log(e, "updated file comment");
+        this.props.incomingUpdatedWIPFileComment(e);
+      })
+      .listen(".proposal-comment-notification", (e) => {
+        this.props.incomingWIPComment(e);
+      })
+      .listen(".proposal-comment-updated", (e) => {
+        this.props.incomingUpdatedWIPComment(e);
+      })
+      .listen(".proposal-notification", (e) => {
+        console.log(e);
+        switch (e.SOCKET_TYPE) {
+          case "PROPOSAL_CLAP_TOGGLE": {
+            this.props.incomingProposalClap(e);
+            break;
+          }
+          case "PROPOSAL_CREATED": {
+            this.props.incomingWIP({ ...e, clap_user_ids: [] });
+            break;
+          }
+          default:
+            return null;
+        }
+      })
+      .listen(".proposal-subject-notification", (e) => {
+        this.props.incomingWIPSubject({ ...e, clap_user_ids: [] });
+      })
       .listen(".create-meeting-notification", (e) => {
         if (this.props.user.id !== e.host.id) {
           const meetingSDKELement = document.getElementById("meetingSDKElement");
@@ -415,6 +480,27 @@ class SocketListeners extends Component {
               ...e.message,
               huddle_log: e.huddle_log,
             });
+            // const huddleAnswered = localStorage.getItem("huddle");
+            // if (huddleAnswered) {
+            //   const { channels, day } = JSON.parse(huddleAnswered);
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            // } else {
+            //   const currentDate = new Date();
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            // }
+            break;
+          }
+          case "HUDDLE_SKIP": {
+            this.props.incomingHuddleSkip(e);
+            // const huddleAnswered = localStorage.getItem("huddle");
+
+            // if (huddleAnswered) {
+            //   const { channels, day } = JSON.parse(huddleAnswered);
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, e.channel.id], day: day }));
+            // } else {
+            //   const currentDate = new Date();
+            //   localStorage.setItem("huddle", JSON.stringify({ channels: [e.channel.id], day: currentDate.getDay() }));
+            // }
             break;
           }
           default:
@@ -874,7 +960,6 @@ class SocketListeners extends Component {
       .listen(".post-comment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
-            this.props.incomingComment(e);
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -888,7 +973,6 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
-              this.props.updateUnreadCounter({ general_post: 1 });
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
@@ -900,6 +984,13 @@ class SocketListeners extends Component {
                   };
                   this.props.incomingPost(post);
                 });
+              } else {
+                const post = this.props.posts[e.post_id];
+                if (post) {
+                  if (post.unread_count === 0 || post.is_unread === 0) {
+                    this.props.updateUnreadCounter({ general_post: 1 });
+                  }
+                }
               }
               if (isSafari) {
                 if (this.props.notificationsOn) {
@@ -931,6 +1022,7 @@ class SocketListeners extends Component {
                 });
               });
             }
+            this.props.incomingComment(e);
             break;
           }
           case "POST_COMMENT_DELETE": {
@@ -2392,6 +2484,7 @@ function mapDispatchToProps(dispatch) {
     incomingHuddleAnswers: bindActionCreators(incomingHuddleAnswers, dispatch),
     clearUnpublishedAnswer: bindActionCreators(clearUnpublishedAnswer, dispatch),
     incomingClosePost: bindActionCreators(incomingClosePost, dispatch),
+    incomingHuddleSkip: bindActionCreators(incomingHuddleSkip, dispatch),
     incomingOnlineUsers: bindActionCreators(incomingOnlineUsers, dispatch),
     incomingUpdatedAnnouncement: bindActionCreators(incomingUpdatedAnnouncement, dispatch),
     incomingCreatedAnnouncement: bindActionCreators(incomingCreatedAnnouncement, dispatch),
@@ -2431,13 +2524,24 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedTeam: bindActionCreators(incomingDeletedTeam, dispatch),
     incomingTeamMember: bindActionCreators(incomingTeamMember, dispatch),
     incomingRemovedTeamMember: bindActionCreators(incomingRemovedTeamMember, dispatch),
+    getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
     removeWorkspaceChannel: bindActionCreators(removeWorkspaceChannel, dispatch),
     removeWorkspaceChannelMembers: bindActionCreators(removeWorkspaceChannelMembers, dispatch),
-    getAllWorkspaceFolders: bindActionCreators(getAllWorkspaceFolders, dispatch),
     incomingWorkpaceNotificationStatus: bindActionCreators(incomingWorkpaceNotificationStatus, dispatch),
     incomingZoomCreate: bindActionCreators(incomingZoomCreate, dispatch),
     incomingZoomUserLeft: bindActionCreators(incomingZoomUserLeft, dispatch),
     incomingZoomEnded: bindActionCreators(incomingZoomEnded, dispatch),
+    incomingWIP: bindActionCreators(incomingWIP, dispatch),
+    incomingWIPSubject: bindActionCreators(incomingWIPSubject, dispatch),
+    incomingWIPComment: bindActionCreators(incomingWIPComment, dispatch),
+    incomingWIPFileComment: bindActionCreators(incomingWIPFileComment, dispatch),
+    incomingReplacedWIPFile: bindActionCreators(incomingReplacedWIPFile, dispatch),
+    incomingNewFileVersion: bindActionCreators(incomingNewFileVersion, dispatch),
+    incomingUpdatedWIPFileComment: bindActionCreators(incomingUpdatedWIPFileComment, dispatch),
+    incomingClosedFileComments: bindActionCreators(incomingClosedFileComments, dispatch),
+    incomingApprovedFileVersion: bindActionCreators(incomingApprovedFileVersion, dispatch),
+    incomingUpdatedWIPComment: bindActionCreators(incomingUpdatedWIPComment, dispatch),
+    incomingProposalClap: bindActionCreators(incomingProposalClap, dispatch),
     incomingPostAccess: bindActionCreators(incomingPostAccess, dispatch),
     getPostAccess: bindActionCreators(getPostAccess, dispatch),
     updateUnreadCounter: bindActionCreators(updateUnreadCounter, dispatch),

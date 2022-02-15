@@ -93,7 +93,7 @@ const RadioInput = forwardRef((props, ref) => {
 
   return (
     <RadioInputContainer ref={ref} className={`component-radio-input ${className}`} onClick={(e) => handleOnClick(e)}>
-      {readOnly ? <input readOnly checked={checked} name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} /> : <input name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} />}
+      {readOnly ? <input readOnly checked={checked} name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} /> : <input checked={checked} name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} />}
       <span className={"checkmark"} />
       {children}
     </RadioInputContainer>

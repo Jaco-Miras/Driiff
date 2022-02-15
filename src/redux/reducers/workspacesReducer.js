@@ -7,6 +7,7 @@ const INITIAL_STATE = {
   showAboutModal: false,
   flipper: true,
   user: {},
+  allFoldersLoaded: false,
   allFolders: {},
   workspaces: {},
   activeTopic: null,
@@ -758,7 +759,7 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts,
             [action.data.topic_id]: {
               filters: action.data.filters,
-              filter: "all",
+              filter: "inbox",
               sort: "recent",
               tag: null,
               search: "",
@@ -3623,6 +3624,7 @@ export default (state = INITIAL_STATE, action) => {
           };
           return acc;
         }, {}),
+        allFoldersLoaded: true,
       };
     }
     case "INCOMING_UPDATED_TEAM":
@@ -4123,6 +4125,26 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
+      };
+    }
+    case "SET_SELECTED_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(state.workspacePosts[action.data.workspaceId] && {
+            [action.data.workspaceId]: {
+              ...state.workspacePosts[action.data.workspaceId],
+              posts: {
+                ...state.workspacePosts[action.data.workspaceId].posts,
+                [action.data.postId]: {
+                  ...state.workspacePosts[action.data.workspaceId].posts[action.data.postId],
+                  is_selected: action.data.isSelected,
+                },
+              },
+            },
+          }),
+        },
       };
     }
     default:

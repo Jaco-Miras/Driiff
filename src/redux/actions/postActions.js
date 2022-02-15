@@ -435,6 +435,10 @@ export function incomingPostRequired(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_POST_REQUIRED", payload, callback);
 }
 
+export function setPostCommentType(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_POST_COMMENT_TYPE", payload, callback);
+}
+
 export function removeDraftPost(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_DRAFT_POST", payload, callback);
 }
@@ -467,12 +471,16 @@ export function incomingUnfollowPost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UNFOLLOW_POST", payload, callback);
 }
 
-export function refetchUnreadCompanyPosts(payload, callback) {
-  return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_UNREAD_COMPANY_POSTS_START", "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS", "REFETCH_UNREAD_COMPANY_POSTS_FAIL", callback);
+export function getInProgressCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_IN_PROGRESS_COMPANY_POSTS_START", "GET_IN_PROGRESS_COMPANY_POSTS_SUCCESS", "GET_IN_PROGRESS_COMPANY_POSTS_FAIL", callback);
 }
 
 export function readNotification(payload, callback) {
   return dispatchActionToReducer(readNotificationService(payload), "READ_POST_NOTIFICATION_START", "READ_POST_NOTIFICATION_SUCCESS", "READ_POST_NOTIFICATION_FAIL", callback);
+}
+
+export function refetchUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "REFETCH_UNREAD_COMPANY_POSTS_START", "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS", "REFETCH_UNREAD_COMPANY_POSTS_FAIL", callback);
 }
 
 export function fetchCommentsOnVisit(payload, callback) {
@@ -489,4 +497,8 @@ export function checkPostAccess(payload, callback) {
 
 export function getPostReadAndClap(payload, callback) {
   return dispatchActionToReducer(getPostReadAndClapService(payload), "GET_POST_READ_CLAP_START", "GET_POST_READ_CLAP_SUCCESS", "GET_POST_READ_CLAP_FAIL", callback);
+}
+
+export function setSelectedCompanyPost(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SELECTED_COMPANY_POST", payload, callback);
 }

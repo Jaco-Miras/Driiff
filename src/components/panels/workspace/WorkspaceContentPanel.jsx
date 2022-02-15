@@ -13,6 +13,7 @@ const WorkspacePeoplePanel = lazy(() => import("../workspace/WorkspacePeoplePane
 const WorkspacePostsPanel = lazy(() => import("../workspace/WorkspacePostsPanel"));
 const WorkspaceRemindersPanel = lazy(() => import("../workspace/WorkspaceRemindersPanel"));
 const WorkspaceSettingsPanel = lazy(() => import("../workspace/WorkspaceSettingsPanel"));
+const WorkspaceWorkInProgressPanel = lazy(() => import("../workspace/WorkspaceWorkInProgressPanel"));
 const AllWorkspace = lazy(() => import("./AllWorkspace"));
 
 const Wrapper = styled.div`
@@ -160,6 +161,19 @@ const WorkspaceContentPanel = (props) => {
                   <Route
                     render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={["/workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/reminders/:workspaceId/:workspaceName", "/workspace/reminders"]}
+                  />
+                  <Route
+                    exact={true}
+                    render={() => <WorkspaceWorkInProgressPanel {...props} workspace={workspace} isMember={isMember} />}
+                    path={[
+                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/workspace/wip/:workspaceId/:workspaceName",
+                      "/workspace/wip",
+                    ]}
                   />
                   <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
                   <Redirect

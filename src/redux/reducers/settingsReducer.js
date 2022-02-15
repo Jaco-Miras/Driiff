@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
+    companyLanguage: null,
     theme: {
       colors: {
         primary: "#29323F",
@@ -38,6 +39,7 @@ const INITIAL_STATE = {
       password_login: true,
       sign_up: true,
       custom_translation: false,
+      login_email: true,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -150,8 +152,10 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
+        if (s.hasOwnProperty("maintenance_mode") || s.hasOwnProperty("google_login") || s.hasOwnProperty("magic_link") || s.hasOwnProperty("password_login") || s.hasOwnProperty("sign_up") || s.hasOwnProperty("custom_translation")) {
+          settings = { ...settings, ...s };
+        }
 
-        //settings = { ...settings, ...s };
         if (s.custom_translation) {
           settings.custom_translation = s.custom_translation === "1" ? true : false;
         }
