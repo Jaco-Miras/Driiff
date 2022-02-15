@@ -60,7 +60,14 @@ export const useTranslation = () => {
     dispatch(
       getTranslationObject(
         {
-          url: language && driffSettings.settings.custom_translation ? `${dictionaryAPIUrl}/${language}` : language ? `https://driff.io/api/lang/${language}` : "https://driff.io/api/lang/nl",
+          url:
+            language && driffSettings.settings.custom_translation
+              ? `${dictionaryAPIUrl}/${language}`
+              : language
+              ? `https://driff.io/api/lang/${language}`
+              : driffSettings.companyLanguage
+              ? `https://driff.io/api/lang/${driffSettings.companyLanguage}`
+              : "https://driff.io/api/lang/nl",
         },
         (err, res) => {
           if (err) {
