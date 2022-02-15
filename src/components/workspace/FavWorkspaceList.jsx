@@ -2,6 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { WorkspaceIcon } from "./index";
 import { SvgIconFeather } from "../common";
+import { useSettings } from "../hooks";
+
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
 
 const Wrapper = styled.div`
   display: flex;
@@ -9,7 +12,7 @@ const Wrapper = styled.div`
   margin-bottom: 15px;
   cursor: pointer;
   .feather {
-    color: ${({ theme }) => theme.colors.sidebarTextColor};
+    color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   }
   .feather-star {
     top: -2px;
@@ -56,11 +59,15 @@ const WorkspaceFolder = styled.div`
 
 const FavWorkspaceList = (props) => {
   const { isExternal, onSelectWorkspace, workspace, isCompanyWs, companyName } = props;
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
+
   const handleSelectWorkspace = () => {
     onSelectWorkspace(workspace);
   };
   return (
-    <Wrapper onClick={handleSelectWorkspace}>
+    <Wrapper dark_mode={dark_mode} onClick={handleSelectWorkspace}>
       <WorkspaceIcon avatarClassName="avatar-sm" workspace={workspace} isCompanyWs={isCompanyWs} companyName={companyName} />
       <WorkspaceTitleFolder className="workspace-title-folder">
         <WorkspaceTitle>
