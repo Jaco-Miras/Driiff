@@ -4,11 +4,13 @@ import { useDispatch } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import { SvgIconFeather } from "../../common";
 import { addToModals, postToDo } from "../../../redux/actions/globalActions";
-import { useToaster, useOutsideClick } from "../../hooks";
+import { useToaster, useOutsideClick, useSettings } from "../../hooks";
+
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
 
 const Wrapper = styled.div`
   padding: 15px 30px 0 30px;
-  color: ${({ theme }) => theme.colors.sidebarTextColor};
+  color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   > div {
     margin-bottom: 10px;
     display: flex;
@@ -31,7 +33,9 @@ const Icon = styled(SvgIconFeather)``;
 
 const NewModalButtons = (props) => {
   const { dictionary, isExternal, onShowModalButtons, showButtons } = props;
-
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
   const refs = {
     btn1Ref: useRef(null),
     btn2Ref: useRef(null),
@@ -101,7 +105,7 @@ const NewModalButtons = (props) => {
 
   return (
     <CSSTransition appear={true} in={showButtons} timeout={300} unmountOnExit classNames="bslide">
-      <Wrapper>
+      <Wrapper dark_mode={dark_mode}>
         {!isExternal && (
           <div>
             <span onClick={handleShowChatModal} ref={refs.btn1Ref}>
