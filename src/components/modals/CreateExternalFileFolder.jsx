@@ -51,7 +51,7 @@ const Wrapper = styled(Modal)`
 const WrapperDiv = styled(FormGroup)``;
 
 const CreateExternalFileFolder = (props) => {
-  const { type, mode = "create", topic_id = null, link = null } = props.data;
+  const { type, mode = "create", topic_id = null, link = null, params } = props.data;
 
   const { createDriveLink, updateDriveLink } = useDriveLinkActions();
   const { _t } = useTranslationActions();
@@ -185,7 +185,19 @@ const CreateExternalFileFolder = (props) => {
       type: linkType.id,
       name: nameValue,
       link: linkValue,
+      folder_id: null,
     };
+    if (params.workspaceId) {
+      payload = {
+        ...payload,
+        folder_id: parseInt(params.fileFolderId),
+      };
+    } else {
+      payload = {
+        ...payload,
+        folder_id: parseInt(params.folderId),
+      };
+    }
     if (topic_id) {
       payload = {
         ...payload,

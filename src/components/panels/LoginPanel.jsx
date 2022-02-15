@@ -184,7 +184,9 @@ const LoginPanel = (props) => {
               toaster.info("Please login via your Google account.", { autoClose: false });
             } else {
               const returnUrl =
-                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
+                  ? props.location.state.from.pathname + props.location.state.from.search
+                  : "/dashboard";
               userActions.login(res.data, returnUrl);
             }
 

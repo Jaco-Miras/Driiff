@@ -22,6 +22,7 @@ const AllPeopleHeaderButtons = (props) => {
   const history = useHistory();
   const loggedUser = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
+  const securityLoaded = useSelector((state) => state.admin.securityLoaded);
   const teams = useSelector((state) => state.users.teams);
   const userActions = useUserActions();
   const toaster = useToaster();
@@ -114,7 +115,7 @@ const AllPeopleHeaderButtons = (props) => {
   };
 
   const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
-
+  if (!securityLoaded) return null;
   return (
     <Wrapper className="nav-item-last ml-auto">
       {isAdmin && history.location.pathname !== "/people" && (

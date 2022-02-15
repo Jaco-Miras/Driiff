@@ -1530,10 +1530,8 @@ export default (state = INITIAL_STATE, action) => {
                 claps: action.data.claps,
                 post_reads: action.data.reads.map((r) => {
                   return {
-                    id: r.user.id,
+                    ...r.user,
                     last_read_timestamp: r.last_read_timestamp,
-                    profile_image_link: r.user.profile_image_link,
-                    type: r.user.type,
                   };
                 }),
               };

@@ -111,6 +111,7 @@ const CompanyFilesHeader = (props) => {
       type: "external_file_folder",
       mode: "create",
       topic_id: null,
+      params: params,
     };
     dispatch(addToModals(modal));
   };

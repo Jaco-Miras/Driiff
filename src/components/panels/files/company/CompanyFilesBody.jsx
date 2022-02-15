@@ -284,6 +284,7 @@ const CompanyFilesBody = (props) => {
                       <>
                         <h6 className="font-size-11 text-uppercase mb-4">{folder.search}</h6>
                         <div className="row">
+                          <DriveLinks disableOptions={disableOptions} />
                           {files &&
                             fileIds.map((f) => {
                               if (files.files.hasOwnProperty(f)) {

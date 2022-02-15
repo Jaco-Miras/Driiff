@@ -31,6 +31,7 @@ import {
   ZoomInviteModal,
   ZoomMeetingInProgress,
   ZoomConfirmationModal,
+  CompanyWorkspaceModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -124,6 +125,8 @@ const ModalPanel = () => {
             return <CreateEditTeamModal key={modal.type} data={modal} />;
           case "add-to-team":
             return <AddToTeamModal key={modal.type} data={modal} />;
+          case "company-workspace":
+            return <CompanyWorkspaceModal key={modal.type} data={modal} />;
           default:
             return null;
         }

@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+//import { useSelector } from "react-redux";
 import AdminPanelFilters from "./AdminPanelFilters";
 
 const Wrapper = styled.div`

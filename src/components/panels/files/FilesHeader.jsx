@@ -115,6 +115,7 @@ const FilesHeader = (props) => {
       type: "external_file_folder",
       mode: "create",
       topic_id: workspaceId,
+      params: params,
     };
     dispatch(addToModals(modal));
   };

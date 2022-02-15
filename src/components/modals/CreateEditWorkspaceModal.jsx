@@ -160,6 +160,15 @@ const WrapperDiv = styled(InputGroup)`
   .custom-control-label:hover {
     color: ${({ theme }) => theme.colors.primary};
   }
+  .add-guest-checkbox {
+    label {
+      cursor: ${(props) => (props.hasGuestAccess ? "pointer" : "not-allowed")};
+      color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,70%)")} !important;
+      :hover {
+        color: ${(props) => (props.hasGuestAccess ? props.theme.colors.primary : "hsl(0,0%,70%)")} !important;
+      }
+    }
+  }
 `;
 
 const SelectFolder = styled(FolderSelect)`
@@ -293,6 +302,7 @@ const CreateEditWorkspaceModal = (props) => {
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const folders = useSelector((state) => state.workspaces.allFolders);
+  const securitySettings = useSelector((state) => state.admin.security);
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
@@ -404,6 +414,8 @@ const CreateEditWorkspaceModal = (props) => {
     },
   ];
 
+  const hasGuestAccess = securitySettings.invite_guest === 3 ? true : user.role.id <= securitySettings.invite_guest;
+
   const dictionary = {
     createWorkspace: _t("WORKSPACE.CREATE_WORKSPACE", "Create workspace"),
     create: _t("BUTTON.CREATE", "Create"),
@@ -470,6 +482,7 @@ const CreateEditWorkspaceModal = (props) => {
     guestTooltip: _t("WORKSPACE.TOOLTIP_GUEST_ACCOUNTS", "Decide which guest accounts you would like to invite to participate in this WorkSpace"),
     workspaceIsUnarchived: _t("TOASTER.WORKSPACE_IS_UNARCHIVED", "workpace is un-archived"),
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
+    disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
   };
 
   const _validateName = useCallback(() => {
@@ -544,6 +557,7 @@ const CreateEditWorkspaceModal = (props) => {
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
     const checked = !form[name];
+    if (name === "has_externals" && !hasGuestAccess) return;
     if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
       //show confirmation modal
       handleShowRemoveExternalsConfirmation();
@@ -1838,25 +1852,29 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input checkboxes"}>
+        <WrapperDiv className={"modal-input checkboxes"} hasGuestAccess={hasGuestAccess}>
           <div>
             <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
               {dictionary.addToFolder}
             </CheckBox>
           </div>
           <div>
-            <CheckBox type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck}>
+            <CheckBox className="add-guest-checkbox" type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
               {dictionary.workspaceWithExternals}
             </CheckBox>
           </div>
           <div style={{ position: "relative" }}>
             <ToolTip
               content={
-                <div>
-                  {dictionary.workspaceWithExternalsInfo1}
-                  <br />
-                  {dictionary.workspaceWithExternalsInfo2}
-                </div>
+                hasGuestAccess ? (
+                  <div>
+                    {dictionary.workspaceWithExternalsInfo1}
+                    <br />
+                    {dictionary.workspaceWithExternalsInfo2}
+                  </div>
+                ) : (
+                  dictionary.disabledWorkspaceExternalsInfo
+                )
               }
             >
               <SvgIconFeather icon="info" width="16" height="16" />
@@ -1903,7 +1921,7 @@ const CreateEditWorkspaceModal = (props) => {
           <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
             <LabelWrapper className="mb-1">
               <Label for="people">{dictionary.externalGuest}</Label>
-              <ToolTip content={dictionary.guestTooltip}>
+              <ToolTip content={hasGuestAccess ? dictionary.guestTooltip : dictionary.disabledWorkspaceExternalsInfo}>
                 <SvgIconFeather icon="info" width="16" height="16" />
               </ToolTip>
             </LabelWrapper>
@@ -1922,6 +1940,7 @@ const CreateEditWorkspaceModal = (props) => {
               isSearchable
               onMenuClose={handleMenuClose}
               onEmailClick={handleEmailClick}
+              isDisabled={!hasGuestAccess}
             />
           </WrapperDiv>
         )}
