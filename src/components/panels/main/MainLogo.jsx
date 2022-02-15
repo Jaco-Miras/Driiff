@@ -40,8 +40,8 @@ const CompanyLogoWrapper = styled.div`
   }
   .company-logo {
     height: 70%;
-    max-height: 40px;
-    max-width: 100px;
+    max-height: 60px;
+    max-width: 110px;
   }
 `;
 
@@ -81,13 +81,13 @@ const MainLogo = (props) => {
     } else {
       dispatch(setNavMode({ mode: 2 }));
     }
-    history.push("/chat");
+    history.push("/dashboard");
   };
 
   return (
     <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
       {companyLogo.trim() !== "" && (
-        <CompanyLogoWrapper data-link="/" onClick={handleIconClick}>
+        <CompanyLogoWrapper data-link="/dashboard" onClick={handleIconClick}>
           <img className="company-logo" src={companyLogo} alt="company logo" />
           <SvgIconFeather icon="heart" />
           <div style={{ position: "relative" }}>
@@ -97,7 +97,7 @@ const MainLogo = (props) => {
       )}
       {companyLogo.trim() === "" && (
         <>
-          <DriffLogo icon="driff-logo2" data-link="/chat" onClick={handleIconClick} />
+          <DriffLogo icon="driff-logo2" data-link="/dashboard" onClick={handleIconClick} />
         </>
       )}
     </LogoWrapper>

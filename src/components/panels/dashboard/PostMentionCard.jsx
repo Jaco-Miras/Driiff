@@ -15,6 +15,11 @@ const Wrapper = styled.div`
     width: 1rem;
     height: 1rem;
   }
+  .feather-megaphone {
+    margin-right: 0.5rem;
+    width: 20px;
+    height: 20px;
+  }
   .feather-info {
     margin-left: 0.5rem;
   }
@@ -82,6 +87,7 @@ const PostMentionCard = (props) => {
   return (
     <Wrapper>
       <span>
+        <SvgIconFeather icon="megaphone" />
         <h5 className="card-title mb-0">{dictionary.postMentionsActions}</h5>
         <ToolTip content={dictionary.postMentionsTooltip}>
           <SvgIconFeather icon="info" />
