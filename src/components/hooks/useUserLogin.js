@@ -64,11 +64,11 @@ export const useUserLogin = (props) => {
                 let link = `/chat/${res.data.additional_data.data.code}`;
                 userActions.login(res.data, link);
               } else {
-                userActions.login(res.data, "/chat");
+                userActions.login(res.data, "/dashboard");
               }
             }
           } else {
-            userActions.login(res.data, "/chat");
+            userActions.login(res.data, "/dashboard");
           }
         }
       });
@@ -157,7 +157,6 @@ export const useUserLogin = (props) => {
                 sessionService.saveUser({
                   ...res,
                 });
-                //history.push("/chat");
                 window.location.href = data.redirect_url;
               });
           });
@@ -169,7 +168,7 @@ export const useUserLogin = (props) => {
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
           if (res) {
-            userActions.login(res.data, "/chat");
+            userActions.login(res.data, "/dashboard");
           }
         })
       );

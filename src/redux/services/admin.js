@@ -187,3 +187,44 @@ export function putNotificationSettings(payload) {
     data: payload,
   });
 }
+
+export function getSecuritySettings(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/security-settings",
+  });
+}
+
+export function putSecuritySettings(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/security-settings",
+    data: payload,
+  });
+}
+
+export function sendRequestPassword(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/security-settings/send-refresh-password",
+    data: payload,
+  });
+}
+
+export function uploadDashboardBg(payload) {
+  let url = "/v2/company-settings/file-background";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
+  });
+}
+
+export function putCompanyDescription(payload) {
+  return apiCall({
+    method: "PUT",
+    url: `/v2/workspace/company/${payload.id}`,
+    data: payload,
+  });
+}

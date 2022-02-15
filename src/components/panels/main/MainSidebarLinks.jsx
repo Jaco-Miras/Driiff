@@ -184,16 +184,7 @@ const MainSidebarLinks = (props) => {
           </li>
         )}
 
-        {user.type !== "external" ? <QuickLinks user={user} dictionary={dictionary} /> : null}
-
-        {/* {user.role && ["owner"].includes(user.role.name) && (
-          <li>
-            <NavIconContainer to={"/bot"} active={["/bot"].includes(location.pathname)}>
-              <NavIcon icon={"cpu"} />
-              <div>{dictionary.bots}</div>
-            </NavIconContainer>
-          </li>
-        )} */}
+        {/* {user.type !== "external" ? <QuickLinks user={user} dictionary={dictionary} /> : null} */}
       </ul>
     </Wrapper>
   );
