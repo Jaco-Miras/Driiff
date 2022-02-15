@@ -39,6 +39,7 @@ const INITIAL_STATE = {
       password_login: true,
       sign_up: true,
       custom_translation: false,
+      login_email: true,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
