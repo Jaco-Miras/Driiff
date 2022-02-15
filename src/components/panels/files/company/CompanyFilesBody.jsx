@@ -153,8 +153,8 @@ const CompanyFilesBody = (props) => {
         folder_id: params.folderId,
       };
     }
-
-    actions.uploadCompanyBulkFiles(payload);
+    const ids = uploads.files.map((f) => f.id);
+    actions.uploadCompanyBulkFiles(payload, ids);
   };
 
   const handleRemoveFolder = () => {
