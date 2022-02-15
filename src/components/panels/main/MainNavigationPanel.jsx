@@ -2,21 +2,27 @@ import React from "react";
 import { Route } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 import { MainNavigationTabPanel } from "./index";
+import { useSettings } from "../../hooks";
+
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
 
 const Wrapper = styled.div`
   .navigation-menu-tab {
     background-color: ${(props) => props.theme.colors.primary};
     ul li a {
-      color: ${({ theme }) => theme.colors.sidebarTextColor};
+      color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
     }
   }
 `;
 
 const MainNavigationPanel = (props) => {
   const { className = "", showNotificationBar } = props;
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
   const theme = useTheme();
   return (
-    <Wrapper theme={theme} className={`navigation ${className} ${showNotificationBar && "notification-bar"}`} id={"main-sidebar"}>
+    <Wrapper dark_mode={dark_mode} theme={theme} className={`navigation ${className} ${showNotificationBar && "notification-bar"}`} id={"main-sidebar"}>
       <Route
         exact={true}
         render={() => <MainNavigationTabPanel {...props} />}

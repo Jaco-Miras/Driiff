@@ -574,7 +574,7 @@ function StylingSettingsBody() {
               {showColorPicker.sidebarTextColor && (
                 <PickerWrapper ref={pickerRefSidebarTextColor}>
                   <BlockPicker
-                    colors={["#cbd4db", "#000"]}
+                    colors={["#cbd4db", "#000", ...blockColors]}
                     color={colors.sidebarTextColor}
                     onChange={(color) => {
                       handleColorChange(color, "sidebarTextColor");
