@@ -7,6 +7,8 @@ import { useSettings, useTranslationActions, useWorkspaceActions } from "../../h
 import { FavoriteWorkspacesPanel, MainSidebarLinks, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
+
 const Wrapper = styled.div`
   .navigation-menu-tab-header {
     display: flex;
@@ -152,7 +154,7 @@ const NavNewWorkspace = styled.button`
   height: 40px;
   justify-content: center;
   align-items: center;
-  color: ${({ theme }) => theme.colors.sidebarTextColor} !important;
+  color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)} !important;
 
   div {
     position: relative;
@@ -165,7 +167,7 @@ const NavNewWorkspace = styled.button`
 
 const NewBtnWrapper = styled.div`
   margin: 15px 30px;
-  color: ${({ theme }) => theme.colors.sidebarTextColor}!important;
+  /* color: ${({ theme }) => theme.colors.sidebarTextColor}!important; */
 `;
 
 const MainNavigationTabPanel = (props) => {
@@ -186,6 +188,8 @@ const MainNavigationTabPanel = (props) => {
       return { id: channel.id, code: channel.code };
     })
   );
+
+  const { dark_mode } = generalSettings;
 
   useEffect(() => {
     if (params.workspaceId && activeTopic) {
@@ -256,7 +260,7 @@ const MainNavigationTabPanel = (props) => {
       <NewModalButtons dictionary={dictionary} isExternal={isExternal} onShowModalButtons={handleShowModalButtons} showButtons={showButtons} />
 
       <NewBtnWrapper>
-        <NavNewWorkspace onClick={handleShowModalButtons} className="btn btn-outline-light" type="button">
+        <NavNewWorkspace dark_mode={dark_mode} onClick={handleShowModalButtons} className="btn btn-outline-light" type="button">
           <div>
             <CirclePlus icon="circle-plus" />
             {dictionary.addNew}

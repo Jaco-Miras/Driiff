@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { SvgEmptyState, SvgIconFeather } from "../../common";
-import { useWorkspace } from "../../hooks";
+import { useWorkspace, useSettings } from "../../hooks";
 import { FavWorkspaceList } from "../../workspace";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions";
+
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
 
 const Wrapper = styled.div`
   display: flex;
@@ -54,7 +56,7 @@ const FavWorkspacesLabel = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: ${({ theme }) => theme.colors.sidebarTextColor};
+  color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   //color: rgba(255, 255, 255, 0.6);
   border-top: 2px solid;
   padding: 15px 0;
@@ -69,7 +71,7 @@ const FavWorkspacesLabel = styled.div`
 const BrowseAll = styled.button`
   //color: rgba(255, 255, 255, 0.6);
   //text-decoration: underline;
-  color: ${({ theme }) => theme.colors.sidebarTextColor};
+  color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   border: 1px solid;
   :hover {
     cursor: pointer;
@@ -81,7 +83,7 @@ const WorkspaceListContainer = styled.div`
   padding: 0 30px;
   overflow: auto;
   .text-truncate {
-    color: ${({ theme }) => theme.colors.sidebarTextColor};
+    color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   }
 `;
 
@@ -89,7 +91,7 @@ const FavEmptyState = styled.div`
   display: flex;
   flex-flow: column;
   margin-top: 1rem;
-  color: ${({ theme }) => theme.colors.sidebarTextColor};
+  color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
   span:last-child {
     margin-top: 1rem;
   }
@@ -111,7 +113,9 @@ const FavoriteWorkspacesPanel = (props) => {
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
   const companyChannel = useSelector((state) => state.chat.companyChannel);
   const companyName = useSelector((state) => state.settings.driff.company_name);
-
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
   // need to revisit
   // const [defaultTopic, setDefaultTopic] = useState(null);
 
@@ -217,7 +221,7 @@ const FavoriteWorkspacesPanel = (props) => {
 
   return (
     <Wrapper>
-      <FavWorkspacesLabel>
+      <FavWorkspacesLabel dark_mode={dark_mode}>
         <span>{dictionary.favoriteWorkspaces}</span>
         {!isExternal && (
           <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.newFolder}>
@@ -225,15 +229,15 @@ const FavoriteWorkspacesPanel = (props) => {
           </StyledTooltip>
         )}
       </FavWorkspacesLabel>
-      <WorkspaceListContainer>
+      <WorkspaceListContainer dark_mode={dark_mode}>
         <div id="elements" className="open">
           {favoriteWorkspacesLoaded && Object.values(workspaces).length > 0 && favoriteWorkspaces.length === 0 && (
-            <FavEmptyState>
+            <FavEmptyState dark_mode={dark_mode}>
               <span role="img" aria-label="star">
                 ✨
               </span>
               <span dangerouslySetInnerHTML={{ __html: dictionary.addYourFavWs }} />
-              <BrowseAll className="btn" onClick={handleBrowseAll}>
+              <BrowseAll dark_mode={dark_mode} className="btn" onClick={handleBrowseAll}>
                 {dictionary.startBrowsing}
               </BrowseAll>
             </FavEmptyState>
@@ -247,7 +251,7 @@ const FavoriteWorkspacesPanel = (props) => {
                   return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
                 })}
               </ul>
-              <BrowseAll className="btn" onClick={handleBrowseAll}>
+              <BrowseAll dark_mode={dark_mode} className="btn" onClick={handleBrowseAll}>
                 {dictionary.browseAll}
               </BrowseAll>
             </>
