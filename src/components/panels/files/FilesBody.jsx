@@ -148,8 +148,11 @@ const FilesBody = (props) => {
         folder_id: params.fileFolderId,
       };
     }
-
-    actions.uploadFiles(payload);
+    const ids = uploads.files.map((f) => f.id);
+    const cb = (err, res) => {
+      actions.deleteWorkspaceFilesUpload({ topic_id: parseInt(params.workspaceId), fileIds: ids });
+    };
+    actions.uploadFiles(payload, cb);
   };
 
   const handleRemoveFolder = () => {
