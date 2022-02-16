@@ -42,10 +42,10 @@ export const useUserLogin = (props) => {
                 let postId = res.data.additional_data.data.id;
                 let postName = res.data.additional_data.data.code;
                 if (ws.workspace_id) {
-                  let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                   userActions.login(res.data, link);
                 } else {
-                  let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                  let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                   userActions.login(res.data, link);
                 }
               }
