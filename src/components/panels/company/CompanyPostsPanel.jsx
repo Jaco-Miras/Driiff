@@ -240,7 +240,7 @@ const CompanyPostsPanel = (props) => {
           setLoadPosts(false);
         }
       };
-      fetchMore(cb);
+      if (filter) fetchMore(cb);
       loadMoreCategoryPost(cb);
     }
   };
