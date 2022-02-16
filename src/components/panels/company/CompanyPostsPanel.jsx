@@ -119,7 +119,7 @@ const CompanyPostsPanel = (props) => {
   const toaster = useToaster();
 
   const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, postLists, counters } = useCompanyPosts();
-  const { loadMoreCategoryPost, count } = usePostCategory();
+  const { loadMoreCompany, count } = usePostCategory();
   //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -240,7 +240,7 @@ const CompanyPostsPanel = (props) => {
         }
       };
       if (filter) fetchMore(cb);
-      loadMoreCategoryPost(cb);
+      loadMoreCompany(cb);
     }
   };
 

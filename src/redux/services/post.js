@@ -774,15 +774,21 @@ export function getCompanyPostsByCategory(payload) {
 export function getWorkspacePostCategoryCounter(payload) {
   return apiCall({
     method: "GET",
-    url: `/v2/post-category-entries?topic_id=${payload.topic_ic}`,
+    url: `/v2/post-category-entries?topic_id=${payload.topic_id}`,
     data: payload,
   });
 }
 
 export function getWorkspacePostsByCategory(payload) {
+  let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${payload.skip}&limit=${payload.limit}`;
+  if (payload.filters !== undefined) {
+    for (var i = 0; i < payload.filters.length; i++) {
+      url += `&filter[${i}]=${payload.filters[i]}`;
+    }
+  }
   return apiCall({
     method: "GET",
-    url: `/v1/posts?${objToUrlParams(payload)}`,
+    url: url,
     data: payload,
   });
 }

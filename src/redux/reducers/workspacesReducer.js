@@ -739,15 +739,53 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts,
             [action.data.topic_id]: {
               ...state.workspacePosts[action.data.topic_id],
-              filters: {
-                ...state.workspacePosts[action.data.topic_id].filters,
-                ...action.data.filters,
-              },
+              ...(action.data.filters && {
+                filters: {
+                  ...state.workspacePosts[action.data.topic_id].filters,
+                  ...action.data.filters,
+                },
+              }),
               posts: {
                 ...state.workspacePosts[action.data.topic_id].posts,
                 ...convertedPosts,
                 ...postDrafts,
               },
+              ...(action.data.categories && {
+                categoriesLoaded: true,
+                categories: {
+                  ...state.workspacePosts[action.data.topic_id].categories,
+                  ...action.data.categories,
+                },
+              }),
+              ...(action.data.category && {
+                categories: {
+                  ...state.workspacePosts[action.data.topic_id].categories,
+                  ...(action.data.category.mustRead && {
+                    mustRead: {
+                      ...state.workspacePosts[action.data.topic_id].categories.mustRead,
+                      ...action.data.category.mustRead,
+                    },
+                  }),
+                  ...(action.data.category.mustReply && {
+                    mustReply: {
+                      ...state.workspacePosts[action.data.topic_id].categories.mustReply,
+                      ...action.data.category.mustReply,
+                    },
+                  }),
+                  ...(action.data.category.noReplies && {
+                    noReplies: {
+                      ...state.workspacePosts[action.data.topic_id].categories.noReplies,
+                      ...action.data.category.noReplies,
+                    },
+                  }),
+                  ...(action.data.category.closedPost && {
+                    closedPost: {
+                      ...state.workspacePosts[action.data.topic_id].categories.closedPost,
+                      ...action.data.category.closedPost,
+                    },
+                  }),
+                },
+              }),
             },
           },
         };
@@ -769,6 +807,33 @@ export default (state = INITIAL_STATE, action) => {
                 ...postDrafts,
               },
               post_ids: [...action.data.posts.map((p) => p.id), ...state.drafts.map((d) => d.data.id)],
+              categoriesLoaded: false,
+              categories: {
+                mustRead: {
+                  count: 0,
+                  has_more: true,
+                  limit: 15,
+                  skip: 0,
+                },
+                mustReply: {
+                  count: 0,
+                  has_more: true,
+                  limit: 15,
+                  skip: 0,
+                },
+                noReplies: {
+                  count: 0,
+                  has_more: true,
+                  limit: 15,
+                  skip: 0,
+                },
+                closedPost: {
+                  count: 0,
+                  has_more: true,
+                  limit: 15,
+                  skip: 0,
+                },
+              },
             },
           },
         };
@@ -2509,6 +2574,33 @@ export default (state = INITIAL_STATE, action) => {
               [post.id]: post,
             },
             post_ids: [post.id],
+            categoriesLoaded: false,
+            categories: {
+              mustRead: {
+                count: 0,
+                has_more: true,
+                limit: 15,
+                skip: 0,
+              },
+              mustReply: {
+                count: 0,
+                has_more: true,
+                limit: 15,
+                skip: 0,
+              },
+              noReplies: {
+                count: 0,
+                has_more: true,
+                limit: 15,
+                skip: 0,
+              },
+              closedPost: {
+                count: 0,
+                has_more: true,
+                limit: 15,
+                skip: 0,
+              },
+            },
           };
         }
       });

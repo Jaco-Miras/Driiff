@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster, usePostCategory } from "../../hooks";
 import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
@@ -102,18 +101,6 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-const MaintenanceWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-flow: column;
-  > div {
-    width: 100%;
-  }
-`;
-
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -125,15 +112,12 @@ const WorkspacePostsPanel = (props) => {
 
   useFetchWsCount();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
-  //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
+  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag } = usePosts();
+  const { loadMoreWorkspaceCategory, count } = usePostCategory();
   const [loading, setLoading] = useState(false);
 
   const [loadPosts, setLoadPosts] = useState(false);
   const [activePostListName, setActivePostListName] = useState({});
-
-  const postAccess = useSelector((state) => state.admin.postAccess);
-  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const componentIsMounted = useRef(true);
 
@@ -376,6 +360,12 @@ const WorkspacePostsPanel = (props) => {
   const handleLoadMore = () => {
     if (search === "" && !post) {
       setLoading(true);
+      loadMoreWorkspaceCategory(() => {
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
+      });
       loadMoreUnreadPosts();
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
