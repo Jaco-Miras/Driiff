@@ -2,8 +2,8 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts } from "../post";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster, usePostCategory } from "../../hooks";
+import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
@@ -113,7 +113,8 @@ const WorkspacePostsPanel = (props) => {
 
   useFetchWsCount();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag, showLoader } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag, showLoader } = usePosts();
+  const { loadMoreWorkspaceCategory, count } = usePostCategory();
   const [loading, setLoading] = useState(false);
 
   const [loadPosts, setLoadPosts] = useState(false);
@@ -364,6 +365,13 @@ const WorkspacePostsPanel = (props) => {
 
   const handleLoadMore = () => {
     if (search === "" && !post) {
+      setLoading(true);
+      loadMoreWorkspaceCategory(() => {
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
+      });
       loadMoreUnreadPosts();
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],

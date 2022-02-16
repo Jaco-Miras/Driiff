@@ -986,7 +986,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      if (action.data.files.length) {
+      if (action.data.files && action.data.files.length) {
         let newWorkspaceFiles = { ...state.workspaceFiles };
         if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
           newWorkspaceFiles = {
