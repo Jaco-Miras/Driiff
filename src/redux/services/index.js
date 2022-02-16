@@ -274,6 +274,10 @@ export {
   readNotification,
   checkPostAccess,
   getPostReadAndClap,
+  getCompanyPostCategoryCounter,
+  getCompanyPostsByCategory,
+  getWorkspacePostCategoryCounter,
+  getWorkspacePostsByCategory,
 } from "./post";
 
 export {

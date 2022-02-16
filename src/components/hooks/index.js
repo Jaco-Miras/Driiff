@@ -86,3 +86,4 @@ export { default as useWIPFileComments } from "./useWIPFileComments";
 export { default as useWIPFileSubComments } from "./useWIPFileSubComments";
 export { default as useWIPCommentQuote } from "./useWIPCommentQuote";
 export { default as useUserOptions } from "./useUserOptions";
+export { default as usePostCategory } from "./usePostCategory";

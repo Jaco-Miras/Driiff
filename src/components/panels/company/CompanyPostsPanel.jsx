@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader, Loading } from "../../common";
-import { useCompanyPosts, useTranslationActions, useToaster } from "../../hooks";
+import { useCompanyPosts, useTranslationActions, useToaster, usePostCategory } from "../../hooks";
 import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
@@ -118,7 +118,8 @@ const CompanyPostsPanel = (props) => {
   const history = useHistory();
   const toaster = useToaster();
 
-  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, count, postLists, counters, showLoader } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, postLists, counters, showLoader } = useCompanyPosts();
+  const { loadMoreCategoryPost, count } = usePostCategory();
   //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
   const [loadPosts, setLoadPosts] = useState(false);
@@ -233,13 +234,14 @@ const CompanyPostsPanel = (props) => {
   const handleLoadMore = () => {
     if (search === "" && !post && !loading) {
       setLoading(true);
-
-      fetchMore((err, res) => {
+      let cb = () => {
         if (componentIsMounted.current) {
           setLoading(false);
           setLoadPosts(false);
         }
-      });
+      };
+      fetchMore(cb);
+      loadMoreCategoryPost(cb);
     }
   };
 

@@ -49,6 +49,10 @@ import {
   readNotification as readNotificationService,
   checkPostAccess as checkPostAccessService,
   getPostReadAndClap as getPostReadAndClapService,
+  getCompanyPostCategoryCounter as getCompanyPostCategoryCounterService,
+  getCompanyPostsByCategory as getCompanyPostsByCategoryService,
+  getWorkspacePostCategoryCounter as getWorkspacePostCategoryCounterService,
+  getWorkspacePostsByCategory as getWorkspacePostsByCategoryService,
 } from "../services";
 
 export function getPostList(payload, callback) {
@@ -501,4 +505,24 @@ export function getPostReadAndClap(payload, callback) {
 
 export function setSelectedCompanyPost(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SELECTED_COMPANY_POST", payload, callback);
+}
+
+export function getCompanyPostCategoryCounter(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostCategoryCounterService(payload), "GET_COMPANY_POST_CATEGORY_COUNTER_START", "GET_COMPANY_POST_CATEGORY_COUNTER_SUCCESS", "GET_COMPANY_POST_CATEGORY_COUNTER_FAIL", callback);
+}
+
+export function getCompanyPostsByCategory(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsByCategoryService(payload), "GET_COMPANY_POSTS_BY_CATEGORY_START", "GET_COMPANY_POSTS_BY_CATEGORY_SUCCESS", "GET_COMPANY_POSTS_BY_CATEGORY_FAIL", callback);
+}
+
+export function getWorkspacePostCategoryCounter(payload, callback) {
+  return dispatchActionToReducer(getWorkspacePostCategoryCounterService(payload), "GET_WORKSPACE_POST_CATEGORY_COUNTER_START", "GET_WORKSPACE_POST_CATEGORY_COUNTER_SUCCESS", "GET_WORKSPACE_POST_CATEGORY_COUNTER_FAIL", callback);
+}
+
+export function getWorkspacePostsByCategory(payload, callback) {
+  return dispatchActionToReducer(getWorkspacePostsByCategoryService(payload), "GET_WORKSPACE_POSTS_BY_CATEGORY_START", "GET_WORKSPACE_POSTS_BY_CATEGORY_SUCCESS", "GET_WORKSPACE_POSTS_BY_CATEGORY_FAIL", callback);
+}
+
+export function updatePostCategory(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_POST_CATEGORY", payload, callback);
 }
