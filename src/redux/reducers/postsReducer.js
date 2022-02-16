@@ -45,6 +45,31 @@ const INITIAL_STATE = {
     has_more: true,
     limit: 25,
   },
+  mustRead: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  mustReply: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  noReplies: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  closedPost: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  categoryCountLoaded: false,
   posts: {},
   postsLists: [],
   drafts: [],
@@ -1540,6 +1565,65 @@ export default (state = INITIAL_STATE, action) => {
             }
             return acc;
           }, {}),
+        },
+      };
+    }
+    case "GET_COMPANY_POST_CATEGORY_COUNTER_SUCCESS": {
+      return {
+        ...state,
+        categoryCountLoaded: true,
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_reply,
+        },
+        noReplies: {
+          ...state.noReplies,
+          count: action.data.no_replies,
+        },
+        closedPost: {
+          ...state.closedPost,
+          count: action.data.closed_post,
+        },
+      };
+    }
+    case "GET_COMPANY_POSTS_BY_CATEGORY_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  claps: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  claps: [],
+                  ...obj,
+                };
+              }
+
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "UPDATE_POST_CATEGORY": {
+      return {
+        ...state,
+        [action.data.mode]: {
+          ...state[action.data.mode],
+          has_more: action.data.has_more,
+          skip: action.data.skip,
         },
       };
     }
