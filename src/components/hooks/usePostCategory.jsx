@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getCompanyPostCategoryCounter, getWorkspacePostCategoryCounter, getCompanyPostsByCategory, updatePostCategory } from "../../redux/actions/postActions";
 
@@ -11,7 +11,6 @@ const usePostCategory = (props) => {
   const noReplies = useSelector((state) => state.posts.noReplies);
   const closedPost = useSelector((state) => state.posts.closedPost);
 
-  const [loadPosts, setLoadPosts] = useState(false);
   useEffect(() => {
     if (!categoryCountLoaded) {
       dispatch(getCompanyPostCategoryCounter());
@@ -23,7 +22,6 @@ const usePostCategory = (props) => {
   }, [tag]);
 
   const loadMore = (callback = () => {}) => {
-    console.log(tag);
     if (tag) {
       if (tag === "is_must_reply" && mustReply.has_more) {
         let payload = {

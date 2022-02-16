@@ -9,6 +9,30 @@ const Wrapper = styled.div`
   .list-group-item:last-child {
     border-bottom-width: thin !important;
   }
+  > span {
+    cursor: pointer;
+    cursor: hand;
+
+    &.active {
+      border-color: #ebebeb !important;
+
+      &:after {
+        content: "";
+        width: 3px;
+        height: 100%;
+        background: ${(props) => props.theme.colors.primary};
+        display: block;
+        position: absolute;
+        top: 0;
+        animation: fadeIn 0.15s linear;
+        left: 0;
+      }
+    }
+
+    svg {
+      width: 16px;
+    }
+  }
 `;
 
 const CompanyPostFilterTag = (props) => {
