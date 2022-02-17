@@ -94,6 +94,8 @@ const usePostCategory = (props) => {
             );
           })
         );
+      } else {
+        if (callback) callback();
       }
     }
   };
@@ -208,6 +210,8 @@ const usePostCategory = (props) => {
             );
           })
         );
+      } else {
+        if (callback) callback();
       }
     }
   };
