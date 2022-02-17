@@ -240,7 +240,7 @@ const usePosts = () => {
             return p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read);
             // return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
           } else if (activeTag === "is_read_only") {
-            return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
+            return p.is_read_only && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
             return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           } else if (tag === "is_close") {
