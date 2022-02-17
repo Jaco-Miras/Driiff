@@ -148,13 +148,6 @@ const usePosts = () => {
   let activeSort = "recent";
   let post = null;
   let activeSearch = "";
-  let count = {
-    is_must_reply: 0,
-    is_must_read: 0,
-    is_read_only: 0,
-    is_unread: 0,
-    is_close: 0,
-  };
   let counters = {
     all: 0,
     my_posts: 0,
