@@ -330,37 +330,37 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [filter]);
 
-  const loadMoreUnreadPosts = (callback = () => {}) => {
-    if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
-      let payload = {
-        filters: ["green_dot"],
-        topic_id: workspace.id,
-        skip: filters.unreadPosts.skip,
-      };
-      let cb = (err, res) => {
-        if (callback) callback();
-        if (err) return;
-        let files = res.data.posts.map((p) => p.files);
-        if (files.length) {
-          files = files.flat();
-        }
-        dispatch(
-          addToWorkspacePosts({
-            topic_id: workspace.id,
-            posts: res.data.posts,
-            files,
-            filters: {
-              unreadPosts: {
-                skip: res.data.next_skip,
-                hasMore: res.data.total_take === 15,
-              },
-            },
-          })
-        );
-      };
-      actions.getPosts(payload, cb);
-    }
-  };
+  // const loadMoreUnreadPosts = (callback = () => {}) => {
+  //   if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
+  //     let payload = {
+  //       filters: ["green_dot"],
+  //       topic_id: workspace.id,
+  //       skip: filters.unreadPosts.skip,
+  //     };
+  //     let cb = (err, res) => {
+  //       if (callback) callback();
+  //       if (err) return;
+  //       let files = res.data.posts.map((p) => p.files);
+  //       if (files.length) {
+  //         files = files.flat();
+  //       }
+  //       dispatch(
+  //         addToWorkspacePosts({
+  //           topic_id: workspace.id,
+  //           posts: res.data.posts,
+  //           files,
+  //           filters: {
+  //             unreadPosts: {
+  //               skip: res.data.next_skip,
+  //               hasMore: res.data.total_take === 25,
+  //             },
+  //           },
+  //         })
+  //       );
+  //     };
+  //     actions.getPosts(payload, cb);
+  //   }
+  // };
 
   const handleLoadMore = () => {
     if (search === "" && !post) {
@@ -372,15 +372,23 @@ const WorkspacePostsPanel = (props) => {
         }
       };
       loadMoreWorkspaceCategory(callback);
-      loadMoreUnreadPosts(callback);
+      //loadMoreUnreadPosts(callback);
       let payload = {
-        filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
+        filters: filter === "inbox" ? ["green_dot"] : filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
-        skip: filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
+        skip: filter === "inbox" ? filters?.unreadPosts.skip : filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
 
       if (filter === "all") {
         if (filters.all && !filters.all.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
+      } else if (filter === "inbox") {
+        if (filters.unreadPosts && !filters.unreadPosts.hasMore) {
           if (componentIsMounted.current) {
             setLoading(false);
             setLoadPosts(false);
@@ -432,6 +440,13 @@ const WorkspacePostsPanel = (props) => {
             filters: {
               ...(filter === "all" && {
                 all: {
+                  active: true,
+                  skip: res.data.next_skip,
+                  hasMore: res.data.total_take === 15,
+                },
+              }),
+              ...(filter === "inbox" && {
+                unreadPosts: {
                   active: true,
                   skip: res.data.next_skip,
                   hasMore: res.data.total_take === 15,
