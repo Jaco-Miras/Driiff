@@ -91,17 +91,6 @@ const StyledQuillEditor = styled(QuillEditor)`
   }
 `;
 
-const ToggleDisable = styled.div`
-  padding: 5px;
-  font-size: 0.8rem;
-  > span {
-    cursor: pointer;
-  }
-  span.active {
-    text-decoration: underline;
-  }
-`;
-
 const SavingDraftIndicator = styled.span`
   position: absolute;
   top: 105%;
@@ -131,9 +120,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers,
     onSubmitCallback,
     mainInput,
-    readOnly,
-    onToggleCommentType,
-    commentType,
     imageLoading = null,
     setImageLoading = null,
     isApprover = false,
@@ -141,8 +127,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
-  //const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  //const slugs = useSelector(state => state.global.slugs);
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const users = useSelector((state) => state.users.users);
@@ -169,8 +153,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const dictionary = {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
     draftSavedLabel: _t("DRAFT.SAVED", "Draft saved"),
-    addInternalNote: _t("POST_COMMENT.ADD_INTERNAL_NOTE", "Add internal note"),
-    replyToCustomer: _t("POST_COMMENT.REPLY_TO_CUSTOMER", "Reply to customer"),
   };
 
   const loadDraftCallback = (draft) => {
@@ -250,7 +232,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
         mention_ids: mention_ids,
       },
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
-      shared_with_client: commentType && commentType === "internal" ? false : true,
     };
 
     if (quote) {
@@ -346,7 +327,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
     onClearApprovers();
     handleClearQuillInput();
     onClosePicker();
-    onToggleCommentType(null);
     //if (onSubmitCallback) onSubmitCallback();
   };
 
@@ -569,7 +549,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       handleSubmit();
       handleClearSent();
     }
-  }, [sent, commentType]);
+  }, [sent]);
 
   // const loadDraftCallback = (draft) => {
   //     if (draft === null) {
@@ -615,7 +595,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   //useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-  //let prioIds = [...new Set(prioMentionIds)];
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -623,7 +603,9 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
-      if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+      if (u.id === user.id) {
+        return false;
+      } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
         return true;
       } else {
         return false;
@@ -633,26 +615,14 @@ const CompanyPostInput = forwardRef((props, ref) => {
     disableMention: false,
     setInlineImages,
     setImageLoading,
-    prioMentionIds: [...new Set(prioMentionIds)],
+    prioMentionIds: Object.values(users)
+      .filter((u) => prioIds.some((id) => id === u.id))
+      .map((u) => u.id),
     post,
   });
 
-  const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
-
   return (
     <Wrapper className="chat-input-wrapper" ref={ref}>
-      {/* {hasExternalWorkspace && post.shared_with_client && user.type === "internal" && (
-        <ToggleDisable>
-          <span className={commentType && commentType === "internal" ? "active" : ""} onClick={() => onToggleCommentType("internal")}>
-            {dictionary.addInternalNote}
-          </span>{" "}
-          /{" "}
-          <span className={commentType && commentType === "external" ? "active" : ""} onClick={() => onToggleCommentType("external")}>
-            {dictionary.replyToCustomer}
-          </span>
-        </ToggleDisable>
-      )} */}
-
       {quillMentions.length > 0 && !hasCompanyAsRecipient && (
         <PostInputMention
           onAddToPost={handleAddMentionsToPost}
