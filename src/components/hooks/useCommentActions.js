@@ -22,6 +22,7 @@ import {
   setChangeRequestedComment,
   fetchPost,
   fetchCommentsOnVisit,
+  postRequired,
 } from "../../redux/actions/postActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
@@ -212,6 +213,17 @@ const useCommentActions = () => {
     );
   };
 
+  const markReplyRequirement = (post) => {
+    let payload = {
+      post_id: post.id,
+      must_read: 0,
+      must_reply: 1,
+      is_approved: 0,
+    };
+
+    dispatch(postRequired(payload));
+  };
+
   return {
     add,
     addQuote,
@@ -234,6 +246,7 @@ const useCommentActions = () => {
     clearApprovingStatus,
     setRequestForChangeComment,
     fetchPostAndComments,
+    markReplyRequirement,
   };
 };
 
