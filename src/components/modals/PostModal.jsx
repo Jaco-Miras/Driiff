@@ -821,9 +821,8 @@ const PostModal = (props) => {
 
       // requiredUserIds = [...new Set(requiredUserIds)].filter((id) => id !== user.id);
       // const isAllSelected = requiredUserIds.length === item.post.required_users.length;
-
-      const isAllSelectedMustRead = allUserIds.length === item.post.must_read_users.length;
-      const isAllSelectedMustReply = allUserIds.length === item.post.must_reply_users.length;
+      const isAllSelectedMustRead = item.post.must_read_users.length > 1 && allUserIds.length === item.post.must_read_users.length;
+      const isAllSelectedMustReply = item.post.must_reply_users.length > 1 && allUserIds.length === item.post.must_reply_users.length;
       setForm({
         ...form,
         body: item.post.body,

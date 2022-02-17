@@ -1155,6 +1155,7 @@ const CreateEditWorkspaceModal = (props) => {
                 unread_chats: 0,
                 unread_posts: 0,
                 folder_id: res.data.workspace ? res.data.workspace.id : null,
+                workspace_id: res.data.workspace ? res.data.workspace.id : null,
                 folder_name: res.data.workspace ? res.data.workspace.name : null,
                 member_ids: res.data.member_ids,
                 members: res.data.members,
