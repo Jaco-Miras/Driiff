@@ -182,10 +182,10 @@ const DriffCreatePanel = (props) => {
     dispatch(addToModals(payload));
   };
 
-  const handleDriff = (e) => {
-    e.preventDefault();
-    history.push("/login");
-  };
+  // const handleDriff = (e) => {
+  //   e.preventDefault();
+  //   history.push("/login");
+  // };
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -329,14 +329,16 @@ const DriffCreatePanel = (props) => {
               </a>{" "}
             </span>
           </CheckBoxWrapper>
-          <div className="d-flex align-items-center mb-3 justify-content-center">
-            <ReCAPTCHA sitekey={"6Ld8FD8eAAAAAHCZgZslDOsoyKV7OUHRhiG78QSa"} onChange={onCaptchaChange} />
-          </div>
+          {agreed ? (
+            <div className="d-flex align-items-center mb-3 justify-content-center">
+              <ReCAPTCHA sitekey={"6Ld8FD8eAAAAAHCZgZslDOsoyKV7OUHRhiG78QSa"} onChange={onCaptchaChange} />
+            </div>
+          ) : null}
           <button className="btn btn-primary btn-block" onClick={handleRegister} disabled={!agreed || !captcha}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.register}
           </button>
-          <hr />
-          <a onClick={handleDriff}>{dictionary.login}</a>
+          {/* <hr />
+          <a onClick={handleDriff}>{dictionary.login}</a> */}
           {/* <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
             {dictionary.login}
           </button> */}
