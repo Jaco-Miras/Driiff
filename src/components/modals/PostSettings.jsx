@@ -51,16 +51,26 @@ const PostSettings = (props) => {
           type: "USER",
         };
       }),
-    {
-      id: require("shortid").generate(),
-      value: "all",
-      label: "All users",
-      icon: "users",
-      all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
-    },
+    // {
+    //   id: require("shortid").generate(),
+    //   value: "all",
+    //   label: "All users",
+    //   icon: "users",
+    //   all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
+    // },
   ];
-
-  //let requiredUserOptions = [...approverOptions];
+  if (approverOptions.length > 1) {
+    approverOptions = [
+      ...approverOptions,
+      {
+        id: require("shortid").generate(),
+        value: "all",
+        label: "All users",
+        icon: "users",
+        all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id),
+      },
+    ];
+  }
 
   let mustReadUserOptions = [...approverOptions];
 
@@ -104,12 +114,8 @@ const PostSettings = (props) => {
           ...prevState,
           [name]: !prevState[name],
           no_reply: !prevState[name] === true ? false : prevState["no_reply"],
-          // requiredUsers:
-          //   prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
-          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-          //     : prevState.requiredUsers,
           mustReplyUsers:
-            prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0
+            prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
               ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
               : prevState.mustReplyUsers,
         }));
@@ -119,12 +125,8 @@ const PostSettings = (props) => {
         setForm((prevState) => ({
           ...prevState,
           [name]: !prevState[name],
-          // requiredUsers:
-          //   prevState.requiredUsers.length === 0 && prevState.selectedAddressTo.length > 0
-          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-          //     : prevState.requiredUsers,
           mustReadUsers:
-            prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0
+            prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
               ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
               : prevState.mustReadUsers,
         }));
@@ -146,27 +148,6 @@ const PostSettings = (props) => {
       });
     }
   };
-
-  // const handleSelectRequiredUsers = (e) => {
-  //   if (e === null) {
-  //     setForm({
-  //       ...form,
-  //       requiredUsers: [],
-  //     });
-  //   } else {
-  //     if (e.find((a) => a.value === "all")) {
-  //       setForm({
-  //         ...form,
-  //         requiredUsers: e.filter((a) => a.value === "all"),
-  //       });
-  //     } else {
-  //       setForm({
-  //         ...form,
-  //         requiredUsers: e,
-  //       });
-  //     }
-  //   }
-  // };
 
   const handleSelectApprover = (e) => {
     if (e === null) {
