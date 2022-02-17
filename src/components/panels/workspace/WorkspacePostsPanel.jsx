@@ -376,13 +376,37 @@ const WorkspacePostsPanel = (props) => {
       };
 
       if (filter === "all") {
-        if (filters.all && !filters.all.hasMore) return;
+        if (filters.all && !filters.all.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "archive") {
-        if (filters.archived && !filters.archived.hasMore) return;
+        if (filters.archived && !filters.archived.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "star") {
-        if (filters.favourites && !filters.favourites.hasMore) return;
+        if (filters.favourites && !filters.favourites.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "my_posts") {
-        if (filters.myPosts && !filters.myPosts.hasMore) return;
+        if (filters.myPosts && !filters.myPosts.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       }
 
       let cb = (err, res) => {
