@@ -326,7 +326,7 @@ const WorkspacePostsPanel = (props) => {
     }
   }, [filter]);
 
-  const loadMoreUnreadPosts = () => {
+  const loadMoreUnreadPosts = (callback = () => {}) => {
     if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
       let payload = {
         filters: ["green_dot"],
@@ -334,6 +334,7 @@ const WorkspacePostsPanel = (props) => {
         skip: filters.unreadPosts.skip,
       };
       let cb = (err, res) => {
+        if (callback) callback();
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -360,13 +361,14 @@ const WorkspacePostsPanel = (props) => {
   const handleLoadMore = () => {
     if (search === "" && !post) {
       setLoading(true);
-      loadMoreWorkspaceCategory(() => {
+      let callback = () => {
         if (componentIsMounted.current) {
           setLoading(false);
           setLoadPosts(false);
         }
-      });
-      loadMoreUnreadPosts();
+      };
+      loadMoreWorkspaceCategory(callback);
+      loadMoreUnreadPosts(callback);
       let payload = {
         filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
