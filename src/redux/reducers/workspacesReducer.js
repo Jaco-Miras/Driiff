@@ -2988,6 +2988,15 @@ export default (state = INITIAL_STATE, action) => {
                       },
                     },
                   },
+                  ...(state.workspacePosts[ws.id].categories && {
+                    categories: {
+                      ...state.workspacePosts[ws.id].categories,
+                      closedPost: {
+                        ...state.workspacePosts[ws.id].categories.closedPost,
+                        count: state.workspacePosts[ws.id].categories.closedPost.count + 1,
+                      },
+                    },
+                  }),
                 };
               }
               return res;
@@ -3133,6 +3142,23 @@ export default (state = INITIAL_STATE, action) => {
                       must_reply_users: action.data.must_reply_users,
                     },
                   },
+                  ...(state.workspacePosts[ws.topic.id].categories && {
+                    ...state.workspacePosts[ws.topic.id].categories,
+                    mustRead: {
+                      ...state.mustRead,
+                      count:
+                        action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
+                          ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
+                          : state.workspacePosts[ws.topic.id].categories.mustRead.count,
+                    },
+                    mustReply: {
+                      ...state.mustReply,
+                      count:
+                        action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && u.must_reply)
+                          ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
+                          : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                    },
+                  }),
                 };
               }
               return res;
@@ -4215,6 +4241,47 @@ export default (state = INITIAL_STATE, action) => {
           }
           return acc;
         }, {}),
+      };
+    }
+    case "UPDATE_POST_CATEGORY_COUNT": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipients
+            .filter((r) => r.type === "TOPIC")
+            .reduce((res, ws) => {
+              if (state.workspacePosts[ws.id]) {
+                res[ws.id] = {
+                  ...state.workspacePosts[ws.id],
+                  ...(state.workspacePosts[ws.id].categories && {
+                    categories: {
+                      ...state.workspacePosts[ws.id].categories,
+                      mustRead: {
+                        ...state.mustRead,
+                        count:
+                          action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read)
+                            ? state.workspacePosts[ws.id].categories.mustRead.count + 1
+                            : state.workspacePosts[ws.id].categories.mustRead.count,
+                      },
+                      mustReply: {
+                        ...state.mustReply,
+                        count:
+                          action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && !u.must_reply)
+                            ? state.workspacePosts[ws.id].categories.mustReply.count + 1
+                            : state.workspacePosts[ws.id].categories.mutReply.count,
+                      },
+                      noReplies: {
+                        ...state.noReplies,
+                        count: action.data.is_read_only ? state.workspacePosts[ws.id].categories.noReplies.count + 1 : state.workspacePosts[ws.id].categories.noReplies.count,
+                      },
+                    },
+                  }),
+                };
+              }
+              return res;
+            }, {}),
+        },
       };
     }
     default:
