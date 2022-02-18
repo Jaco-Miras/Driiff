@@ -119,7 +119,7 @@ const SystemPeoplePanel = (props) => {
   const toaster = useToaster();
 
   useEffect(() => {
-    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
+    if (loggedUser.role.id <= 2) dispatch(getUsersWithoutActivity());
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
       userActions.fetchRoles();
@@ -251,7 +251,7 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(modal));
   };
 
-  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+  const isAdmin = loggedUser.role.id <= 2;
 
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
