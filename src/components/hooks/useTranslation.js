@@ -65,8 +65,8 @@ export const useTranslation = () => {
               ? `${dictionaryAPIUrl}/${language}`
               : language
               ? `https://driff.io/api/lang/${language}`
-              : driffSettings.companyLanguage
-              ? `https://driff.io/api/lang/${driffSettings.companyLanguage}`
+              : driffSettings.language
+              ? `https://driff.io/api/lang/${driffSettings.language}`
               : "https://driff.io/api/lang/nl",
         },
         (err, res) => {

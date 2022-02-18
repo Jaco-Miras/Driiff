@@ -178,3 +178,7 @@ export function incomingCompanyDescription(payload, callback) {
 export function incomingCompanyDashboardBackground(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_COMPANY_DASHBOARD_BACKGROUND", payload, callback);
 }
+
+export function incomingLoginSettings(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_LOGIN_SETTINGS", payload, callback);
+}

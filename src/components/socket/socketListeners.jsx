@@ -201,7 +201,16 @@ import {
   incomingUpdatedWIPComment,
   incomingProposalClap,
 } from "../../redux/actions/wipActions";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, incomingCompanyDescription, incomingCompanyDashboardBackground, updateSecuritySettings } from "../../redux/actions/adminActions";
+import {
+  incomingUpdatedSubscription,
+  incomingUpdatedCompanyLogo,
+  incomingPostAccess,
+  getPostAccess,
+  incomingCompanyDescription,
+  incomingCompanyDashboardBackground,
+  updateSecuritySettings,
+  incomingLoginSettings,
+} from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1196,6 +1205,11 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-login-option-notification", (e) => {
+        delete e.SOCKET_TYPE;
+        delete e.socket;
+        this.props.incomingLoginSettings(e);
+      })
       .listen(".update-security-option-notification", (e) => {
         this.props.updateSecuritySettings({
           password_policy: e.password_policy,
@@ -2552,6 +2566,7 @@ function mapDispatchToProps(dispatch) {
     incomingCompanyDescription: bindActionCreators(incomingCompanyDescription, dispatch),
     incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
     updatePostCategoryCount: bindActionCreators(updatePostCategoryCount, dispatch),
+    incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
   };
 }
 
