@@ -18,6 +18,12 @@ const BodyMentionDiv = styled.div`
   button {
     margin-right: 10px;
   }
+
+  #do-nothing-btn {
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.primary};
+    }
+  }
 `;
 const BodyMention = (props) => {
   const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false } = props;
@@ -146,7 +152,7 @@ const BodyMention = (props) => {
         <button className="btn btn-primary" onClick={handleAddToPost}>
           {addText}
         </button>
-        <button className="btn btn-outline-primary" onClick={handleDoNothing}>
+        <button id="do-nothing-btn" className="btn btn-outline-primary" onClick={handleDoNothing}>
           {dictionary.doNothing}
         </button>
       </div>

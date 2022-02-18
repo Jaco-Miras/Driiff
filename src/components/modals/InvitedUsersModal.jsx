@@ -220,13 +220,13 @@ const InvitedUsersModal = (props) => {
     let message = {};
     for (let i = 0; i < invitationItems.length; i++) {
       if (hasLastName) {
-        if (invitationItems[i].first_name !== "" || invitationItems[i].last_name !== "" || invitationItems[i].email !== "" || invitationItems[i].phone_number !== undefined) {
+        if (invitationItems[i].first_name.trim() === "" || invitationItems[i].last_name.trim() === "" || invitationItems[i].email.trim() === "" || invitationItems[i].phone_number === undefined) {
           if (typeof valid[i] === "undefined") {
             valid[i] = {};
             message[i] = {};
           }
 
-          if (invitationItems[i].first_name === "") {
+          if (invitationItems[i].first_name.trim() === "") {
             valid[i].first_name = false;
             message[i].first_name = "First name is required.";
             isValid = false;
@@ -234,7 +234,7 @@ const InvitedUsersModal = (props) => {
             valid[i].first_name = true;
           }
 
-          if (invitationItems[i].last_name === "") {
+          if (invitationItems[i].last_name.trim() === "") {
             valid[i].last_name = false;
             message[i].last_name = "Last name is required.";
             isValid = false;
@@ -242,7 +242,7 @@ const InvitedUsersModal = (props) => {
             valid[i].last_name = true;
           }
 
-          if (invitationItems[i].email === "" && invitationItems[i].phone_number === undefined) {
+          if (invitationItems[i].email.trim() === "" && invitationItems[i].phone_number === undefined) {
             valid[i].email = false;
             message[i].email = "Please put email or phone number";
             isValid = false;
@@ -261,13 +261,13 @@ const InvitedUsersModal = (props) => {
           }
         }
       } else {
-        if (invitationItems[i].name !== "" || invitationItems[i].email !== "") {
+        if (invitationItems[i].name.trim() === "" || invitationItems[i].email.trim() === "") {
           if (typeof valid[i] === "undefined") {
             valid[i] = {};
             message[i] = {};
           }
 
-          if (invitationItems[i].name === "") {
+          if (invitationItems[i].name.trim() === "") {
             valid[i].name = false;
             message[i].name = "Name is required.";
             isValid = false;
@@ -275,7 +275,7 @@ const InvitedUsersModal = (props) => {
             valid[i].name = true;
           }
 
-          if (invitationItems[i].email === "") {
+          if (invitationItems[i].email.trim() === "") {
             valid[i].email = false;
             message[i].email = "Email is required.";
             isValid = false;
