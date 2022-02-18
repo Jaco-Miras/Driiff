@@ -141,6 +141,7 @@ export default (state = INITIAL_STATE, action) => {
       let domains = state.driff.domains;
       let logo = state.driff.logo;
       let background = state.driff.background;
+      let language = state.driff.language;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -151,6 +152,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
+        if (s.language) language = s.language;
 
         //settings = { ...settings, ...s };
         if (s.custom_translation) {
@@ -180,6 +182,7 @@ export default (state = INITIAL_STATE, action) => {
           domains: domains,
           logo: logo,
           background: background,
+          language: language,
         },
       };
     }
