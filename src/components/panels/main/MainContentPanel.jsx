@@ -3,10 +3,10 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import RedirectPanel from "../redirect/RedirectPanel";
-import MaintenancePanel from "./MaintenancePanel";
+//import MaintenancePanel from "./MaintenancePanel";
 import DashboardPanel from "../dashboard/DashboardPanel";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
-const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
+//const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
 const CompanyFilesPanel = lazy(() => import("../company/CompanyFilesPanel"));
 const CompanyPeoplePanel = lazy(() => import("../company/CompanyPeoplePanel"));
 const CompanyPostsPanel = lazy(() => import("../company/CompanyPostsPanel"));
@@ -28,8 +28,7 @@ const MainContentPanel = (props) => {
 
   const loggedUser = useSelector((state) => state.session.user);
 
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
-  const isAdmin = loggedUser.role && loggedUser.role.name === "admin";
+  const isAdmin = loggedUser.role && loggedUser.role.id <= 1;
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
@@ -49,7 +48,8 @@ const MainContentPanel = (props) => {
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
-          {(isOwner || isAdmin) && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
+          {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
+          {isAdmin && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
           <Redirect
             from="*"
             to={{

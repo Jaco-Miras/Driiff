@@ -160,9 +160,7 @@ const MainSidebarLinks = (props) => {
                 {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
             )}
-            {user.role && ["owner", "admin"].includes(user.role.name) && (
-              <>{editCompany ? <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save" /> : <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil" />}</>
-            )}
+            {user.role && user.role.id <= 2 && <>{editCompany ? <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save" /> : <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil" />}</>}
           </li>
         )}
         {/* <li>
