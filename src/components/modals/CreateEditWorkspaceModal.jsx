@@ -14,7 +14,7 @@ import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, 
 import { useFileActions, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
-import { getExternalUsers } from "../../redux/actions/userAction";
+import { getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
@@ -1572,6 +1572,9 @@ const CreateEditWorkspaceModal = (props) => {
         team: currentUser ? true : null,
         name: null,
       }));
+    }
+    if (inactiveUsers.length === 0) {
+      dispatch(getArchivedUsers());
     }
     return () => dispatch(getExternalUsers());
   }, []);

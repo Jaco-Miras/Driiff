@@ -18,6 +18,7 @@ const INITIAL_STATE = {
   usersWithoutActivityLoaded: false,
   teams: {},
   teamsLoaded: false,
+  archivedUsersLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -273,6 +274,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         archivedUsers: action.data.users,
+        archivedUsersLoaded: true,
       };
     }
     case "INCOMING_ARCHIVED_USER": {

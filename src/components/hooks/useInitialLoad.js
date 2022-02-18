@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
-import { getUsers, getExternalUsers, getArchivedUsers, getTeams } from "../../redux/actions/userAction";
-import { getQuickLinks, getUnreadNotificationCounterEntries, getToDoDetail, getDrafts, getAllRecipients } from "../../redux/actions/globalActions";
+import { getUsers, getExternalUsers, getTeams } from "../../redux/actions/userAction";
+import { getUnreadNotificationCounterEntries, getToDoDetail, getAllRecipients } from "../../redux/actions/globalActions";
 import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, adjustHuddleDate, getUnpublishedAnswers, getSkippedAnswers, addHasUnpublishedAnswers } from "../../redux/actions/chatActions";
 import { getNotificationSettings, getSecuritySettings } from "../../redux/actions/adminActions";
 import { useChannelActions } from "../hooks";
@@ -32,14 +32,11 @@ const useInitialLoad = () => {
       dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
-          dispatch(getArchivedUsers());
           dispatch(getTeams());
-          dispatch(getQuickLinks());
           dispatch(getToDoDetail());
         })
       );
       dispatch(getExternalUsers());
-      dispatch(getDrafts());
       if (Object.keys(notifications).length === 0) {
         dispatch(
           getAllSnoozedNotification({}, () => {
