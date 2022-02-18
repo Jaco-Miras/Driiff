@@ -1014,6 +1014,10 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         },
+        closedPost: {
+          ...state.closedPost,
+          count: state.closedPost.count + 1,
+        },
       };
     }
     case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
@@ -1209,6 +1213,14 @@ export default (state = INITIAL_STATE, action) => {
               },
             }),
           },
+        },
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
         },
       };
     }
@@ -1708,6 +1720,23 @@ export default (state = INITIAL_STATE, action) => {
           ...state[action.data.mode],
           has_more: action.data.has_more,
           skip: action.data.skip,
+        },
+      };
+    }
+    case "UPDATE_POST_CATEGORY_COUNT": {
+      return {
+        ...state,
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read) ? state.mustRead.count + 1 : state.mustRead.count,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && !u.must_reply) ? state.mustReply.count + 1 : state.mustReply.count,
+        },
+        noReplies: {
+          ...state.noReplies,
+          count: action.data.is_read_only ? state.noReplies.count + 1 : state.noReplies.count,
         },
       };
     }

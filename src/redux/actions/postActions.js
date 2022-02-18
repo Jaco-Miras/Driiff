@@ -526,3 +526,7 @@ export function getWorkspacePostsByCategory(payload, callback) {
 export function updatePostCategory(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_POST_CATEGORY", payload, callback);
 }
+
+export function updatePostCategoryCount(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_POST_CATEGORY_COUNT", payload, callback);
+}
