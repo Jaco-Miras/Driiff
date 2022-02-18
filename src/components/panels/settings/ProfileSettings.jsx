@@ -1,11 +1,9 @@
 import momentTZ from "moment-timezone";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-//import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { CustomInput } from "reactstrap";
 import styled from "styled-components";
-//import { SvgIconFeather } from "../../common";
 import Flag from "../../common/Flag";
 import { useSettings, useTimeFormat, useToaster, useTranslationActions } from "../../hooks";
 import { getDriffName } from "../../hooks/useDriff";
@@ -13,8 +11,6 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
-//import { putLoginSettings } from "../../../redux/actions/adminActions";
-//import { updateCustomTranslationSettings } from "../../../redux/actions/settingsActions";
 
 const Wrapper = styled.div`
   .card {
@@ -76,15 +72,9 @@ const Wrapper = styled.div`
   }
 `;
 
-// const ReleaseLink = styled.span`
-//   font-weight: 500;
-//   cursor: pointer;
-// `;
-
 const ProfileSettings = (props) => {
   const { className = "" } = props;
 
-  //const history = useHistory();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -101,9 +91,6 @@ const ProfileSettings = (props) => {
     setPushSubscription,
     // driffSettings,
   } = useSettings();
-
-  // const loginSettings = useSelector((state) => state.admin.login);
-  // const domains = useSelector((state) => state.settings.driff.domains);
 
   const [triggerRender, setTriggerRender] = useState(false);
 
@@ -211,15 +198,6 @@ const ProfileSettings = (props) => {
         </>
       ),
     },
-    // {
-    //   value: "de",
-    //   label: (
-    //     <>
-    //       <Flag countryAbbr="de" className="mr-2" width="18" />
-    //       {_t("LANGUAGE.GERMAN", "German")}
-    //     </>
-    //   ),
-    // },
   ];
 
   const ChatLanguageOptions = [
@@ -489,31 +467,25 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully updated Language</span>);
   };
 
-  const handleChatLanguageChange = useCallback(
-    (e) => {
-      setGeneralSetting({
-        chat_language: e.value,
-        translated_channels: [],
-      });
-      setTimeout(function () {
-        localStorage.setItem("chat_translate_change", "1");
-      }, 1000);
-      toaster.success(<span>You have successfully updated chat target language</span>);
-    },
-    [setGeneralSetting]
-  );
+  const handleChatLanguageChange = (e) => {
+    setGeneralSetting({
+      chat_language: e.value,
+      translated_channels: [],
+    });
+    setTimeout(function () {
+      localStorage.setItem("chat_translate_change", "1");
+    }, 1000);
+    toaster.success(<span>You have successfully updated chat target language</span>);
+  };
 
-  const handleChatSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, checked, dataset } = e.target;
-      setChatSetting({
-        [name]: checked,
-      });
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setChatSetting]
-  );
+  const handleChatSwitchToggle = (e) => {
+    e.persist();
+    const { name, checked, dataset } = e.target;
+    setChatSetting({
+      [name]: checked,
+    });
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleGeneralSwitchToggle = (e) => {
     e.persist();
@@ -539,35 +511,32 @@ const ProfileSettings = (props) => {
     toaster.success(<span>{dataset.successMessage}</span>);
   };
 
-  const handleNotificationsSwitchToggle = useCallback(
-    (e) => {
-      e.persist();
-      const { name, dataset } = e.target;
-      if (notifications_on) {
-        const unregister = () => {
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.ready
-              .then((registration) => {
-                registration.unregister();
-              })
-              .catch((error) => {
-                console.error(error.message);
-              });
-          }
-        };
-        unregister();
-        setPushSubscription(false);
-        dispatch(deletePushSubscription({ user_id: loggedUser.id }));
-      } else {
-        setPushSubscription(null);
-      }
-      setGeneralSetting({
-        [name]: !notifications_on,
-      });
-      toaster.success(<span>{dataset.successMessage}</span>);
-    },
-    [setGeneralSetting]
-  );
+  const handleNotificationsSwitchToggle = (e) => {
+    e.persist();
+    const { name, dataset } = e.target;
+    if (notifications_on) {
+      const unregister = () => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.ready
+            .then((registration) => {
+              registration.unregister();
+            })
+            .catch((error) => {
+              console.error(error.message);
+            });
+        }
+      };
+      unregister();
+      setPushSubscription(false);
+      dispatch(deletePushSubscription({ user_id: loggedUser.id }));
+    } else {
+      setPushSubscription(null);
+    }
+    setGeneralSetting({
+      [name]: !notifications_on,
+    });
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
 
   const handleNotificationSoundChange = (e) => {
     setGeneralSetting({
@@ -596,20 +565,20 @@ const ProfileSettings = (props) => {
     toaster.success(<span>You have successfully sort channel</span>);
   };
 
-  const handleTimezoneChange = useCallback((e) => {
+  const handleTimezoneChange = (e) => {
     setGeneralSetting({ timezone: e.value });
     toaster.success(<span>You have successfully updated Timezone</span>);
-  }, []);
+  };
 
-  const handleDateFormatChange = useCallback((e) => {
+  const handleDateFormatChange = (e) => {
     setGeneralSetting({ date_format: e.value });
     toaster.success(<span>You have successfully updated Date format</span>);
-  }, []);
+  };
 
-  const handleTimeFormatChange = useCallback((e) => {
+  const handleTimeFormatChange = (e) => {
     setGeneralSetting({ time_format: e.value });
     toaster.success(<span>You have successfully updated Time format</span>);
-  }, []);
+  };
 
   // const handleSystemSettingsClick = () => {
   //   let a = document.createElement("a");
@@ -635,22 +604,6 @@ const ProfileSettings = (props) => {
     });
   };
 
-  // const handleViewReleasePage = () => {
-  //   history.push("/releases");
-  // };
-
-  // const handleTranslationToggle = (e) => {
-  //   const { dataset } = e.target;
-  //   const payload = {
-  //     ...loginSettings,
-  //     custom_translation: !driffSettings.settings.custom_translation,
-  //     domains: domains.toString(),
-  //   };
-  //   dispatch(putLoginSettings(payload));
-  //   dispatch(updateCustomTranslationSettings());
-  //   toaster.success(<span>{dataset.successMessage}</span>);
-  // };
-
   const handleVersionClick = (e) => {
     e.preventDefault();
     window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
@@ -660,15 +613,6 @@ const ProfileSettings = (props) => {
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
         <>
-          {/* {loggedUser.role.name === "owner" && (
-            <div className="card">
-              <div className="card-body">
-                <h6 className="card-title d-flex justify-content-between align-items-center mb-0">
-                  System Settings <SvgIconFeather className="cursor-pointer" icon="settings" onClick={handleSystemSettingsClick} />
-                </h6>
-              </div>
-            </div>
-          )} */}
           <div className="card">
             <div className="card-body">
               <h6 className="card-title d-flex justify-content-between align-items-center">{dictionary.chatSettingsTitle}</h6>
@@ -818,22 +762,6 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               </div>
-              {/* {loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && (
-                <div className="row mb-2">
-                  <div className="col-12 text-muted">
-                    <CustomInput
-                      className="cursor-pointer text-muted"
-                      checked={driffSettings.settings.custom_translation}
-                      type="switch"
-                      id="custom_translation"
-                      name="custom_translation"
-                      data-success-message={`${!driffSettings.settings.custom_translation ? "Custom translations enabled" : "Custom translations disabled"}`}
-                      onChange={handleTranslationToggle}
-                      label={<span>{dictionary.customTranslation}</span>}
-                    />
-                  </div>
-                </div>
-              )} */}
 
               {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "jessryll@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-2 mt-4">

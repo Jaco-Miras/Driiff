@@ -20,7 +20,7 @@ const BodyMentionDiv = styled.div`
   }
 `;
 const PostInputMention = (props) => {
-  const { onAddToPost, userMentionOnly = false, quillMentions = [], postRecipients = [], workspaceMembers = [] } = props;
+  const { onAddToPost, userMentionOnly = false, quillMentions = [], postRecipients = [], workspaceMembers = [], postAuthor } = props;
 
   const { _t } = useTranslationActions();
   const user = useSelector((state) => state.session.user);
@@ -54,6 +54,7 @@ const PostInputMention = (props) => {
       }
     })
     .flat();
+  userRecipientIds = [...userRecipientIds, postAuthor.id];
 
   const workspaceMentionIds = quillMentions
     .filter((m) => m.type === "TOPIC" && !topicRecipientIds.some((rid) => rid === parseInt(m.id)))

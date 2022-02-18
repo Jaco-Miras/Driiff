@@ -5,7 +5,7 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { PostBadge, PostRecipients } from "../index";
 import { useTimeFormat } from "../../../hooks";
-import { TodoCheckBox } from "../../../forms";
+import { PostCheckBox } from "../../../forms";
 //import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
@@ -117,18 +117,6 @@ const Wrapper = styled.li`
       height: 2rem;
     }
   }
-
-  // .ellipsis-hover {
-  //   position: relative;
-  //   cursor: pointer;
-
-  //   &:hover {
-  //     .recipient-names {
-  //       opacity: 1;
-  //       max-height: 300px;
-  //     }
-  //   }
-  // }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -152,7 +140,7 @@ const Author = styled.div`
   }
 `;
 
-const CheckBox = styled(TodoCheckBox)`
+const CheckBox = styled(PostCheckBox)`
   &.custom-checkbox {
     padding: 0;
   }
@@ -178,6 +166,19 @@ const HoverButtons = styled.div`
   }
 `;
 
+const CheckBoxContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+
+  > div {
+    box-shadow: ${({ focus }) => (focus ? "0 0 3pt 3pt cornflowerblue" : "")};
+    border-radius: 4px;
+  }
+`;
+
 const CompanyPostItemPanel = (props) => {
   const {
     className = "",
@@ -198,6 +199,8 @@ const CompanyPostItemPanel = (props) => {
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
 
   const [archivedClicked, setArchivedClicked] = useState(false);
+
+  const [checkboxFocus, setCheckboxFocus] = useState(false);
 
   const componentIsMounted = useRef(true);
 
@@ -261,6 +264,10 @@ const CompanyPostItemPanel = (props) => {
 
   const isUnread = post.is_unread === 1;
 
+  const handleCheckboxClick = (e) => {
+    toggleCheckbox(post);
+  };
+
   // const toggleTooltip = () => {
   //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   //   tooltips.forEach((tooltip) => {
@@ -269,65 +276,78 @@ const CompanyPostItemPanel = (props) => {
   // };
 
   return (
-    <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`} onClick={() => openPost(post, "/posts")}>
+    <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`}>
       <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
-      <PostContent>
-        <CheckBox name="test" checked={checked} onClick={() => toggleCheckbox(post.id)} disabled={disableCheckbox()} />
-        <Author className="d-flex ml-2 mr-2">
-          <Avatar
-            title={`FROM: ${post.author.name}`}
-            className="author-avatar mr-2"
-            id={post.author.id}
-            name={post.author.name}
-            imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
-          />
-        </Author>
-        <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
-          <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
-            <div className="text-truncate d-flex">
-              <span className="text-truncate">
-                {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
-                {post.title}
-              </span>
-              <HoverButtons className="hover-btns ml-1">
-                {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
-                  // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
-                  <Icon icon="pencil" onClick={handleEditPost} />
-                  // </Tooltip>
-                )}
-                {!disableOptions && !disableCheckbox() && (
-                  // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.archived}>
-                  <Icon icon="clock" onClick={handleArchivePost} />
-                  // </Tooltip>
-                )}
-              </HoverButtons>
-            </div>
-            <PostReplyCounter>
-              {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
-              {post.unread_count !== 0 && !post.is_close && post.is_archived !== 1 && post.is_unread === 1 && post.is_followed && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
-              <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
-              <span className="time-stamp text-muted">
-                <span>{fromNow(post.updated_at.timestamp)}</span>
-              </span>
-            </PostReplyCounter>
+      <div style={{ display: "flex" }}>
+        <CheckBoxContainer
+          onClick={handleCheckboxClick}
+          focus={checkboxFocus}
+          onMouseOver={() => {
+            setCheckboxFocus(true);
+          }}
+          onMouseLeave={() => setCheckboxFocus(false)}
+        >
+          <div>
+            <CheckBox name="test" checked={checked} disabled={disableCheckbox()} />
           </div>
-        </div>
-        <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
-        <div className="d-flex">
-          {post.type !== "draft_post" && !disableOptions && (
-            <MoreOptions className={"d-flex ml-2"} item={post} width={220} moreButton={"more-horizontal"}>
-              {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
-              {post.author && post.author.id === user.id && <div onClick={() => showModal("edit_company", post)}>{dictionary.editPost}</div>}
-              {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableCheckbox() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
-              <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-              {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-              <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-              <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
-              {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
-            </MoreOptions>
-          )}
-        </div>
-      </PostContent>
+        </CheckBoxContainer>
+        <PostContent onClick={() => openPost(post, "/posts")}>
+          <Author className="d-flex ml-2 mr-2">
+            <Avatar
+              title={`FROM: ${post.author.name}`}
+              className="author-avatar mr-2"
+              id={post.author.id}
+              name={post.author.name}
+              imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
+            />
+          </Author>
+          <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
+            <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
+              <div className="text-truncate d-flex">
+                <span className="text-truncate">
+                  {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+                  {post.title}
+                </span>
+                <HoverButtons className="hover-btns ml-1">
+                  {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
+                    // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
+                    <Icon icon="pencil" onClick={handleEditPost} />
+                    // </Tooltip>
+                  )}
+                  {!disableOptions && !disableCheckbox() && (
+                    // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.archived}>
+                    <Icon icon="clock" onClick={handleArchivePost} />
+                    // </Tooltip>
+                  )}
+                </HoverButtons>
+              </div>
+              <PostReplyCounter>
+                {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+                {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
+                <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
+                <span className="time-stamp text-muted">
+                  <span>{fromNow(post.updated_at.timestamp)}</span>
+                </span>
+              </PostReplyCounter>
+            </div>
+          </div>
+          <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
+          <div className="d-flex">
+            {post.type !== "draft_post" && !disableOptions && (
+              <MoreOptions className={"d-flex ml-2"} item={post} width={220} moreButton={"more-horizontal"}>
+                {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
+                {post.author && post.author.id === user.id && <div onClick={() => showModal("edit_company", post)}>{dictionary.editPost}</div>}
+                {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableCheckbox() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
+                <div onClick={() => sharePost(post)}>{dictionary.share}</div>
+                {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
+                <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
+              </MoreOptions>
+            )}
+          </div>
+        </PostContent>
+      </div>
     </Wrapper>
   );
 };

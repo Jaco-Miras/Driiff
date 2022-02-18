@@ -490,3 +490,7 @@ export function checkPostAccess(payload, callback) {
 export function getPostReadAndClap(payload, callback) {
   return dispatchActionToReducer(getPostReadAndClapService(payload), "GET_POST_READ_CLAP_START", "GET_POST_READ_CLAP_SUCCESS", "GET_POST_READ_CLAP_FAIL", callback);
 }
+
+export function setSelectedCompanyPost(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SELECTED_COMPANY_POST", payload, callback);
+}

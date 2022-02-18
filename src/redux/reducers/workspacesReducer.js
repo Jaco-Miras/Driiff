@@ -4114,6 +4114,26 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SET_SELECTED_POST": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...(state.workspacePosts[action.data.workspaceId] && {
+            [action.data.workspaceId]: {
+              ...state.workspacePosts[action.data.workspaceId],
+              posts: {
+                ...state.workspacePosts[action.data.workspaceId].posts,
+                [action.data.postId]: {
+                  ...state.workspacePosts[action.data.workspaceId].posts[action.data.postId],
+                  is_selected: action.data.isSelected,
+                },
+              },
+            },
+          }),
+        },
+      };
+    }
     case "INCOMING_COMPANY_DESCRIPTION": {
       return {
         ...state,

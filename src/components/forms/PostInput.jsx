@@ -304,6 +304,9 @@ const PostInput = forwardRef((props, ref) => {
       if (isApprover && !mainInput) {
         payload.has_reject = 1;
       }
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+        commentActions.markReplyRequirement(post);
+      }
       commentActions.create(payload, onSubmitCallback);
     }
 
@@ -590,6 +593,7 @@ const PostInput = forwardRef((props, ref) => {
           //userIds={mentionedUserIds}
           quillMentions={quillMentions}
           postRecipients={post.recipients}
+          postAuthor={post.author}
           workspaceMembers={workspaceMembers}
           type="post"
         />

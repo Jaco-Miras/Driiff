@@ -148,8 +148,11 @@ const FilesBody = (props) => {
         folder_id: params.fileFolderId,
       };
     }
-
-    actions.uploadFiles(payload);
+    const ids = uploads.files.map((f) => f.id);
+    const cb = (err, res) => {
+      actions.deleteWorkspaceFilesUpload({ topic_id: parseInt(params.workspaceId), fileIds: ids });
+    };
+    actions.uploadFiles(payload, cb);
   };
 
   const handleRemoveFolder = () => {
@@ -262,13 +265,11 @@ const FilesBody = (props) => {
                     <div className="row">
                       <DriveLinks disableOptions={disableOptions} />
                       {wsFiles &&
-                        fileIds.map((f) => {
-                          if (wsFiles.files.hasOwnProperty(f)) {
-                            return (
-                              <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} folders={folders} disableOptions={disableOptions} />
-                            );
-                          } else return null;
-                        })}
+                        Object.values(wsFiles.files)
+                          .filter((f) => f.folder_id === parseInt(params.fileFolderId))
+                          .map((f) => {
+                            return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
+                          })}
                     </div>
                     {wsFiles && fileIds.length === 0 && (
                       <EmptyState>
@@ -289,11 +290,13 @@ const FilesBody = (props) => {
               <>
                 <div className="row">
                   <DriveLinks disableOptions={disableOptions} />
-                  {fileIds.map((f) => {
-                    if (wsFiles.files.hasOwnProperty(f)) {
-                      return <FileListItem key={f} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[f]} folders={folders} disableOptions={disableOptions} />;
-                    } else return null;
-                  })}
+                  {wsFiles &&
+                    wsFiles.files &&
+                    Object.values(wsFiles.files)
+                      .filter((f) => f.folder_id === null)
+                      .map((f) => {
+                        return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
+                      })}
                 </div>
                 {wsFiles.popular_files.length > 0 && <PopularFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
                 {wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}

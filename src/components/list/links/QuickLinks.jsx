@@ -5,6 +5,8 @@ import { SvgIconFeather } from "../../common";
 import { LinkItem } from "./index";
 import { useSettings } from "../../hooks";
 
+const FONT_COLOR_DARK_MODE = "#CBD4DB";
+
 const Wrapper = styled.li`
   cursor: pointer;
   position: relative;
@@ -60,7 +62,7 @@ const LinkNav = styled.ul`
     width: 100%;
     padding: 0 10px;
     font-weight: 400;
-    color: ${({ theme }) => theme.colors.sidebarTextColor};
+    color: ${({ theme, dark_mode }) => (dark_mode === "1" ? FONT_COLOR_DARK_MODE : theme.colors.sidebarTextColor)};
     background: #ffffff14;
 
     > div {
@@ -130,6 +132,7 @@ const QuickLinks = (props) => {
   const { className = "", user, dictionary } = props;
 
   const { generalSettings, showModal } = useSettings();
+  const { dark_mode } = generalSettings;
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
 
   const httpsPattern = new RegExp("^(http|https)://");
@@ -180,7 +183,7 @@ const QuickLinks = (props) => {
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 
-      <LinkNav ref={ref.nav} className={showLinks ? "enter-active" : "leave-active"}>
+      <LinkNav ref={ref.nav} className={showLinks ? "enter-active" : "leave-active"} dark_mode={dark_mode}>
         <li className="personal-link shorcut-title-link">
           <div className="shorcut-title">{dictionary.personalLinks}</div>
         </li>

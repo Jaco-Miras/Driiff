@@ -15,3 +15,4 @@ export { default as CompanyPostInput } from "./CompanyPostInput";
 export { default as PostVisibilitySelect } from "./PostVisibilitySelect";
 export { default as DomainSelect } from "./DomainSelect";
 export { default as EmailPhoneInput } from "./EmailPhoneInput";
+export { default as PostCheckBox } from "./PostCheckBox";

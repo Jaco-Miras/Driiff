@@ -515,3 +515,11 @@ export function incomingUpdatedDriveLink(payload, callback) {
 export function incomingDeletedDriveLink(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_DELETED_DRIVE_LINK", payload, callback);
 }
+
+export function removeCompanyFilesUploadingBar(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_COMPANY_FILES_UPLOADING_BAR", payload, callback);
+}
+
+export function removeWorkspaceFilesUploadingBar(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_FILES_UPLOADING_BAR", payload, callback);
+}
