@@ -268,8 +268,8 @@ const UserOptions = (props) => {
 
   return (
     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}>
-      {user.active && user.type === "internal" && user.role && user.role.id === 3 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToAdmin}>{dictionary.assignAsAdmin}</div>}
-      {user.active && user.type === "internal" && user.role && user.role.id === 2 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToAdmin}>{dictionary.assignAsAdmin}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.name === "supervisor" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
       {user.active && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
       {user.active && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
       {user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}

@@ -304,8 +304,12 @@ const PeopleListItem = (props) => {
                   {loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
-                      {!showInactive && user.type === "internal" && user.role && user.role.id === 3 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsSupervisor}>{dictionary.assignAsAdmin}</div>}
-                      {!showInactive && user.type === "internal" && user.role && user.role.id === 2 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsEmployee}>{dictionary.assignAsEmployee}</div>}
+                      {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
+                        <div onClick={handleAssignAsSupervisor}>{dictionary.assignAsAdmin}</div>
+                      )}
+                      {!showInactive && user.type === "internal" && user.role && user.role.name === "supervisor" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
+                        <div onClick={handleAssignAsEmployee}>{dictionary.assignAsEmployee}</div>
+                      )}
                       {!showInactive && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
                       {showInactive && user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
