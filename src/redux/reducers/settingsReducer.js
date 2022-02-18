@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
-    companyLanguage: null,
+    language: null,
     theme: {
       colors: {
         primary: "#29323F",
@@ -485,6 +485,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           background: action.data,
+        },
+      };
+    }
+    case "INCOMING_LOGIN_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          language: action.data.language,
         },
       };
     }

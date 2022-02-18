@@ -76,12 +76,9 @@ const LoginSettingsBody = () => {
   };
 
   const componentIsMounted = useRef(true);
-  const iconDropZone = useRef(null);
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
-
-  const logo = useSelector((state) => state.settings.driff.logo);
 
   const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
@@ -90,7 +87,7 @@ const LoginSettingsBody = () => {
   const custom_translation = useSelector((state) => state.settings.driff.settings.custom_translation);
   const themes = useSelector((state) => state.settings.driff.theme);
 
-  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
+  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains } = useAdminActions();
 
   const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation });
   const [saving, setSaving] = useState(false);
@@ -243,46 +240,6 @@ const LoginSettingsBody = () => {
     tooltips.forEach((tooltip) => {
       tooltip.parentElement.classList.toggle("tooltip-active");
     });
-  };
-
-  const [showIconDropzone, setShowIconDropzone] = useState(false);
-
-  const handleUploadIcon = (file, fileUrl) => {
-    let payload = {
-      file: file,
-      code: "code",
-    };
-    let cb = (err, res) => {
-      if (err) return;
-      toast.success(dictionary.uploadSuccess);
-    };
-    uploadLogo(payload, cb);
-  };
-
-  const dropIconAction = (uploadedFiles) => {
-    if (uploadedFiles.length === 0) {
-      toast.error(dictionary.fileTypeError);
-    } else if (uploadedFiles.length > 1) {
-      toast.warning(dictionary.multipleFileError);
-    }
-
-    handleUploadIcon(uploadedFiles[0]);
-  };
-
-  const handleOpenDropzone = () => {
-    if (iconDropZone.current) iconDropZone.current.open();
-  };
-
-  const handleHideIconDropzone = () => {
-    setShowIconDropzone(false);
-  };
-
-  const handleRemoveLogo = () => {
-    let cb = (err, res) => {
-      if (err) return;
-      toast.success(dictionary.resetLogoSuccess);
-    };
-    resetLogo({}, cb);
   };
 
   return (

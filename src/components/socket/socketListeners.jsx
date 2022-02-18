@@ -186,7 +186,16 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, updateSecuritySettings, incomingCompanyDescription, incomingCompanyDashboardBackground } from "../../redux/actions/adminActions";
+import {
+  incomingUpdatedSubscription,
+  incomingUpdatedCompanyLogo,
+  incomingPostAccess,
+  getPostAccess,
+  updateSecuritySettings,
+  incomingCompanyDescription,
+  incomingCompanyDashboardBackground,
+  incomingLoginSettings,
+} from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -1101,6 +1110,11 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-login-option-notification", (e) => {
+        delete e.SOCKET_TYPE;
+        delete e.socket;
+        this.props.incomingLoginSettings(e);
+      })
       .listen(".update-security-option-notification", (e) => {
         this.props.updateSecuritySettings({
           password_policy: e.password_policy,
@@ -2444,6 +2458,7 @@ function mapDispatchToProps(dispatch) {
     updateSecuritySettings: bindActionCreators(updateSecuritySettings, dispatch),
     incomingCompanyDescription: bindActionCreators(incomingCompanyDescription, dispatch),
     incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
+    incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
   };
 }
 
