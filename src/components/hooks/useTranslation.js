@@ -95,7 +95,7 @@ export const useTranslation = () => {
       )
     );
     localStorage.setItem(cookieName.lang, language);
-  }, [language, driffSettings.settings.custom_translation]);
+  }, [driffSettings.language, language, driffSettings.settings.custom_translation]);
 
   // useEffect(() => {
   //   if (dictFile) {
