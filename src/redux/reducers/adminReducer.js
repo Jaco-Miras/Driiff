@@ -14,7 +14,7 @@ const INITIAL_STATE = {
     magic_link: true,
     sign_up: true,
     password_login: true,
-    //login_email: true,
+    login_mode: "email",
   },
   security: {
     password_policy: 0,
@@ -67,6 +67,7 @@ export default (state = INITIAL_STATE, action) => {
         filters: { ...action.data.filters },
       };
     }
+    case "INCOMING_LOGIN_SETTINGS":
     case "PUT_LOGIN_SETTINGS_SUCCESS": {
       return {
         ...state,

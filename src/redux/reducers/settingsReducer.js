@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
+    login_mode: "email",
     theme: {
       colors: {
         primary: "#29323F",
@@ -38,7 +39,7 @@ const INITIAL_STATE = {
       password_login: true,
       sign_up: true,
       custom_translation: false,
-      login_email: true,
+      login_mode: true,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -141,6 +142,7 @@ export default (state = INITIAL_STATE, action) => {
       let domains = state.driff.domains;
       let logo = state.driff.logo;
       let background = state.driff.background;
+      let login_mode = state.driff.login_mode;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -151,6 +153,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
+        if (s.login_mode) login_mode = s.login_mode;
 
         //settings = { ...settings, ...s };
         if (s.custom_translation) {
@@ -180,6 +183,7 @@ export default (state = INITIAL_STATE, action) => {
           domains: domains,
           logo: logo,
           background: background,
+          login_mode: login_mode,
         },
       };
     }
@@ -485,6 +489,16 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           background: action.data,
+        },
+      };
+    }
+    case "INCOMING_LOGIN_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          language: action.data.language,
+          login_mode: action.data.login_mode,
         },
       };
     }
