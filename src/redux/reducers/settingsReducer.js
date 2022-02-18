@@ -144,6 +144,7 @@ export default (state = INITIAL_STATE, action) => {
       let logo = state.driff.logo;
       let background = state.driff.background;
       let login_mode = state.driff.login_mode;
+      let language = state.driff.language;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -155,6 +156,7 @@ export default (state = INITIAL_STATE, action) => {
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
         if (s.login_mode) login_mode = s.login_mode;
+        if (s.language) language = s.language;
         if (s.hasOwnProperty("maintenance_mode") || s.hasOwnProperty("google_login") || s.hasOwnProperty("magic_link") || s.hasOwnProperty("password_login") || s.hasOwnProperty("sign_up") || s.hasOwnProperty("custom_translation")) {
           settings = { ...settings, ...s };
         }
@@ -187,6 +189,7 @@ export default (state = INITIAL_STATE, action) => {
           logo: logo,
           background: background,
           login_mode: login_mode,
+          language: language,
         },
       };
     }
