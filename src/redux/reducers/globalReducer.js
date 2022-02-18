@@ -4,6 +4,7 @@ import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/da
 
 const INITIAL_STATE = {
   user: null,
+  draftsLoaded: false,
   i18nLoaded: false,
   recipients: [],
   recipientsLoaded: false,
@@ -721,6 +722,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.releases,
           items: [...drafts, ...state.releases.items],
         },
+        draftsLoaded: true,
       };
     }
     case "UPDATE_DRAFT_SUCCESS": {

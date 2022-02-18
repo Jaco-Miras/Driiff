@@ -9,7 +9,8 @@ import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
-import { getAllRecipients } from "../../redux/actions/globalActions";
+import { getAllRecipients, getDrafts } from "../../redux/actions/globalActions";
+import { getArchivedUsers } from "../../redux/actions/userAction";
 
 const useQuillModules = ({
   mode,
@@ -31,7 +32,9 @@ const useQuillModules = ({
   // const [mentionOpen, setMentionOpen] = useState(false)
   const recipients = useSelector((state) => state.global.recipients);
   const recipientsLoaded = useSelector((state) => state.global.recipientsLoaded);
+  const draftsLoaded = useSelector((state) => state.global.draftsLoaded);
   const userMentions = useSelector((state) => state.users.users);
+  const archivedUsersLoaded = useSelector((state) => state.users.archivedUsersLoaded);
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const previousChannel = usePreviousValue(selectedChannel);
@@ -353,6 +356,12 @@ const useQuillModules = ({
     handleSetModule();
     if (!recipientsLoaded) {
       dispatch(getAllRecipients());
+    }
+    if (!archivedUsersLoaded) {
+      dispatch(getArchivedUsers());
+    }
+    if (!draftsLoaded) {
+      dispatch(getDrafts());
     }
   }, []);
 
