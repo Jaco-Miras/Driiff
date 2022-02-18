@@ -14,8 +14,8 @@ const INITIAL_STATE = {
     magic_link: true,
     sign_up: true,
     password_login: true,
-    login_email: true,
     language: null,
+    login_mode: "email",
   },
   security: {
     password_policy: 0,

@@ -57,7 +57,8 @@ const LoginPanel = (props) => {
     valid: {},
     message: {},
   });
-  const [registerMode, setRegisterMode] = useState("email");
+
+  const [registerMode, setRegisterMode] = useState(driffSettings.login_mode);
 
   const toggleCheck = useCallback(
     (e) => {
@@ -269,9 +270,15 @@ const LoginPanel = (props) => {
     handleEmailNumberChange(registerMode === "email" ? "" : undefined);
   }, [registerMode]);
 
+  useEffect(() => {
+    if (driffSettings.login_mode === "mobile") setRegisterMode("number");
+    else setRegisterMode("email");
+  }, [driffSettings.login_mode]);
+
   if ($_GET("code") && $_GET("state")) {
     return <Wrapper className="fadeIn"></Wrapper>;
   }
+
   return (
     <Wrapper className="fadeIn">
       <>

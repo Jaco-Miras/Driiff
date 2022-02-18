@@ -88,7 +88,7 @@ const LoginSettingsBody = () => {
 
   const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains } = useAdminActions();
 
-  const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation, login_email: true });
+  const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation });
   const [saving, setSaving] = useState(false);
   const [domainInput, setDomainInput] = useState("");
   const [selectedDomains, setSelectedDomains] = useState(
@@ -156,11 +156,11 @@ const LoginSettingsBody = () => {
 
   const loginOptions = [
     {
-      value: false,
+      value: "mobile",
       label: "Mobile",
     },
     {
-      value: true,
+      value: "email",
       label: "Email",
     },
   ];
@@ -252,7 +252,9 @@ const LoginSettingsBody = () => {
     });
   };
 
-  const handleSelectLogin = (e) => {};
+  const handleSelectLogin = (e) => {
+    setSettings({ ...settings, login_mode: e.value });
+  };
 
   return (
     <Wrapper>
@@ -384,7 +386,7 @@ const LoginSettingsBody = () => {
               className={"react-select-container"}
               classNamePrefix="react-select"
               styles={dark_mode === "0" ? lightTheme : darkTheme}
-              value={loginOptions.find((o) => o.value === settings.login_email)}
+              value={loginOptions.find((o) => o.value === settings.login_mode)}
               onChange={handleSelectLogin}
               options={loginOptions}
             />
