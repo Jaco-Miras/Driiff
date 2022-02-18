@@ -82,7 +82,7 @@ const GrippUser = (props) => {
                       <ToolTip content={user.email}>
                         <span className="mr-2">{user.name.trim() === "" ? user.email : user.name}</span>
                       </ToolTip>
-                      {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
+                      {user.role && user.role.id <= 2 && (
                         <ToolTip content={"This is an administrator account"}>
                           <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
                         </ToolTip>

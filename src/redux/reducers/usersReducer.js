@@ -264,7 +264,7 @@ export default (state = INITIAL_STATE, action) => {
             role: {
               ...state.users[action.data.user_id].role,
               name: action.data.role.name,
-              display_name: action.data.role.name === "admin" ? "Site Admin" : "Employee",
+              display_name: action.data.role.name === "supervisor" ? "Supervisor" : "Employee",
             },
           },
         },

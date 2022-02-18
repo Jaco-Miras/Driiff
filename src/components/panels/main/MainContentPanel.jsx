@@ -28,8 +28,7 @@ const MainContentPanel = (props) => {
 
   const loggedUser = useSelector((state) => state.session.user);
 
-  const isOwner = loggedUser.role && loggedUser.role.id === 1;
-  const isAdmin = loggedUser.role && loggedUser.role.id === 2;
+  const isAdmin = loggedUser.role && loggedUser.role.id <= 1;
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
@@ -50,7 +49,7 @@ const MainContentPanel = (props) => {
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />
           {/* {!isExternal && <Route {...props} component={ZoomPanel} path={["/zoom/:channelId", "/zoom"]} />} */}
-          {(isOwner || isAdmin) && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
+          {isAdmin && <Route {...props} component={AdminPanel} path={["/admin-settings", "/admin-settings/:page", "/admin-settings/:page/:subpage"]} />}
           <Redirect
             from="*"
             to={{

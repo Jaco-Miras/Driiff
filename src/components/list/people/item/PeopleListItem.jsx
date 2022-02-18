@@ -134,42 +134,21 @@ const PeopleListItem = (props) => {
     if (onChatClick) onChatClick(user);
   };
 
-  const handleUpdateRole = (role) => {
+  const handleAssignAsSupervisor = () => {
     let payload = {
       user_id: user.id,
-      role_id: roles[role],
+      role_id: roles["supervisor"],
     };
     onUpdateRole(payload);
   };
 
-  // refactor - should be handled in css
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     if (refs.content.current) {
-  //       let width = refs.content.current.clientWidth - 150;
-
-  //       let el = refs.content.current.querySelector(".button-wrapper");
-  //       if (el) {
-  //         width -= el.clientWidth;
-  //       }
-
-  //       el = refs.content.current.querySelector(".avatar");
-  //       if (el) {
-  //         width -= el.clientWidth;
-  //       }
-
-  //       el = refs.content.current.querySelector(".label-wrapper");
-  //       if (el) {
-  //         width -= el.clientWidth;
-  //       }
-
-  //       setUserNameMaxWidth(width);
-  //     }
-  //   };
-  //   window.addEventListener("resize", handleResize);
-  //   handleResize();
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
+  const handleAssignAsEmployee = () => {
+    let payload = {
+      user_id: user.id,
+      role_id: roles["employee"],
+    };
+    onUpdateRole(payload);
+  };
 
   const handleArchiveUser = () => {
     onArchiveUser(user);
@@ -294,7 +273,7 @@ const PeopleListItem = (props) => {
                       <div className="mr-2 d-flex">
                         {renderUserName({ user })}
                         {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
-                        {user.role && (user.role.name === "owner" || user.role.name === "admin") && (
+                        {user.role && user.role.id <= 2 && (
                           <ToolTip content={"This is an administrator account"}>
                             <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
                           </ToolTip>
@@ -325,12 +304,8 @@ const PeopleListItem = (props) => {
                   {loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
-                      {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
-                        <div onClick={() => handleUpdateRole("admin")}>{dictionary.assignAsAdmin}</div>
-                      )}
-                      {!showInactive && user.type === "internal" && user.role && user.role.name === "admin" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
-                        <div onClick={() => handleUpdateRole("employee")}>{dictionary.assignAsEmployee}</div>
-                      )}
+                      {!showInactive && user.type === "internal" && user.role && user.role.id === 3 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsSupervisor}>{dictionary.assignAsAdmin}</div>}
+                      {!showInactive && user.type === "internal" && user.role && user.role.id === 2 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsEmployee}>{dictionary.assignAsEmployee}</div>}
                       {!showInactive && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
                       {showInactive && user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}
