@@ -274,7 +274,7 @@ const enlargeEmoji = (textWithHtml) => {
   const isEmojiWithString = bodyWithoutEmoji.match(stringPattern); //check if body has text and emoji
   const isMultipleEmojisOnly = el.textContent.trim().match(pattern) && el.textContent.trim().match(pattern).length > 1; //if message is only emoji but multiple
   if (isEmojiWithString || isMultipleEmojisOnly) {
-    return el.innerHTML.replace(pattern, '<span style="font-size: 24px">$1</span>');
+    return el.innerHTML.replace(pattern, '<span class="font-size-24">$1</span>');
   }
   return el.innerHTML;
 };
