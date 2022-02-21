@@ -90,6 +90,18 @@ const Wrapper = styled.div`
   }`}
 `;
 
+const StyledLink = styled.a`
+  color: ${(props) => props.theme.colors.primary}!important;
+  cursor: pointer;
+  :hover {
+    text-decoration: underline !important;
+  }
+`;
+
+const StyledWelcomeNote = styled.div`
+  font-size: 12px;
+`;
+
 const GuestLayout = (props) => {
   useUserLogin(props);
 
@@ -151,11 +163,19 @@ const GuestLayout = (props) => {
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
+    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "The time saving collaboration platform for agencies "),
+    welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
+    setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
   const [countryCode, setCountryCode] = useState(null);
+
+  const loginClick = (e) => {
+    e.preventDefault();
+    history.push("/login");
+  };
 
   useEffect(() => {
     fetch("https://ipapi.co/json/")
@@ -208,43 +228,55 @@ const GuestLayout = (props) => {
   }, [location]);
 
   return (
-    <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"}>
-      <LoginLogo />
-      {/* <div id="logo">
+    <>
+      <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"}>
+        <LoginLogo />
+        {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div> */}
-      {driffSettings.settings.maintenance_mode ? (
-        <>
-          <h5 className="title">Maintenance Mode</h5>
-        </>
-      ) : (
-        <>
-          <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
-            {title}
-            {$_GET("code") && $_GET("state") && (
-              <>
-                <span>.</span>
-                <span>.</span>
-                <span>.</span>
-              </>
-            )}
-          </h5>
-          {location.pathname === "/driff-register" && <div className="mb-3">{dictionary.noCreditCard}</div>}
-          <Suspense fallback={<div></div>}>
-            <Switch>
-              <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-              <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-              <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-              <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-              <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-              <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
-              <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
-              <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
-            </Switch>
-          </Suspense>
-        </>
+        {driffSettings.settings.maintenance_mode ? (
+          <>
+            <h5 className="title">Maintenance Mode</h5>
+          </>
+        ) : (
+          <>
+            <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
+              {title}
+              {$_GET("code") && $_GET("state") && (
+                <>
+                  <span>.</span>
+                  <span>.</span>
+                  <span>.</span>
+                </>
+              )}
+            </h5>
+            {location.pathname === "/driff-register" && <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>}
+            <Suspense fallback={<div></div>}>
+              <Switch>
+                <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
+                <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
+                <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+                <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
+              </Switch>
+            </Suspense>
+          </>
+        )}
+      </Wrapper>
+      {location.pathname === "/driff-register" && (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <StyledLink href="#" onClick={loginClick}>
+            {dictionary.login}
+          </StyledLink>
+        </div>
       )}
-    </Wrapper>
+    </>
   );
 };
 
