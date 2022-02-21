@@ -51,6 +51,10 @@ const INITIAL_STATE = {
     pricingFetched: false,
     productsFetched: false,
   },
+  allWorkspaces: {},
+  allWorkspacesLoaded: false,
+  allWorkspacesCount: 0,
+  allWorkspacesPage: 1,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -296,6 +300,19 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         security: action.data,
         securityLoaded: true,
+      };
+    }
+    case "GET_ALL_WORKSPACES_SUCCESS": {
+      return {
+        ...state,
+        allWorkspacesLoaded: true,
+        allWorkspaces: {
+          ...state.allWorkspaces,
+          [action.data.current_page]: action.data.data,
+        },
+        allWorkspacesCount: action.data.total,
+        allWorkspacesPage: action.data.current_page,
+        allWorkspacesLastPage: action.data.last_page,
       };
     }
     default:

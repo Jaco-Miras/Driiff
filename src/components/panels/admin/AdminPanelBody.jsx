@@ -9,6 +9,7 @@ import SupportBody from "./SupportBody";
 import SubscriptionBody from "./SubscriptionBody";
 import StylingSettingsBody from "./StylingSettingsBody";
 import SecuritySettingsBody from "./SecuritySettingsBody";
+import WorkspaceBody from "./WorkspacesBody";
 
 const Wrapper = styled.div`
   overflow: visible !important;
@@ -19,6 +20,7 @@ const AdminPanelBody = (props) => {
   return (
     <Wrapper className={"card"}>
       <Switch>
+        <Route {...props} component={WorkspaceBody} path={["/admin-settings/workspaces"]} />
         <Route {...props} component={AutomationBody} path={["/admin-settings/automation", "/admin-settings/automation/:subpage"]} />
         <Route {...props} component={LoginSettingsBody} path={["/admin-settings/settings"]} />
         <Route {...props} component={QuickLinksBody} path={["/admin-settings/quick-links"]} />

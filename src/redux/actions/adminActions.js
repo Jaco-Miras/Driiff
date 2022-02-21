@@ -29,6 +29,7 @@ import {
   uploadDashboardBg as uploadDashboardBgService,
   putCompanyDescription as putCompanyDescriptionService,
   sendRequestPassword as sendRequestPasswordService,
+  getAllWorkspaces as getAllWorkspacesService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -181,4 +182,12 @@ export function incomingCompanyDashboardBackground(payload, callback) {
 
 export function incomingLoginSettings(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_LOGIN_SETTINGS", payload, callback);
+}
+
+export function getAllWorkspaces(payload, callback) {
+  return dispatchActionToReducer(getAllWorkspacesService(payload), "GET_ALL_WORKSPACES_START", "GET_ALL_WORKSPACES_SUCCESS", "GET_ALL_WORKSPACES_FAILURE", callback);
+}
+
+export function updateAllWorkspacesPage(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_ALL_WORKSPACES_PAGE", payload, callback);
 }
