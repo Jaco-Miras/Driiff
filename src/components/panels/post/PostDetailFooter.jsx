@@ -605,7 +605,7 @@ const PostDetailFooter = (props) => {
   const requestForChangeCallback = (err, res) => {
     if (err) return;
     if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
-      postActions.markReplyRequirement(post);
+      //postActions.markReplyRequirement(post);
       //check if post is also set as must read
       let triggerRead = true;
       if (post.is_must_read && post.author.id !== user.id) {
