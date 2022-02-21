@@ -32,6 +32,7 @@ const AdminPanelFilters = (props) => {
     support: _t("ADMIN.FILTER_SUPPORT", "Support desk"),
     company: _t("ADMIN.FILTER_COMPANYSETTINGS", "Company Settings"),
     securitySettings: _t("ADMIN.SECURITY_SETTINGS", "Security settings"),
+    allWorkspaces: _t("ADMIN.ALL_WORKSPACES", "All workspaces"),
   };
   const { setAdminFilter } = useAdminActions();
   const history = useHistory();
@@ -51,6 +52,9 @@ const AdminPanelFilters = (props) => {
 
   return (
     <Wrapper className={"list-group list-group-flush"}>
+      <li className={`list-group-item d-flex align-items-center ${filters["workspaces"] ? "active" : ""}`} data-value="workspaces" onClick={handleClickFilter}>
+        {dictionary.allWorkspaces}
+      </li>
       <li className={`list-group-item d-flex align-items-center ${filters["automation"] ? "active" : ""}`} data-value="automation" onClick={handleClickFilter}>
         {dictionary.automation}
       </li>

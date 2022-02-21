@@ -32,6 +32,7 @@ export {
   sendRequestPassword,
   uploadDashboardBg,
   putCompanyDescription,
+  getAllWorkspaces,
 } from "./admin";
 export {
   getGlobalRecipients,

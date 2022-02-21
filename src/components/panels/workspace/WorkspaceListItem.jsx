@@ -60,7 +60,7 @@ const StarIcon = styled(SvgIconFeather)`
 
 const WorkspaceListItem = (props) => {
   const { actions, dictionary, item } = props;
-  const workspaceMembers = item.members
+  const workspaceMembers = Object.values(item.members)
     .map((m) => {
       if (m.member_ids) {
         return m.member_ids;

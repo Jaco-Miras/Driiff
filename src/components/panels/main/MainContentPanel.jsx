@@ -28,7 +28,7 @@ const MainContentPanel = (props) => {
 
   const loggedUser = useSelector((state) => state.session.user);
 
-  const isOwner = loggedUser.role && loggedUser.role.name === "owner";
+  const isOwner = loggedUser.role && loggedUser.role.id === 1;
   const isAdmin = loggedUser.role && loggedUser.role.name === "admin";
 
   return (
