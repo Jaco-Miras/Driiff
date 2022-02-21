@@ -22,6 +22,7 @@ const INITIAL_STATE = {
     logo: "",
     background: null,
     login_mode: "email",
+    language: null,
     theme: {
       colors: {
         primary: "#29323F",
@@ -143,6 +144,7 @@ export default (state = INITIAL_STATE, action) => {
       let logo = state.driff.logo;
       let background = state.driff.background;
       let login_mode = state.driff.login_mode;
+      let language = state.driff.language;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -154,6 +156,7 @@ export default (state = INITIAL_STATE, action) => {
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
         if (s.login_mode) login_mode = s.login_mode;
+        if (s.language) language = s.language;
 
         //settings = { ...settings, ...s };
         if (s.custom_translation) {
@@ -184,6 +187,7 @@ export default (state = INITIAL_STATE, action) => {
           logo: logo,
           background: background,
           login_mode: login_mode,
+          language: language,
         },
       };
     }

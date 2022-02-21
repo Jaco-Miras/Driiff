@@ -15,6 +15,7 @@ const INITIAL_STATE = {
     sign_up: true,
     password_login: true,
     login_mode: "email",
+    language: null,
   },
   security: {
     password_policy: 0,

@@ -7,8 +7,12 @@ import { updateThemeColors } from "../../../redux/actions/settingsActions";
 import { putLoginSettings } from "../../../redux/actions/adminActions";
 import { BlockPicker } from "react-color";
 import { CustomInput } from "reactstrap";
+import Select from "react-select";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import colorWheel from "../../../assets/img/svgs/RGB_color_wheel_12.svg";
 import { putNotificationSettings, getNotificationSettings } from "../../../redux/actions/adminActions";
+import Flag from "../../common/Flag";
+import { Loader } from "../../common";
 
 const Wrapper = styled.div`
   display: flex;
@@ -97,6 +101,22 @@ const ColorWheelIcon = styled.img`
   cursor: pointer;
 `;
 
+const LabelInfoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  label {
+    margin: 0 !important;
+  }
+  margin-bottom: 0.5rem;
+`;
+
+const LoaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+`;
+
 function StylingSettingsBody() {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
@@ -135,17 +155,45 @@ function StylingSettingsBody() {
     saveNotification: _t("BUTTON.SAVE_NOTIFICATION", "Save notification"),
     notifications: _t("NOTIFICATIONS", "Notifications"),
     styling: _t("STYLING", "Styling"),
+    dashboardBg: _t("LABEL.DASHBOARD_BACKGROUND", "Dashboard background"),
+    uploadBg: _t("BUTTON.UPLOAD_BACKGROUND", "Upload background"),
+    languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
+    companyLanguage: _t("SETTINGS.COMPANY_LANGUAGE_LABEL", "Company language"),
+    updateLanguage: _t("BUTTON.UPDATE_LANGUAGE", "Update language"),
+    toasterSettingsUpdated: _t("TOASTER.COMPANY_SETTINGS_UPDATED", "Successfully updated company settings"),
   };
+
+  const languageOptions = [
+    {
+      value: "en",
+      label: (
+        <>
+          <Flag countryAbbr="en" className="mr-2" width="18" />
+          {_t("LANGUAGE.ENGLISH", "English")}
+        </>
+      ),
+    },
+    {
+      value: "nl",
+      label: (
+        <>
+          <Flag countryAbbr="nl" className="mr-2" width="18" />
+          {_t("LANGUAGE.DUTCH", "Dutch")}
+        </>
+      ),
+    },
+  ];
 
   const iconDropZone = useRef(null);
   const [showIconDropzone, setShowIconDropzone] = useState(false);
   const bgDropZone = useRef(null);
   const [showBgDropzone, setShowBgDropzone] = useState(false);
   const toast = useToaster();
-  const { uploadLogo, resetLogo, uploadDashboardBackground } = useAdminActions();
+  const { uploadLogo, resetLogo, uploadDashboardBackground, fetchLoginSettings } = useAdminActions();
   const logo = useSelector((state) => state.settings.driff.logo);
   const theme = useSelector((state) => state.settings.driff.theme);
   const origTheme = useSelector((state) => state.settings.origTheme);
+  const loginFetched = useSelector((state) => state.admin.loginFetched);
   const loginSettings = useSelector((state) => state.admin.login);
   const custom_translation = useSelector((state) => state.settings.driff.settings.custom_translation);
   const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation });
@@ -161,18 +209,26 @@ function StylingSettingsBody() {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const [notifications, setNotifications] = useState(notificationSettings);
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
+  const { dark_mode } = generalSettings;
 
   useEffect(() => {
     if (!notificationsLoaded) {
       dispatch(
         getNotificationSettings({}, (err, res) => {
           if (err) return;
-          console.log(res.data);
           setNotifications(res.data);
         })
       );
     }
+    if (!loginFetched) {
+      fetchLoginSettings({});
+    }
   }, []);
+
+  useEffect(() => {
+    setSettings(loginSettings);
+  }, [loginSettings]);
 
   const handleUploadIcon = (file, fileUrl) => {
     let payload = {
@@ -287,7 +343,7 @@ function StylingSettingsBody() {
     dispatch(
       putLoginSettings(payload, (err, res) => {
         if (err) return;
-        toast.success(dictionary.toasterStylingSuccess);
+        toast.success(dictionary.toasterSettingsUpdated);
       })
     );
     dispatch(updateThemeColors({ colors: colors }));
@@ -348,241 +404,271 @@ function StylingSettingsBody() {
     );
   };
 
+  const handleSelectLanguage = (e) => {
+    setSettings({ ...settings, language: e.value });
+  };
+
   return (
-    <div>
-      <Wrapper theme={theme}>
-        <h4 className="mt-2">{dictionary.companyLogo}</h4>
-        <h6>{dictionary.companyLogoDescription}</h6>
-        <div>
-          <label className="mb-0">{dictionary.companyLogoRequirement}</label>
-          <br />
-          <label className="mb-0">{dictionary.companyLogoDimensions}</label>
-        </div>
-        <div>
-          <DropDocument
-            acceptType="imageOnly"
-            hide={!showIconDropzone}
-            ref={iconDropZone}
-            onDragLeave={handleHideIconDropzone}
-            onDrop={({ acceptedFiles }) => {
-              dropIconAction(acceptedFiles);
-            }}
-            onCancel={handleHideIconDropzone}
-          />
-          <button className="btn btn-primary" onClick={handleOpenDropzone}>
-            {dictionary.uploadLogoBtn}
-          </button>
-          {logo !== "" && (
-            <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
-              {dictionary.resetButton}
+    <Wrapper theme={theme}>
+      {!loginFetched && (
+        <LoaderContainer className={"initial-load"}>
+          <Loader />
+        </LoaderContainer>
+      )}
+      {loginFetched && (
+        <>
+          <h4 className="mt-2">{dictionary.companyLogo}</h4>
+          <h6>{dictionary.companyLogoDescription}</h6>
+          <div>
+            <label className="mb-0">{dictionary.companyLogoRequirement}</label>
+            <br />
+            <label className="mb-0">{dictionary.companyLogoDimensions}</label>
+          </div>
+          <div>
+            <DropDocument
+              acceptType="imageOnly"
+              hide={!showIconDropzone}
+              ref={iconDropZone}
+              onDragLeave={handleHideIconDropzone}
+              onDrop={({ acceptedFiles }) => {
+                dropIconAction(acceptedFiles);
+              }}
+              onCancel={handleHideIconDropzone}
+            />
+            <button className="btn btn-primary" onClick={handleOpenDropzone}>
+              {dictionary.uploadLogoBtn}
             </button>
-          )}
-        </div>
-        <h4 className="mt-3">Dashboard background</h4>
-        <div>
-          <DropDocument
-            acceptType="imageOnly"
-            hide={!showBgDropzone}
-            ref={bgDropZone}
-            onDragLeave={handleHideBgDropzone}
-            onDrop={({ acceptedFiles }) => {
-              dropBgAction(acceptedFiles);
-            }}
-            onCancel={handleHideBgDropzone}
-          />
-          <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
-            Upload background
-          </button>
-        </div>
-        <h4 className="mt-3">{dictionary.styling}</h4>
-        {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
+            {logo !== "" && (
+              <button className="ml-2 btn btn-secondary" onClick={handleRemoveLogo}>
+                {dictionary.resetButton}
+              </button>
+            )}
+          </div>
+          <h4 className="mt-3">{dictionary.dashboardBg}</h4>
+          <div>
+            <DropDocument
+              acceptType="imageOnly"
+              hide={!showBgDropzone}
+              ref={bgDropZone}
+              onDragLeave={handleHideBgDropzone}
+              onDrop={({ acceptedFiles }) => {
+                dropBgAction(acceptedFiles);
+              }}
+              onCancel={handleHideBgDropzone}
+            />
+            <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
+              {dictionary.uploadBg}
+            </button>
+          </div>
+          <h4 className="mt-3">{dictionary.languageLabel}</h4>
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.companyLanguage}</label>
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={languageOptions.find((o) => settings.language === o.value)}
+              onChange={handleSelectLanguage}
+              options={languageOptions}
+            />
+          </div>
+          <div className="d-flex align-items-center mt-2">
+            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
+              {dictionary.updateLanguage}
+            </SubmitButton>
+          </div>
+          <h4 className="mt-3">{dictionary.styling}</h4>
+          {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>
         <p>New theme colors: primary: "#29323F", secondary: "#4E5D72", third: "#192536", fourth: "#29323F", fifth: "#FFC856"</p> */}
-        <ColorInputWrapper>
-          <span>
-            {dictionary.primaryLabel} (current:{" "}
-            <ColorSpan color={theme.colors.primary}>
-              {theme.colors.primary}
-              {showColorPicker.primary && (
-                <PickerWrapper ref={pickerRefPrimary}>
-                  <BlockPicker
-                    colors={blockColors}
-                    color={colors.primary}
-                    onChange={(color) => {
-                      handleColorChange(color, "primary");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "primary")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="primarycolor" onChange={handleChangePrimary} value={colors.primary}></Inputfields>
-        </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.primaryLabel} (current:{" "}
+              <ColorSpan color={theme.colors.primary}>
+                {theme.colors.primary}
+                {showColorPicker.primary && (
+                  <PickerWrapper ref={pickerRefPrimary}>
+                    <BlockPicker
+                      colors={blockColors}
+                      color={colors.primary}
+                      onChange={(color) => {
+                        handleColorChange(color, "primary");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "primary")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="primarycolor" onChange={handleChangePrimary} value={colors.primary}></Inputfields>
+          </ColorInputWrapper>
 
-        <ColorInputWrapper>
-          <span>
-            {dictionary.secondaryLabel} (current:{" "}
-            <ColorSpan color={theme.colors.secondary}>
-              {theme.colors.secondary}
-              {showColorPicker.secondary && (
-                <PickerWrapper ref={pickerRefSecondary}>
-                  <BlockPicker
-                    colors={blockColors}
-                    color={colors.secondary}
-                    onChange={(color) => {
-                      handleColorChange(color, "secondary");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "secondary")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="secondarycolor" onChange={handleChangeSecondary} value={colors.secondary}></Inputfields>
-        </ColorInputWrapper>
-        <ColorInputWrapper>
-          <span>
-            {dictionary.thirdLabel} (current:{" "}
-            <ColorSpan color={theme.colors.third}>
-              {theme.colors.third}
-              {showColorPicker.third && (
-                <PickerWrapper ref={pickerRefThird}>
-                  <BlockPicker
-                    colors={blockColors}
-                    color={colors.third}
-                    onChange={(color) => {
-                      handleColorChange(color, "third");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "third")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="thirdcolor" onChange={handleChangeThird} value={colors.third}></Inputfields>
-        </ColorInputWrapper>
-        <ColorInputWrapper>
-          <span>
-            {dictionary.fourthLabel} (current:{" "}
-            <ColorSpan color={theme.colors.fourth}>
-              {theme.colors.fourth}
-              {showColorPicker.fourth && (
-                <PickerWrapper ref={pickerRefFourth}>
-                  <BlockPicker
-                    colors={blockColors}
-                    color={colors.fourth}
-                    onChange={(color) => {
-                      handleColorChange(color, "fourth");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "fourth")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="fourthcolor" onChange={handleChangeFourth} value={colors.fourth}></Inputfields>
-        </ColorInputWrapper>
-        <ColorInputWrapper>
-          <span>
-            {dictionary.fifthLabel} (current:{" "}
-            <ColorSpan color={theme.colors.fifth}>
-              {theme.colors.fifth}
-              {showColorPicker.fifth && (
-                <PickerWrapper ref={pickerRefFifth}>
-                  <BlockPicker
-                    colors={blockColors}
-                    color={colors.fifth}
-                    onChange={(color) => {
-                      handleColorChange(color, "fifth");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "fifth")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="fifthcolor" onChange={handleChangeFifth} value={colors.fifth}></Inputfields>
-        </ColorInputWrapper>
-        <ColorInputWrapper>
-          <span>
-            {dictionary.sidebarTextColorLabel} (current:{" "}
-            <ColorSpan color={theme.colors.sidebarTextColor}>
-              {theme.colors.sidebarTextColor}
-              {showColorPicker.sidebarTextColor && (
-                <PickerWrapper ref={pickerRefSidebarTextColor}>
-                  <BlockPicker
-                    colors={["#cbd4db", "#000", ...blockColors]}
-                    color={colors.sidebarTextColor}
-                    onChange={(color) => {
-                      handleColorChange(color, "sidebarTextColor");
-                    }}
-                  />
-                </PickerWrapper>
-              )}
-            </ColorSpan>
-            )
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "sidebarTextColor")} />
-          </span>
-          <Inputfields className="w-100 form-control mt-2" id="sidebarTextColorcolor" onChange={handleChangeSidebarTextColor} value={colors.sidebarTextColor}></Inputfields>
-        </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.secondaryLabel} (current:{" "}
+              <ColorSpan color={theme.colors.secondary}>
+                {theme.colors.secondary}
+                {showColorPicker.secondary && (
+                  <PickerWrapper ref={pickerRefSecondary}>
+                    <BlockPicker
+                      colors={blockColors}
+                      color={colors.secondary}
+                      onChange={(color) => {
+                        handleColorChange(color, "secondary");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "secondary")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="secondarycolor" onChange={handleChangeSecondary} value={colors.secondary}></Inputfields>
+          </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.thirdLabel} (current:{" "}
+              <ColorSpan color={theme.colors.third}>
+                {theme.colors.third}
+                {showColorPicker.third && (
+                  <PickerWrapper ref={pickerRefThird}>
+                    <BlockPicker
+                      colors={blockColors}
+                      color={colors.third}
+                      onChange={(color) => {
+                        handleColorChange(color, "third");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "third")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="thirdcolor" onChange={handleChangeThird} value={colors.third}></Inputfields>
+          </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.fourthLabel} (current:{" "}
+              <ColorSpan color={theme.colors.fourth}>
+                {theme.colors.fourth}
+                {showColorPicker.fourth && (
+                  <PickerWrapper ref={pickerRefFourth}>
+                    <BlockPicker
+                      colors={blockColors}
+                      color={colors.fourth}
+                      onChange={(color) => {
+                        handleColorChange(color, "fourth");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "fourth")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="fourthcolor" onChange={handleChangeFourth} value={colors.fourth}></Inputfields>
+          </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.fifthLabel} (current:{" "}
+              <ColorSpan color={theme.colors.fifth}>
+                {theme.colors.fifth}
+                {showColorPicker.fifth && (
+                  <PickerWrapper ref={pickerRefFifth}>
+                    <BlockPicker
+                      colors={blockColors}
+                      color={colors.fifth}
+                      onChange={(color) => {
+                        handleColorChange(color, "fifth");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "fifth")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="fifthcolor" onChange={handleChangeFifth} value={colors.fifth}></Inputfields>
+          </ColorInputWrapper>
+          <ColorInputWrapper>
+            <span>
+              {dictionary.sidebarTextColorLabel} (current:{" "}
+              <ColorSpan color={theme.colors.sidebarTextColor}>
+                {theme.colors.sidebarTextColor}
+                {showColorPicker.sidebarTextColor && (
+                  <PickerWrapper ref={pickerRefSidebarTextColor}>
+                    <BlockPicker
+                      colors={["#cbd4db", "#000", ...blockColors]}
+                      color={colors.sidebarTextColor}
+                      onChange={(color) => {
+                        handleColorChange(color, "sidebarTextColor");
+                      }}
+                    />
+                  </PickerWrapper>
+                )}
+              </ColorSpan>
+              )
+              <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt="color picker" onClick={(e) => handleShowColorPicker(e, "sidebarTextColor")} />
+            </span>
+            <Inputfields className="w-100 form-control mt-2" id="sidebarTextColorcolor" onChange={handleChangeSidebarTextColor} value={colors.sidebarTextColor}></Inputfields>
+          </ColorInputWrapper>
 
-        <div className="d-flex align-items-center">
-          <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
-            {dictionary.submitBtn}
-          </SubmitButton>
-          {/* <SubmitButton className="btn btn-primary mr-2" onClick={handlePreviewTheme}>
+          <div className="d-flex align-items-center">
+            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
+              {dictionary.submitBtn}
+            </SubmitButton>
+            {/* <SubmitButton className="btn btn-primary mr-2" onClick={handlePreviewTheme}>
             Preview
           </SubmitButton> */}
-          <SubmitButton className="btn btn-primary" onClick={handleResetPreview}>
-            {dictionary.resetPreviewBtn}
-          </SubmitButton>
-        </div>
-        <h4 className="mt-3">{dictionary.notifications}</h4>
-        <CustomInput
-          className="cursor-pointer text-muted"
-          checked={notifications.email}
-          type="switch"
-          id="email"
-          name="email"
-          data-success-message={`${notifications.email ? "Email notifications are now enabled" : "Email notifications are now disabled"}`}
-          onChange={handleToggleEmailNotification}
-          label={<span>{dictionary.email}</span>}
-          disabled={notificationsLoaded === false}
-        />
-        <CustomInput
-          className="cursor-pointer text-muted"
-          checked={notifications.webpush}
-          type="switch"
-          id="webpush"
-          name="webpush"
-          //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
-          onChange={handleToggleWebpushNotification}
-          label={<span>{dictionary.webPush}</span>}
-          disabled={notificationsLoaded === false}
-        />
-        <CustomInput
-          className="cursor-pointer text-muted"
-          checked={notifications.apn}
-          type="switch"
-          id="apn"
-          name="apn"
-          //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
-          onChange={handleToggleApnNotification}
-          label={<span>{dictionary.apn}</span>}
-          disabled={notificationsLoaded === false}
-        />
-        <div className="d-flex align-items-center mt-2">
-          <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || !notificationsLoaded}>
-            {dictionary.saveNotification}
-          </SubmitButton>
-        </div>
-      </Wrapper>
-    </div>
+            <SubmitButton className="btn btn-primary" onClick={handleResetPreview}>
+              {dictionary.resetPreviewBtn}
+            </SubmitButton>
+          </div>
+          <h4 className="mt-3">{dictionary.notifications}</h4>
+          <CustomInput
+            className="cursor-pointer text-muted"
+            checked={notifications.email}
+            type="switch"
+            id="email"
+            name="email"
+            data-success-message={`${notifications.email ? "Email notifications are now enabled" : "Email notifications are now disabled"}`}
+            onChange={handleToggleEmailNotification}
+            label={<span>{dictionary.email}</span>}
+            disabled={notificationsLoaded === false}
+          />
+          <CustomInput
+            className="cursor-pointer text-muted"
+            checked={notifications.webpush}
+            type="switch"
+            id="webpush"
+            name="webpush"
+            //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
+            onChange={handleToggleWebpushNotification}
+            label={<span>{dictionary.webPush}</span>}
+            disabled={notificationsLoaded === false}
+          />
+          <CustomInput
+            className="cursor-pointer text-muted"
+            checked={notifications.apn}
+            type="switch"
+            id="apn"
+            name="apn"
+            //data-success-message={`${sentry ? "Logs are now enabled" : "Logs are now disabled"}`}
+            onChange={handleToggleApnNotification}
+            label={<span>{dictionary.apn}</span>}
+            disabled={notificationsLoaded === false}
+          />
+          <div className="d-flex align-items-center mt-2">
+            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSaveNotificationSettings} disabled={savingNotifications || !notificationsLoaded}>
+              {dictionary.saveNotification}
+            </SubmitButton>
+          </div>
+        </>
+      )}
+    </Wrapper>
   );
 }
 
