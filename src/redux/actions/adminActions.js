@@ -187,3 +187,7 @@ export function getAllWorkspaces(payload, callback) {
 export function updateAllWorkspacesPage(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_ALL_WORKSPACES_PAGE", payload, callback);
 }
+
+export function incomingLoginSettings(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_LOGIN_SETTINGS", payload, callback);
+}

@@ -29,7 +29,7 @@ const MainContentPanel = (props) => {
   const loggedUser = useSelector((state) => state.session.user);
 
   const isOwner = loggedUser.role && loggedUser.role.id === 1;
-  const isAdmin = loggedUser.role && loggedUser.role.name === "admin";
+  const isAdmin = loggedUser.role && loggedUser.role.id === 2;
 
   return (
     <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
