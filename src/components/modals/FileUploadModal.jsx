@@ -270,8 +270,7 @@ const enlargeEmoji = (textWithHtml) => {
   el.innerHTML = textWithHtml;
   const pattern = /((?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*)/g; // regex for emoji characters
   const bodyWithoutEmoji = el.textContent.trim().replace(pattern, ""); //removes all emoji instance
-  const stringPattern = /[^A-Za-z0-9]+/;
-  const isEmojiWithString = bodyWithoutEmoji.match(stringPattern); //check if body has text and emoji
+  const isEmojiWithString = typeof bodyWithoutEmoji === "string" && bodyWithoutEmoji.trim() !== ""; //check if body has text and emoji
   const isMultipleEmojisOnly = el.textContent.trim().match(pattern) && el.textContent.trim().match(pattern).length > 1; //if message is only emoji but multiple
   if (isEmojiWithString || isMultipleEmojisOnly) {
     return el.innerHTML.replace(pattern, '<span class="font-size-24">$1</span>');
