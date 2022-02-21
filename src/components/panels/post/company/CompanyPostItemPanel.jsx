@@ -6,7 +6,7 @@ import { MoreOptions } from "../../common";
 import { PostBadge, PostRecipients } from "../index";
 import { useTimeFormat } from "../../../hooks";
 import { PostCheckBox } from "../../../forms";
-//import Tooltip from "react-tooltip-lite";
+import PostApprovalLabels from "../PostApprovalLabels";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -331,6 +331,7 @@ const CompanyPostItemPanel = (props) => {
               </PostReplyCounter>
             </div>
           </div>
+          {post.users_approval.length > 0 && post.author.id === user.id && <PostApprovalLabels post={post} />}
           <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
           <div className="d-flex">
             {post.type !== "draft_post" && !disableOptions && (
