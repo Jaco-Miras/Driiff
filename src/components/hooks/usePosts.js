@@ -27,7 +27,7 @@ const usePosts = () => {
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
-      if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost) {
+      if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost && !isNaN(parseInt(params.workspaceId))) {
         setFetchingPost(true);
         let cb = (err, res) => {
           if (componentIsMounted.current) {
