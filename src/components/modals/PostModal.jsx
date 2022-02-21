@@ -1027,14 +1027,12 @@ const PostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           disableBodyMention={isExternalUser}
-          prioMentionIds={addressIds.filter((id) => id !== user.id)}
+          prioMentionIds={addressIds}
           members={Object.values(actualUsers).filter((u) => {
             if (user.type === "external") {
               return addressIds.some((id) => u.id === id);
             } else {
-              if (u.id === user.id) {
-                return false;
-              } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+              if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
                 return true;
               } else {
                 return false;

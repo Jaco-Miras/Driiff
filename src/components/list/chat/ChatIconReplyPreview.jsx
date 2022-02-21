@@ -120,6 +120,14 @@ const ReplyPreview = (props) => {
     if (channel.last_reply.is_deleted) {
       lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
     } else {
+      let lastReplyBodyHtml = channel.is_translate && channel.last_reply.translated_body ? channel.last_reply.translated_body : channel.last_reply.body;
+
+      var div = document.createElement("div");
+      div.innerHTML = lastReplyBodyHtml;
+      var elements = div.getElementsByClassName("OriginalHtml");
+      while (elements[0]) elements[0].parentNode.removeChild(elements[0]);
+
+      lastReplyBody = div.innerHTML;
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);
       //lastReplyBody = quillHelper.parseEmoji(stripImgTag(channel.last_reply.body));
@@ -139,6 +147,7 @@ const ReplyPreview = (props) => {
     }
 
     previewText += lastReplyBody;
+
     const noText = previewText.replace(/\s/g, "");
 
     if (showPreviewIcon) {

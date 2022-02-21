@@ -970,6 +970,10 @@ export default (state = INITIAL_STATE, action) => {
             popular_files: [],
             recently_edited: [],
             favorite_files: [],
+            team_chat: [],
+            client_chat: [],
+            private_post: [],
+            client_post: [],
             trash_files: {},
             search_results: [],
             search_value: "",
@@ -982,7 +986,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      if (action.data.files.length) {
+      if (action.data.files && action.data.files.length) {
         let newWorkspaceFiles = { ...state.workspaceFiles };
         if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
           newWorkspaceFiles = {
@@ -1004,6 +1008,10 @@ export default (state = INITIAL_STATE, action) => {
               popular_files: [],
               recently_edited: [],
               favorite_files: [],
+              team_chat: [],
+              client_chat: [],
+              private_post: [],
+              client_post: [],
               trash_files: {},
               search_results: [],
               search_value: "",
@@ -1039,6 +1047,10 @@ export default (state = INITIAL_STATE, action) => {
                   popular_files: [],
                   recently_edited: [],
                   favorite_files: [],
+                  team_chat: [],
+                  client_chat: [],
+                  private_post: [],
+                  client_post: [],
                   trash_files: {},
                   search_results: [],
                   search_value: "",
@@ -1825,11 +1837,14 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
 
       if (action.data.workspaces.length && action.data.files.length) {
-        action.data.workspaces.forEach((ws) => {
-          if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
-            newWorkspaceFiles[ws.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files };
-          }
-        });
+        if (action.data.files[0].shared_with_client === 1 || (state.user.type === "internal" && action.data.files[0].shared_with_client === 0)) {
+          action.data.workspaces.forEach((ws) => {
+            if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
+              newWorkspaceFiles[ws.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files };
+            }
+          });
+        }
+
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
@@ -1936,6 +1951,66 @@ export default (state = INITIAL_STATE, action) => {
         fileThumbnailBlobs: {
           ...state.fileThumbnailBlobs,
           [action.data.id]: action.data.src,
+        },
+      };
+    }
+    case "GET_TEAM_CHAT_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              team_chat: [...state.workspaceFiles[action.data.topic_id].team_chat, ...action.data.files.map((f) => f.id)],
+            },
+          }),
+        },
+      };
+    }
+    case "GET_CLIENT_CHAT_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              client_chat: [...state.workspaceFiles[action.data.topic_id].client_chat, ...action.data.files.map((f) => f.id)],
+            },
+          }),
+        },
+      };
+    }
+    case "GET_CLIENT_POST_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              client_post: [...state.workspaceFiles[action.data.topic_id].client_post, ...action.data.files.map((f) => f.id)],
+            },
+          }),
+        },
+      };
+    }
+    case "GET_PRIVATE_POST_FILES_SUCCESS": {
+      return {
+        ...state,
+        workspaceFiles: {
+          ...state.workspaceFiles,
+          ...(state.workspaceFiles[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspaceFiles[action.data.topic_id],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+              private_post: [...state.workspaceFiles[action.data.topic_id].private_post, ...action.data.files.map((f) => f.id)],
+            },
+          }),
         },
       };
     }

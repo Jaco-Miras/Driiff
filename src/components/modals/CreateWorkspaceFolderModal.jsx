@@ -95,6 +95,8 @@ const CreateWorkspaceFolderModal = (props) => {
     confirm: _t("WORKSPACE.CONFIRM", "Confirm"),
     lockedFolder: _t("WORKSPACE.LOCKED_FOLDER", "Private folder"),
     lockedFolderText: _t("WORKSPACE.LOCKED_FOLDER_TEXT", "Only members can view and search this workspace."),
+    createNewFolder: _t("MODAL.CREATE_NEW_FOLDER", "Create new folder"),
+    editFolder: _t("MODAL.EDIT_FOLDER", "Edit folder"),
     folderNameTaken: _t("FEEDBACK.WORKSPACE_FOLDER_NAME_TAKEN", "Folder name already taken"),
   };
   const toaster = useToaster();

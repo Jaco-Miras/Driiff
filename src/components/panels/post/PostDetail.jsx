@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
@@ -265,22 +265,8 @@ const PostDetail = (props) => {
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
-  //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  // const [isPostParticipant, setIsPostParticipant] = useState(false);
-  // useEffect(() => {
-  //   if (user.id !== post.author.id) {
-  //     dispatch(
-  //       checkPostAccess({ id: post.id }, (err, res) => {
-  //         if (err) return;
-  //         setIsPostParticipant(true);
-  //       })
-  //     );
-  //   } else {
-  //     setIsPostParticipant(true);
-  //   }
-  // }, []);
 
   const { comments } = useComments(post);
 
@@ -296,8 +282,9 @@ const PostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }
@@ -350,13 +337,15 @@ const PostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
       members: workspace ? workspace.members : [],
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? workspace.team_channel.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -414,8 +403,6 @@ const PostDetail = (props) => {
     return false;
   };
 
-  //const isMember = post.users_responsible.some((u) => u.id === user.id);
-
   useEffect(() => {
     readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
@@ -442,28 +429,10 @@ const PostDetail = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
-      postActions.visit({
-        post_id: post.id,
-        personalized_for_id: null,
-      });
-    }
-
-    if (post.is_unread === 1 || post.unread_count > 0) {
-      if (!disableMarkAsRead()) postActions.markAsRead(post);
-    }
-
-    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
-    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
-  }, [post.id]);
-
   const privateWsOnly = post.recipients.filter((r) => {
     return r.type === "TOPIC" && r.private === 1;
   });
 
-  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -553,15 +522,17 @@ const PostDetail = (props) => {
           workspaceId={workspace.id}
           disableMarkAsRead={disableMarkAsRead}
         />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+
+        {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead} disabled={disableOptions}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />

@@ -52,7 +52,7 @@ const CompanyGoogleDrive = (props) => {
             scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
             onChange={(data) => onChange(data)}
             onAuthenticate={(token) => handleAuthenticate(token)}
-            //onAuthFailed={(data) => console.log("on auth failed:", data)}
+            onAuthFailed={(data) => console.log("on auth failed:", data)}
             multiselect={true}
             navHidden={true}
             authImmediate={false}
@@ -68,7 +68,7 @@ const CompanyGoogleDrive = (props) => {
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               onChange={(data) => onChange(data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
-              //onAuthFailed={(data) => console.log("on auth failed:", data)}
+              onAuthFailed={(data) => console.log("on auth failed:", data)}
               multiselect={true}
               navHidden={true}
               authImmediate={localStorage.getItem("gdrive") === null ? false : true}
@@ -82,7 +82,7 @@ const CompanyGoogleDrive = (props) => {
               scope={["https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive.metadata.readonly"]}
               //onChange={(data) => console.log("on change:", data)}
               onAuthenticate={(token) => handleAuthenticate(token)}
-              //onAuthFailed={(data) => console.log("on auth failed:", data)}
+              onAuthFailed={(data) => console.log("on auth failed:", data)}
               multiselect={true}
               navHidden={true}
               authImmediate={localStorage.getItem("gdrive") === null ? false : true}

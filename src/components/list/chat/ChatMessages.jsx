@@ -14,6 +14,7 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
+import FailChatOptions from "./FailChatOptions";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -777,7 +778,7 @@ class ChatMessages extends React.PureComponent {
                                     chat_language={this.props.chat_language}
                                   />
                                   <ChatActionsContainer isAuthor={isAuthor} className={`chat-actions-container ${reply.reactions.length && "has-reactions"}`} hasReactions={reply.reactions.length}>
-                                    {<ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
+                                    {!isNaN(reply.id) && <ChatReactionButton isAuthor={isAuthor} reply={reply} scrollComponent={this.scrollComponent.current} chatMessageActions={this.props.chatMessageActions} />}
                                     {!isNaN(reply.id) && !reply.is_deleted && (
                                       <ChatMessageOptions
                                         dictionary={this.props.dictionary}
@@ -792,6 +793,9 @@ class ChatMessages extends React.PureComponent {
                                         showDownloadAll={showDownloadAll}
                                         downloadFiles={downloadFiles}
                                       />
+                                    )}
+                                    {isNaN(reply.id) && reply.status === "failed" && (
+                                      <FailChatOptions dictionary={this.props.dictionary} className={"chat-message-options"} selectedChannel={this.props.selectedChannel} scrollComponent={this.scrollComponent.current} replyData={reply} />
                                     )}
                                   </ChatActionsContainer>
 

@@ -29,34 +29,22 @@ export const getAPIUrl = (data = {}) => {
   const driffName = getDriffName();
   const { REACT_APP_ENV, REACT_APP_apiProtocol, REACT_APP_apiBaseUrl, REACT_APP_apiDNSName, REACT_APP_mockServerBaseUrl } = process.env;
 
-  switch (REACT_APP_ENV) {
-    case "local":
-      if (typeof data.isDNS !== "undefined" && data.isDNS === true) {
-        return `${REACT_APP_apiProtocol}${REACT_APP_apiDNSName}`;
-      } else {
-        return `${REACT_APP_apiProtocol}${REACT_APP_apiBaseUrl}`;
-      }
-    case "development":
-    case "production":
-      let url = REACT_APP_apiProtocol;
+  let url = REACT_APP_apiProtocol;
 
-      if (typeof data.noSlug === "undefined" || data.noSlug !== true) {
-        url += `${driffName}.`;
-      }
+  if (typeof data.noSlug === "undefined" || data.noSlug !== true)
+    url += `${driffName}.`;
 
-      if (typeof data.isDNS !== "undefined" && data.isDNS === true) {
-        url += REACT_APP_apiDNSName;
-      } else if (typeof data.isMockBased !== "undefined" && data.isMockBased === true) {
-        url += REACT_APP_mockServerBaseUrl;
-      } else if (data.is_shared && data.token) {
-        return `${REACT_APP_apiProtocol}${data.slug}.${REACT_APP_apiBaseUrl}`;
-      } else {
-        url += REACT_APP_apiBaseUrl;
-      }
-      return url;
-    default:
-      return;
-  }
+  if (typeof data.isDNS !== "undefined" && data.isDNS === true)
+    url += REACT_APP_apiDNSName;
+  else if (typeof data.isMockBased !== "undefined" && data.isMockBased === true)
+    url += REACT_APP_mockServerBaseUrl;
+  else if (data.is_shared && data.token)
+    return `${REACT_APP_apiProtocol}${data.slug}.${REACT_APP_apiBaseUrl}`;
+  else
+    url += REACT_APP_apiBaseUrl;
+
+  return url;
+  
 };
 
 export const getBaseUrl = (data = {}) => {

@@ -346,6 +346,7 @@ const WorspaceHeaderPanel = (props) => {
     pageTitleWorkspaceSearch: _t("PAGE_TITLE.WORKSPACE_SEARCH", "Search workspace"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "Reminders"),
+    pageTitleWIP: _t("PAGE_TITLE.WORKSPACE_WIP", "W.I.P."),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
     generalSwitchTheme: _t("SETTINGS.SWITCH_TO_THEME_MODE", "Switch to ::mode::", {
@@ -450,6 +451,10 @@ const WorspaceHeaderPanel = (props) => {
       }
       case "reminders": {
         pageName = dictionary.pageTitleWorkspaceReminders;
+        break;
+      }
+      case "wip": {
+        pageName = dictionary.pageTitleWIP;
         break;
       }
       default: {
@@ -664,12 +669,7 @@ const WorspaceHeaderPanel = (props) => {
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
-                      {activeTopic.is_lock === 1 && (
-                        <li className="nav-item">
-                          <Icon icon="lock" className="mobile-private ml-1" />
-                          <div className={"badge badge-danger text-white ml-1"}>{dictionary.statusWorkspacePrivate}</div>
-                        </li>
-                      )}
+                      {activeTopic.is_lock === 1 && renderPrivateLabel()}
                       {activeTopic.active === 0 && (
                         <li className="nav-item">
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
@@ -733,6 +733,10 @@ const WorspaceHeaderPanel = (props) => {
                     exact={true}
                     render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
+                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/workspace/:page/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/workspace/:page/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
                       "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",

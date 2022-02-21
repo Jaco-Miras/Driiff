@@ -37,6 +37,7 @@ import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
+import reduxPersist from "../../redux/store/configStore";
 import { browserName, deviceType } from "react-device-detect";
 
 export const userForceLogout = () => {
@@ -67,6 +68,7 @@ const useUserActions = () => {
     setGeneralSetting,
     setReadAnnouncement,
   } = useSettings();
+  const { persistor, persistenceOn } = reduxPersist();
 
   const { _t } = useTranslationActions();
 
@@ -380,14 +382,26 @@ const useUserActions = () => {
   };
 
   const processBackendLogout = () => {
+    if (persistenceOn) {
+      persistor.purge();
+      localStorage.removeItem("persist:root");
+    }
     let redirectLink = `${getCurrentDriffUrl()}/logged-out`;
     window.location.href = `${getAPIUrl({ isDNS: true })}/auth-web/logout?redirect_link=${redirectLink}`;
   };
 
   const logout = (callback = () => {}) => {
+    if (persistenceOn) {
+      persistor.purge();
+      localStorage.removeItem("persist:root");
+    }
     dispatch(toggleLoading(true));
     dispatch(
       userLogout({}, (err, res) => {
+        if (persistenceOn) {
+          persistor.purge();
+          localStorage.removeItem("persist:root");
+        }
         localStorage.removeItem("userAuthToken");
         localStorage.removeItem("token");
         localStorage.removeItem("atoken");

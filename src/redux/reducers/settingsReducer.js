@@ -21,6 +21,8 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
+    language: null,
+    login_mode: "email",
     theme: {
       colors: {
         primary: "#29323F",
@@ -38,6 +40,7 @@ const INITIAL_STATE = {
       password_login: true,
       sign_up: true,
       custom_translation: false,
+      login_mode: true,
     },
     ANNOUNCEMENT_AT: null,
     ANNOUNCEMENT_LINK: null,
@@ -140,6 +143,8 @@ export default (state = INITIAL_STATE, action) => {
       let domains = state.driff.domains;
       let logo = state.driff.logo;
       let background = state.driff.background;
+      let login_mode = state.driff.login_mode;
+      let language = state.driff.language;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -150,8 +155,12 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (s.logo) logo = s.logo;
         if (s.background) background = s.background;
+        if (s.login_mode) login_mode = s.login_mode;
+        if (s.language) language = s.language;
+        if (s.hasOwnProperty("maintenance_mode") || s.hasOwnProperty("google_login") || s.hasOwnProperty("magic_link") || s.hasOwnProperty("password_login") || s.hasOwnProperty("sign_up") || s.hasOwnProperty("custom_translation")) {
+          settings = { ...settings, ...s };
+        }
 
-        //settings = { ...settings, ...s };
         if (s.custom_translation) {
           settings.custom_translation = s.custom_translation === "1" ? true : false;
         }
@@ -179,6 +188,8 @@ export default (state = INITIAL_STATE, action) => {
           domains: domains,
           logo: logo,
           background: background,
+          login_mode: login_mode,
+          language: language,
         },
       };
     }
@@ -484,6 +495,16 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           background: action.data,
+        },
+      };
+    }
+    case "INCOMING_LOGIN_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          language: action.data.language,
+          login_mode: action.data.login_mode,
         },
       };
     }

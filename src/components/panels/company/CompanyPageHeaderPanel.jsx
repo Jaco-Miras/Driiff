@@ -110,19 +110,11 @@ const CompanyPageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink to="/people">{dictionary.pageTitlePeople}</MainNavLink>
           </li>
-          {user.role && ["owner", "admin"].includes(user.role.name) && (
+          {user.role && user.role.id === 1 && (
             <li className="nav-item">
               <MainNavLink to="/admin-settings">{dictionary.adminSettings}</MainNavLink>
             </li>
           )}
-          {/* <li className="nav-item">
-            <MainNavLink to="/releases">
-              Releases{" "}
-              <div className="ml-2 badge badge-pill badge badge-danger">
-                {driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp ? 1 : null}
-              </div>
-            </MainNavLink>
-          </li> */}
         </Navbar>
       </Wrapper>
     </>
