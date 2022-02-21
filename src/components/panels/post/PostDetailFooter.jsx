@@ -426,7 +426,9 @@ const PostDetailFooter = (props) => {
     .flat();
   let approverOptions = [
     ...Object.values(users)
-      .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
+      .filter((u) => {
+        return prioMentionIds.some((id) => id === u.id) && u.id !== user.id && post && post.author.id !== u.id;
+      })
       .map((u) => {
         return {
           ...u,
