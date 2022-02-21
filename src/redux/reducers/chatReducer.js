@@ -34,7 +34,7 @@ const INITIAL_STATE = {
   editHuddle: null,
   fetch: {
     skip: 0,
-    limit: 25,
+    limit: 15,
     fetching: false,
     hasMore: true,
   },
@@ -44,7 +44,7 @@ const INITIAL_STATE = {
   filterUnreadChannels: false,
   unreadChannels: {
     skip: 0,
-    limit: 25,
+    limit: 15,
     hasMore: true,
     fetching: false,
   },
@@ -207,9 +207,9 @@ export default function (state = INITIAL_STATE, action) {
         },
         fetch: {
           skip: action.data.channels.length + state.fetch.skip,
-          limit: 25,
+          limit: 15,
           fetching: false,
-          hasMore: action.data.channels.length === 25,
+          hasMore: action.data.channels.length === 15,
         },
       };
     }

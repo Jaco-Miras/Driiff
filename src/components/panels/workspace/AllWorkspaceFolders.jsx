@@ -1,7 +1,8 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import FilterFolder from "./FilterFolder";
+import { getAllWorkspaceFolders } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   a {
@@ -13,10 +14,15 @@ const Wrapper = styled.div`
 `;
 const AllWorkspaceFolders = (props) => {
   const { className = "" } = props;
-
+  const dispatch = useDispatch();
   const folders = useSelector((state) => state.workspaces.allFolders);
+  const allFoldersLoaded = useSelector((state) => state.workspaces.allFoldersLoaded);
   const filterByFolder = useSelector((state) => state.workspaces.search.filterByFolder);
-
+  useEffect(() => {
+    if (!allFoldersLoaded) {
+      dispatch(getAllWorkspaceFolders());
+    }
+  }, []);
   return (
     <Wrapper className={`list-group list-group-flush ${className}`}>
       {Object.values(folders)
