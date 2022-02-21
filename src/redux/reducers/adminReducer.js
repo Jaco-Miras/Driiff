@@ -21,6 +21,7 @@ const INITIAL_STATE = {
     password_policy: 0,
     invite_internal: 2,
     invite_guest: 3,
+    add_workspace: 3,
   },
   securityLoaded: false,
   postAccess: {

@@ -66,6 +66,7 @@ const SecuritySettingsBody = () => {
     managerHigher: _t("OPTIONS.MANAGER_HIGHER", "Manager + higher"),
     employeesHigher: _t("OPTIONS.EMPLOYEES_HIGHER", "Employees higher"),
     securitySettingsUpdated: _t("TOASTER.SECURITY_SETTINGS_UPDATED", "Security settings updated"),
+    whoCanCreateWorkspace: _t("ADMIN.WHO_CAN_CREATE_WORKSPACE", "Who can create workspace?"),
   };
 
   //const componentIsMounted = useRef(true);
@@ -83,6 +84,7 @@ const SecuritySettingsBody = () => {
     password_policy: null,
     invite_internal: null,
     invite_guest: null,
+    add_workspace: null,
   });
 
   useEffect(() => {
@@ -142,6 +144,13 @@ const SecuritySettingsBody = () => {
     setSettings({
       ...settings,
       invite_guest: e.value,
+    });
+  };
+
+  const handleSelectCreateWs = (e) => {
+    setSettings({
+      ...settings,
+      add_workspace: e.value,
     });
   };
 
@@ -246,6 +255,22 @@ const SecuritySettingsBody = () => {
               styles={dark_mode === "0" ? lightTheme : darkTheme}
               value={roleOptions.find((o) => o.value === settings.invite_guest)}
               onChange={handleSelectInviteGuests}
+              options={roleOptions}
+            />
+          </div>
+          <div>
+            <LabelInfoWrapper>
+              <label>{dictionary.whoCanCreateWorkspace}</label>
+              {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.whoCanInviteGuestsTooltip}>
+                <SvgIconFeather icon="info" />
+              </Tooltip> */}
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={roleOptions.find((o) => o.value === settings.add_workspace)}
+              onChange={handleSelectCreateWs}
               options={roleOptions}
             />
           </div>
