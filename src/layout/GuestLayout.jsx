@@ -98,6 +98,10 @@ const StyledLink = styled.a`
   }
 `;
 
+const StyledWelcomeNote = styled.div`
+  font-size: 12px;
+`;
+
 const GuestLayout = (props) => {
   useUserLogin(props);
 
@@ -159,7 +163,8 @@ const GuestLayout = (props) => {
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
-    welcomNote: _t("DRIFF.WELCOME_NOTE", "The time saving collaboration platform for agencies Talk less, do more and get things done"),
+    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "The time saving collaboration platform for agencies "),
+    welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
     setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
   };
@@ -245,9 +250,10 @@ const GuestLayout = (props) => {
                 </>
               )}
             </h5>
-            {location.pathname === "/driff-register" && <div className="mb-3">{dictionary.welcomNote}</div>}
-            {location.pathname === "/driff-register" && <div className="mb-3">{dictionary.setUpTrial}</div>}
-            {location.pathname === "/driff-register" && <div className="mb-3">{dictionary.noCreditCard}</div>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>}
+            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>}
             <Suspense fallback={<div></div>}>
               <Switch>
                 <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
