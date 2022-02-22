@@ -494,3 +494,7 @@ export function getPostReadAndClap(payload, callback) {
 export function setSelectedCompanyPost(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SELECTED_COMPANY_POST", payload, callback);
 }
+
+export function incomingWorkspacePost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_POST", payload, callback);
+}

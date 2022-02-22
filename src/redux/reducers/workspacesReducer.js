@@ -1336,6 +1336,7 @@ export default (state = INITIAL_STATE, action) => {
           }, {}),
       };
     }
+    case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let updatedWorkspaces = { ...state.workspaces };
@@ -1354,7 +1355,7 @@ export default (state = INITIAL_STATE, action) => {
           }
         }
         if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
-          updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
+          //updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
           addUnreadPost = true;
         }
       });
@@ -1365,7 +1366,7 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: addUnreadPost
           ? {
               ...state.activeTopic,
-              unread_posts: state.activeTopic.unread_posts + 1,
+              //unread_posts: state.activeTopic.unread_posts + 1,
             }
           : state.activeTopic,
       };
