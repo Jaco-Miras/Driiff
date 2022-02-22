@@ -1024,7 +1024,12 @@ class SocketListeners extends Component {
                   }
                 }
               }
+              const workspacesMuted = [];
+              const hasMentioned = e.code_data && e.code_data.mention_ids.some((id) => this.props.user.id === id);
               e.workspaces.forEach((ws) => {
+                if (this.props.workspaces[ws.topic_id] && !this.props.workspaces[ws.topic_id].is_active) {
+                  workspacesMuted.push(ws.topic_id);
+                }
                 this.props.getUnreadWorkspacePostEntries({ topic_id: ws.topic_id }, (err, res) => {
                   if (err) return;
                   this.props.updateWorkspacePostCount({
@@ -1033,8 +1038,15 @@ class SocketListeners extends Component {
                   });
                 });
               });
+              if (hasMentioned) {
+                this.props.incomingComment(e);
+              } else {
+                const comment = { ...e, allMuted: workspacesMuted.length === e.workspaces.length };
+                this.props.incomingComment(comment);
+              }
+            } else {
+              this.props.incomingComment(e);
             }
-            this.props.incomingComment(e);
             break;
           }
           case "POST_COMMENT_DELETE": {

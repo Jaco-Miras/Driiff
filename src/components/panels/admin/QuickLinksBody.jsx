@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
 import { Input } from "reactstrap";
 import { validURL } from "../../../helpers/urlContentHelper";
+import { getQuickLinks } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   padding: 1rem;
@@ -29,6 +30,7 @@ const Wrapper = styled.div`
 const LoginSettingsBody = () => {
   const { _t } = useTranslationActions();
   const toast = useToaster();
+  const dispatch = useDispatch();
 
   const dictionary = {
     quickLinks: _t("ADMIN.QUICK_LINKS_SETTINGS", "Quick links settings"),
@@ -57,6 +59,7 @@ const LoginSettingsBody = () => {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    if (!linksFetched) dispatch(getQuickLinks());
     setAdminFilter({ filters: { ...filters, quick_links: true } });
     return () => {
       componentIsMounted.current = false;
