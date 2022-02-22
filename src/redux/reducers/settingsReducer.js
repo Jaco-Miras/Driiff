@@ -21,8 +21,8 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
-    language: null,
     login_mode: "email",
+    language: null,
     theme: {
       colors: {
         primary: "#29323F",

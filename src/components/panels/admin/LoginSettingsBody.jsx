@@ -72,6 +72,8 @@ const LoginSettingsBody = () => {
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     customTranslationInfo: _t("SETTINGS.CUSTOM_TRANSLATION_INFO", "Use custom translation"),
     toasterUpdateLoginError: _t("TOASTER.UPDATE_LOGIN_SETTINGS_ERROR", "Error updating login settings"),
+    loginMode: _t("ADMIN.LOGIN_MODE", "Login mode"),
+    loginModeInfo: _t("ADMIN.LOGIN_MODE_INFO", "Default login mode email or mobile"),
   };
 
   const componentIsMounted = useRef(true);

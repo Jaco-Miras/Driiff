@@ -15,6 +15,7 @@ const UserOptions = (props) => {
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
+    assignAsSupervisor: _t("PEOPLE.ASSIGN_AS_SUPERVISOR", "Assign as supervisor"),
     assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee"),
     archiveUser: _t("PEOPLE.ARCHIVE_USER", "Archive user"),
     unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
@@ -72,7 +73,7 @@ const UserOptions = (props) => {
 
   const actions = useUserOptions();
 
-  const handleUpdateToAdmin = () => {
+  const handleUpdateToSupervisor = () => {
     let payload = {
       user_id: user.id,
       role_id: roles["supervisor"],
@@ -268,7 +269,7 @@ const UserOptions = (props) => {
 
   return (
     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}>
-      {user.active && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToAdmin}>{dictionary.assignAsAdmin}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToSupervisor}>{dictionary.assignAsSupervisor}</div>}
       {user.active && user.type === "internal" && user.role && user.role.name === "supervisor" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
       {user.active && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
       {user.active && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}

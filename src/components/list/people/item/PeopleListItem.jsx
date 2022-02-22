@@ -305,7 +305,7 @@ const PeopleListItem = (props) => {
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
-                        <div onClick={handleAssignAsSupervisor}>{dictionary.assignAsAdmin}</div>
+                        <div onClick={handleAssignAsSupervisor}>{dictionary.assignAsSupervisor}</div>
                       )}
                       {!showInactive && user.type === "internal" && user.role && user.role.name === "supervisor" && user.hasOwnProperty("has_accepted") && user.has_accepted && (
                         <div onClick={handleAssignAsEmployee}>{dictionary.assignAsEmployee}</div>

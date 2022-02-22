@@ -5,11 +5,9 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
-//import { TodoCheckBox } from "../../forms";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import PostApprovalLabels from "./PostApprovalLabels";
 import { PostCheckBox } from "../../forms";
-//import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
   flex-flow: column;
