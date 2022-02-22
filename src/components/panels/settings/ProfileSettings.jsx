@@ -686,7 +686,7 @@ const ProfileSettings = (props) => {
                 </div>
               )}
 
-              <div className="row mb-3">
+              {/* <div className="row mb-3">
                 <div className="col-12">
                   <CustomInput
                     className="cursor-pointer text-muted"
@@ -699,7 +699,7 @@ const ProfileSettings = (props) => {
                     label={<span>Persisted data</span>}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* <div className="row mb-3">
                 <div className="col-12">
