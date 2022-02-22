@@ -314,7 +314,6 @@ const CompanyPostsPanel = (props) => {
     };
     actions.setCompanyFilterPosts(payload);
   };
-  console.log(loading);
 
   //if (posts === null) return <></>;
   return (
