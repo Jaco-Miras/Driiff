@@ -263,8 +263,9 @@ export default (state = INITIAL_STATE, action) => {
             ...state.users[action.data.user_id],
             role: {
               ...state.users[action.data.user_id].role,
+              id: action.data.role.id,
               name: action.data.role.name,
-              display_name: action.data.role.name === "supervisor" ? "Supervisor" : "Employee",
+              display_name: action.data.role.name,
             },
           },
         },
