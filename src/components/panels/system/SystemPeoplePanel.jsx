@@ -68,6 +68,7 @@ const SystemPeoplePanel = (props) => {
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
+    assignAsSupervisor: _t("PEOPLE.ASSIGN_AS_SUPERVISOR", "Assign as supervisor"),
     assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee"),
     archiveUser: _t("PEOPLE.ARCHIVE_USER", "Archive user"),
     unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
