@@ -67,16 +67,25 @@ const UserOptions = (props) => {
   };
 
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
-  const roles = useSelector((state) => state.users.roles);
+  //const roles = useSelector((state) => state.users.roles);
   const notificationSettings = useSelector((state) => state.admin.notifications);
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
 
   const actions = useUserOptions();
 
+  const handleUpdateToAdmin = () => {
+    let payload = {
+      user_id: user.id,
+      role_id: 1,
+    };
+
+    actions.updateUserRole(payload);
+  };
+
   const handleUpdateToSupervisor = () => {
     let payload = {
       user_id: user.id,
-      role_id: roles["supervisor"],
+      role_id: 2,
     };
 
     actions.updateUserRole(payload);
@@ -85,7 +94,7 @@ const UserOptions = (props) => {
   const handleUpdateToEmployee = () => {
     let payload = {
       user_id: user.id,
-      role_id: roles["employee"],
+      role_id: 3,
     };
     actions.updateUserRole(payload);
   };
@@ -269,8 +278,9 @@ const UserOptions = (props) => {
 
   return (
     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"}>
-      {user.active && user.type === "internal" && user.role && user.role.name === "employee" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToSupervisor}>{dictionary.assignAsSupervisor}</div>}
-      {user.active && user.type === "internal" && user.role && user.role.name === "supervisor" && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.id !== 1 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToAdmin}>{dictionary.assignAsAdmin}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.id !== 2 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToSupervisor}>{dictionary.assignAsSupervisor}</div>}
+      {user.active && user.type === "internal" && user.role && user.role.id !== 3 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleUpdateToEmployee}>{dictionary.assignAsEmployee}</div>}
       {user.active && user.type === "external" && <div onClick={handleChangeToInternal}>{dictionary.moveToInternal}</div>}
       {user.active && user.type === "internal" && <div onClick={handleChangeToExternal}>{dictionary.moveToExternal}</div>}
       {user.active === 0 && !user.deactivate ? <div onClick={handleArchiveUser}>{dictionary.unarchiveUser}</div> : null}

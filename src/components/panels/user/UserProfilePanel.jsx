@@ -184,12 +184,20 @@ const UserProfilePanel = (props) => {
     password: useRef(null),
   };
 
-  const accountOptions = Object.entries(roles).map((r) => {
-    return {
-      value: r[1],
-      label: r[0],
-    };
-  });
+  const accountOptions = [
+    {
+      value: 1,
+      label: "Admin",
+    },
+    {
+      value: 2,
+      label: "Supervisor",
+    },
+    {
+      value: 3,
+      label: "Employee",
+    },
+  ];
 
   const { _t } = useTranslationActions();
 
@@ -1089,6 +1097,7 @@ const UserProfilePanel = (props) => {
                         value={accountOptions.find((o) => o.value === accountType)}
                         onChange={handleSelectAccountType}
                         options={accountOptions}
+                        menuPlacement={"top"}
                       />
                     </div>
                   </div>
