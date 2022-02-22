@@ -669,7 +669,7 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(loggedUser.email) && (
+              {["nilo@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-3">
                   <div className="col-12">
                     <CustomInput
