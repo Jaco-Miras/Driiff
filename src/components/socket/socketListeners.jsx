@@ -138,6 +138,7 @@ import {
   incomingFollowPost,
   incomingUnfollowPost,
   updatePostCategoryCount,
+  incomingWorkspacePost,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -978,13 +979,20 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_POST",
                 });
-                let topicRecipientIds = e.workspaces.map((r) => r.topic_id);
-                if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-                  this.props.getFavoriteWorkspaceCounters();
-                }
+                // let topicRecipientIds = e.workspaces.map((r) => r.topic_id);
+                // if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
+                //   this.props.getFavoriteWorkspaceCounters();
+                // }
               }
             }
             if (e.author.id !== this.props.user.id) {
+              const workspacesMuted = [];
+              const hasMentioned = e.code_data && e.code_data.mention_ids.some((id) => this.props.user.id === id);
+              e.workspaces.forEach((ws) => {
+                if (this.props.workspaces[ws.topic_id] && !this.props.workspaces[ws.topic_id].is_active) {
+                  workspacesMuted.push(ws.topic_id);
+                }
+              });
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
@@ -992,9 +1000,14 @@ class SocketListeners extends Component {
                   let post = {
                     ...res.data,
                     claps: [],
-                    is_unread: 1,
+                    //is_unread: 1,
+                    //show_post: hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0,
                   };
-                  this.props.incomingPost(post);
+                  if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
+                    this.props.incomingPost(post);
+                  } else {
+                    this.props.incomingWorkspacePost(post);
+                  }
                 });
               } else {
                 const post = this.props.posts[e.post_id];
@@ -1024,12 +1037,8 @@ class SocketListeners extends Component {
                   }
                 }
               }
-              const workspacesMuted = [];
-              const hasMentioned = e.code_data && e.code_data.mention_ids.some((id) => this.props.user.id === id);
+
               e.workspaces.forEach((ws) => {
-                if (this.props.workspaces[ws.topic_id] && !this.props.workspaces[ws.topic_id].is_active) {
-                  workspacesMuted.push(ws.topic_id);
-                }
                 this.props.getUnreadWorkspacePostEntries({ topic_id: ws.topic_id }, (err, res) => {
                   if (err) return;
                   this.props.updateWorkspacePostCount({
@@ -1038,7 +1047,7 @@ class SocketListeners extends Component {
                   });
                 });
               });
-              if (hasMentioned) {
+              if (hasMentioned || e.workspaces.length === 0) {
                 this.props.incomingComment(e);
               } else {
                 const comment = { ...e, allMuted: workspacesMuted.length === e.workspaces.length };
@@ -2579,6 +2588,7 @@ function mapDispatchToProps(dispatch) {
     incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
     updatePostCategoryCount: bindActionCreators(updatePostCategoryCount, dispatch),
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
+    incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
   };
 }
 

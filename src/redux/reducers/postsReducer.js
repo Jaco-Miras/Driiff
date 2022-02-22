@@ -279,20 +279,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      if (action.data.show_post) {
-        return {
-          ...state,
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.id]: action.data,
-            },
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.id]: action.data,
           },
-        };
-      } else {
-        return state;
-      }
+        },
+      };
     }
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
