@@ -654,7 +654,12 @@ export default (state = INITIAL_STATE, action) => {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
-                  is_unread: action.data.author.id !== state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].is_unread,
+                  is_unread:
+                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true
+                      ? state.companyPosts.posts[action.data.post_id].is_unread
+                      : action.data.author.id !== state.user.id
+                      ? 1
+                      : state.companyPosts.posts[action.data.post_id].is_unread,
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
