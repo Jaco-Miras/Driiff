@@ -3,12 +3,13 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { usePosts, useTranslationActions, useFetchWsCount, useToaster, usePostCategory } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
+import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { Loading } from "../../common";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -112,7 +113,7 @@ const WorkspacePostsPanel = (props) => {
 
   useFetchWsCount();
 
-  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag, showLoader } = usePosts();
   const { loadMoreWorkspaceCategory, count } = usePostCategory();
   const [loading, setLoading] = useState(false);
 
@@ -138,6 +139,30 @@ const WorkspacePostsPanel = (props) => {
       componentIsMounted.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            if (params.folderId) {
+              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            } else {
+              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            }
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
+    }
+  }, [params.postId, post]);
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
@@ -234,35 +259,13 @@ const WorkspacePostsPanel = (props) => {
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
+    loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
   };
-
-  useEffect(() => {
-    if (params.postId && !post) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
-        if (componentIsMounted.current) {
-          if (err) {
-            // set to all
-            let payload = {
-              topic_id: workspace.id,
-              filter: "inbox",
-              tag: null,
-            };
-            dispatch(updateWorkspacePostFilterSort(payload));
-            if (params.folderId) {
-              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } else {
-              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            }
-            toaster.error(dictionary.errorLoadingPost);
-          }
-        }
-      });
-    }
-  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -278,7 +281,7 @@ const WorkspacePostsPanel = (props) => {
               favourites: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -294,6 +297,7 @@ const WorkspacePostsPanel = (props) => {
       );
     } else if (filter === "my_posts") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -309,7 +313,7 @@ const WorkspacePostsPanel = (props) => {
               myPosts: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -417,6 +421,7 @@ const WorkspacePostsPanel = (props) => {
         }
       }
 
+      setLoading(true);
       let cb = (err, res) => {
         if (componentIsMounted.current) {
           setLoading(false);
@@ -528,7 +533,7 @@ const WorkspacePostsPanel = (props) => {
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null) return <></>;
+  // if (posts === null) return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
@@ -642,8 +647,10 @@ const WorkspacePostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-            <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
+          {showLoader && !post ? (
+            <LoaderContainer className={"card initial-load"}>
+              <Loader />
+            </LoaderContainer>
           ) : (
             <>
               {post !== null ? (
@@ -674,6 +681,7 @@ const WorkspacePostsPanel = (props) => {
               )}
             </>
           )}
+          {loading && <Loading text={dictionary.loadingPosts} />}
           <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>

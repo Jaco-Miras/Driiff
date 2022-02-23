@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather, ToolTip } from "../../common";
 import { FancyLink } from "../../common";
+import { getQuickLinks } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   > span {
@@ -41,8 +42,12 @@ const Wrapper = styled.div`
 
 const ShortcutsCard = (props) => {
   const { dictionary } = props;
+  const dispatch = useDispatch();
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
+  useEffect(() => {
+    if (!linksFetched) dispatch(getQuickLinks());
+  }, []);
   return (
     <Wrapper>
       <span>

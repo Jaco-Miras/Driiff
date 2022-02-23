@@ -189,7 +189,6 @@ const PageSettingsBody = () => {
         user_ids: postUsers.map((pu) => pu.value),
       };
     }
-    console.log(payload);
     dispatch(
       putPostAccess(payload, (err, res) => {
         setSaving(false);

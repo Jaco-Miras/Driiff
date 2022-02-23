@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { PostItemPanel } from "./index";
 import { useTranslationActions } from "../../hooks";
+import { useDispatch } from "react-redux";
+import { setPostIsSelected } from "../../../redux/actions/workspaceActions";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -85,6 +87,7 @@ const Posts = (props) => {
   const componentIsMounted = useRef(true);
 
   const { _t } = useTranslationActions();
+  const dispatch = useDispatch();
 
   let emptyStatesHeader = [_t("POSTS.NO_ITEMS_FOUND_HEADER_1", "WOO!"), _t("POSTS.NO_ITEMS_FOUND_HEADER_2", "Queue’s empty, time to dance!")];
 
@@ -99,10 +102,11 @@ const Posts = (props) => {
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
-  const handleToggleCheckbox = (postId) => {
-    let checked = !checkedPosts.some((id) => id === postId);
-    const postIds = checked ? [...checkedPosts, postId] : checkedPosts.filter((id) => id !== postId);
+  const handleToggleCheckbox = (post) => {
+    let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
+
     setCheckedPosts(postIds);
+    dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: !post.is_selected }));
   };
 
   const handleMarkAllAsRead = () => {
@@ -111,7 +115,8 @@ const Posts = (props) => {
       topic_id: workspace.id,
     });
     setCheckedPosts([]);
-    actions.getUnreadNotificationEntries({ add_unread_comment: 1 });
+    actions.getUnreadNotificationEntries();
+    clearCheckedPost();
   };
 
   const handleArchiveAll = () => {
@@ -119,7 +124,7 @@ const Posts = (props) => {
       selected_post_ids: checkedPosts,
       topic_id: workspace.id,
     });
-    setCheckedPosts([]);
+    clearCheckedPost();
   };
 
   // const handleShowPosts = (type) => {
@@ -163,22 +168,38 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
+    const _checkedPosts = posts.filter((p) => p.is_selected).map((_p) => _p.id);
+    setCheckedPosts(_checkedPosts);
     return () => {
       componentIsMounted.current = null;
     };
   }, []);
 
+  const prevFilter = useRef(filter).current;
+
   useEffect(() => {
-    if (componentIsMounted.current) setCheckedPosts([]);
+    if (prevFilter === filter) {
+      const _checkedPosts = posts.filter((p) => p.is_selected).map((_p) => _p.id);
+      setCheckedPosts(_checkedPosts);
+    } else {
+      clearCheckedPost();
+    }
   }, [filter]);
 
   useEffect(() => {
     setInDexer(Math.floor(Math.random() * emptyStatesHeader.length));
   }, [showPosts]);
 
+  const clearCheckedPost = () => {
+    setCheckedPosts([]);
+    posts.map((post) => {
+      dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: false }));
+    });
+  };
+
   return (
     <>
-      {(filter === "all" || filter === "inbox") && checkedPosts.length > 0 && (
+      {(filter === "all" || filter === "inbox") && (checkedPosts.length > 0 || posts.some((item) => item.is_selected)) && (
         <PostsBtnWrapper>
           <button className="btn all-action-button" onClick={handleArchiveAll}>
             {dictionary.archive}
@@ -221,7 +242,7 @@ const Posts = (props) => {
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={checkedPosts.some((id) => id === p.id)} isExternalUser={isExternalUser} />;
+                  return <PostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
                 })}
               </div>
             </ul>
@@ -239,18 +260,7 @@ const Posts = (props) => {
               {unreadPosts.length > 0 && (
                 <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""}`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p, k) => {
-                    return (
-                      <PostItemPanel
-                        key={p.id}
-                        firstPost={k === 0}
-                        post={p}
-                        postActions={actions}
-                        dictionary={dictionary}
-                        toggleCheckbox={handleToggleCheckbox}
-                        checked={checkedPosts.some((id) => id === p.id)}
-                        isExternalUser={isExternalUser}
-                      />
-                    );
+                    return <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={p.is_selected} isExternalUser={isExternalUser} />;
                   })}
                 </UnreadPostsContainer>
               )}
@@ -271,18 +281,7 @@ const Posts = (props) => {
               {readPosts.length > 0 && (
                 <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""}`} showPosts={showPosts.showRead}>
                   {readPosts.map((p, k) => {
-                    return (
-                      <PostItemPanel
-                        key={p.id}
-                        firstPost={k === 0}
-                        post={p}
-                        postActions={actions}
-                        dictionary={dictionary}
-                        toggleCheckbox={handleToggleCheckbox}
-                        checked={checkedPosts.some((id) => id === p.id)}
-                        isExternalUser={isExternalUser}
-                      />
-                    );
+                    return <PostItemPanel key={p.id} firstPost={k === 0} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={p.is_selected} isExternalUser={isExternalUser} />;
                   })}
                 </ReadPostsContainer>
               )}

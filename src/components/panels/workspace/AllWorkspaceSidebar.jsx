@@ -62,6 +62,7 @@ const AllWorkspaceSidebar = (props) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.session.user);
+  const securitySettings = useSelector((state) => state.admin.security);
 
   const closeMobileModal = () => {
     document.body.classList.remove("mobile-modal-open");
@@ -87,7 +88,7 @@ const AllWorkspaceSidebar = (props) => {
       <MobileOverlayFilter className="mobile-overlay" onClick={closeMobileModal} />
       <div className="bottom-modal-mobile_inner">
         <div className="app-sidebar-menu" tabIndex="2">
-          {user.type === "internal" && (
+          {user.type === "internal" && user.role && user.role.id <= securitySettings.add_workspace && (
             <div className="card-body create-new-post-wrapper">
               <NewWsButton className="btn btn-primary btn-block" onClick={actions.showWorkspaceModal}>
                 <Icon icon="circle-plus" />

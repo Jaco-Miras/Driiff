@@ -145,6 +145,11 @@ const NoReply = styled.div`
   .request-approval {
     color: ${(props) => props.theme.colors.primary};
   }
+  .alert-primary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const ClosedLabel = styled.div`
@@ -426,7 +431,9 @@ const PostDetailFooter = (props) => {
     .flat();
   let approverOptions = [
     ...Object.values(users)
-      .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
+      .filter((u) => {
+        return prioMentionIds.some((id) => id === u.id) && u.id !== user.id && post && post.author.id !== u.id;
+      })
       .map((u) => {
         return {
           ...u,
@@ -605,7 +612,7 @@ const PostDetailFooter = (props) => {
   const requestForChangeCallback = (err, res) => {
     if (err) return;
     if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
-      postActions.markReplyRequirement(post);
+      //postActions.markReplyRequirement(post);
       //check if post is also set as must read
       let triggerRead = true;
       if (post.is_must_read && post.author.id !== user.id) {

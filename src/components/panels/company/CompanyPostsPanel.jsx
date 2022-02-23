@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { SvgIconFeather, Loader } from "../../common";
+import { SvgIconFeather, Loader, Loading } from "../../common";
 import { useCompanyPosts, useTranslationActions, useToaster, usePostCategory } from "../../hooks";
-import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPostsEmptyState, CompanyPosts } from "../post/company";
+import { CompanyPostDetail, CompanyPostFilterSearchPanel, CompanyPostSidebar, CompanyPosts } from "../post/company";
 import { throttle, find } from "lodash";
 
 const Wrapper = styled.div`
@@ -118,7 +118,7 @@ const CompanyPostsPanel = (props) => {
   const history = useHistory();
   const toaster = useToaster();
 
-  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, postLists, counters } = useCompanyPosts();
+  const { actions, fetchMore, posts, filter, tag, postListTag, sort, post, user, search, postLists, counters, showLoader } = useCompanyPosts();
   const { loadMoreCompany, count } = usePostCategory();
   //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
   const [loading, setLoading] = useState(false);
@@ -228,10 +228,11 @@ const CompanyPostsPanel = (props) => {
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
+    loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
   };
 
   const handleLoadMore = () => {
-    if (search === "" && !post) {
+    if (search === "" && !post && !loading) {
       setLoading(true);
       let cb = () => {
         if (componentIsMounted.current) {
@@ -316,7 +317,7 @@ const CompanyPostsPanel = (props) => {
     actions.setCompanyFilterPosts(payload);
   };
 
-  if (posts === null) return <></>;
+  //if (posts === null) return <></>;
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
       {/* {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
@@ -389,8 +390,10 @@ const CompanyPostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-            <CompanyPostsEmptyState actions={actions} dictionary={dictionary} />
+          {showLoader && !post ? (
+            <LoaderContainer className={"card initial-load"}>
+              <Loader />
+            </LoaderContainer>
           ) : (
             <>
               {post && params.hasOwnProperty("postId") ? (
@@ -408,6 +411,7 @@ const CompanyPostsPanel = (props) => {
               )}
             </>
           )}
+          {loading && <Loading text={dictionary.loadingPosts} />}
           <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>

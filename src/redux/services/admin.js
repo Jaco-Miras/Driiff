@@ -228,3 +228,11 @@ export function putCompanyDescription(payload) {
     data: payload,
   });
 }
+
+export function getAllWorkspaces(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/all-workspaces?page=${payload.page}&limit=${payload.limit}`,
+    data: payload,
+  });
+}

@@ -499,6 +499,10 @@ export function getCompanyPostCategoryCounter(payload, callback) {
   return dispatchActionToReducer(getCompanyPostCategoryCounterService(payload), "GET_COMPANY_POST_CATEGORY_COUNTER_START", "GET_COMPANY_POST_CATEGORY_COUNTER_SUCCESS", "GET_COMPANY_POST_CATEGORY_COUNTER_FAIL", callback);
 }
 
+export function setSelectedCompanyPost(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SELECTED_COMPANY_POST", payload, callback);
+}
+
 export function getCompanyPostsByCategory(payload, callback) {
   return dispatchActionToReducer(getCompanyPostsByCategoryService(payload), "GET_COMPANY_POSTS_BY_CATEGORY_START", "GET_COMPANY_POSTS_BY_CATEGORY_SUCCESS", "GET_COMPANY_POSTS_BY_CATEGORY_FAIL", callback);
 }
