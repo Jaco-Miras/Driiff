@@ -35,7 +35,18 @@ const AllWorkspaceListDetail = (props) => {
     <Wrapper className="workspace-details">
       <div className="title-labels">
         <span className="workspace-title">{item.name}</span>
-        {item.private && <Icon icon="lock" />}
+        {item.private === 1 && <Icon icon="lock" />}
+        {item.workspace && (
+          <span className="ml-1 d-flex align-items-center">
+            <Icon icon="folder" />
+            {item.workspace.name}
+          </span>
+        )}
+        <span className="ml-1 d-flex align-items-center">
+          <Icon icon="user" />
+          {Object.values(item.members).length}
+        </span>
+
         {item.is_shared && (
           <>
             <span className={"badge badge-external ml-1 align-items-center"}>
@@ -45,7 +56,7 @@ const AllWorkspaceListDetail = (props) => {
           </>
         )}
       </div>
-      <div className="labels">
+      {/* <div className="labels">
         <span className="mr-2">
           <Icon icon="user" />
           {Object.values(item.members).length}
@@ -56,7 +67,7 @@ const AllWorkspaceListDetail = (props) => {
             {item.workspace.name}
           </span>
         )}
-      </div>
+      </div> */}
     </Wrapper>
   );
 };
