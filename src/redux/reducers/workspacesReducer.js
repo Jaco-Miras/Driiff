@@ -3154,7 +3154,7 @@ export default (state = INITIAL_STATE, action) => {
                     mustReply: {
                       ...state.mustReply,
                       count:
-                        action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && u.must_reply)
+                        action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
                           ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
                           : state.workspacePosts[ws.topic.id].categories.mustReply.count,
                     },
@@ -4267,7 +4267,7 @@ export default (state = INITIAL_STATE, action) => {
                       mustReply: {
                         ...state.mustReply,
                         count:
-                          action.data.must_read_reply && action.data.must_read_reply.some((u) => u.id === state.user.id && !u.must_reply)
+                          action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply)
                             ? state.workspacePosts[ws.id].categories.mustReply.count + 1
                             : state.workspacePosts[ws.id].categories.mutReply.count,
                       },
