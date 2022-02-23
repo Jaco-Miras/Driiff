@@ -415,14 +415,14 @@ const PostDetail = (props) => {
     }
 
     postActions.fetchPostReadAndClap({ post_id: post.id });
-    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
 
-      postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+      if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
     };
   }, []);
 
@@ -516,7 +516,7 @@ const PostDetail = (props) => {
           isAuthor={post.author && post.author.id === user.id}
           dictionary={dictionary}
           disableOptions={disableOptions}
-          workspaceId={workspace.id}
+          workspaceId={workspace ? workspace.id : null}
           disableMarkAsRead={disableMarkAsRead}
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
