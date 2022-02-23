@@ -43,7 +43,7 @@ const TrialEndedPanel = (props) => {
           <div className="card-body">
             <SvgEmptyState icon={2} />
             <h3>Your trial subscription has ended</h3>
-            {user && user.role && (user.role.name === "owner" || user.role.name === "admin") && (
+            {user && user.role && user.role.id <= 2 && (
               <button className="btn btn-primary" onClick={handleRedirect}>
                 Go to subscription page
               </button>

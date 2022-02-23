@@ -68,6 +68,7 @@ const SystemPeoplePanel = (props) => {
     peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
+    assignAsSupervisor: _t("PEOPLE.ASSIGN_AS_SUPERVISOR", "Assign as supervisor"),
     assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee"),
     archiveUser: _t("PEOPLE.ARCHIVE_USER", "Archive user"),
     unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
@@ -114,12 +115,13 @@ const SystemPeoplePanel = (props) => {
     internalAccounts: _t("CHART.INTERNAL_ACCOUNTS", "Accounts"),
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
     totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
+    thisIsAnAdminAccount: _t("TOOLTIP.THIS_IS_AN_ADMIN_ACCOUNT", "This is an administrator account"),
   };
 
   const toaster = useToaster();
 
   useEffect(() => {
-    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") dispatch(getUsersWithoutActivity());
+    if (loggedUser.role.id <= 2) dispatch(getUsersWithoutActivity());
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
       userActions.fetchRoles();
@@ -251,7 +253,7 @@ const SystemPeoplePanel = (props) => {
     dispatch(addToModals(modal));
   };
 
-  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+  const isAdmin = loggedUser.role.id <= 2;
 
   return (
     <Wrapper className={`workspace-people container-fluid h-100 ${className}`}>
