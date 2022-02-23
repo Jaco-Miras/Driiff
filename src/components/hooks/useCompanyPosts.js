@@ -132,7 +132,7 @@ const useCompanyPosts = () => {
         }
       } else if (tag) {
         if (tag === "is_must_reply") {
-          return p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply);
+          return !p.is_close && p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply);
         } else if (tag === "is_must_read") {
           return p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read);
         } else if (tag === "is_read_only") {
