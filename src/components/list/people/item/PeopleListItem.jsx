@@ -102,7 +102,7 @@ const PeopleListItem = (props) => {
     dictionary,
     showOptions = false,
     onUpdateRole = null,
-    roles,
+    //roles,
     onArchiveUser = null,
     onActivateUser = null,
     onChangeUserType = null,
@@ -281,8 +281,8 @@ const PeopleListItem = (props) => {
                       <div className="mr-2 d-flex">
                         {renderUserName({ user })}
                         {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
-                        {user.role && user.role.id <= 2 && (
-                          <ToolTip content={"This is an administrator account"}>
+                        {user.role && user.role.id === 1 && (
+                          <ToolTip content={dictionary.thisIsAnAdminAccount}>
                             <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
                           </ToolTip>
                         )}
