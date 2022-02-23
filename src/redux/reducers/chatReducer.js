@@ -3127,7 +3127,7 @@ export default function (state = INITIAL_STATE, action) {
                     })
                   : [...channel.members, newUser],
               };
-            } else if (channel.type === "TOPIC" && action.data.team_ids.some((id) => channel.team_ids.some((cid) => cid === id))) {
+            } else if (channel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => channel.team_ids && channel.team_ids.some((cid) => cid === id))) {
               acc[channel.id] = {
                 ...channel,
                 members: channel.members.some((m) => m.id === action.data.id)
