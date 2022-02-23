@@ -97,7 +97,7 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       parseBody = `<div><b>${data.participant.name}</b> has left the meeting</div>`;
     } else if (reply.body.startsWith("MEETING_ENDED::")) {
       const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
-      parseBody = `<div><b>${data.host.name}</b> has ended the meeting</div>`;
+      parseBody = `<div><b>${data.host.name}</b> has ended the meeting. ${data.meeting_details && data.meeting_details.duration ? `Duration: ${data.meeting_details.duration} minutes.` : ""}</div>`;
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       parseBody = renderToString(channelUpdateMessage);
     }

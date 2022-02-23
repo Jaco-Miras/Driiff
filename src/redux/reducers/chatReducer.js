@@ -2948,7 +2948,7 @@ export default function (state = INITIAL_STATE, action) {
               ...channel,
               replies: channel.replies.map((r) => {
                 if (r.id === action.data.chat.id) {
-                  return { ...r, body: action.data.chat.body };
+                  return { ...r, body: action.data.chat.body, created_at: action.data.chat.created_at };
                 } else {
                   return r;
                 }
@@ -2965,7 +2965,7 @@ export default function (state = INITIAL_STATE, action) {
                 ...state.selectedChannel,
                 replies: state.selectedChannel.replies.map((r) => {
                   if (r.id === action.data.chat.id) {
-                    return { ...r, body: action.data.chat.body };
+                    return { ...r, body: action.data.chat.body, created_at: action.data.chat.created_at };
                   } else {
                     return r;
                   }
