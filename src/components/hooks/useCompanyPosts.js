@@ -67,6 +67,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     //fetchMore();
+    actions.getUnreadNotificationEntries();
     if (unreadPosts.has_more) {
       actions.fetchUnreadCompanyPosts({
         skip: unreadPosts.skip,
