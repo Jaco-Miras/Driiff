@@ -97,6 +97,7 @@ const SystemPeoplePanel = (props) => {
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
     resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
     showInvited: _t("PEOPLE.SHOW_INVITED", "Show invited"),
+    showGuest: _t("PEOPLE.GUEST_ACCOUNTS", "Guest accounts"),
     removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
     sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
     deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),

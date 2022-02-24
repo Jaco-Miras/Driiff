@@ -36,6 +36,7 @@ const AllPeople = (props) => {
 
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
+  const [showGuest, setShowGuest] = useState(false);
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
@@ -59,6 +60,7 @@ const AllPeople = (props) => {
       return newState;
     });
     if (showInvited && !showInactive) setShowInvited(false);
+    setShowGuest(false);
   };
 
   const handleShowInvitedToggle = () => {
@@ -75,6 +77,14 @@ const AllPeople = (props) => {
       return newState;
     });
     if (showInactive && !showInvited) setShowInactive(false);
+    setShowGuest(false);
+  };
+
+  const handleShowGuestToggle = () => {
+    //setShowTeams(false);
+    setShowGuest((prevState) => !prevState);
+    setShowInactive(false);
+    setShowInvited(false);
   };
 
   const handleSearchChange = (e) => {
@@ -106,6 +116,8 @@ const AllPeople = (props) => {
         }
       } else if (showInvited) {
         return !user.has_accepted && user.active;
+      } else if (showGuest) {
+        return !user.has_accepted && user.type === "external";
       } else {
         if (user.active !== 1) {
           return false;
@@ -187,11 +199,21 @@ const AllPeople = (props) => {
               </span>
             }
           />
+          <CustomInput
+            className="mr-3 cursor-pointer text-muted cursor-pointer"
+            checked={showGuest}
+            id="show_guest"
+            name="show_guest"
+            type="switch"
+            onChange={handleShowGuestToggle}
+            //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
+            label={<span>{dictionary.showGuest}</span>}
+          />
 
           {/* <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div> */}
-          <div className="mr-3 text-muted">
+          {/* <div className="mr-3 text-muted">
             {dictionary.totalAccounts}: {allUsers.filter((u) => u.active).length}
-          </div>
+          </div> */}
         </PeopleSearch>
       </div>
       <div className="row">
