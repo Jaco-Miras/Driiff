@@ -652,7 +652,7 @@ const useChannelActions = () => {
    * @param {"hidden"|"archived"} [filter.filter]
    * @param {function} [callback]
    */
-  const loadMore = ({ skip = 0, limit = 25 }, callback = () => {}) => {
+  const loadMore = ({ skip = 0, limit = 15 }, callback = () => {}) => {
     if (chatSettings.filter_channel) {
       if (callback) callback();
       return;

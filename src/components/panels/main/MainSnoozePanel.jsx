@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import moment from "moment-timezone";
 import { useSelector, useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodos, useTodoActions, useHuddleChatbot, useSnoozeActions } from "../../hooks";
+import { useNotificationActions, useNotifications, useRedirect, useTranslationActions, useSettings, useTodoActions, useHuddleChatbot, useSnoozeActions, useTimeFormat } from "../../hooks";
 import { ToastContainer, toast } from "react-toastify";
 import { getTimestampInMins } from "../../../helpers/dateFormatter";
 import { setSelectedChannel, clearHuddleAnswers } from "../../../redux/actions/chatActions";
@@ -62,7 +63,7 @@ const Wrapper = styled.div`
 `;
 const MainSnooze = (props) => {
   const { notifications } = useNotifications();
-  const { getReminders } = useTodos(true);
+  //const { getReminders } = useTodos(true);
   const todos = useSelector((state) => state.global.todos);
 
   const user = useSelector((state) => state.session.user);
@@ -79,6 +80,7 @@ const MainSnooze = (props) => {
   const huddleActions = useHuddleChatbot();
 
   const history = useHistory();
+  const { localizeDate } = useTimeFormat();
 
   const currentDate = new Date();
   const currentTime = currentDate.getTime();
@@ -133,6 +135,59 @@ const MainSnooze = (props) => {
     snooze: _t("SNOOZE.SNOOZE", "Snooze"),
     closeNotification: _t("NOTIFICATION.CLOSE", "Notification will not be shown again."),
     addedYouInWorkspace: _t("NOTIFICATION.WORKSPACE_ADDED_MEMBER", "added you in a workspace"),
+  };
+
+  const getReminders = ({ filter = "" }) => {
+    return Object.values(todos.items)
+      .map((t) => {
+        if (t.author === null && t.link_type === null) {
+          const author = Object.values(users).find((u) => u.id === t.user);
+          return {
+            ...t,
+            author: author ? author : { ...user },
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
+          };
+        } else {
+          return {
+            ...t,
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
+          };
+        }
+      })
+      .filter((t) => {
+        if (filter) {
+          if (filter.search !== "") {
+            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+              return false;
+            }
+          }
+          /*
+          if (filter.status !== "")
+            return t.status === filter.status;
+          */
+
+          if (filter.status !== "") {
+            if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== user.id && t.user === user.id;
+            if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === user.id && t.user !== user.id;
+            if (t.status === filter.status) return !(t.workspace && !t.assigned_to);
+            if (t.status === "DONE") {
+              if (filter.status === "TODAY" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD")) return true;
+              if (filter.status === "OVERDUE" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") < moment().format("YYYY-MM-DD")) return true;
+              if (filter.status === "NEW" && t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") > moment().format("YYYY-MM-DD")) return true;
+              if (filter.status === "NEW" && t.remind_at === null) return true;
+            }
+            return false;
+          } else {
+            if (t.workspace && !t.assigned_to) return false;
+            if (t.user && t.user === user.id) return true;
+            if (t.assigned_to && t.assigned_to.id !== user.id) return false;
+            //if (t.assigned_to && t.assigned_to.id === user.id && t.user !== user.id) return false;
+            return true;
+          }
+        }
+        return true;
+      })
+      .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
   const notifCLean = () => {
@@ -560,6 +615,13 @@ const MainSnooze = (props) => {
       //console.log("trigger interval");
       setTriggerUnsnooze(true);
     }, 1000 * 60);
+    if (todos.today.hasMore) {
+      todoActions.fetchToday({
+        skip: todos.today.skip,
+        limit: todos.today.limit,
+        filter: "today",
+      });
+    }
     return () => {
       //console.log("clear interval");
       clearInterval(interval);

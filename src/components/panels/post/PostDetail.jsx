@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../hooks";
@@ -265,22 +265,8 @@ const PostDetail = (props) => {
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
-  //const recipients = useSelector((state) => state.global.recipients.filter((r) => r.type === "USER"));
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  // const [isPostParticipant, setIsPostParticipant] = useState(false);
-  // useEffect(() => {
-  //   if (user.id !== post.author.id) {
-  //     dispatch(
-  //       checkPostAccess({ id: post.id }, (err, res) => {
-  //         if (err) return;
-  //         setIsPostParticipant(true);
-  //       })
-  //     );
-  //   } else {
-  //     setIsPostParticipant(true);
-  //   }
-  // }, []);
 
   const { comments } = useComments(post);
 
@@ -414,8 +400,6 @@ const PostDetail = (props) => {
     return false;
   };
 
-  //const isMember = post.users_responsible.some((u) => u.id === user.id);
-
   useEffect(() => {
     readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
@@ -431,39 +415,21 @@ const PostDetail = (props) => {
     }
 
     postActions.fetchPostReadAndClap({ post_id: post.id });
-    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
 
-      postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+      if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
     };
   }, []);
-
-  useEffect(() => {
-    const viewed = post.view_user_ids.some((id) => id === user.id);
-    if (!viewed) {
-      postActions.visit({
-        post_id: post.id,
-        personalized_for_id: null,
-      });
-    }
-
-    if (post.is_unread === 1 || post.unread_count > 0) {
-      if (!disableMarkAsRead()) postActions.markAsRead(post);
-    }
-
-    postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
-    return () => postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
-  }, [post.id]);
 
   const privateWsOnly = post.recipients.filter((r) => {
     return r.type === "TOPIC" && r.private === 1;
   });
 
-  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -550,7 +516,7 @@ const PostDetail = (props) => {
           isAuthor={post.author && post.author.id === user.id}
           dictionary={dictionary}
           disableOptions={disableOptions}
-          workspaceId={workspace.id}
+          workspaceId={workspace ? workspace.id : null}
           disableMarkAsRead={disableMarkAsRead}
         />
         <div className="d-flex justify-content-center align-items-center mb-3">

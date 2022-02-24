@@ -186,7 +186,16 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
 import { driffData } from "../../config/environment.json";
-import { incomingUpdatedSubscription, incomingUpdatedCompanyLogo, incomingPostAccess, getPostAccess, updateSecuritySettings, incomingCompanyDescription, incomingCompanyDashboardBackground } from "../../redux/actions/adminActions";
+import {
+  incomingUpdatedSubscription,
+  incomingUpdatedCompanyLogo,
+  incomingPostAccess,
+  getPostAccess,
+  updateSecuritySettings,
+  incomingCompanyDescription,
+  incomingCompanyDashboardBackground,
+  incomingLoginSettings,
+} from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -201,10 +210,6 @@ class SocketListeners extends Component {
     this.publishChannelId = React.createRef(null);
   }
 
-  refetchPosts = () => {
-    this.props.refetchPosts({ skip: 0, limit: 10 });
-  };
-
   refetchPostComments = () => {
     Object.keys(this.props.postComments).forEach((post_id) => {
       this.props.refetchPostComments({ post_id: post_id });
@@ -212,7 +217,15 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
-    this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
+    this.props.getUnreadNotificationCounterEntries({}, (err, res) => {
+      if (err) return;
+      if (res) {
+        const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
+        if (generalPost && generalPost.count > 0) {
+          this.props.refetchPosts({ skip: 0, limit: generalPost.count });
+        }
+      }
+    });
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
       this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
@@ -260,7 +273,7 @@ class SocketListeners extends Component {
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
       this.refetchOtherMessages();
-      this.refetchPosts();
+      //this.refetchPosts();
       this.refetchPostComments();
       this.props.getFavoriteWorkspaceCounters();
     });
@@ -874,7 +887,6 @@ class SocketListeners extends Component {
       .listen(".post-comment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "POST_COMMENT_CREATE": {
-            this.props.incomingComment(e);
             if (e.workspaces && e.workspaces.length >= 1) {
               if (e.author.id !== this.props.user.id) {
                 this.props.setGeneralChat({
@@ -888,7 +900,6 @@ class SocketListeners extends Component {
               }
             }
             if (e.author.id !== this.props.user.id) {
-              this.props.updateUnreadCounter({ general_post: 1 });
               // check if posts exists, if not then fetch post
               if (!this.props.posts[e.post_id]) {
                 this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
@@ -900,6 +911,13 @@ class SocketListeners extends Component {
                   };
                   this.props.incomingPost(post);
                 });
+              } else {
+                const post = this.props.posts[e.post_id];
+                if (post) {
+                  if (post.unread_count === 0 || post.is_unread === 0) {
+                    this.props.updateUnreadCounter({ general_post: 1 });
+                  }
+                }
               }
               if (isSafari) {
                 if (this.props.notificationsOn) {
@@ -931,6 +949,7 @@ class SocketListeners extends Component {
                 });
               });
             }
+            this.props.incomingComment(e);
             break;
           }
           case "POST_COMMENT_DELETE": {
@@ -1101,6 +1120,11 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-login-option-notification", (e) => {
+        delete e.SOCKET_TYPE;
+        delete e.socket;
+        this.props.incomingLoginSettings(e);
+      })
       .listen(".update-security-option-notification", (e) => {
         this.props.updateSecuritySettings({
           password_policy: e.password_policy,
@@ -2444,6 +2468,7 @@ function mapDispatchToProps(dispatch) {
     updateSecuritySettings: bindActionCreators(updateSecuritySettings, dispatch),
     incomingCompanyDescription: bindActionCreators(incomingCompanyDescription, dispatch),
     incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
+    incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
   };
 }
 

@@ -38,12 +38,13 @@ const INITIAL_STATE = {
   unreadPosts: {
     skip: 0,
     has_more: true,
-    limit: 25,
+    limit: 15,
+    loaded: false,
   },
   readPosts: {
     skip: 0,
     has_more: true,
-    limit: 25,
+    limit: 15,
   },
   posts: {},
   postsLists: [],
@@ -652,8 +653,6 @@ export default (state = INITIAL_STATE, action) => {
               ...(state.companyPosts.posts[action.data.post_id] && {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
-                  // is_archived: 0,
-                  //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
                   is_unread: action.data.author.id !== state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].is_unread,
                   updated_at: action.data.updated_at,
@@ -796,7 +795,7 @@ export default (state = INITIAL_STATE, action) => {
             [action.data.id]: {
               ...action.data,
               claps: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].claps : [],
-              last_visited_at: state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+              last_visited_at: state.companyPosts.posts[action.data.id] && state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
             },
           },
         },
@@ -1014,13 +1013,28 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_UNREAD_COMPANY_POSTS_SUCCESS": {
+      const filteredPosts = action.data.posts.filter((p) => {
+        const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+        if (hasCompanyAsRecipient) {
+          return true;
+        } else {
+          const allParticipantIds = p.recipients
+            .map((r) => {
+              if (r.type === "USER") {
+                return [r.type_id];
+              } else return r.participant_ids;
+            })
+            .flat();
+          return allParticipantIds.some((id) => id === state.user.id) || p.author.id === state.user.id;
+        }
+      });
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
+            ...filteredPosts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   claps: [],
@@ -1040,19 +1054,35 @@ export default (state = INITIAL_STATE, action) => {
         },
         unreadPosts: {
           skip: action.data.next_skip,
-          has_more: action.data.posts.length === 25,
-          limit: 25,
+          has_more: action.data.posts.length === 15,
+          limit: 15,
+          loaded: true,
         },
       };
     }
     case "GET_READ_COMPANY_POSTS_SUCCESS": {
+      const filteredPosts = action.data.posts.filter((p) => {
+        const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+        if (hasCompanyAsRecipient) {
+          return true;
+        } else {
+          const allParticipantIds = p.recipients
+            .map((r) => {
+              if (r.type === "USER") {
+                return [r.type_id];
+              } else return r.participant_ids;
+            })
+            .flat();
+          return allParticipantIds.some((id) => id === state.user.id) || p.author.id === state.user.id;
+        }
+      });
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
+            ...filteredPosts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   claps: [],
@@ -1072,8 +1102,8 @@ export default (state = INITIAL_STATE, action) => {
         },
         readPosts: {
           skip: action.data.next_skip,
-          has_more: action.data.posts.length === 25,
-          limit: 25,
+          has_more: action.data.posts.length === 15,
+          limit: 15,
         },
       };
     }

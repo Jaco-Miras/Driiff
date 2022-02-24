@@ -4,8 +4,10 @@ import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/da
 
 const INITIAL_STATE = {
   user: null,
+  draftsLoaded: false,
   i18nLoaded: false,
   recipients: [],
+  recipientsLoaded: false,
   isLoading: false,
   isBrowserActive: true,
   modals: {},
@@ -114,6 +116,7 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_ALL_RECIPIENTS_SUCCESS": {
       return {
         ...state,
+        recipientsLoaded: true,
         recipients: action.data.recipients.filter((r) => {
           if (typeof r.name === "string" || r.name instanceof String) {
             return true;
@@ -719,6 +722,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.releases,
           items: [...drafts, ...state.releases.items],
         },
+        draftsLoaded: true,
       };
     }
     case "UPDATE_DRAFT_SUCCESS": {

@@ -53,7 +53,8 @@ const LoginPanel = (props) => {
     valid: {},
     message: {},
   });
-  const [registerMode, setRegisterMode] = useState("email");
+
+  const [registerMode, setRegisterMode] = useState(driffSettings.login_mode);
 
   const toggleCheck = useCallback(
     (e) => {
@@ -179,7 +180,7 @@ const LoginPanel = (props) => {
             // };
             //openModalAction(cb);
           } else {
-            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal" && driffSettings.settings.google_login) {
               dispatch(toggleLoading(false));
               toaster.info("Please login via your Google account.", { autoClose: false });
             } else {
@@ -241,9 +242,15 @@ const LoginPanel = (props) => {
     handleEmailNumberChange(registerMode === "email" ? "" : undefined);
   }, [registerMode]);
 
+  useEffect(() => {
+    if (driffSettings.login_mode === "mobile") setRegisterMode("number");
+    else setRegisterMode("email");
+  }, [driffSettings.login_mode]);
+
   if ($_GET("code") && $_GET("state")) {
     return <Wrapper className="fadeIn"></Wrapper>;
   }
+
   return (
     <Wrapper className="fadeIn">
       <>

@@ -131,7 +131,7 @@ const TeamItem = (props) => {
 
   const membersLengthLabel = _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: team.members.length });
 
-  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+  const isAdmin = loggedUser.role.id <= 2;
 
   return (
     <Wrapper className={`workspace-user-item-list col-12 col-md-6 ${className}`}>

@@ -11,7 +11,6 @@ const Wrapper = styled.form``;
 
 const RegisterPanel = (props) => {
   const { dictionary, countryCode } = props;
-  console.log(countryCode);
   const refs = {
     first_name: useRef(),
   };

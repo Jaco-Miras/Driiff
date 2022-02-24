@@ -141,6 +141,11 @@ const NoReply = styled.div`
   .request-approval {
     color: ${(props) => props.theme.colors.primary};
   }
+  .alert-primary {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const ClosedLabel = styled.div`
@@ -329,7 +334,9 @@ const CompanyPostDetailFooter = (props) => {
     .flat();
   let approverOptions = [
     ...Object.values(users)
-      .filter((u) => prioMentionIds.some((id) => id === u.id) && u.id !== user.id)
+      .filter((u) => {
+        return prioMentionIds.some((id) => id === u.id) && u.id !== user.id && post && post.author.id !== u.id;
+      })
       .map((u) => {
         return {
           ...u,
@@ -633,7 +640,6 @@ const CompanyPostDetailFooter = (props) => {
               selectedEmoji={selectedEmoji}
               onClearEmoji={onClearEmoji}
               dropAction={dropAction}
-              members={post.users_responsible}
               onActive={onActive}
               onClosePicker={onClosePicker}
               ref={ref.postInput}

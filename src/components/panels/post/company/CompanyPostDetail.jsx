@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
-import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { DropDocument } from "../../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../../hooks";
@@ -266,25 +265,11 @@ const CompanyPostDetail = (props) => {
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
-  const params = useParams();
+  //const params = useParams();
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  //const [isPostParticipant, setIsPostParticipant] = useState(false);
-
-  // useEffect(() => {
-  //   if (user.id !== post.author.id) {
-  //     dispatch(
-  //       checkPostAccess({ id: post.id }, (err, res) => {
-  //         if (err) return;
-  //         setIsPostParticipant(true);
-  //       })
-  //     );
-  //   } else {
-  //     setIsPostParticipant(true);
-  //   }
-  // }, []);
 
   const { comments } = useComments(post);
 
@@ -399,8 +384,6 @@ const CompanyPostDetail = (props) => {
     }
   };
 
-  const isMember = post.users_responsible.some((u) => u.id === user.id);
-
   const disableMarkAsRead = () => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
     if (post.is_must_read && post.author.id !== user.id) {
@@ -442,27 +425,6 @@ const CompanyPostDetail = (props) => {
     };
   }, []);
 
-  // const handleChangePostId = () => {
-  //   const viewed = post.view_user_ids.some((id) => id === user.id);
-  //   if (!viewed) {
-  //     postActions.visit({
-  //       post_id: post.id,
-  //       personalized_for_id: null,
-  //     });
-  //   }
-
-  //   if (post.is_unread === 1 || post.unread_count > 0) {
-  //     if (!disableMarkAsRead()) postActions.markAsRead(post);
-  //   }
-
-  //   if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
-  // };
-
-  // useEffect(() => {
-  //   console.log("trigger", post.id, params);
-  // }, [params.postId]);
-
-  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -567,7 +529,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );
