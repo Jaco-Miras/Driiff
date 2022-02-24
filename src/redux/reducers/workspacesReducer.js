@@ -2989,12 +2989,21 @@ export default (state = INITIAL_STATE, action) => {
                       },
                     },
                   },
-                  ...(state.workspacePosts[ws.id].categories && {
+                  ...(state.workspacePosts[ws.topic.id].categories && {
                     categories: {
-                      ...state.workspacePosts[ws.id].categories,
+                      ...state.workspacePosts[ws.topic.id].categories,
                       closedPost: {
-                        ...state.workspacePosts[ws.id].categories.closedPost,
-                        count: state.workspacePosts[ws.id].categories.closedPost.count + 1,
+                        ...state.workspacePosts[ws.topic.id].categories.closedPost,
+                        count: action.data.is_close ? state.workspacePosts[ws.topic.id].categories.closedPost.count + 1 : state.workspacePosts[ws.topic.id].categories.closedPost.count - 1,
+                      },
+                      mustReply: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustReply,
+                        count:
+                          action.data.is_close && action.data.is_must_reply
+                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
+                            : !action.data.is_close && action.data.is_must_reply
+                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count + 1
+                            : state.workspacePosts[ws.topic.id].categories.mustReply.count,
                       },
                     },
                   }),
