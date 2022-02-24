@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import WorkspaceListItem from "./WorkspaceListItem";
 import { ToolTip } from "../../common";
+import useQueryParams from "../../hooks/useQueryParams";
+import { useUsers } from "../../hooks";
 const Wrapper = styled.div`
   overflow: visible !important;
 `;
@@ -54,6 +56,17 @@ const AllWorkspaceBody = (props) => {
   const [showWorkspaces, setShowWorkspaces] = useState({ showActive: true, showArchived: true });
   const [sortWorkspaces, setSortWorkspaces] = useState({ activeDate: true, archivedDate: true }); // default is date else alphabet
 
+  const { users } = useUsers();
+  const { params } = useQueryParams();
+  const userId = params ? params["user-id"] : null;
+
+  const connectedUser = useMemo(() => {
+    if (userId && filterBy === "all") {
+      return users[userId];
+    }
+    return null;
+  }, [userId, users, filterBy]);
+
   const handleShowWorkspaces = (type) => {
     setShowWorkspaces({
       ...showWorkspaces,
@@ -70,6 +83,11 @@ const AllWorkspaceBody = (props) => {
 
   return (
     <Wrapper className={"card"}>
+      {connectedUser && (
+        <p className="mx-3 my-2">
+          {dictionary.connectedWorkspaceOf}: {connectedUser.name}
+        </p>
+      )}
       <Lists className="active-workspaces">
         <ListsHeader className="list-group-item">
           <span className="badge badge-light" onClick={() => handleShowWorkspaces("showActive")}>
