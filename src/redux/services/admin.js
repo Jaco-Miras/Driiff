@@ -203,14 +203,6 @@ export function putSecuritySettings(payload) {
   });
 }
 
-export function sendRequestPassword(payload) {
-  return apiCall({
-    method: "POST",
-    url: "/v2/security-settings/send-refresh-password",
-    data: payload,
-  });
-}
-
 export function uploadDashboardBg(payload) {
   let url = "/v2/company-settings/file-background";
   return apiCall({
@@ -225,6 +217,22 @@ export function putCompanyDescription(payload) {
   return apiCall({
     method: "PUT",
     url: `/v2/workspace/company/${payload.id}`,
+    data: payload,
+  });
+}
+
+export function sendRequestPassword(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/security-settings/send-refresh-password",
+    data: payload,
+  });
+}
+
+export function getAllWorkspaces(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/all-workspaces?page=${payload.page}&limit=${payload.limit}`,
     data: payload,
   });
 }

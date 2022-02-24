@@ -5,8 +5,8 @@ import { Avatar, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../common";
 import { PostBadge, PostRecipients } from "../index";
 import { useTimeFormat } from "../../../hooks";
+import PostApprovalLabels from "../PostApprovalLabels";
 import { PostCheckBox } from "../../../forms";
-//import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -85,6 +85,8 @@ const Wrapper = styled.li`
     .hover-btns {
       display: inline-block;
     }
+    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 10%), 0 2px 15px 0 rgb(0 0 0 / 5%);
+    z-index: 2;
   }
 
   .more-options {
@@ -262,6 +264,10 @@ const CompanyPostItemPanel = (props) => {
     }
   };
 
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+  };
+
   const isUnread = post.is_unread === 1;
 
   const handleCheckboxClick = (e) => {
@@ -331,6 +337,7 @@ const CompanyPostItemPanel = (props) => {
               </PostReplyCounter>
             </div>
           </div>
+          {post.users_approval.length > 0 && post.author.id === user.id && <PostApprovalLabels post={post} />}
           <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
           <div className="d-flex">
             {post.type !== "draft_post" && !disableOptions && (

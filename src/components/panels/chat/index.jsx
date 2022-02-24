@@ -6,5 +6,6 @@ export { default as ChatSideBarContentPanel } from "./ChatSideBarContentPanel";
 export { default as ChatSidebarPanel } from "./ChatSidebarPanel";
 export { default as ChatSearchPanel } from "./ChatSearchPanel";
 export { default as ChatInputButtons } from "./ChatInputButtons";
+export { default as ChatTranslateActions } from "./ChatTranslateActions";
 export { default as ChatTranslateActionsMenu } from "./ChatTranslateActionsMenu";
 export { default as ChatHeaderMembers } from "./ChatHeaderMembers";

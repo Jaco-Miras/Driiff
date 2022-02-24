@@ -8,7 +8,10 @@ import LogRocket from "logrocket";
 
 import App from "./App";
 import "./assets/style/app.scss";
-import store from "./redux/store/configStore";
+// orig store import
+//import store from "./redux/store/configStore";
+import reduxPersist from "./redux/store/configStore";
+import { PersistGate } from "redux-persist/integration/react";
 //import * as serviceWorker from "./serviceWorker";
 
 const { REACT_APP_sentry_dsn } = process.env;
@@ -38,16 +41,35 @@ if (localStorage.getItem("log_rocket") === "1") {
     });
   });
 }
-
-const wrapApp = (reduxStore) => (
-  <Provider store={reduxStore}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+const { store, persistor, persistenceOn } = reduxPersist();
+const wrapApp = () => (
+  <Provider store={store}>
+    {persistenceOn ? (
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </PersistGate>
+    ) : (
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    )}
   </Provider>
 );
 
-ReactDOM.render(wrapApp(store), document.getElementById("root"));
+ReactDOM.render(wrapApp(), document.getElementById("root"));
+
+// orig app initialiazation
+// const wrapApp = (reduxStore) => (
+//   <Provider store={reduxStore}>
+//       <BrowserRouter>
+//         <App />
+//       </BrowserRouter>
+//   </Provider>
+// );
+
+// ReactDOM.render(wrapApp(store), document.getElementById("root"));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

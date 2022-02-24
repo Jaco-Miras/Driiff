@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { osName } from "react-device-detect";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Quill } from "react-quill";
 import defaultIcon from "../../assets/icon/user/avatar/l/white_bg.png";
 import workspaceIcon from "../../assets/icon/people_group/l/active.svg";
@@ -9,6 +9,8 @@ import { uploadDocument } from "../../redux/services/global";
 import { usePreviousValue } from "./index";
 import { SvgIconFeather } from "../common";
 import { renderToString } from "react-dom/server";
+import { getAllRecipients, getDrafts } from "../../redux/actions/globalActions";
+import { getArchivedUsers } from "../../redux/actions/userAction";
 
 const useQuillModules = ({
   mode,
@@ -24,11 +26,15 @@ const useQuillModules = ({
   post = null,
   setImageLoading = null,
 }) => {
+  const dispatch = useDispatch();
   const [modules, setModules] = useState({});
   const [mentionValues, setMentionValues] = useState([]);
   // const [mentionOpen, setMentionOpen] = useState(false)
   const recipients = useSelector((state) => state.global.recipients);
+  const recipientsLoaded = useSelector((state) => state.global.recipientsLoaded);
+  const draftsLoaded = useSelector((state) => state.global.draftsLoaded);
   const userMentions = useSelector((state) => state.users.users);
+  const archivedUsersLoaded = useSelector((state) => state.users.archivedUsersLoaded);
   const user = useSelector((state) => state.session.user);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const previousChannel = usePreviousValue(selectedChannel);
@@ -46,7 +52,7 @@ const useQuillModules = ({
   };
 
   const handleRemoveMention = () => {
-    removeCallback.current();
+    if (removeMention !== null) removeCallback.current();
   };
 
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
@@ -63,7 +69,7 @@ const useQuillModules = ({
 
     let newAtValues = [];
     let newWorkSpaceValues = [];
-    let prioIds = prioMentionIds.filter((id) => id !== user.id);
+    let prioIds = prioMentionIds;
     if (members.length) {
       newAtValues = [
         ...members
@@ -348,6 +354,15 @@ const useQuillModules = ({
 
   useEffect(() => {
     handleSetModule();
+    if (!recipientsLoaded) {
+      dispatch(getAllRecipients());
+    }
+    if (!archivedUsersLoaded) {
+      dispatch(getArchivedUsers());
+    }
+    if (!draftsLoaded) {
+      dispatch(getDrafts());
+    }
   }, []);
 
   useEffect(() => {

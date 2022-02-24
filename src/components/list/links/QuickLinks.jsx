@@ -175,11 +175,11 @@ const QuickLinks = (props) => {
   // }, [ref.nav, maxHeight]);
 
   return (
-    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && (user.role.name === "admin" || user.role.name === "owner")}>
+    <Wrapper ref={ref.container} className={`fadeIn ${className} ${showLinks && "folder-open"}`} selected={showLinks} showEditIcon={user && user.role && user.role.id <= 2}>
       <a className="quick-links" href="/" onClick={handleShowLinks}>
         <NavIcon icon="link" />
         <div>{dictionary.shortcuts}</div>
-        {user && user.role && (user.role.name === "admin" || user.role.name === "owner") && <EditIcon icon="pencil" onClick={handleEditLinks} />}
+        {user && user.role && user.role.id <= 2 && <EditIcon icon="pencil" onClick={handleEditLinks} />}
         <i ref={ref.arrow} className={`sub-menu-arrow ti-angle-up ${showLinks ? "ti-minus rotate-in" : "ti-plus"}`} />
       </a>
 

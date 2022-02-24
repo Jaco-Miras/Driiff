@@ -34,20 +34,60 @@ const INITIAL_STATE = {
   editHuddle: null,
   fetch: {
     skip: 0,
-    limit: 25,
+    limit: 15,
     fetching: false,
     hasMore: true,
   },
+  skipIds: [],
+  hasUnpublishedAnswers: [],
   searchArchivedChannels: false,
   snoozedHuddle: [],
   huddleBotsLoaded: false,
   filterUnreadChannels: false,
   unreadChannels: {
     skip: 0,
-    limit: 25,
+    limit: 15,
     hasMore: true,
     fetching: false,
   },
+};
+
+const date = new Date();
+const today = date.getDate();
+const thisYear = date.getFullYear();
+const thisMonth = date.getMonth();
+const isLeapYear = (thisYear % 4 === 0 && thisYear % 100 !== 0) || thisYear % 400 === 0;
+
+const monthDates = {
+  0: { maxDate: 31 },
+  1: { maxDate: isLeapYear ? 29 : 28 },
+  2: { maxDate: 31 },
+  3: { maxDate: 30 },
+  4: { maxDate: 31 },
+  5: { maxDate: 30 },
+  6: { maxDate: 31 },
+  7: { maxDate: 31 },
+  8: { maxDate: 30 },
+  9: { maxDate: 31 },
+  10: { maxDate: 30 },
+  11: { maxDate: 31 },
+};
+const monthHasDate = (month, date) => {
+  return monthDates[month].maxDate >= date;
+};
+
+const isWeekend = (d) => {
+  if (d.getDay() === 0 || d.getDay() === 6) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const toNextMonday = (d, plusDays) => {
+  const adjustedDate = d;
+  adjustedDate.setDate(d.getDate() + plusDays);
+  return adjustedDate;
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -207,10 +247,11 @@ export default function (state = INITIAL_STATE, action) {
         },
         fetch: {
           skip: action.data.channels.length + state.fetch.skip,
-          limit: 25,
+          limit: 15,
           fetching: false,
-          hasMore: action.data.channels.length === 25,
+          hasMore: action.data.channels.length === 15,
         },
+        channelsLoaded: true,
       };
     }
     case "SEARCH_CHANNELS_SUCCESS": {
@@ -394,6 +435,7 @@ export default function (state = INITIAL_STATE, action) {
             is_read: true,
             body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
             channel_id: action.data.channel_id,
+            flagged: true,
           };
         }),
         ...channel.replies,
@@ -1021,7 +1063,8 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         chatQuotes: {
           ...state.chatQuotes,
-          [state.selectedChannel.id]: { ...action.data, channel_id: state.selectedChannel.id },
+          //[state.selectedChannel.id]: { ...action.data, channel_id: state.selectedChannel.id },
+          [action.data.channel_id]: action.data,
         },
       };
     }
@@ -1126,6 +1169,20 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         user: action.data,
+        channels: {
+          ...Object.values(state.channels)
+            .map((channel) => {
+              return {
+                ...channel,
+                isFetching: false,
+              };
+            })
+            .reduce((channels, channel) => {
+              channels[channel.id] = channel;
+              return channels;
+            }, {}),
+        },
+        selectedChannel: state.selectedChannel ? { ...state.selectedChannel, isFetching: false } : state.selectedChannel,
       };
     }
     case "UPDATE_CHAT_MESSAGE_REMINDER_COMPLETE": {
@@ -1963,6 +2020,8 @@ export default function (state = INITIAL_STATE, action) {
             is_snooze: snoozedHuddle ? !!snoozedHuddle.is_snooze : huddle ? huddle.is_snooze : false,
             snooze_time: snoozedHuddle ? snoozedHuddle.snooze_time : huddle ? huddle.snooze_time : null,
             is_skip: false,
+            //snooze_time: getCurrentTimestamp(),
+            showToday: false,
             show_notification: huddleNotifications && currentDate.getDay() === huddleNotifications.day && huddleNotifications.channels.some((cid) => cid === h.channel.id) ? false : true,
             questions: h.questions
               .sort((a, b) => a.id - b.id)
@@ -2117,21 +2176,30 @@ export default function (state = INITIAL_STATE, action) {
         channel = { ...state.channels[action.data.channel.id] };
         channel = {
           ...channel,
-          replies: channel.replies.map((r) => {
-            if (r.id === action.data.message.id) {
-              return {
-                ...r,
-                huddle_log: action.data.huddle_log,
-                body: action.data.message.body,
-              };
-            } else {
-              return r;
-            }
-          }),
+          replies: channel.replies
+            .map((r) => {
+              if (r.id === action.data.message.id) {
+                return {
+                  ...r,
+                  huddle_log: action.data.huddle_log,
+                  body: action.data.message.body,
+                };
+              } else {
+                return r;
+              }
+            })
+            .filter((r) => {
+              if (action.data.skip_message_ids) {
+                return !action.data.skip_message_ids.some((id) => id === r.id);
+              } else {
+                return true;
+              }
+            }),
         };
       }
       return {
         ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel.id],
         selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
         channels:
           channel !== null
@@ -2144,6 +2212,10 @@ export default function (state = INITIAL_STATE, action) {
           if (h.channel.id === action.data.channel.id) {
             return {
               ...h,
+              huddle_log: {
+                ...action.data.huddle_log,
+                huddle_id: h.id,
+              },
               questions: h.questions.map((q) => {
                 let answer = action.data.huddle_answers.find((ha) => ha.huddle_question_id === q.id);
                 if (answer) {
@@ -2162,6 +2234,7 @@ export default function (state = INITIAL_STATE, action) {
             return h;
           }
         }),
+        skipIds: action.data.skip_message_ids ? state.skipIds.filter((s) => !action.data.skip_message_ids.some((id) => id === s.id)) : state.skipIds,
       };
     }
     case "ADD_HUDDLE_LOG": {
@@ -2223,7 +2296,7 @@ export default function (state = INITIAL_STATE, action) {
         editHuddle: huddle
           ? {
               ...huddle,
-              huddle_log: action.data.huddle_log,
+              // huddle_log: action.data.huddle_log,
               questions: huddle.questions.map((q) => {
                 return {
                   ...q,
@@ -2260,24 +2333,231 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "CLEAR_UNPUBLISHED_HUDDLE_ANSWER": {
       let channel = null;
+      let huddleChannel = null;
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
           ...channel,
-          replies: channel.replies.filter((r) => !r.hasOwnProperty("huddle_log")),
+          replies: channel.replies.filter((r) => !action.data.huddle_deleted_message_ids.some((id) => id === r.id)),
+        };
+      }
+      if (state.channels[action.data.huddle_channel_id]) {
+        huddleChannel = { ...state.channels[action.data.huddle_channel_id] };
+        huddleChannel = {
+          ...huddleChannel,
+          replies: huddleChannel.replies.filter((r) => !action.data.huddle_deleted_message_ids.some((id) => id === r.id)),
         };
       }
       return {
         ...state,
+        selectedChannel:
+          state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel && huddleChannel && state.selectedChannel.id === huddleChannel.id ? huddleChannel : state.selectedChannel,
+        channels: {
+          ...state.channels,
+          ...(channel && {
+            [action.data.channel_id]: channel,
+          }),
+          ...(huddleChannel && {
+            [action.data.huddle_channel_id]: huddleChannel,
+          }),
+        },
+      };
+    }
+    case "INCOMING_HUDDLE_SKIP": {
+      let channel = null;
+      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel.id)) {
+        channel = { ...state.channels[action.data.channel.id] };
+        channel = {
+          ...channel,
+          replies: [...channel.replies, action.data.message],
+        };
+      }
+      return {
+        ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel.id],
         selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
         channels:
           channel !== null
             ? {
                 ...state.channels,
-                [action.data.channel_id]: channel,
+                [action.data.channel.id]: channel,
               }
             : state.channels,
       };
+    }
+    case "ADD_SKIP_ID": {
+      return {
+        ...state,
+        skipIds: [...state.skipIds, action.data],
+        hasUnpublishedAnswers: state.hasUnpublishedAnswers.filter((id) => id !== action.data.channel_id),
+      };
+    }
+    case "ADJUST_HUDDLE_DATE": {
+      return {
+        ...state,
+        huddleBots: state.huddleBots.map((h) => {
+          if (h.repeat_select_monthly) {
+            if (today <= 3) {
+              //check if last month is in range is adjusted to current month
+              const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+              if (monthHasDate(lastMonth, h.repeat_select_monthly)) {
+                const lastMonthDate = new Date(thisMonth === 0 ? thisYear - 1 : thisYear, thisMonth === 0 ? 11 : thisMonth - 1, h.repeat_select_monthly);
+                if (isWeekend(lastMonthDate)) {
+                  const adjustedDate = toNextMonday(lastMonthDate, lastMonthDate.getDay() === 0 ? 1 : 2);
+                  if (adjustedDate.getMonth() === thisMonth) {
+                    return {
+                      ...h,
+                      showToday: adjustedDate.getDate() === today,
+                    };
+                  } else {
+                    return {
+                      ...h,
+                      showToday: false,
+                    };
+                  }
+                } else {
+                  return {
+                    ...h,
+                    showToday: false,
+                  };
+                }
+              } else {
+                //adjust date to first date of the current month
+                const firstDateOfTheMonth = new Date(thisYear, thisMonth, 1);
+                if (isWeekend(firstDateOfTheMonth)) {
+                  const adjustedDate = toNextMonday(firstDateOfTheMonth, firstDateOfTheMonth.getDay() === 0 ? 1 : 2);
+                  return {
+                    ...h,
+                    showToday: adjustedDate.getDate() === today,
+                  };
+                } else {
+                  return {
+                    ...h,
+                    showToday: firstDateOfTheMonth.getDate() === today,
+                  };
+                }
+              }
+            } else if (today > 3 && monthHasDate(thisMonth, h.repeat_select_monthly)) {
+              //check if show date is not on weekend and adjusted date is still in range(same month)
+              const showDate = new Date(thisYear, thisMonth, h.repeat_select_monthly);
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                if (adjustedDate.getMonth() === thisMonth) {
+                  return {
+                    ...h,
+                    showToday: adjustedDate.getDate() === today,
+                  };
+                } else {
+                  return {
+                    ...h,
+                    showToday: false,
+                  };
+                }
+              } else {
+                return {
+                  ...h,
+                  showToday: h.repeat_select_monthly === today,
+                };
+              }
+            } else {
+              return {
+                ...h,
+                showToday: false,
+              };
+            }
+          } else if (h.repeat_select_yearly) {
+            const parseYear = parseInt(h.repeat_select_yearly.substr(0, 4));
+            const parseMonth = parseInt(h.repeat_select_yearly.substr(5, 2)) - 1;
+            const parseDate = parseInt(h.repeat_select_yearly.substr(8, 2));
+            const showDate = new Date(parseYear, parseMonth, parseDate);
+            if (parseMonth === 11 && (parseDate === 30 || parseDate === 31)) {
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                return {
+                  ...h,
+                  showToday: adjustedDate.getDate() === today && adjustedDate.getMonth() === thisMonth,
+                };
+              } else {
+                return {
+                  ...h,
+                  showToday: showDate.getDate() === today && parseMonth === thisMonth,
+                };
+              }
+            } else {
+              if (isWeekend(showDate)) {
+                const adjustedDate = toNextMonday(showDate, showDate.getDay() === 0 ? 1 : 2);
+                return {
+                  ...h,
+                  showToday: adjustedDate.getDate() === today && adjustedDate.getMonth() === thisMonth,
+                };
+              } else {
+                return {
+                  ...h,
+                  showToday: showDate.getDate() === today && parseMonth === thisMonth,
+                };
+              }
+            }
+          } else {
+            //other repeat type
+            return h;
+          }
+        }),
+      };
+    }
+    case "GET_SKIPPED_ANSWERS_SUCCESS": {
+      return {
+        ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, ...action.data.map((d) => d.channel_id)],
+      };
+    }
+    case "ADD_HAS_UNPUBLISHED_ANSWERS": {
+      return {
+        ...state,
+        hasUnpublishedAnswers: [...state.hasUnpublishedAnswers, action.data.channel_id],
+      };
+    }
+    case "CLEAR_HAS_UNPUBLISHED_ANSWERS": {
+      return {
+        ...state,
+        hasUnpublishedAnswers: [],
+      };
+    }
+    case "GET_UNPUBLISHED_ANSWERS_SUCCESS": {
+      if (action.data.length) {
+        const huddleLog = action.data[0].huddle_log;
+        const answers = action.data[0].huddle_answers;
+        return {
+          ...state,
+          huddleBots: state.huddleBots.map((h) => {
+            if (h.id === huddleLog.huddle_id) {
+              return {
+                ...h,
+                huddle_log: {
+                  ...huddleLog,
+                  message_id: huddleLog.connected_message_id,
+                },
+                questions: h.questions.map((q) => {
+                  const answer = answers.find((a) => a.huddle_question_id === q.id);
+                  if (answer) {
+                    return {
+                      ...q,
+                      answer_id: answer.id,
+                      answer: answer.answer,
+                      original_answer: answer.answer,
+                    };
+                  } else {
+                    return q;
+                  }
+                }),
+              };
+            } else {
+              return h;
+            }
+          }),
+        };
+      } else {
+        return state;
+      }
     }
     case "SET_SEARCH_ARCHIVED_CHANNELS": {
       return {
@@ -2430,36 +2710,6 @@ export default function (state = INITIAL_STATE, action) {
           : state.selectedChannel,
       };
     }
-    case "TRANSFER_CHANNEL_MESSAGES": {
-      return {
-        ...state,
-        channels: Object.values(state.channels).reduce((acc, channel) => {
-          if (channel.id === action.data.channel.id) {
-            acc[channel.id] = {
-              ...channel,
-              hasMore: true,
-              skip: 0,
-              replies: [],
-              isFetching: false,
-            };
-          } else {
-            acc[channel.id] = channel;
-          }
-          return acc;
-        }, {}),
-        selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel.id
-            ? {
-                ...state.selectedChannel,
-                hasMore: true,
-                skip: 0,
-                replies: [],
-                isFetching: false,
-                selected: true,
-              }
-            : state.selectedChannel,
-      };
-    }
     case "HUDDLE_SNOOZE": {
       let huddleBots = Object.values(state.huddleBots).map((r) => {
         if (r.id === action.data.id) {
@@ -2510,6 +2760,42 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         huddleBots: huddleBots,
+      };
+    }
+    case "TRANSFER_CHANNEL_MESSAGES": {
+      //const channel = state.channels[action.data.channel.id];
+      // const messagesToTransfer = channel
+      //   ? [...channel.replies].map((r) => {
+      //       return { ...r, channel_id: action.data.team_channel.id };
+      //     })
+      //   : [];
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel.id) {
+            acc[channel.id] = {
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              replies: [],
+              isFetching: false,
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel.id
+            ? {
+                ...state.selectedChannel,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                isFetching: false,
+                selected: true,
+              }
+            : state.selectedChannel,
       };
     }
     case "REMOVE_HUDDLE_NOTIFICATION": {
@@ -2841,7 +3127,7 @@ export default function (state = INITIAL_STATE, action) {
                     })
                   : [...channel.members, newUser],
               };
-            } else if (channel.type === "TOPIC" && action.data.team_ids.some((id) => channel.team_ids.some((cid) => cid === id))) {
+            } else if (channel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => channel.team_ids && channel.team_ids.some((cid) => cid === id))) {
               acc[channel.id] = {
                 ...channel,
                 members: channel.members.some((m) => m.id === action.data.id)
@@ -2924,6 +3210,68 @@ export default function (state = INITIAL_STATE, action) {
           state.selectedChannel && state.selectedChannel.members.some((m) => m.id === action.data.id) ? { ...state.selectedChannel, members: state.selectedChannel.members.filter((m) => m.id !== action.data.id) } : state.selectedChannel,
       };
     }
+    case "SET_CHAT_MESSAGE_FAIL": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel_id) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.map((r) => {
+                if (r.id === action.data.id) {
+                  return { ...r, status: "failed", payload: action.data.payload };
+                } else {
+                  return r;
+                }
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.map((r) => {
+                  if (r.id === action.data.id) {
+                    return { ...r, status: "failed", payload: action.data.payload };
+                  } else {
+                    return r;
+                  }
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
+    case "REMOVE_FAILED_CHAT_MESSAGE": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (channel.id === action.data.channel_id) {
+            acc[channel.id] = {
+              ...channel,
+              replies: channel.replies.filter((r) => {
+                return r.id !== action.data.id;
+              }),
+            };
+          } else {
+            acc[channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                replies: state.selectedChannel.replies.filter((r) => {
+                  return r.id !== action.data.id;
+                }),
+              }
+            : state.selectedChannel,
+      };
+    }
     case "INCOMING_WORKSPACE_NOTIFICATION_STATUS": {
       return {
         ...state,
@@ -2947,7 +3295,7 @@ export default function (state = INITIAL_STATE, action) {
               ...channel,
               replies: channel.replies.map((r) => {
                 if (r.id === action.data.chat.id) {
-                  return { ...r, body: action.data.chat.body };
+                  return { ...r, body: action.data.chat.body, created_at: action.data.chat.created_at };
                 } else {
                   return r;
                 }
@@ -2964,7 +3312,7 @@ export default function (state = INITIAL_STATE, action) {
                 ...state.selectedChannel,
                 replies: state.selectedChannel.replies.map((r) => {
                   if (r.id === action.data.chat.id) {
-                    return { ...r, body: action.data.chat.body };
+                    return { ...r, body: action.data.chat.body, created_at: action.data.chat.created_at };
                   } else {
                     return r;
                   }

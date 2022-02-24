@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
-import { QuickLinks } from "../../list/links";
+//import { QuickLinks } from "../../list/links";
 //import { Badge } from "reactstrap";
 //import christmas from "../../../assets/img/christmas.png";
 
@@ -134,6 +134,8 @@ const MainSidebarLinks = (props) => {
   //     return total;
   //   }, 0);
 
+  //const reminderCount = count.today + count.overdue;
+
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
       <ul>
@@ -158,9 +160,7 @@ const MainSidebarLinks = (props) => {
                 {/* {unreadCount > 0 && <Badge className={"badge badge-primary badge-pill ml-1"}>{unreadCount > 99 ? "99+" : unreadCount}</Badge>} */}
               </NavIconContainer>
             )}
-            {user.role && ["owner", "admin"].includes(user.role.name) && (
-              <>{editCompany ? <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save" /> : <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil" />}</>
-            )}
+            {user.role && user.role.id <= 2 && <>{editCompany ? <SvgIconFeather className="action" onClick={toggleEditCompany} icon="save" /> : <SvgIconFeather className="action" onClick={toggleEditCompany} icon="pencil" />}</>}
           </li>
         )}
         {/* <li>

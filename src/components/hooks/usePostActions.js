@@ -19,6 +19,7 @@ import {
   fetchRecentPosts,
   fetchTagCounter,
   getArchivedCompanyPosts,
+  getInProgressCompanyPosts,
   getMyCompanyPosts,
   getStarCompanyPosts,
   getReadCompanyPosts,
@@ -64,9 +65,11 @@ import {
   incomingPostListConnect,
   incomingPostListDisconnect,
   postRequired,
-  refetchUnreadCompanyPosts,
+  setPostCommentType,
   readNotification,
+  refetchUnreadCompanyPosts,
   getPostReadAndClap,
+  setShowUnread,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -293,7 +296,6 @@ const usePostActions = () => {
 
             if (res) {
               dispatch(updateUnreadCounter({ general_post: -1 }));
-              //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -439,7 +441,6 @@ const usePostActions = () => {
             })
           );
           dispatch(updateUnreadCounter({ general_post: -1 }));
-          //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
         })
       );
     } else {
@@ -808,6 +809,10 @@ const usePostActions = () => {
     dispatch(getReadCompanyPosts(payload, callback));
   };
 
+  const fetchInProgressCompanyPosts = (payload, callback) => {
+    dispatch(getInProgressCompanyPosts(payload, callback));
+  };
+
   const fetchUnreadCompanyPosts = (payload, callback) => {
     dispatch(getUnreadCompanyPosts(payload, callback));
   };
@@ -1016,16 +1021,24 @@ const usePostActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const refetchCompanyPosts = (payload = {}, callback) => {
-    dispatch(refetchUnreadCompanyPosts(payload, callback));
+  const setCommentType = (type, callback = () => {}) => {
+    dispatch(setPostCommentType(type, callback));
   };
 
   const readPostNotification = (payload = {}, callback) => {
     dispatch(readNotification(payload, callback));
   };
 
+  const refetchCompanyPosts = (payload = {}, callback) => {
+    dispatch(refetchUnreadCompanyPosts(payload, callback));
+  };
+
   const fetchPostReadAndClap = (payload = {}, callback) => {
     dispatch(getPostReadAndClap(payload, callback));
+  };
+
+  const setShowUnreadPosts = (value) => {
+    dispatch(setShowUnread(value));
   };
 
   return {
@@ -1076,13 +1089,16 @@ const usePostActions = () => {
     disconnectPostList,
     updatePostListConnect,
     markReplyRequirement,
+    setCommentType,
     fetchReadCompanyPosts,
     fetchMyCompanyPosts,
     fetchArchivedCompanyPosts,
     fetchStarCompanyPosts,
-    refetchCompanyPosts,
+    fetchInProgressCompanyPosts,
     readPostNotification,
+    refetchCompanyPosts,
     fetchPostReadAndClap,
+    setShowUnreadPosts,
   };
 };
 

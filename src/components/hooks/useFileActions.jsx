@@ -25,6 +25,10 @@ import {
   getCompanyPopularFiles,
   getCompanyRecentEditedFiles,
   getCompanyTrashedFiles,
+  getClientChatFiles,
+  getPrivatePostFiles,
+  getTeamChatFiles,
+  getClientPostFiles,
   getWorkspaceFavoriteFiles,
   getWorkspaceFiles,
   getWorkspaceFilesDetail,
@@ -987,6 +991,22 @@ const useFileActions = (params = null) => {
     dispatch(incomingFileThumbnailData(payload, callback));
   };
 
+  const fetchTeamChatFiles = (payload, callback) => {
+    dispatch(getTeamChatFiles(payload, callback));
+  };
+
+  const fetchClientChatFiles = (payload, callback) => {
+    dispatch(getClientChatFiles(payload, callback));
+  };
+
+  const fetchClientPostFiles = (payload, callback) => {
+    dispatch(getClientPostFiles(payload, callback));
+  };
+
+  const fetchPrivatePostFiles = (payload, callback) => {
+    dispatch(getPrivatePostFiles(payload, callback));
+  };
+
   const deleteWorkspaceFilesUpload = (payload) => {
     dispatch(removeWorkspaceFilesUploadingBar(payload));
   };
@@ -1057,6 +1077,10 @@ const useFileActions = (params = null) => {
     setGifSrc,
     setFileSrc,
     setFileThumbnailSrc,
+    fetchTeamChatFiles,
+    fetchClientChatFiles,
+    fetchClientPostFiles,
+    fetchPrivatePostFiles,
     deleteCompanyFilesUpload,
     deleteWorkspaceFilesUpload,
   };

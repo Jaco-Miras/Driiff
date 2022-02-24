@@ -40,6 +40,7 @@ const ChatContentPanel = (props) => {
   const { chat_language, translated_channels, language } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+
   const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
@@ -119,6 +120,7 @@ const ChatContentPanel = (props) => {
       droppedFiles: attachedFiles,
       mode: "chat",
       members: selectedChannel ? selectedChannel.members : [],
+      team_channel: selectedChannel.team && selectedChannel.type === "TOPIC" ? selectedChannel.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -195,6 +197,10 @@ const ChatContentPanel = (props) => {
     editHuddle: _t("CHAT.EDIT_HUDDLE", "Edit huddle"),
     discussOnTeamChat: _t("CHAT.DISCUSS_ON_TEAM_CHAT", "Discuss on team chat"),
     team: _t("TEAM", "Team"),
+    errorSendingChat: _t("CHAT.ERROR_SENDING", "Error sending chat"),
+    resend: _t("CHAT.FAIL_OPTIONS_RESEND", "Resend"),
+    delete: _t("CHAT.FAIL_OPTIONS_DELETE", "Delete"),
+    messageFailed: _t("CHAT.FAILED", "Message failed"),
     downloadAll: _t("CHAT.DOWNLOAD_ALL", "Download all"),
     notificationsOn: _t("TOOLTIP.NOTIFICATIONS_ON", "Notifications on"),
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),

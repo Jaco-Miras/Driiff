@@ -5,8 +5,9 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
+import { replaceChar } from "../../../helpers/stringFormatter";
+import PostApprovalLabels from "./PostApprovalLabels";
 import { PostCheckBox } from "../../forms";
-//import Tooltip from "react-tooltip-lite";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -83,6 +84,8 @@ const Wrapper = styled.li`
     .hover-btns {
       display: inline-block;
     }
+    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 10%), 0 2px 15px 0 rgb(0 0 0 / 5%);
+    z-index: 2;
   }
 
   .more-options {
@@ -275,6 +278,22 @@ const PostItemPanel = (props) => {
     }
   };
 
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+  };
+
+  const getPostRedirectLink = () => {
+    if (workspace) {
+      if (workspace.folder_id) {
+        return `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        return `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      }
+    } else {
+      return post.redirect_link;
+    }
+  };
+
   const isUnread = post.is_unread === 1;
 
   const handleCheckboxClick = (e) => {
@@ -343,6 +362,7 @@ const PostItemPanel = (props) => {
               </PostReplyCounter>
             </div>
           </div>
+          {post.users_approval.length > 0 && post.author.id === user.id && <PostApprovalLabels post={post} />}
           <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
           <div className="d-flex">
             {post.type !== "draft_post" && !disableOptions && (

@@ -27,7 +27,7 @@ const Section = styled.section`
 const Icon = styled(SvgIconFeather)``;
 
 export const DropDocument = forwardRef((props, ref) => {
-  const { onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, acceptType = "" } = props;
+  const { onCancel, onDrop, noX = false, disableInput = false, openOnLoad = false, hide, acceptType = "", maxFiles = 0, multiple = true } = props;
 
   const toastr = useToaster();
   const { _t } = useTranslationActions();
@@ -190,6 +190,8 @@ export const DropDocument = forwardRef((props, ref) => {
       openOnload={openOnLoad}
       noClick={disableInput}
       accept={accept}
+      maxFiles={maxFiles}
+      multiple={multiple}
     >
       {({ getRootProps, getInputProps, isDragActive }) => {
         return (

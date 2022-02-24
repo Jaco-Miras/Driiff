@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     searchResults: [],
     unreadPosts: 0,
   },
+  showUnread: true,
   archived: {
     skip: 0,
     has_more: true,
@@ -38,13 +39,44 @@ const INITIAL_STATE = {
   unreadPosts: {
     skip: 0,
     has_more: true,
-    limit: 25,
+    limit: 15,
+    loaded: false,
   },
   readPosts: {
     skip: 0,
     has_more: true,
+    limit: 15,
+  },
+  inProgress: {
+    skip: 0,
+    has_more: true,
     limit: 25,
   },
+  mustRead: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  mustReply: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  noReplies: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  closedPost: {
+    count: 0,
+    has_more: true,
+    limit: 15,
+    skip: 0,
+  },
+  categoryCountLoaded: false,
   posts: {},
   postsLists: [],
   drafts: [],
@@ -56,6 +88,7 @@ const INITIAL_STATE = {
   recentPosts: {},
   clearApprovingState: null,
   changeRequestedComment: null,
+  commentType: null,
   commentDrafts: [],
 };
 
@@ -247,20 +280,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
-      if (action.data.show_post) {
-        return {
-          ...state,
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.id]: action.data,
-            },
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            [action.data.id]: action.data,
           },
-        };
-      } else {
-        return state;
-      }
+        },
+      };
     }
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
@@ -652,10 +681,13 @@ export default (state = INITIAL_STATE, action) => {
               ...(state.companyPosts.posts[action.data.post_id] && {
                 [action.data.post_id]: {
                   ...state.companyPosts.posts[action.data.post_id],
-                  // is_archived: 0,
-                  //users_responsible: [...state.companyPosts.posts[action.data.post_id].users_responsible, action.data.author],
                   unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
-                  is_unread: action.data.author.id !== state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].is_unread,
+                  is_unread:
+                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true
+                      ? state.companyPosts.posts[action.data.post_id].is_unread
+                      : action.data.author.id !== state.user.id
+                      ? 1
+                      : state.companyPosts.posts[action.data.post_id].is_unread,
                   updated_at: action.data.updated_at,
                   reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
                   has_replied: action.data.author.id === state.user.id ? true : false,
@@ -796,7 +828,7 @@ export default (state = INITIAL_STATE, action) => {
             [action.data.id]: {
               ...action.data,
               claps: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].claps : [],
-              last_visited_at: state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+              last_visited_at: state.companyPosts.posts[action.data.id] && state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
             },
           },
         },
@@ -967,6 +999,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CLOSE_POST": {
+      const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
+      const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
       return {
         ...state,
         companyPosts: {
@@ -984,6 +1018,20 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         },
+        ...(state.categoryCountLoaded && {
+          closedPost: {
+            ...state.closedPost,
+            count: action.data.is_close ? state.closedPost.count + 1 : state.closedPost.count - 1,
+          },
+          mustReply: {
+            ...state.mustReply,
+            count: action.data.is_close && mustReply ? state.mustReply.count - 1 : !action.data.is_close && mustReply ? state.mustReply.count + 1 : state.mustReply.count,
+          },
+          mustRead: {
+            ...state.mustRead,
+            count: action.data.is_close && mustRead ? state.mustRead.count - 1 : !action.data.is_close && mustRead ? state.mustRead.count + 1 : state.mustRead.count,
+          },
+        }),
       };
     }
     case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
@@ -1014,13 +1062,28 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_UNREAD_COMPANY_POSTS_SUCCESS": {
+      const filteredPosts = action.data.posts.filter((p) => {
+        const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+        if (hasCompanyAsRecipient) {
+          return true;
+        } else {
+          const allParticipantIds = p.recipients
+            .map((r) => {
+              if (r.type === "USER") {
+                return [r.type_id];
+              } else return r.participant_ids;
+            })
+            .flat();
+          return allParticipantIds.some((id) => id === state.user.id) || p.author.id === state.user.id;
+        }
+      });
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
+            ...filteredPosts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   claps: [],
@@ -1040,19 +1103,35 @@ export default (state = INITIAL_STATE, action) => {
         },
         unreadPosts: {
           skip: action.data.next_skip,
-          has_more: action.data.posts.length === 25,
-          limit: 25,
+          has_more: action.data.posts.length === 15,
+          limit: 15,
+          loaded: true,
         },
       };
     }
     case "GET_READ_COMPANY_POSTS_SUCCESS": {
+      const filteredPosts = action.data.posts.filter((p) => {
+        const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+        if (hasCompanyAsRecipient) {
+          return true;
+        } else {
+          const allParticipantIds = p.recipients
+            .map((r) => {
+              if (r.type === "USER") {
+                return [r.type_id];
+              } else return r.participant_ids;
+            })
+            .flat();
+          return allParticipantIds.some((id) => id === state.user.id) || p.author.id === state.user.id;
+        }
+      });
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
+            ...filteredPosts.reduce((res, obj) => {
               if (state.companyPosts.posts[obj.id]) {
                 res[obj.id] = {
                   claps: [],
@@ -1072,8 +1151,8 @@ export default (state = INITIAL_STATE, action) => {
         },
         readPosts: {
           skip: action.data.next_skip,
-          has_more: action.data.posts.length === 25,
-          limit: 25,
+          has_more: action.data.posts.length === 15,
+          limit: 15,
         },
       };
     }
@@ -1148,6 +1227,14 @@ export default (state = INITIAL_STATE, action) => {
               },
             }),
           },
+        },
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
         },
       };
     }
@@ -1353,6 +1440,38 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    case "GET_IN_PROGRESS_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        inProgress: {
+          ...state.inProgress,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.inProgress.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
     case "INCOMING_REMOVED_TEAM_MEMBER":
     case "REMOVE_TEAM_MEMBER_SUCCESS": {
       return {
@@ -1543,7 +1662,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-
     case "SET_SELECTED_COMPANY_POST": {
       return {
         ...state,
@@ -1559,7 +1677,88 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "GET_COMPANY_POST_CATEGORY_COUNTER_SUCCESS": {
+      return {
+        ...state,
+        categoryCountLoaded: true,
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_reply,
+        },
+        noReplies: {
+          ...state.noReplies,
+          count: action.data.no_replies,
+        },
+        closedPost: {
+          ...state.closedPost,
+          count: action.data.closed_post,
+        },
+      };
+    }
+    case "GET_COMPANY_POSTS_BY_CATEGORY_SUCCESS": {
+      return {
+        ...state,
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  claps: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  claps: [],
+                  ...obj,
+                };
+              }
 
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "UPDATE_POST_CATEGORY": {
+      return {
+        ...state,
+        [action.data.mode]: {
+          ...state[action.data.mode],
+          has_more: action.data.has_more,
+          skip: action.data.skip,
+        },
+      };
+    }
+    case "UPDATE_POST_CATEGORY_COUNT": {
+      return {
+        ...state,
+        mustRead: {
+          ...state.mustRead,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read) ? state.mustRead.count + 1 : state.mustRead.count,
+        },
+        mustReply: {
+          ...state.mustReply,
+          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply) ? state.mustReply.count + 1 : state.mustReply.count,
+        },
+        noReplies: {
+          ...state.noReplies,
+          count: action.data.is_read_only ? state.noReplies.count + 1 : state.noReplies.count,
+        },
+      };
+    }
+    case "SET_SHOW_UNREAD": {
+      return {
+        ...state,
+        showUnread: action.data,
+      };
+    }
     default:
       return state;
   }

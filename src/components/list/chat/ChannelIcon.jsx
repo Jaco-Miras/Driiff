@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useSelector } from "react-redux";
 
+//import companyChatIcon from "../../../assets/icon/company_chat.svg";
+
 const Wrapper = styled.div`
   position: relative;
   line-height: 0;
@@ -72,6 +74,16 @@ const EyeIcon = styled(SvgIconFeather)`
   z-index: 1;
 `;
 
+// const CompanyIcon = styled.div`
+//   height: 2.7rem;
+//   width: 2.7rem;
+//   background: #eff1f6;
+//   border-radius: 50%;
+//   img {
+//     height: 100%;
+//     width: 100%;
+//   }
+// `;
 const iconColor = (input) => {
   const name = input.replace(/\s/g, "");
   if (typeof name === "undefined") return "";
@@ -123,6 +135,11 @@ const ChannelIcon = (props) => {
         ) : (
           <Icon icon="users" alt={channel.title} />
         ))}
+      {/* {channel.type === "COMPANY" && (
+        <CompanyIcon className="avatar avatar-md">
+          <img src={companyChatIcon} alt={channel.title} />
+        </CompanyIcon>
+      )} */}
       {channel && channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
       {channel && channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
       {channel && channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}

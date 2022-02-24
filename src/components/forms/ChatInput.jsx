@@ -14,6 +14,7 @@ import {
   setEditChatMessage,
   setSelectedChannel,
   incomingUpdatedChatMessage,
+  setChatMessageFail,
 } from "../../redux/actions/chatActions";
 import { deleteDraft } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
@@ -138,9 +139,20 @@ const getSlug = () => {
   }
 };
 
+const enlargeEmoji = (el) => {
+  const pattern = /((?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*)/g; // regex for emoji characters
+  const bodyWithoutEmoji = el.textContent.trim().replace(pattern, ""); //removes all emoji instance
+  const isEmojiWithString = typeof bodyWithoutEmoji === "string" && bodyWithoutEmoji.trim() !== ""; //check if body has text and emoji
+  const isMultipleEmojisOnly = el.textContent.trim().match(pattern) && el.textContent.trim().match(pattern).length > 1; //if message is only emoji but multiple
+  if (isEmojiWithString || isMultipleEmojisOnly) {
+    return el.innerHTML.replace(pattern, '<span class="font-size-24">$1</span>');
+  }
+  return el.innerHTML;
+};
+
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive, dictionary } = props;
   const history = useHistory();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -150,12 +162,12 @@ const ChatInput = (props) => {
   //useCountRenders("chat input");
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  //const slugs = useSelector((state) => state.global.slugs);
   const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const sendButtonClicked = useSelector((state) => state.chat.sendButtonClicked);
   const externalUsers = useSelector((state) => state.users.externalUsers);
+  const skipIds = useSelector((state) => state.chat.skipIds);
   const users = useSelector((state) => state.users.users);
   const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
 
@@ -192,7 +204,7 @@ const ChatInput = (props) => {
 
   const toaster = useToaster();
 
-  const { huddle, huddleAnswered, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
+  const { huddle, huddleActions, showQuestions, question, isFirstQuestion, editHuddle } = useHuddle({ selectedChannel });
 
   //const setEditedAnswerId = useRef(null);
   //useCountRenders();
@@ -217,7 +229,8 @@ const ChatInput = (props) => {
     if (quillData.text.includes('<span class="image-uploading">')) return;
     if (showQuestions) {
       if (question.isLastQuestion) {
-        const currentDate = new Date();
+        //const currentDate = new Date();
+        const skipId = skipIds.find((s) => s.channel_id === selectedChannel.id);
         let payload = {
           huddle_id: huddle.id,
           answers: huddle.questions.map((q) => {
@@ -227,6 +240,7 @@ const ChatInput = (props) => {
               answer: q.isLastQuestion ? quillData.textOnly : q.answer,
             };
           }),
+          skip_message_ids: skipId ? [skipId.id] : [],
         };
         const closingMessage = huddle.closing_message ? huddle.closing_message : "Huddle submitted";
         let cb = (err, res) => {
@@ -234,12 +248,12 @@ const ChatInput = (props) => {
             toaster.error("Error huddle");
             return;
           }
-          if (huddleAnswered) {
-            const { channels } = JSON.parse(huddleAnswered);
-            localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
-          } else {
-            localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
-          }
+          // if (huddleAnswered) {
+          //   const { channels } = JSON.parse(huddleAnswered);
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [...channels, selectedChannel.id], day: currentDate.getDay() }));
+          // } else {
+          //   localStorage.setItem("huddle", JSON.stringify({ channels: [selectedChannel.id], day: currentDate.getDay() }));
+          // }
           toaster.success(closingMessage);
         };
         if (editHuddle) {
@@ -326,9 +340,11 @@ const ChatInput = (props) => {
       }
     }
 
+    const body = enlargeEmoji(el); // retruns original innerHtml with emoji wrap to a span with font size of 24px
+
     let payload = {
       channel_id: selectedChannel.id,
-      body: el.innerHTML,
+      body: body,
       mention_ids: selectedChannel.type !== "TOPIC" ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: [],
       reference_id: reference_id,
@@ -360,7 +376,7 @@ const ChatInput = (props) => {
 
     let obj = {
       message: el.innerHTML,
-      body: el.innerHTML,
+      body: body,
       mention_ids: mention_ids,
       user: user,
       original_body: quillData.text,
@@ -380,6 +396,7 @@ const ChatInput = (props) => {
       quote: quote ? payload.quote : null,
       unfurls: [],
       g_date: localizeDate(timestamp, "YYYY-MM-DD"),
+      status: "pending",
     };
 
     if (!editMode) {
@@ -423,7 +440,14 @@ const ChatInput = (props) => {
         dispatch(setEditChatMessage(null));
       }
     } else {
-      dispatch(postChatMessage(payload));
+      dispatch(
+        postChatMessage(payload, (err, res) => {
+          if (err) {
+            toaster.error(dictionary.errorSendingChat);
+            dispatch(setChatMessageFail({ id: obj.id, channel_id: selectedChannel.id, payload: payload }));
+          }
+        })
+      );
     }
 
     if (quote) {
@@ -825,11 +849,9 @@ const ChatInput = (props) => {
     quillRef: reactQuillRef,
     members:
       user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id)
+        ? selectedChannel.members
         : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
               return true;
             } else {
               return false;
@@ -854,7 +876,7 @@ const ChatInput = (props) => {
 
   return (
     <div className="chat-input-wrapper">
-      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
+      {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
       {mentionData.mentionedUserIds.length > 0 && selectedChannel && selectedChannel.type !== "TEAM" && selectedChannel.type !== "DIRECT_TEAM" && (
         <BodyMention
           onAddUsers={handleAddMentionedUsers}

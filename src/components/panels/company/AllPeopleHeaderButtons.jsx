@@ -114,7 +114,7 @@ const AllPeopleHeaderButtons = (props) => {
     if (team) dispatch(addToModals(modal));
   };
 
-  const isAdmin = loggedUser.role.name === "admin" || loggedUser.role.name === "owner";
+  const isAdmin = loggedUser.role.id <= 2;
   if (!securityLoaded) return null;
   return (
     <Wrapper className="nav-item-last ml-auto">

@@ -126,12 +126,6 @@ export const NotificationTimelineItem = (props) => {
     }
   };
 
-  /*const handleRemove = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      actions.remove({ id: notification.id });
-    };*/
-
   const handleAuthorNameClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -264,7 +258,7 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author ? notification.author.name : null}{" "}
+              {notification.author ? notification.author.name : null}
             </span>
             <span>{dictionary.addedYouInWorkspace}</span>
           </>

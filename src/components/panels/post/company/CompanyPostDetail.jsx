@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
-import { setParentIdForUpload, incomingLastVisitPost, checkPostAccess } from "../../../../redux/actions/postActions";
+import { setParentIdForUpload, incomingLastVisitPost } from "../../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { DropDocument } from "../../../dropzone/DropDocument";
 import { useCommentActions, useComments } from "../../../hooks";
@@ -266,25 +265,11 @@ const CompanyPostDetail = (props) => {
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
   const dispatch = useDispatch();
-  const params = useParams();
+  //const params = useParams();
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
   const [showDropZone, setShowDropZone] = useState(false);
-  //const [isPostParticipant, setIsPostParticipant] = useState(false);
-
-  // useEffect(() => {
-  //   if (user.id !== post.author.id) {
-  //     dispatch(
-  //       checkPostAccess({ id: post.id }, (err, res) => {
-  //         if (err) return;
-  //         setIsPostParticipant(true);
-  //       })
-  //     );
-  //   } else {
-  //     setIsPostParticipant(true);
-  //   }
-  // }, []);
 
   const { comments } = useComments(post);
 
@@ -300,8 +285,9 @@ const CompanyPostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }
@@ -354,12 +340,15 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
+    // const externalWorkspace = post.recipients.find((r) => r.type === "TOPIC" && r.is_shared);
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? externalWorkspace.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -398,8 +387,6 @@ const CompanyPostDetail = (props) => {
       postActions.unlike(payload);
     }
   };
-
-  const isMember = post.users_responsible.some((u) => u.id === user.id);
 
   const disableMarkAsRead = () => {
     const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
@@ -442,27 +429,6 @@ const CompanyPostDetail = (props) => {
     };
   }, []);
 
-  // const handleChangePostId = () => {
-  //   const viewed = post.view_user_ids.some((id) => id === user.id);
-  //   if (!viewed) {
-  //     postActions.visit({
-  //       post_id: post.id,
-  //       personalized_for_id: null,
-  //     });
-  //   }
-
-  //   if (post.is_unread === 1 || post.unread_count > 0) {
-  //     if (!disableMarkAsRead()) postActions.markAsRead(post);
-  //   }
-
-  //   if (typeof post.fetchedReact === "undefined") postActions.fetchPostClapHover(post.id);
-  // };
-
-  // useEffect(() => {
-  //   console.log("trigger", post.id, params);
-  // }, [params.postId]);
-
-  //if (!isPostParticipant) return null;
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -530,15 +496,17 @@ const CompanyPostDetail = (props) => {
           onCancel={handleHideDropzone}
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+
+        {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
@@ -567,7 +535,7 @@ const CompanyPostDetail = (props) => {
             <hr className="m-0" />
           </>
         )}
-        <CompanyPostDetailFooter isMember={isMember} post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
+        <CompanyPostDetailFooter post={post} posts={posts} filter={filter} commentActions={commentActions} postActions={postActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} mainInput={true} />
       </MainBody>
     </>
   );

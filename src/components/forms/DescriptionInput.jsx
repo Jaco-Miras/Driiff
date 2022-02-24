@@ -211,7 +211,7 @@ const DescriptionInput = (props) => {
     workspaces = [],
     disableMention = false,
     disableBodyMention = false,
-    mentionedUserIds,
+    mentionedUserIds = [],
     onAddUsers,
     onDoNothing,
     modal = "post",

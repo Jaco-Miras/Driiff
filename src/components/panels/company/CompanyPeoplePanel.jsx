@@ -124,6 +124,7 @@ const CompanyPeoplePanel = (props) => {
     structureView: _t("PEOPLE.STRUCTURE_VIEW_TOGGLE", "Structure view"),
     peopleView: _t("PEOPLE.PEOPLE_VIEW_TOGGLE", "People view"),
     employeeAccounts: _t("LABEL.EMPLOYEE_ACCOUNTS", "Employee accounts"),
+    thisIsAnAdminAccount: _t("TOOLTIP.THIS_IS_AN_ADMIN_ACCOUNT", "This is an administrator account"),
   };
 
   // const handlePeopleViewToggle = () => {

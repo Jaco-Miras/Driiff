@@ -19,6 +19,7 @@
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "forever": "^4.0.1",
     "hex-to-css-filter": "^2.0.4",
     "is-valid-domain": "^0.1.2",
     "laravel-echo": "^1.7.0",
@@ -27,12 +28,13 @@
     "memoize-one": "^5.2.1",
     "moment": "^2.25.3",
     "moment-timezone": "^0.5.31",
+    "newrelic": "^8.5.2",
     "node-sass": "^4.14.1",
     "prettier": "^2.0.5",
     "push.js": "^1.0.12",
     "quill-image-uploader": "^1.2.2",
     "quill-magic-url": "^2.0.2",
-    "quill-mention": "^2.2.5",
+    "quill-mention": "3.0.4",
     "quill-paste-smart": "^1.2.1",
     "react": "^16.13.1",
     "react-color": "^2.19.3",
@@ -50,6 +52,7 @@
     "react-google-picker": "^0.1.0",
     "react-google-recaptcha": "^2.1.0",
     "react-idle-timer": "^4.5.6",
+    "react-image-annotation-with-zoom": "^0.9.18",
     "react-intersection-observer": "^8.26.2",
     "react-organizational-chart": "^2.1.0",
     "react-paginate": "^6.3.2",
@@ -72,11 +75,13 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-logger": "^3.0.6",
+    "redux-persist": "^6.0.0",
     "redux-react-session": "^2.6.1",
     "redux-thunk": "^2.3.0",
     "shortid": "^2.2.15",
     "socket.io-client": "^2.3.0",
     "styled-components": "^5.2.0",
+    "valid-url": "^1.0.9",
     "yarn": "^1.22.4"
   },
   "scripts": {
@@ -94,7 +99,8 @@
     "eslint": "eslint src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "eslint-fix": "eslint --fix src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "prettier": "prettier --check src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
-    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js"
+    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
+    "startforever": "forever start -o serverlog/out.log -e serverlog/err.log server.js"
   },
   "eslintConfig": {
     "extends": "react-app"

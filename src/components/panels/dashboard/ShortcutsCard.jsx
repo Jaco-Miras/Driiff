@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather, ToolTip } from "../../common";
 import { FancyLink } from "../../common";
+import { getQuickLinks } from "../../../redux/actions/globalActions";
+import { useSettings } from "../../hooks";
 
 const Wrapper = styled.div`
   > span {
@@ -24,6 +26,8 @@ const Wrapper = styled.div`
     list-style: none;
     padding: 0;
     margin: 0;
+    max-height: 190px;
+    overflow: auto;
     li {
       padding-top: 10px;
     }
@@ -41,8 +45,16 @@ const Wrapper = styled.div`
 
 const ShortcutsCard = (props) => {
   const { dictionary } = props;
+  const dispatch = useDispatch();
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
+  const { generalSettings, showModal } = useSettings();
+  const handleAddItemClick = () => {
+    showModal("personal_link_create");
+  };
+  useEffect(() => {
+    if (!linksFetched) dispatch(getQuickLinks());
+  }, []);
   return (
     <Wrapper>
       <span>
@@ -52,7 +64,7 @@ const ShortcutsCard = (props) => {
         </ToolTip>
       </span>
       {links.length === 0 && linksFetched && <span className="mt-3">{dictionary.noQuickLinks}</span>}
-      <ul className="mt-3">
+      <ul className="mt-2">
         {links.map((l) => {
           return (
             <li key={l.id}>
@@ -61,6 +73,21 @@ const ShortcutsCard = (props) => {
           );
         })}
       </ul>
+      <span className="personal-links-label d-flex mt-2">
+        {dictionary.personalLinks}
+        <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleAddItemClick} />
+      </span>
+      {generalSettings.personal_links.length > 0 && (
+        <ul className="mt-2">
+          {generalSettings.personal_links.map((l, index) => {
+            return (
+              <li key={l.id}>
+                <FancyLink link={l.web_address} title={l.name} />
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </Wrapper>
   );
 };

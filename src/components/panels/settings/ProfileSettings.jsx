@@ -10,6 +10,7 @@ import { getDriffName } from "../../hooks/useDriff";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
+import reduxPersist from "../../../redux/store/configStore";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
@@ -74,6 +75,9 @@ const Wrapper = styled.div`
 
 const ProfileSettings = (props) => {
   const { className = "" } = props;
+  let persistenceOn = localStorage.getItem("persistence") ? true : false;
+  const { persistor } = reduxPersist();
+  const [persist, setPersist] = useState(persistenceOn);
 
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
@@ -149,6 +153,9 @@ const ProfileSettings = (props) => {
     workspaceSettingsTitle: _t("SETTINGS.WORKSPACE_TITLE", "Workspace Settings"),
     sortWorkspaceLabel: _t("SETTINGS.SORT_WORKSPACE_LABEL", "Sort workspace by"),
     viewRelease: _t("SETTINGS.VIEW_RELEASE", "View Release List"),
+    liveTranslation: _t("SETTINGS.LIVE_TRANSLATION", "Talk in your own language (live translation)"),
+    dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
+    //chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Talk in your own language (live translation) !BETA!"),
     chatTranslateTitle: _t("SETTINGS.CHAT_TRANSLATE", "Choose a target language to be translated !BETA!"),
     dailyDigest: _t("SETTINGS.DAILY_DIGEST", "Daily digest"),
     notifications: _t("NOTIFICATIONS", "Notifications"),
@@ -604,6 +611,22 @@ const ProfileSettings = (props) => {
     });
   };
 
+  const handleTogglePersist = (e) => {
+    e.persist();
+    const { checked, dataset } = e.target;
+    setPersist(checked);
+    if (checked) {
+      localStorage.setItem("persistence", true);
+    } else {
+      if (persistenceOn) {
+        persistor.purge();
+        localStorage.removeItem("persist:root");
+      }
+      localStorage.removeItem("persistence");
+    }
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
+
   const handleVersionClick = (e) => {
     e.preventDefault();
     window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
@@ -646,7 +669,7 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
 
-              {["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(loggedUser.email) && (
+              {["nilo@makedevelopment.com"].includes(loggedUser.email) && (
                 <div className="row mb-3">
                   <div className="col-12">
                     <CustomInput
@@ -662,6 +685,36 @@ const ProfileSettings = (props) => {
                   </div>
                 </div>
               )}
+
+              {/* <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={persist}
+                    type="switch"
+                    id="redux_persist"
+                    name="persistence"
+                    onChange={handleTogglePersist}
+                    data-success-message={`You have turn ${persist ? "OFF" : "ON"} data persistence in chat!`}
+                    label={<span>Persisted data</span>}
+                  />
+                </div>
+              </div> */}
+
+              {/* <div className="row mb-3">
+                <div className="col-12">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={translate}
+                    type="switch"
+                    id="translate_chat"
+                    name="translate"
+                    onChange={handleChatSwitchToggle}
+                    data-success-message={`You have turn ${translate ? "OFF" : "ON"} translate chat messages!`}
+                    label={<span>{dictionary.chatTranslateTitle}</span>}
+                  />
+                </div>
+              </div> */}
               <div className="row mb-2">
                 <div className="col-5 text-muted">{dictionary.chatTranslateTitle}</div>
                 <div className="col-7">

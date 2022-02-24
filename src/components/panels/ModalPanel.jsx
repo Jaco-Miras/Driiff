@@ -29,7 +29,9 @@ import {
   CreateEditTeamModal,
   AddToTeamModal,
   ZoomInviteModal,
+  WIPModal,
   ZoomMeetingInProgress,
+  WIPFileModal,
   ZoomConfirmationModal,
   CompanyWorkspaceModal,
 } from "../modals";
@@ -125,6 +127,10 @@ const ModalPanel = () => {
             return <CreateEditTeamModal key={modal.type} data={modal} />;
           case "add-to-team":
             return <AddToTeamModal key={modal.type} data={modal} />;
+          case "wip":
+            return <WIPModal key={modal.type} data={modal} />;
+          case "wip_file":
+            return <WIPFileModal key={modal.type} data={modal} />;
           case "company-workspace":
             return <CompanyWorkspaceModal key={modal.type} data={modal} />;
           default:
