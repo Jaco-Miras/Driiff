@@ -522,3 +522,7 @@ export function updatePostCategory(payload, callback) {
 export function updatePostCategoryCount(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_POST_CATEGORY_COUNT", payload, callback);
 }
+
+export function setShowUnread(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_SHOW_UNREAD", payload, callback);
+}

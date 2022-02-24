@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     searchResults: [],
     unreadPosts: 0,
   },
+  showUnread: true,
   archived: {
     skip: 0,
     has_more: true,
@@ -1699,6 +1700,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.noReplies,
           count: action.data.is_read_only ? state.noReplies.count + 1 : state.noReplies.count,
         },
+      };
+    }
+    case "SET_SHOW_UNREAD": {
+      return {
+        ...state,
+        showUnread: action.data,
       };
     }
     default:
