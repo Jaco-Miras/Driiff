@@ -186,11 +186,15 @@ const UserProfilePanel = (props) => {
 
   const accountOptions = [
     {
-      value: "admin",
-      label: "Administrator",
+      value: 1,
+      label: "Admin",
     },
     {
-      value: "employee",
+      value: 2,
+      label: "Supervisor",
+    },
+    {
+      value: 3,
       label: "Employee",
     },
   ];
@@ -222,12 +226,10 @@ const UserProfilePanel = (props) => {
     accountType: _t("PROFILE.ACCOUNT_TYPE", "Account type"),
   };
 
-  //const isEditable = loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && user && user.type === "external" && user.active;
-  const isEditable = (loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1) || (loggedUser && loggedUser.role && (loggedUser.role.name === "admin" || loggedUser.role.name === "owner"));
+  const isEditable = (loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1) || (loggedUser && loggedUser.role && loggedUser.role.id <= 2);
 
   const getValidClass = (valid) => {
-    if (typeof valid !== "boolean") {
-    } else {
+    if (typeof valid === "boolean") {
       return valid ? "is-valid" : "is-invalid";
     }
   };
@@ -631,7 +633,7 @@ const UserProfilePanel = (props) => {
     setAccountType(e.value);
     setForm({
       ...form,
-      role_ids: [roles[e.value]],
+      role_ids: [e.value],
     });
   };
 
@@ -648,7 +650,7 @@ const UserProfilePanel = (props) => {
     if (!props.match.params.hasOwnProperty("id") || (props.match.params.hasOwnProperty("id") && !props.match.params.hasOwnProperty("name") && parseInt(props.match.params.id) === loggedUser.id)) {
       history.push(`/profile/${loggedUser.id}/${replaceChar(loggedUser.name)}`);
     }
-    if (loggedUser.role.name === "admin" || loggedUser.role.name === "owner") fetchUsersWithoutActivity();
+    if (loggedUser.role.id <= 2) fetchUsersWithoutActivity();
     // check if roles has an object
     if (Object.keys(roles).length === 0) {
       fetchRoles();
@@ -728,7 +730,7 @@ const UserProfilePanel = (props) => {
       <div className="row row-user-profile-panel">
         <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
-            {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && loggedUser.id !== user.id && <UserOptions user={user} />}
+            {loggedUser.role.id <= 2 && loggedUser.id !== user.id && <UserOptions user={user} />}
             <div className="card-body text-center" onDragOver={handleShowDropZone}>
               {(isLoggedUser || isEditable) && (
                 <DropDocument
@@ -1084,7 +1086,7 @@ const UserProfilePanel = (props) => {
                     )}
                   </div>
                 </div>
-                {(loggedUser.role.name === "admin" || loggedUser.role.name === "owner") && loggedUser.id !== user.id && user.type === "internal" && (
+                {loggedUser.role.id <= 2 && loggedUser.id !== user.id && user.type === "internal" && (
                   <div className="row mb-2">
                     <div className="col col-label text-muted">{dictionary.accountType}</div>
                     <div className="col col-form">
@@ -1095,6 +1097,7 @@ const UserProfilePanel = (props) => {
                         value={accountOptions.find((o) => o.value === accountType)}
                         onChange={handleSelectAccountType}
                         options={accountOptions}
+                        menuPlacement={"top"}
                       />
                     </div>
                   </div>

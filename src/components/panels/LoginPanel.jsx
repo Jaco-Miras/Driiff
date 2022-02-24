@@ -180,7 +180,7 @@ const LoginPanel = (props) => {
             // };
             //openModalAction(cb);
           } else {
-            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+            if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal" && driffSettings.settings.google_login) {
               dispatch(toggleLoading(false));
               toaster.info("Please login via your Google account.", { autoClose: false });
             } else {
