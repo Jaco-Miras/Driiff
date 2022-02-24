@@ -15,6 +15,7 @@ import { osName } from "react-device-detect";
 import { FolderSelect } from "../forms";
 import _ from "lodash";
 import axios from "axios";
+import { DropDocument } from "../dropzone/DropDocument";
 
 const ModalWrapper = styled(Modal)`
   input.form-control:focus {
@@ -381,6 +382,9 @@ const FileUploadModal = (props) => {
 
   const handleRemoveFile = (file) => {
     setFiles(files.filter((f) => f.id !== file.id));
+  };
+  const handleAddFile = (file) => {
+    setFiles((prev) => [...prev, ...file]);
   };
 
   const CancelToken = axios.CancelToken;
@@ -768,7 +772,7 @@ const FileUploadModal = (props) => {
           <IconButton onClick={handleShowEmojiPicker} icon="smile" />
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
         </DescriptionInputWrapper>
-        <FilesPreview files={files} onRemoveFile={handleRemoveFile} />
+        <FilesPreview files={files} onRemoveFile={handleRemoveFile} onAddFile={handleAddFile} />
         <SelectFileOptionContainer className="mt-1">
           <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
         </SelectFileOptionContainer>
@@ -794,14 +798,74 @@ const FileUploadModal = (props) => {
 };
 
 const FilesPreview = (props) => {
-  const { files, onRemoveFile } = props;
+  const { files, onRemoveFile, onAddFile } = props;
+
+  const dispatch = useDispatch();
+
+  const refs = {
+    dropZoneRef: useRef(null),
+  };
 
   const handleRemoveFile = (file) => {
     onRemoveFile(file);
   };
+  const handleAddFile = (acceptedFiles) => {
+    let attachedFiles = [];
+    acceptedFiles.forEach((file) => {
+      var bodyFormData = new FormData();
+      bodyFormData.append("file", file);
+      let shortFileId = require("shortid").generate();
+      if (file.type === "image/jpeg" || file.type === "image/png" || file.type === "image/gif" || file.type === "image/webp") {
+        attachedFiles.push({
+          ...file,
+          type: "IMAGE",
+          id: shortFileId,
+          status: false,
+          src: URL.createObjectURL(file),
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      } else if (file.type === "video/mp4") {
+        attachedFiles.push({
+          ...file,
+          type: "VIDEO",
+          id: shortFileId,
+          status: false,
+          src: URL.createObjectURL(file),
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      } else {
+        attachedFiles.push({
+          ...file,
+          type: "DOC",
+          id: shortFileId,
+          status: false,
+          src: "#",
+          bodyFormData: bodyFormData,
+          name: file.name ? file.name : file.path,
+        });
+      }
+    });
+    onAddFile(attachedFiles);
+  };
+
+  const handleOpenFileDialog = () => {
+    if (refs.dropZoneRef.current) {
+      refs.dropZoneRef.current.open();
+    }
+  };
 
   return (
     <FilesPreviewContainer hasOneFile={files.length === 1}>
+      <DropDocument
+        hide
+        ref={refs.dropZoneRef}
+        onDrop={({ acceptedFiles }) => {
+          handleAddFile(acceptedFiles);
+        }}
+        // onCancel={handleHideDropzone}
+      />
       <ul>
         {files.map((file, i) => {
           return (
@@ -822,6 +886,9 @@ const FilesPreview = (props) => {
           );
         })}
       </ul>
+      <button className="btn btn-primary btn-block border-top-0" onClick={handleOpenFileDialog}>
+        +
+      </button>
     </FilesPreviewContainer>
   );
 };
