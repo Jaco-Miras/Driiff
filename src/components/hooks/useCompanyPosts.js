@@ -16,28 +16,31 @@ const useCompanyPosts = () => {
   const myPosts = useSelector((state) => state.posts.myPosts);
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
+  const showUnread = useSelector((state) => state.posts.showUnread);
   const fetchMore = (callback = () => {}) => {
-    if (unreadPosts.has_more) {
-      actions.fetchUnreadCompanyPosts(
-        {
-          skip: unreadPosts.skip,
-          limit: 15,
-          filters: ["green_dot"],
-        },
-        callback
-      );
-    }
-    if (readPosts.has_more) {
-      actions.fetchReadCompanyPosts(
-        {
-          skip: readPosts.skip,
-          limit: 15,
-          filters: ["read_post"],
-        },
-        callback
-      );
-    }
-    if (filter === "archive") {
+    if (filter === "inbox") {
+      if (unreadPosts.has_more && showUnread) {
+        actions.fetchUnreadCompanyPosts(
+          {
+            skip: unreadPosts.skip,
+            limit: 15,
+            filters: ["green_dot"],
+          },
+          callback
+        );
+      } else if (readPosts.has_more && !showUnread) {
+        actions.fetchReadCompanyPosts(
+          {
+            skip: readPosts.skip,
+            limit: 15,
+            filters: ["read_post"],
+          },
+          callback
+        );
+      } else {
+        if (callback) callback();
+      }
+    } else if (filter === "archive") {
       let payload = {
         skip: archived.skip,
         limit: archived.limit,
@@ -45,6 +48,8 @@ const useCompanyPosts = () => {
       };
       if (archived.has_more) {
         actions.fetchCompanyPosts(payload, callback);
+      } else {
+        if (callback) callback();
       }
     } else if (filter === "my_posts") {
       let payload = {
@@ -54,12 +59,28 @@ const useCompanyPosts = () => {
       };
       if (myPosts.has_more) {
         actions.fetchCompanyPosts(payload, callback);
+      } else {
+        if (callback) callback();
       }
     }
   };
 
   useEffect(() => {
-    fetchMore();
+    //fetchMore();
+    if (unreadPosts.has_more) {
+      actions.fetchUnreadCompanyPosts({
+        skip: unreadPosts.skip,
+        limit: 15,
+        filters: ["green_dot"],
+      });
+    }
+    if (readPosts.has_more) {
+      actions.fetchReadCompanyPosts({
+        skip: readPosts.skip,
+        limit: 15,
+        filters: ["read_post"],
+      });
+    }
     if (unreadCounter.general_post > 0) {
       actions.refetchCompanyPosts({ skip: 0, limit: unreadCounter.general_post });
     }
@@ -72,7 +93,7 @@ const useCompanyPosts = () => {
   }, [unreadPosts.loaded]);
 
   useEffect(() => {
-    if (archived.skip === 0 && archived.has_more && filter === "all") {
+    if (archived.skip === 0 && archived.has_more && filter === "archived") {
       actions.fetchArchivedCompanyPosts({
         skip: 0,
         limit: 25,

@@ -1001,7 +1001,6 @@ class SocketListeners extends Component {
                     ...res.data,
                     claps: [],
                     //is_unread: 1,
-                    //show_post: hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0,
                   };
                   if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
                     this.props.incomingPost(post);
@@ -1012,7 +1011,7 @@ class SocketListeners extends Component {
               } else {
                 const post = this.props.posts[e.post_id];
                 if (post) {
-                  if (post.unread_count === 0 || post.is_unread === 0) {
+                  if (post.is_unread === 0) {
                     this.props.updateUnreadCounter({ general_post: 1 });
                   }
                 }

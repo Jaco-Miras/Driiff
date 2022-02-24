@@ -3,7 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { usePosts, useTranslationActions, useFetchWsCount, useToaster, usePostCategory } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
+import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
