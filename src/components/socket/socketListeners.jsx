@@ -843,11 +843,8 @@ class SocketListeners extends Component {
             const mustRead = post.must_read_users && post.must_read_users.some((u) => this.props.user.id === u.id && !u.must_read);
             const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
             const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
-            post = { ...post, show_post: showPost };
-            this.props.updatePostCategoryCount(post);
+            post = { ...post, show_post: showPost, post_approval_label: isApprover ? "NEED_ACTION" : null };
             if (this.props.user.id !== post.author.id) {
-              this.props.updateUnreadCounter({ general_post: 1 });
-
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   // chech the topic recipients if active
@@ -855,16 +852,15 @@ class SocketListeners extends Component {
                 }
               }
             }
-            if (post.show_at !== null && this.props.user.id === post.author.id) {
-              this.props.incomingPost({
-                ...post,
-                post_approval_label: isApprover ? "NEED_ACTION" : null,
-              });
+            if (this.props.user.id !== post.author.id) {
+              if (post.show_post) {
+                this.props.updateUnreadCounter({ general_post: 1 });
+                this.props.incomingPost(post);
+              } else {
+                this.props.incomingWorkspacePost(post);
+              }
             } else {
-              this.props.incomingPost({
-                ...post,
-                post_approval_label: isApprover ? "NEED_ACTION" : null,
-              });
+              this.props.incomingPost(post);
             }
 
             post.channel_messages &&
