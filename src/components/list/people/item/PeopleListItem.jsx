@@ -5,6 +5,7 @@ import { Avatar, Badge, SvgIconFeather, ToolTip } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
 import { useToaster } from "../../../hooks";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   .avatar {
@@ -42,7 +43,7 @@ const Wrapper = styled.div`
   }
   .card-body {
     padding: 1rem !important;
-    min-height: 90px;
+    min-height: 115px;
     width: 100%;
     display: flex;
   }
@@ -92,6 +93,14 @@ const StyledBadge = styled(Badge)`
   }
 `;
 
+const WorkSpaceIcon = styled(SvgIconFeather)`
+  cursor: pointer;
+  transition: 0.3s ease;
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
 const PeopleListItem = (props) => {
   const {
     className = "",
@@ -118,6 +127,7 @@ const PeopleListItem = (props) => {
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
   const toaster = useToaster();
+  const history = useHistory();
   const refs = {
     cardBody: useRef(null),
     content: useRef(null),
@@ -252,11 +262,15 @@ const PeopleListItem = (props) => {
     );
   };
 
+  const handleWorkspaceIconClick = () => {
+    history.push(`/workspace/search?user-id=${user.id}`);
+  };
+
   return (
     <Wrapper className={`workspace-user-item-list col-lg-4 col-md-6 ${className}`}>
       <div className="col-12">
         <div className="card border" key={user.id}>
-          <div className="card-body" ref={refs.cardBody}>
+          <div className="card-body position-relative" ref={refs.cardBody}>
             <div ref={refs.content} className="d-flex align-items-center justify-content-between w-100">
               <div className="d-flex justify-content-start align-items-center">
                 <Avatar
@@ -300,10 +314,18 @@ const PeopleListItem = (props) => {
 
                   {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
                   {user.external_company_name && user.type === "external" && <span className="small text-muted">{user.external_company_name}</span>}
+                  {user.invited_by && (
+                    <div>
+                      <span className="small text-muted">
+                        Invited by: {user.invited_by.first_name} {user.invited_by.last_name}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
+                  <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
                   {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
                       <SvgIconFeather className="mr-2" icon="phone" />
