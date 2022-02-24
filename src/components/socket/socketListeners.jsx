@@ -844,6 +844,7 @@ class SocketListeners extends Component {
             const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
             const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
             post = { ...post, show_post: showPost, post_approval_label: isApprover ? "NEED_ACTION" : null };
+            this.props.updatePostCategoryCount(post);
             if (this.props.user.id !== post.author.id) {
               if (isSafari) {
                 if (this.props.notificationsOn) {
