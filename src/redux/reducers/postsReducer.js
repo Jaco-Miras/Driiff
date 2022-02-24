@@ -999,6 +999,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CLOSE_POST": {
+      const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
+      const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
       return {
         ...state,
         companyPosts: {
@@ -1023,7 +1025,11 @@ export default (state = INITIAL_STATE, action) => {
           },
           mustReply: {
             ...state.mustReply,
-            count: action.data.is_close && action.data.is_must_reply ? state.mustReply.count - 1 : !action.data.is_close && action.data.is_must_reply ? state.mustReply.count + 1 : state.mustReply.count,
+            count: action.data.is_close && mustReply ? state.mustReply.count - 1 : !action.data.is_close && mustReply ? state.mustReply.count + 1 : state.mustReply.count,
+          },
+          mustRead: {
+            ...state.mustRead,
+            count: action.data.is_close && mustRead ? state.mustRead.count - 1 : !action.data.is_close && mustRead ? state.mustRead.count + 1 : state.mustRead.count,
           },
         }),
       };
