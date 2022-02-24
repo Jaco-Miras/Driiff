@@ -1016,10 +1016,16 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         },
-        closedPost: {
-          ...state.closedPost,
-          count: state.closedPost.count + 1,
-        },
+        ...(state.categoryCountLoaded && {
+          closedPost: {
+            ...state.closedPost,
+            count: action.data.is_close ? state.closedPost.count + 1 : state.closedPost.count - 1,
+          },
+          mustReply: {
+            ...state.mustReply,
+            count: action.data.is_close && action.data.is_must_reply ? state.mustReply.count - 1 : !action.data.is_close && action.data.is_must_reply ? state.mustReply.count + 1 : state.mustReply.count,
+          },
+        }),
       };
     }
     case "REFETCH_UNREAD_COMPANY_POSTS_SUCCESS": {
