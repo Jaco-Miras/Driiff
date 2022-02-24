@@ -14,15 +14,25 @@ const usePosts = () => {
   const user = useSelector((state) => state.session.user);
   const postsLists = useSelector((state) => state.posts.postsLists);
   const [fetchingPost, setFetchingPost] = useState(false);
-  //const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const showUnread = useSelector((state) => state.posts.showUnread);
 
   const componentIsMounted = useRef(true);
 
   useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
+      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
+    }
     return () => {
+      actions.setShowUnreadPosts(true);
       componentIsMounted.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
+      actions.getRecentPosts(params.workspaceId);
+    }
+  }, [params.workspaceId]);
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
@@ -60,40 +70,6 @@ const usePosts = () => {
         };
         actions.getPosts(payload, cb);
         actions.fetchPostList();
-
-        // let filterCb = (err, res) => {
-        //   if (componentIsMounted.current) {
-        //     setFetchingPost(false);
-        //   }
-        //   if (err) return;
-        //   let files = res.data.posts.map((p) => p.files);
-        //   if (files.length) {
-        //     files = files.flat();
-        //   }
-        //   dispatch(
-        //     addToWorkspacePosts({
-        //       topic_id: parseInt(params.workspaceId),
-        //       posts: res.data.posts,
-        //       filter: res.data.posts,
-        //       files,
-        //       filters: {
-        //         archived: {
-        //           active: false,
-        //           skip: res.data.next_skip,
-        //           hasMore: res.data.total_take === 15,
-        //         },
-        //       },
-        //     })
-        //   );
-        // };
-
-        // actions.getPosts(
-        //   {
-        //     filters: ["post", "archived"],
-        //     topic_id: parseInt(params.workspaceId),
-        //   },
-        //   filterCb
-        // );
 
         let unreadCb = (err, res) => {
           if (componentIsMounted.current) {
@@ -273,6 +249,7 @@ const usePosts = () => {
     filters: activeFilters,
     postLists: postsLists,
     showLoader: !wsPosts.hasOwnProperty(params.workspaceId),
+    showUnread: showUnread,
   };
 };
 

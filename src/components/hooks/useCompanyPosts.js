@@ -84,6 +84,7 @@ const useCompanyPosts = () => {
     if (unreadCounter.general_post > 0) {
       actions.refetchCompanyPosts({ skip: 0, limit: unreadCounter.general_post });
     }
+    return () => actions.setShowUnreadPosts(true);
   }, []);
 
   useEffect(() => {
