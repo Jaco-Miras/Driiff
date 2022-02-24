@@ -2969,6 +2969,8 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CLOSE_POST": {
+      const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
+      const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
       return {
         ...state,
         workspacePosts: {
@@ -2999,11 +3001,20 @@ export default (state = INITIAL_STATE, action) => {
                       mustReply: {
                         ...state.workspacePosts[ws.topic.id].categories.mustReply,
                         count:
-                          action.data.is_close && action.data.is_must_reply
+                          action.data.is_close && mustReply
                             ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
-                            : !action.data.is_close && action.data.is_must_reply
+                            : !action.data.is_close && mustReply
                             ? state.workspacePosts[ws.topic.id].categories.mustReply.count + 1
                             : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                      },
+                      mustRead: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustRead,
+                        count:
+                          action.data.is_close && mustRead
+                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
+                            : !action.data.is_close && mustRead
+                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count + 1
+                            : state.workspacePosts[ws.topic.id].categories.mustRead.count,
                       },
                     },
                   }),
