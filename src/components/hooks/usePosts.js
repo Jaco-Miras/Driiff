@@ -16,14 +16,25 @@ const usePosts = () => {
   const postsLists = useSelector((state) => state.posts.postsLists);
   const [fetchingPost, setFetchingPost] = useState(false);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const showUnread = useSelector((state) => state.posts.showUnread);
 
   const componentIsMounted = useRef(true);
 
   useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
+      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
+    }
     return () => {
+      actions.setShowUnreadPosts(true);
       componentIsMounted.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (params.hasOwnProperty("workspaceId")) {
+      actions.getRecentPosts(params.workspaceId);
+    }
+  }, [params.workspaceId]);
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
@@ -39,7 +50,7 @@ const usePosts = () => {
           if (files.length) {
             files = files.flat();
           }
-          actions.getTagsCount(parseInt(params.workspaceId));
+          //actions.getTagsCount(parseInt(params.workspaceId));
           dispatch(
             addToWorkspacePosts({
               topic_id: parseInt(params.workspaceId),
@@ -61,40 +72,6 @@ const usePosts = () => {
         };
         actions.getPosts(payload, cb);
         actions.fetchPostList();
-
-        // let filterCb = (err, res) => {
-        //   if (componentIsMounted.current) {
-        //     setFetchingPost(false);
-        //   }
-        //   if (err) return;
-        //   let files = res.data.posts.map((p) => p.files);
-        //   if (files.length) {
-        //     files = files.flat();
-        //   }
-        //   dispatch(
-        //     addToWorkspacePosts({
-        //       topic_id: parseInt(params.workspaceId),
-        //       posts: res.data.posts,
-        //       filter: res.data.posts,
-        //       files,
-        //       filters: {
-        //         archived: {
-        //           active: false,
-        //           skip: res.data.next_skip,
-        //           hasMore: res.data.total_take === 15,
-        //         },
-        //       },
-        //     })
-        //   );
-        // };
-
-        // actions.getPosts(
-        //   {
-        //     filters: ["post", "archived"],
-        //     topic_id: parseInt(params.workspaceId),
-        //   },
-        //   filterCb
-        // );
 
         let unreadCb = (err, res) => {
           if (componentIsMounted.current) {
@@ -148,13 +125,6 @@ const usePosts = () => {
   let activeSort = "recent";
   let post = null;
   let activeSearch = "";
-  let count = {
-    is_must_reply: 0,
-    is_must_read: 0,
-    is_read_only: 0,
-    is_unread: 0,
-    is_close: 0,
-  };
   let counters = {
     all: 0,
     my_posts: 0,
@@ -234,11 +204,13 @@ const usePosts = () => {
           }
         } else if (activeTag) {
           if (activeTag === "is_must_reply") {
-            return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
+            return !p.is_close && p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply);
+            // return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
           } else if (activeTag === "is_must_read") {
-            return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
+            return !p.is_close && p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read);
+            // return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
           } else if (activeTag === "is_read_only") {
-            return p.is_read_only && !p.is_archived && !p.hasOwnProperty("draft_type");
+            return p.is_read_only && !p.hasOwnProperty("draft_type");
           } else if (tag === "is_unread") {
             return !p.hasOwnProperty("draft_type") && p.is_archived !== 1 && p.is_unread === 1;
           } else if (tag === "is_close") {
@@ -262,20 +234,12 @@ const usePosts = () => {
         return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
       });
 
-    count = {
-      is_must_reply: Object.values(posts).filter((p) => {
-        return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
-      }).length,
-      is_must_read: Object.values(posts).filter((p) => {
-        return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
-      }).length,
-      is_read_only: Object.values(posts).filter((p) => {
-        return p.is_read_only && !p.is_archived && !p.is_unread === 1 && p.hasOwnProperty("draft_type");
-      }).length,
-      is_close: Object.values(posts).filter((p) => {
-        return p.is_close && !p.hasOwnProperty("draft_type");
-      }).length,
-    };
+    // count = {
+    //   is_must_reply: wsPosts.categories.mustReply.count,
+    //   is_must_read: wsPosts.categories.mustRead.count,
+    //   is_read_only: wsPosts.categories.noReplies.count,
+    //   is_close: wsPosts.categories.closedPost.count,
+    // };
   }
 
   return {
@@ -304,11 +268,12 @@ const usePosts = () => {
     search: activeSearch,
     user,
     recentPosts: rPosts,
-    count,
+    //count,
     counters: counters,
     filters: activeFilters,
     postLists: postsLists,
     showLoader: !wsPosts.hasOwnProperty(params.workspaceId),
+    showUnread: showUnread,
   };
 };
 

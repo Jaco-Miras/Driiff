@@ -136,6 +136,7 @@ import {
   incomingPostRequired,
   incomingFollowPost,
   incomingUnfollowPost,
+  updatePostCategoryCount,
 } from "../../redux/actions/postActions";
 import {
   getOnlineUsers,
@@ -760,8 +761,10 @@ class SocketListeners extends Component {
             const mustReply = post.must_reply_users && post.must_reply_users.some((u) => this.props.user.id === u.id && !u.must_reply);
             const showPost = hasActiveWorkspace || hasMentioned || mustRead || mustReply || post.workspaces.length === 0;
             post = { ...post, show_post: showPost };
+            this.props.updatePostCategoryCount(post);
             if (this.props.user.id !== post.author.id) {
               this.props.updateUnreadCounter({ general_post: 1 });
+
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   // chech the topic recipients if active
@@ -907,14 +910,14 @@ class SocketListeners extends Component {
                   let post = {
                     ...res.data,
                     claps: [],
-                    is_unread: 1,
+                    //is_unread: 1,
                   };
                   this.props.incomingPost(post);
                 });
               } else {
                 const post = this.props.posts[e.post_id];
                 if (post) {
-                  if (post.unread_count === 0 || post.is_unread === 0) {
+                  if (post.is_unread === 0) {
                     this.props.updateUnreadCounter({ general_post: 1 });
                   }
                 }
@@ -2468,6 +2471,7 @@ function mapDispatchToProps(dispatch) {
     updateSecuritySettings: bindActionCreators(updateSecuritySettings, dispatch),
     incomingCompanyDescription: bindActionCreators(incomingCompanyDescription, dispatch),
     incomingCompanyDashboardBackground: bindActionCreators(incomingCompanyDashboardBackground, dispatch),
+    updatePostCategoryCount: bindActionCreators(updatePostCategoryCount, dispatch),
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
   };
 }
