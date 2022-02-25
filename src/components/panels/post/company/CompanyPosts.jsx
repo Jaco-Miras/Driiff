@@ -4,7 +4,7 @@ import { SvgIconFeather } from "../../../common";
 import { CompanyPostItemPanel } from "./index";
 import { useTranslationActions } from "../../../hooks";
 import { useDispatch } from "react-redux";
-import { setSelectedCompanyPost } from "../../../../redux/actions/postActions";
+import { setSelectedCompanyPost, setShowUnread } from "../../../../redux/actions/postActions";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -100,6 +100,10 @@ const CompanyPosts = (props) => {
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
+  useEffect(() => {
+    dispatch(setShowUnread(unreadPosts.length > 0));
+  }, []);
+
   const handleToggleCheckbox = (post) => {
     let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
     setCheckedPosts(postIds);
@@ -123,6 +127,7 @@ const CompanyPosts = (props) => {
   };
 
   const handleShowUnread = () => {
+    dispatch(setShowUnread(!showPosts.showUnread));
     setShowPosts((prevState) => {
       return {
         ...prevState,
@@ -133,6 +138,7 @@ const CompanyPosts = (props) => {
   };
 
   const handleShowRead = () => {
+    dispatch(setShowUnread(!showPosts.showUnread));
     setShowPosts((prevState) => {
       return {
         ...prevState,
