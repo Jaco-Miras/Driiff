@@ -526,3 +526,7 @@ export function updatePostCategoryCount(payload, callback) {
 export function setShowUnread(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SHOW_UNREAD", payload, callback);
 }
+
+export function incomingWorkspacePost(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_POST", payload, callback);
+}
