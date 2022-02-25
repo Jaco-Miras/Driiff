@@ -215,7 +215,7 @@ const InvitedUsersModal = (props) => {
   };
   const filteredInvitations = invitationItems.filter((item) => {
     if (hasLastName) {
-      const isEmpty = item.first_name.trim() === "" && item.last_name.trim() === "" && (item.email.trim() === "" || item.phone_number === undefined);
+      const isEmpty = item.first_name.trim() === "" && item.last_name.trim() === "" && item.email.trim() === "";
       return !isEmpty;
     } else {
       const isEmpty = item.email.trim() === "" && item.name.trim() === "";
@@ -256,7 +256,7 @@ const InvitedUsersModal = (props) => {
             valid[i].last_name = true;
           }
 
-          if (invitationItems[i].email.trim() === "" && invitationItems[i].phone_number === undefined) {
+          if (invitationItems[i].email.trim() === "") {
             valid[i].email = false;
             message[i].email = "Please put email or phone number";
             isValid = false;
@@ -386,6 +386,10 @@ const InvitedUsersModal = (props) => {
   // };
 
   const handleSetRegisterMode = (mode, key) => {
+    setInvitationItems((prevState) => {
+      prevState[key].email = "";
+      return prevState;
+    });
     setRegisterMode((prevState) => {
       return {
         ...prevState,
@@ -499,8 +503,8 @@ const InvitedUsersModal = (props) => {
                     <EmailPhoneInput
                       onChange={(value) => handleEmailNumberChange(value, key)}
                       name="email_phone"
-                      isValid={formResponse.valid.email}
-                      feedback={formResponse.message.email}
+                      isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
+                      feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       placeholder={dictionary.emailOnly}
                       registerMode={registerMode[key] ? registerMode[key] : "email"}
                       setRegisterMode={(mode) => handleSetRegisterMode(mode, key)}
