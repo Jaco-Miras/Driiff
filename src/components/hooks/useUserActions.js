@@ -403,7 +403,7 @@ const useUserActions = () => {
               }
             }
             if (deviceType === "mobile" && isAndroid) {
-              window.webkit.webAppinterface.changeActivity();
+              window.webAppInterface.changeActivity();
             }
 
             dispatch(
