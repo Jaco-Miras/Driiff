@@ -97,7 +97,6 @@ const PostMentionCard = (props) => {
       } else if (n.type === "POST_CREATE") {
         if (isWorkspace) {
           const connectedWs = n.data.workspaces && n.data.workspaces.some((ws) => ws.topic_id === parseInt(params.workspaceId));
-          console.log(connectedWs, n.data.workspaces, params.workspaceId);
           return (
             (connectedWs && n.data.is_close === 0 && n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read)) ||
             (connectedWs && n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply))

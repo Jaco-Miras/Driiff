@@ -1,10 +1,12 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather, ToolTip } from "../../common";
 import { FancyLink } from "../../common";
-import { getQuickLinks } from "../../../redux/actions/globalActions";
+import { getQuickLinks, addToModals } from "../../../redux/actions/globalActions";
 import { useSettings } from "../../hooks";
+import { getWorkspaceQuickLinks } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div`
   > span {
@@ -45,17 +47,31 @@ const Wrapper = styled.div`
 
 const ShortcutsCard = (props) => {
   const { dictionary, isWorkspace = false } = props;
+  const params = useParams();
   const dispatch = useDispatch();
-  const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
+  const companyLinks = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
+  const wsQuickLinks = useSelector((state) => state.workspaces.workspaceQuickLinks[params.workspaceId]);
   const { generalSettings, showModal } = useSettings();
+
   const handleAddItemClick = () => {
     showModal("personal_link_create");
   };
-  const handleShowWsQuicklinksModal = () => {};
+
+  const handleShowWsQuicklinksModal = () => {
+    let payload = {
+      type: "workspace-quicklinks",
+      links: wsQuickLinks,
+      workspaceId: params.workspaceId,
+    };
+    dispatch(addToModals(payload));
+  };
+
   useEffect(() => {
-    if (!linksFetched) dispatch(getQuickLinks());
+    if (!linksFetched && !isWorkspace) dispatch(getQuickLinks());
+    if (isWorkspace) dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }));
   }, []);
+
   return (
     <Wrapper>
       <span>
@@ -63,18 +79,31 @@ const ShortcutsCard = (props) => {
         <ToolTip content={dictionary.shorcutsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
-        {isWorkspace && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
+        {isWorkspace && wsQuickLinks && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
       </span>
-      {links.length === 0 && linksFetched && !isWorkspace && <span className="mt-3">{dictionary.noQuickLinks}</span>}
+      {companyLinks.length === 0 && linksFetched && !isWorkspace && <span className="mt-3">{dictionary.noQuickLinks}</span>}
       {!isWorkspace && (
         <ul className="mt-2">
-          {links.map((l) => {
+          {companyLinks.map((l) => {
             return (
               <li key={l.id}>
                 <FancyLink link={l.link} title={l.menu_name} />
               </li>
             );
           })}
+        </ul>
+      )}
+      {isWorkspace && wsQuickLinks && (
+        <ul className="mt-2">
+          {wsQuickLinks
+            .filter((l) => l.link !== "")
+            .map((l) => {
+              return (
+                <li key={l.id}>
+                  <FancyLink link={l.link} title={l.menu_name} />
+                </li>
+              );
+            })}
         </ul>
       )}
 
@@ -97,4 +126,4 @@ const ShortcutsCard = (props) => {
   );
 };
 
-export default ShortcutsCard;
+export default React.memo(ShortcutsCard);

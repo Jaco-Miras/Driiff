@@ -91,7 +91,7 @@ const QuicklinksMentionColumn = styled.div`
 
 const WsDashboardPanel = (props) => {
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
-  const dashboardBg = useSelector((state) => state.settings.driff.background);
+  //const dashboardBg = useSelector((state) => state.settings.driff.background);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   const user = useSelector((state) => state.session.user);
   const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
