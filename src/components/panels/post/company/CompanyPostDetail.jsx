@@ -285,8 +285,9 @@ const CompanyPostDetail = (props) => {
     dropZoneRef: useRef(null),
   };
 
-  const handleOpenFileDialog = (parentId) => {
+  const handleOpenFileDialog = (parentId, commentType = null) => {
     dispatch(setParentIdForUpload(parentId));
+    postActions.setCommentType(commentType);
     if (refs.dropZoneRef.current) {
       refs.dropZoneRef.current.open();
     }
@@ -339,12 +340,15 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    // const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
+    // const isExternalUser = user.type === "external";
+    // const externalWorkspace = post.recipients.find((r) => r.type === "TOPIC" && r.is_shared);
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? externalWorkspace.id : null,
     };
 
     dispatch(addToModals(modal));
@@ -492,15 +496,17 @@ const CompanyPostDetail = (props) => {
           onCancel={handleHideDropzone}
         />
         <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
-        <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+
+        {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+          <div className="d-flex justify-content-center align-items-center mb-3">
             <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
               </button>
             </MarkAsRead>
-          )}
-        </div>
+          </div>
+        )}
+
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
         <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />

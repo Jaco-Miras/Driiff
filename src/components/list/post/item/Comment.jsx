@@ -545,6 +545,11 @@ const Comment = (props) => {
               </MoreOptions>
             )}
           </CommentHeader>
+          {!comment.shared_with_client && post.shared_with_client && (
+            <span>
+              <i>{dictionary.internalComment}</i>
+            </span>
+          )}
           {comment.files.length > 0 && <PostVideos files={comment.files} />}
           <CommentBody ref={refs.content} className="mt-2 mb-3 ql-editor" dangerouslySetInnerHTML={{ __html: comment.body.startsWith("COMMENT_APPROVAL::") ? "<span></span>" : quillHelper.parseEmoji(comment.body) }} />
           {comment.users_approval.length > 0 && !approving.change && (

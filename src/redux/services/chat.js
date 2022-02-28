@@ -28,6 +28,7 @@ export function putChannel(payload) {
     url: url,
     data: payload,
     is_shared: !!payload.is_shared,
+    is_translate: !!payload.is_translate,
   });
 }
 
@@ -84,6 +85,15 @@ export function getChatMessages(payload) {
     url: url,
     //is_shared: !!payload.topic_id,
     //data: rest,
+  });
+}
+
+export function postChatMessageTranslate(payload) {
+  let url = "/v2/post-channel-messages-translate";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
   });
 }
 
@@ -452,6 +462,28 @@ export function getSearchChannels(payload) {
   });
 }
 
+export function postSkipHuddle(payload) {
+  let url = "/v2/huddle-chatbot-skip";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+/**
+ * @param payload
+ * @returns {Promise<*>}
+ */
+export function getSkippedAnswers(payload) {
+  let url = `/v2/get-skip-answer?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
 export function getCompanyChannel(payload) {
   let url = "/v2/company-post-channel";
   return apiCall({
@@ -469,8 +501,8 @@ export function getChatMsgsForFancy(payload) {
   });
 }
 
-export function postChatMessageTranslate(payload) {
-  let url = "/v2/post-channel-messages-translate";
+export function getSiteMetaData(payload) {
+  let url = "/v2/fancy-link";
   return apiCall({
     method: "POST",
     url: url,

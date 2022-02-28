@@ -220,6 +220,13 @@ export function incomingTeamChannel(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_TEAM_CHANNEL", payload, callback);
 }
 
+export function setChannelIsTranslate(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_IS_TRANSLATE", payload, callback);
+}
+export function updateChannelIsTranslate(payload, callback) {
+  return dispatchActionToReducer(putChannelService(payload), "UPDATE_CHANNEL_IS_TRANSLATE", "UPDATE_CHANNEL_IS_TRANSLATE_SUCCESS", "UPDATE_CHANNEL_IS_TRANSLATE_FAILURE", callback);
+}
+
 export function favouriteWorkspace(payload, callback) {
   return dispatchActionToReducer(favouriteWorkspaceService(payload), "FAVOURITE_WORKSPACE_START", "FAVOURITE_WORKSPACE_SUCCESS", "FAVOURITE_WORKSPACE_FAIL", callback);
 }
@@ -230,10 +237,6 @@ export function incomingFavouriteWorkspace(payload, callback) {
 
 export function getWorkspaceFitlerCount(payload, callback) {
   return dispatchActionToReducer(getWorkspaceFilterCountService(payload), "GET_WORKSPACE_FILTER_COUNT_START", "GET_WORKSPACE_FILTER_COUNT_SUCCESS", "GET_WORKSPACE_FILTER_COUNT_FAIL", callback);
-}
-
-export function getFavoriteWorkspaceCounters(payload, callback) {
-  return dispatchActionToReducer(getFavoriteWorkspaceCountersService(payload), "GET_FAVORITE_WORKSPACE_COUNTERS_START", "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS", "GET_FAVORITE_WORKSPACE_COUNTERS_FAIL", callback);
 }
 
 export function getWorkspaceReminders(payload, callback) {
@@ -252,6 +255,10 @@ export function updateWorkspaceRemindersCount(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_REMINDERS_COUNT", payload, callback);
 }
 
+export function getFavoriteWorkspaceCounters(payload, callback) {
+  return dispatchActionToReducer(getFavoriteWorkspaceCountersService(payload), "GET_FAVORITE_WORKSPACE_COUNTERS_START", "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS", "GET_FAVORITE_WORKSPACE_COUNTERS_FAIL", callback);
+}
+
 export function getFavoriteWorkspaces(payload, callback) {
   return dispatchActionToReducer(getFavoriteWorkspacesService(payload), "GET_FAVORITE_WORKSPACES_START", "GET_FAVORITE_WORKSPACES_SUCCESS", "GET_FAVORITE_WORKSPACES_FAIL", callback);
 }
@@ -266,14 +273,6 @@ export function getOverdueWorkspaceRemindersCallback(payload, callback) {
 
 export function getTodayWorkspaceRemindersCallback(payload, callback) {
   return SimpleDispatchActionToReducer("GET_TODAY_WORKSPACE_REMINDERS_CALLBACK", payload, callback);
-}
-
-export function setChannelIsTranslate(payload, callback) {
-  return SimpleDispatchActionToReducer("SET_CHANNEL_IS_TRANSLATE", payload, callback);
-}
-
-export function updateChannelIsTranslate(payload, callback) {
-  return dispatchActionToReducer(putChannelService(payload), "UPDATE_CHANNEL_IS_TRANSLATE", "UPDATE_CHANNEL_IS_TRANSLATE_SUCCESS", "UPDATE_CHANNEL_IS_TRANSLATE_FAILURE", callback);
 }
 
 export function getWorkspaceAndSetToFavorites(payload, callback) {

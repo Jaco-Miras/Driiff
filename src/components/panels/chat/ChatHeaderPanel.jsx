@@ -222,9 +222,9 @@ const StarIcon = styled(SvgIconFeather)`
 `;
 
 const SearchIcon = styled(SvgIconFeather)`
-  height: 14px !important;
-  width: 14px !important;
-  min-width: 14px;
+  height: 1rem !important;
+  width: 1rem !important;
+  min-width: 1rem;
   margin-left: 5px;
   cursor: pointer;
 `;

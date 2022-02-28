@@ -47,6 +47,11 @@ const INITIAL_STATE = {
     has_more: true,
     limit: 15,
   },
+  inProgress: {
+    skip: 0,
+    has_more: true,
+    limit: 25,
+  },
   mustRead: {
     count: 0,
     has_more: true,
@@ -83,6 +88,7 @@ const INITIAL_STATE = {
   recentPosts: {},
   clearApprovingState: null,
   changeRequestedComment: null,
+  commentType: null,
   commentDrafts: [],
 };
 
@@ -1432,6 +1438,38 @@ export default (state = INITIAL_STATE, action) => {
             },
           },
         }),
+      };
+    }
+    case "GET_IN_PROGRESS_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        inProgress: {
+          ...state.inProgress,
+          limit: 25,
+          skip: action.data.next_skip,
+          has_more: action.data.total_take === state.inProgress.limit,
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              if (state.companyPosts.posts[obj.id]) {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...state.companyPosts.posts[obj.id],
+                  ...obj,
+                };
+              } else {
+                res[obj.id] = {
+                  clap_user_ids: [],
+                  ...obj,
+                };
+              }
+              return res;
+            }, {}),
+          },
+        },
       };
     }
     case "INCOMING_REMOVED_TEAM_MEMBER":

@@ -73,18 +73,33 @@ const Wrapper = styled.div`
         display: flex;
         flex-flow: column;
       }
-      .quicklinks-postmention {
-        > div:first-child {
-          //flex: 1 2 10%;
-          min-height: 15%;
-        }
-        > div:last-child {
-          //flex: 2 1 20%;
-        }
-      }
+      // .quicklinks-postmention {
+      //   > div:first-child {
+      //     flex: 1 1 65%;
+      //     //min-height: 15%;
+      //   }
+      //   > div:last-child {
+      //     flex: 2 1 20%;
+      //   }
+      // }
       .count-card {
         min-height: 74px;
       }
+    }
+  }
+`;
+
+const QuicklinksMentionColumn = styled.div`
+  @media (min-width: 768px) {
+    > div:first-child {
+      flex: ${(props) => (props.personalLinks >= 4 ? "1 1 65%" : "1 1 30%")};
+    }
+    > div:last-child {
+      flex: 2 1 20%;
+    }
+
+    .count-card {
+      min-height: 74px;
     }
   }
 `;
@@ -93,6 +108,7 @@ const DashboardPanel = (props) => {
   const dashboardBg = useSelector((state) => state.settings.driff.background);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   const user = useSelector((state) => state.session.user);
+  const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
   const { _t } = useTranslationActions();
   const dictionary = {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
@@ -110,6 +126,7 @@ const DashboardPanel = (props) => {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     startWritingPost: _t("LABEL.START_WRITING_POST", "Start writing a new post,"),
     noQuickLinks: _t("LABEL.NO_QUICK_LINKS", "No quick links yet, wait for your admin to add quick links"),
+    personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
@@ -144,14 +161,14 @@ const DashboardPanel = (props) => {
                 <FavoriteWorkspaceCard dictionary={dictionary} />
               </Card>
             </div>
-            <div className={"col-md-6 quicklinks-postmention"}>
+            <QuicklinksMentionColumn className={"col-md-6 quicklinks-postmention"} personalLinks={personalLinks.length}>
               <Card className="mb-2">
                 <ShortcutsCard dictionary={dictionary} />
               </Card>
               <Card className="mb-2">
                 <PostMentionCard dictionary={dictionary} />
               </Card>
-            </div>
+            </QuicklinksMentionColumn>
           </div>
         </div>
       </div>

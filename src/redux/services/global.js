@@ -77,6 +77,9 @@ export function uploadDocument(payload) {
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
   }
+  if (payload.channel_id) {
+    url += `&channel_id=${payload.channel_id}`;
+  }
   if (payload.fileOption) {
     if (payload.fileOption.value === "remove_on_download") {
       url += "&remove_on_download=1";

@@ -5,6 +5,7 @@ import quillHelper from "../../helpers/quillHelper";
 import { useSelector } from "react-redux";
 import { useTranslationActions } from "./index";
 import useChannelUpdateMessage from "./useChannelUpdateMessage";
+import moment from "moment-timezone";
 
 const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
   const users = useSelector((state) => state.users.users);
@@ -97,7 +98,19 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       parseBody = `<div><b>${data.participant.name}</b> has left the meeting</div>`;
     } else if (reply.body.startsWith("MEETING_ENDED::")) {
       const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
-      parseBody = `<div><b>${data.host.name}</b> has ended the meeting</div>`;
+      let duration = null;
+      if (data.meeting_details && data.meeting_details.endTime) {
+        const endTime = moment(data.meeting_details.endTime);
+        const startTime = moment(data.meeting_details.startTime);
+        duration = endTime.diff(startTime, "minutes");
+      }
+      if (duration !== null && duration === 0) {
+        parseBody = `<div><b>${data.host.name}</b> has ended the meeting. ${_t("LABEL.DURATION_LESS_THAN_A_MINUTE", "Less than a minute")}</div>`;
+      } else if (duration !== null && duration > 0) {
+        parseBody = `<div><b>${data.host.name}</b> has ended the meeting. ${_t("LABEL.DURATION_NUMBER_OF_MINUTES", "Duration: ::minutes:: minutes", { minutes: duration })}</div>`;
+      } else {
+        parseBody = `<div><b>${data.host.name}</b> has ended the meeting.`;
+      }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       parseBody = renderToString(channelUpdateMessage);
     }

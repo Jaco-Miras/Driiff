@@ -1,5 +1,5 @@
-import React, { useCallback, useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useCallback, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { isValidPhoneNumber } from "react-phone-number-input";
@@ -7,6 +7,7 @@ import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, PasswordInput, EmailPhoneInput } from "../forms";
+import reduxPersist from "../../redux/store/configStore";
 import { useSettings, useUserActions, useToaster } from "../hooks";
 import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
 
@@ -34,9 +35,12 @@ const LoginPanel = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const { driffSettings } = useSettings();
-  //const subscriptions = useSelector((state) => state.admin.subscriptions);
+  const subscriptions = useSelector((state) => state.admin.subscriptions);
 
   const userActions = useUserActions();
+
+  const { persistor, persistenceOn } = reduxPersist();
+
   const toaster = useToaster();
   const refs = {
     email: useRef(),
@@ -207,6 +211,23 @@ const LoginPanel = (props) => {
             //     typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
             //   userActions.login(res.data, returnUrl);
             // }
+
+            //stripe code
+            if (subscriptions && subscriptions.status === "canceled") {
+              if (res.data.user_auth.role && (res.data.user_auth.role.name === "owner" || res.data.user_auth.role.name === "admin")) {
+                userActions.login(res.data, "/admin-settings/subscription/subscribe");
+              } else {
+                dispatch(toggleLoading(false));
+                toaster.info("Driff trial subscription has ended. Please contact your administrator.", { autoClose: false });
+              }
+            } else if (driffSettings.settings.password_login === false && res.data.user_auth.type === "internal") {
+              dispatch(toggleLoading(false));
+              toaster.info("Please login via your Google account.", { autoClose: false });
+            } else {
+              const returnUrl =
+                typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout" ? props.location.state.from.pathname + props.location.state.from.search : "/chat";
+              userActions.login(res.data, returnUrl);
+            }
           }
         }
       });
@@ -218,6 +239,13 @@ const LoginPanel = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("persist:root")) {
+      persistor.purge();
+      localStorage.removeItem("persist:root");
+    }
+  });
 
   const handleEmailNumberChange = (value) => {
     setForm((prevState) => ({

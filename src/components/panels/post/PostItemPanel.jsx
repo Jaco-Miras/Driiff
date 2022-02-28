@@ -5,10 +5,9 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
 import { useTimeFormat } from "../../hooks";
-import { PostCheckBox } from "../../forms";
-import { TodoCheckBox } from "../../forms";
+import { replaceChar } from "../../../helpers/stringFormatter";
 import PostApprovalLabels from "./PostApprovalLabels";
-//import Tooltip from "react-tooltip-lite";
+import { PostCheckBox } from "../../forms";
 
 const Wrapper = styled.li`
   flex-flow: column;
@@ -85,6 +84,8 @@ const Wrapper = styled.li`
     .hover-btns {
       display: inline-block;
     }
+    box-shadow: 0 1px 10px 0 rgb(0 0 0 / 10%), 0 2px 15px 0 rgb(0 0 0 / 5%);
+    z-index: 2;
   }
 
   .more-options {
@@ -274,6 +275,22 @@ const PostItemPanel = (props) => {
       return true;
     } else {
       return false;
+    }
+  };
+
+  const handleTitleClick = (e) => {
+    e.preventDefault();
+  };
+
+  const getPostRedirectLink = () => {
+    if (workspace) {
+      if (workspace.folder_id) {
+        return `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        return `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`;
+      }
+    } else {
+      return post.redirect_link;
     }
   };
 

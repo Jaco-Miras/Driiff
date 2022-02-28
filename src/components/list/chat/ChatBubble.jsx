@@ -108,6 +108,23 @@ const ChatBubbleContainer = styled.div`
       cursor: pointer;
     }
   }
+  a.a_fancy {
+    border-radius: 5px !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.11) !important;
+    text-decoration: none !important;
+    display: inline-block;
+    height: auto !important;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    color: #000 !important;
+    font-family: Inter !important;
+    font-size: 13px !important;
+    letter-spacing: 0 !important;
+    line-height: 21px !important;
+    margin-right: 1pt;
+    margin-left: 1pt;
+  }
   .message-files div:first-child {
     align-items: ${(props) => (props.isAuthor ? "flex-end" : "flex-start")};
   }
@@ -362,6 +379,9 @@ const ChatTimeStamp = styled.div`
       display: block;
     }
   }
+  .msg-fail {
+    color: red;
+  }
 `;
 
 const ForwardedSpan = styled.span`
@@ -596,7 +616,7 @@ const ChatBubble = (props) => {
               {!isAuthor && showAvatar && (
                 <>
                   <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
-                    {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
+                    {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? reply.user.name.substr(0, reply.user.name.length / 2) : reply.user.name}
                   </ChatNameNotAuthor>
                 </>
               )}
@@ -633,7 +653,8 @@ const ChatBubble = (props) => {
           </ChatContentClap>
           <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
             <span className="reply-date created">
-              <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
+              {isNaN(reply.id) && reply.status === "failed" && <span className="msg-fail">{dictionary.messageFailed}</span>}
+              {!isNaN(reply.id) && <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>}
               {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
             </span>
           </ChatTimeStamp>

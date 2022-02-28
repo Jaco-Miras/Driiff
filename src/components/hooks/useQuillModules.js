@@ -52,7 +52,7 @@ const useQuillModules = ({
   };
 
   const handleRemoveMention = () => {
-    removeCallback.current();
+    if (removeMention !== null) removeCallback.current();
   };
 
   const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
@@ -69,7 +69,7 @@ const useQuillModules = ({
 
     let newAtValues = [];
     let newWorkSpaceValues = [];
-    let prioIds = prioMentionIds.filter((id) => id !== user.id);
+    let prioIds = prioMentionIds;
     if (members.length) {
       newAtValues = [
         ...members

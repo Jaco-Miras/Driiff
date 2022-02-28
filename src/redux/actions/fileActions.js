@@ -472,6 +472,22 @@ export function incomingFileThumbnailData(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FILE_THUMBNAIL_DATA", payload, callback);
 }
 
+export function getTeamChatFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_TEAM_CHAT_FILES_START", "GET_TEAM_CHAT_FILES_SUCCESS", "GET_TEAM_CHAT_FILES_FAIL", callback);
+}
+
+export function getClientChatFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_CLIENT_CHAT_FILES_START", "GET_CLIENT_CHAT_FILES_SUCCESS", "GET_CLIENT_CHAT_FILES_FAIL", callback);
+}
+
+export function getClientPostFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_CLIENT_POST_FILES_START", "GET_CLIENT_POST_FILES_SUCCESS", "GET_CLIENT_POST_FILES_FAIL", callback);
+}
+
+export function getPrivatePostFiles(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceFilesService(payload), "GET_PRIVATE_POST_FILES_START", "GET_PRIVATE_POST_FILES_SUCCESS", "GET_PRIVATE_POST_FILES_FAIL", callback);
+}
+
 export function removeFileDownload(payload, callback) {
   return dispatchActionToReducer(removeFileDownloadService(payload), "REMOVE_FILE_DOWNLOAD_START", "REMOVE_FILE_DOWNLOAD_SUCCESS", "REMOVE_FILE_DOWNLOAD_FAIL", callback);
 }

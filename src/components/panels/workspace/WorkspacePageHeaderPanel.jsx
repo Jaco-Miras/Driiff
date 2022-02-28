@@ -109,6 +109,13 @@ const WorkspacePageHeaderPanel = (props) => {
   ) {
     pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "");
   } else if (
+    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/wip/:wipId/:wipTitle" ||
+    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion" ||
+    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle" ||
+    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion"
+  ) {
+    pathname = `/${pathname.split("/wip/")[1]}`;
+  } else if (
     props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
     props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName"
   ) {
@@ -177,6 +184,11 @@ const WorkspacePageHeaderPanel = (props) => {
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
               {dictionary.pageTitlePeople}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/wip${pathname}`}>
+              W.I.P.
             </MainNavLink>
           </li>
         </Navbar>

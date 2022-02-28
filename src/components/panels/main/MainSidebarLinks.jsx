@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
-import { QuickLinks } from "../../list/links";
+//import { QuickLinks } from "../../list/links";
 //import { Badge } from "reactstrap";
 //import christmas from "../../../assets/img/christmas.png";
 
@@ -133,6 +133,8 @@ const MainSidebarLinks = (props) => {
   //     total += unreadCounter[k];
   //     return total;
   //   }, 0);
+
+  //const reminderCount = count.today + count.overdue;
 
   return (
     <Wrapper className="flex navigation-menu-tab-header-options">
