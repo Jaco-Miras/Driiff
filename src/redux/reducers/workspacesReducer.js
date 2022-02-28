@@ -4292,6 +4292,47 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "UPDATE_POST_CATEGORY_COUNT": {
+      return {
+        ...state,
+        workspacePosts: {
+          ...state.workspacePosts,
+          ...action.data.recipients
+            .filter((r) => r.type === "TOPIC")
+            .reduce((res, ws) => {
+              if (state.workspacePosts[ws.id]) {
+                res[ws.id] = {
+                  ...state.workspacePosts[ws.id],
+                  ...(state.workspacePosts[ws.id].categories && {
+                    categories: {
+                      ...state.workspacePosts[ws.id].categories,
+                      mustRead: {
+                        ...state.workspacePosts[ws.id].categories.mustRead,
+                        count:
+                          action.data.is_must_read && action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read)
+                            ? state.workspacePosts[ws.id].categories.mustRead.count + 1
+                            : state.workspacePosts[ws.id].categories.mustRead.count,
+                      },
+                      mustReply: {
+                        ...state.workspacePosts[ws.id].categories.mustReply,
+                        count:
+                          action.data.is_must_reply && action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply)
+                            ? state.workspacePosts[ws.id].categories.mustReply.count + 1
+                            : state.workspacePosts[ws.id].categories.mustReply.count,
+                      },
+                      noReplies: {
+                        ...state.workspacePosts[ws.id].categories.noReplies,
+                        count: action.data.is_read_only ? state.workspacePosts[ws.id].categories.noReplies.count + 1 : state.workspacePosts[ws.id].categories.noReplies.count,
+                      },
+                    },
+                  }),
+                };
+              }
+              return res;
+            }, {}),
+        },
+      };
+    }
     default:
       return state;
   }
