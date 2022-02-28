@@ -748,3 +748,47 @@ export function getPostReadAndClap(payload) {
     data: payload,
   });
 }
+
+export function getCompanyPostCategoryCounter(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/company/post-category-counter",
+    data: payload,
+  });
+}
+
+export function getCompanyPostsByCategory(payload) {
+  let url = `/v2/company/posts?skip=${payload.skip}&limit=${payload.limit}`;
+  if (payload.filters !== undefined) {
+    for (var i = 0; i < payload.filters.length; i++) {
+      url += `&filter[${i}]=${payload.filters[i]}`;
+    }
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getWorkspacePostCategoryCounter(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/post-category-entries?topic_id=${payload.topic_id}`,
+    data: payload,
+  });
+}
+
+export function getWorkspacePostsByCategory(payload) {
+  let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${payload.skip}&limit=${payload.limit}`;
+  if (payload.filters !== undefined) {
+    for (var i = 0; i < payload.filters.length; i++) {
+      url += `&filter[${i}]=${payload.filters[i]}`;
+    }
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
