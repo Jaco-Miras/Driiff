@@ -39,8 +39,6 @@ import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
 import { browserName, deviceType, isAndroid } from "react-device-detect";
 import reduxPersist from "../../redux/store/configStore";
-import { browserName, deviceType } from "react-device-detect";
-
 
 export const userForceLogout = () => {
   if (localStorage.getItem("userAuthToken")) {
