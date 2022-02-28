@@ -6,28 +6,18 @@ import WelcomeCard from "./WelcomeCard";
 import AboutCard from "./AboutCard";
 import CountCard from "./CountCard";
 import ShortcutsCard from "./ShortcutsCard";
-import FavoriteWorkspaceCard from "./FavoriteWorkspaceCard";
 import SearchCard from "./SearchCard";
-import FavoriteChannelsCard from "./FavoriteChannelsCard";
-//import NewUsersCard from "./NewUsersCard";
 import PostMentionCard from "./PostMentionCard";
+import MembersCard from "./MembersCard";
 import { useTranslationActions } from "../../hooks";
+import FilesFolderCard from "./FilesFolderCard";
 
 const Wrapper = styled.div`
   overflow: auto;
   @media (min-width: 768px) {
     overflow: hidden;
   }
-  ${(props) =>
-    props.bg &&
-    `
-  background: url("${props.bg}") no-repeat center center fixed;
-  background-repeat: no-repeat;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  `};
+
   .card.overflow-unset {
     overflow: unset;
   }
@@ -59,31 +49,30 @@ const Wrapper = styled.div`
     flex-flow: column;
     @media (min-width: 768px) {
       padding-left: 0;
-      .row {
+      > .row {
         height: calc(100% - 82px);
       }
-      .row > div:first-child {
+      .row > .count-cards {
         padding-right: 7px;
-      }
-      .row > div:last-child {
-        padding-left: 7px;
-      }
-      .col-md-6 {
         height: 100%;
         display: flex;
         flex-flow: column;
       }
-      // .quicklinks-postmention {
-      //   > div:first-child {
-      //     flex: 1 1 65%;
-      //     //min-height: 15%;
-      //   }
-      //   > div:last-child {
-      //     flex: 2 1 20%;
-      //   }
-      // }
+      .row > .quicklinks-postmention {
+        padding-left: 7px;
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+      }
+      .members-card {
+        flex: 1 0 200px;
+        min-height: 0;
+      }
+      .files-folder-card {
+        flex: 1 0 180px;
+      }
       .count-card {
-        min-height: 74px;
+        flex: 0 0 74px;
       }
     }
   }
@@ -92,20 +81,17 @@ const Wrapper = styled.div`
 const QuicklinksMentionColumn = styled.div`
   @media (min-width: 768px) {
     > div:first-child {
-      flex: ${(props) => (props.personalLinks >= 4 ? "1 1 65%" : "1 1 30%")};
+      flex: ${(props) => (props.personalLinks >= 4 ? "1 1 450px" : "1 1 250px")};
     }
     > div:last-child {
       flex: 2 1 20%;
     }
-
-    .count-card {
-      min-height: 74px;
-    }
   }
 `;
 
-const DashboardPanel = (props) => {
-  const dashboardBg = useSelector((state) => state.settings.driff.background);
+const WsDashboardPanel = (props) => {
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  //const dashboardBg = useSelector((state) => state.settings.driff.background);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   const user = useSelector((state) => state.session.user);
   const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
@@ -127,16 +113,19 @@ const DashboardPanel = (props) => {
     startWritingPost: _t("LABEL.START_WRITING_POST", "Start writing a new post,"),
     noQuickLinks: _t("LABEL.NO_QUICK_LINKS", "No quick links yet, wait for your admin to add quick links"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
+    dailyWsDigest: _t("LABEL.DAILY_WS_DIGEST", "Here's the overview of ::name::", { name: activeTopic ? activeTopic.name : "" }),
+    aboutThisWorkspace: _t("DASHBOARD.ABOUT_THIS_WORKSPACE", "About this workspace"),
   };
+
   return (
-    <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
+    <Wrapper className={"container-fluid fadeIn dashboard-panel"}>
       <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
           <Card className="mb-2">
-            <WelcomeCard dictionary={dictionary} isWorkspace={false} />
+            <WelcomeCard dictionary={dictionary} isWorkspace={true} />
           </Card>
           <Card className="mb-2 maxh-50">
-            <AboutCard dictionary={dictionary} />
+            <AboutCard dictionary={dictionary} isWorkspace={true} workspace={activeTopic} />
           </Card>
         </div>
         <div className={"col-md-6 second-column"}>
@@ -144,29 +133,29 @@ const DashboardPanel = (props) => {
             <SearchCard dictionary={dictionary} />
           </Card>
           <div className={"row"}>
-            <div className={"col-md-6"}>
+            <div className={"col-md-6 count-cards"}>
               <Card className="mb-2 count-card">
-                <CountCard text={dictionary.remindersDue} type={"reminders"} />
-              </Card>
-              <Card className="mb-2 count-card">
-                <CountCard text={dictionary.unreadChats} type={"chat"} />
+                <CountCard text={dictionary.remindersDue} type={"reminders"} isWorkspace={true} workspace={activeTopic} />
               </Card>
               <Card className="mb-2 count-card">
-                <CountCard text={dictionary.unreadPosts} type={"posts"} />
+                <CountCard text={dictionary.unreadChats} type={"chat"} isWorkspace={true} workspace={activeTopic} />
               </Card>
-              <Card className="mb-2  maxh-40">
-                <FavoriteChannelsCard dictionary={dictionary} />
+              <Card className="mb-2 count-card">
+                <CountCard text={dictionary.unreadPosts} type={"posts"} isWorkspace={true} workspace={activeTopic} />
               </Card>
-              <Card className="mb-2">
-                <FavoriteWorkspaceCard dictionary={dictionary} />
+              <Card className="mb-2 files-folder-card">
+                <FilesFolderCard workspace={activeTopic} />
+              </Card>
+              <Card className="mb-2 overflow-unset members-card">
+                <MembersCard workspace={activeTopic} />
               </Card>
             </div>
             <QuicklinksMentionColumn className={"col-md-6 quicklinks-postmention"} personalLinks={personalLinks.length}>
               <Card className="mb-2">
-                <ShortcutsCard dictionary={dictionary} />
+                <ShortcutsCard dictionary={dictionary} isWorkspace={true} />
               </Card>
               <Card className="mb-2">
-                <PostMentionCard dictionary={dictionary} />
+                <PostMentionCard dictionary={dictionary} isWorkspace={true} />
               </Card>
             </QuicklinksMentionColumn>
           </div>
@@ -176,4 +165,4 @@ const DashboardPanel = (props) => {
   );
 };
 
-export default DashboardPanel;
+export default WsDashboardPanel;

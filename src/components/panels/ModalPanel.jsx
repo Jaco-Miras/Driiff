@@ -34,6 +34,7 @@ import {
   WIPFileModal,
   ZoomConfirmationModal,
   CompanyWorkspaceModal,
+  WorkspaceQuickLinksModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -133,6 +134,8 @@ const ModalPanel = () => {
             return <WIPFileModal key={modal.type} data={modal} />;
           case "company-workspace":
             return <CompanyWorkspaceModal key={modal.type} data={modal} />;
+          case "workspace-quicklinks":
+            return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
           default:
             return null;
         }

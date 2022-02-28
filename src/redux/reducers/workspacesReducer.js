@@ -77,6 +77,7 @@ const INITIAL_STATE = {
   },
   workspaceReminders: {},
   connectedTeamIds: [],
+  workspaceQuickLinks: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -4330,6 +4331,17 @@ export default (state = INITIAL_STATE, action) => {
               }
               return res;
             }, {}),
+        },
+      };
+    }
+    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS":
+    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
+      const workspaceId = action.data[0].group_id;
+      return {
+        ...state,
+        workspaceQuickLinks: {
+          ...state.workspaceQuickLinks,
+          [workspaceId]: action.data,
         },
       };
     }

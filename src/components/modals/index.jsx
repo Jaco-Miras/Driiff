@@ -34,3 +34,4 @@ export { default as WIPModal } from "./WIPModal";
 export { default as WIPFileModal } from "./WIPFileModal";
 export { default as ZoomConfirmationModal } from "./ZoomConfirmationModal";
 export { default as CompanyWorkspaceModal } from "./CompanyWorkspaceModal";
+export { default as WorkspaceQuickLinksModal } from "./WorkspaceQuickLinksModal";

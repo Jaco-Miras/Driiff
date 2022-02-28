@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import {
@@ -69,8 +70,9 @@ import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
 import { useTranslationActions } from "../hooks";
 
-const useFileActions = (params = null) => {
+const useFileActions = () => {
   const dispatch = useDispatch();
+  const params = useParams();
 
   const toaster = useToaster();
 

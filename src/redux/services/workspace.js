@@ -459,3 +459,21 @@ export function putWorkspaceNotification(payload) {
     data: payload,
   });
 }
+
+export function getWorkspaceQuickLinks(payload) {
+  let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function putWorkspaceQuickLinks(payload) {
+  let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}

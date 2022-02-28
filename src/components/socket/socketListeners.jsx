@@ -183,6 +183,7 @@ import {
   setActiveTopic,
   getAllWorkspaceFolders,
   incomingWorkpaceNotificationStatus,
+  incomingUpdatedWorkspaceQuickLinks,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -1782,6 +1783,9 @@ class SocketListeners extends Component {
       });
     // old / legacy channel
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.User.${this.props.user.id}`)
+      .listen(".update-workspace-quicklinks", (e) => {
+        this.props.incomingUpdatedWorkspaceQuickLinks(e.quick_links);
+      })
       .listen(".update-company-workspace", (e) => {
         this.props.incomingCompanyDescription(e);
       })
@@ -2587,6 +2591,7 @@ function mapDispatchToProps(dispatch) {
     updatePostCategoryCount: bindActionCreators(updatePostCategoryCount, dispatch),
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
     incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
+    incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
   };
 }
 

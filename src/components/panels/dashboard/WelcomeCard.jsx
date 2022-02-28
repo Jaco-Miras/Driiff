@@ -15,11 +15,11 @@ const Wrapper = styled.div`
 `;
 
 const WelcomeCard = (props) => {
-  const { dictionary } = props;
+  const { dictionary, isWorkspace } = props;
   return (
     <Wrapper>
       <span>{dictionary.hiUser} 👋</span>
-      <span>{dictionary.dailyDigest}</span>
+      <span>{isWorkspace ? dictionary.dailyWsDigest : dictionary.dailyDigest}</span>
     </Wrapper>
   );
 };

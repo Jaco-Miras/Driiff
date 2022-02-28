@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
+import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,28 +26,76 @@ const Wrapper = styled.div`
 `;
 
 const CountCard = (props) => {
-  const { type, text } = props;
+  const { type, text, isWorkspace = false, workspace } = props;
   const history = useHistory();
+  const params = useParams();
+  const dispatch = useDispatch();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const todosCount = useSelector((state) => state.global.todos.count);
+  const wsReminders = useSelector((state) => state.workspaces.workspaceReminders[params.workspaceId]);
+
+  useEffect(() => {
+    if (params.workspaceId && !wsReminders) {
+      //fetch the workspace reminders count
+      dispatch(
+        getWorkspaceRemindersCount({ topic_id: params.workspaceId }, (err, res) => {
+          if (err) return;
+          dispatch(updateWorkspaceRemindersCount({ count: res.data, id: parseInt(params.workspaceId) }));
+        })
+      );
+    }
+  }, []);
 
   const handleRedirect = () => {
-    if (type === "chat") {
-      history.push("/chat");
-    } else if (type === "posts") {
-      history.push("/posts");
+    if (isWorkspace) {
+      if (!workspace) return;
+      if (type === "chat") {
+        if (workspace.folder_id) {
+          history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        } else {
+          history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+        }
+      } else if (type === "posts") {
+        if (workspace.folder_id) {
+          history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        } else {
+          history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`);
+        }
+      } else {
+        if (workspace.folder_id) {
+          history.push(`/workspace/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        } else {
+          history.push(`/workspace/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
+        }
+      }
     } else {
-      history.push("/todos");
+      if (type === "chat") {
+        history.push("/chat");
+      } else if (type === "posts") {
+        history.push("/posts");
+      } else {
+        history.push("/todos");
+      }
     }
   };
 
   let count = 0;
-  if (type === "chat") {
-    count = unreadCounter.chat_message;
-  } else if (type === "posts") {
-    count = unreadCounter.general_post;
+  if (isWorkspace) {
+    if (type === "chat") {
+      count = workspace.unread_chats;
+    } else if (type === "posts") {
+      count = workspace.unread_posts;
+    } else {
+      count = wsReminders && wsReminders.count.today ? wsReminders.count.today : 0;
+    }
   } else {
-    count = todosCount.todo_with_date;
+    if (type === "chat") {
+      count = unreadCounter.chat_message;
+    } else if (type === "posts") {
+      count = unreadCounter.general_post;
+    } else {
+      count = todosCount.todo_with_date;
+    }
   }
 
   return (
