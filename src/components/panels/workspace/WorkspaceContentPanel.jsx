@@ -6,8 +6,9 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
 import { useIsMember, useTranslationActions, useUsers, useWorkspaceActions, useShowDashboardModal } from "../../hooks";
 import MaintenancePanel from "../main/MaintenancePanel";
+import WsDashboardPanel from "../dashboard/WsDashboardPanel";
 const WorkspaceChatPanel = lazy(() => import("../workspace/WorkspaceChatPanel"));
-const WorkspaceDashboardPanel = lazy(() => import("../workspace/WorkspaceDashboardPanel"));
+//const WorkspaceDashboardPanel = lazy(() => import("../workspace/WorkspaceDashboardPanel"));
 const WorkspaceFilesPanel = lazy(() => import("../workspace/WorkspaceFilesPanel"));
 const WorkspacePeoplePanel = lazy(() => import("../workspace/WorkspacePeoplePanel"));
 const WorkspacePostsPanel = lazy(() => import("../workspace/WorkspacePostsPanel"));
@@ -108,10 +109,7 @@ const WorkspaceContentPanel = (props) => {
                 <Switch>
                   <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search"]} />
                   {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
-                  <Route
-                    render={() => <MaintenancePanel {...props} workspace={workspace} isMember={isMember} actions={actions} workspaceTimeline={timeline} />}
-                    path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]}
-                  />
+                  <Route render={() => <WsDashboardPanel {...props} />} path={["/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/dashboard/:workspaceId/:workspaceName", "/workspace/dashboard"]} />
                   <Route
                     exact={true}
                     render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember} />}

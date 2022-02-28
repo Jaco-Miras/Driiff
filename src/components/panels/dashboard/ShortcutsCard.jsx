@@ -44,7 +44,7 @@ const Wrapper = styled.div`
 `;
 
 const ShortcutsCard = (props) => {
-  const { dictionary } = props;
+  const { dictionary, isWorkspace = false } = props;
   const dispatch = useDispatch();
   const links = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
@@ -52,6 +52,7 @@ const ShortcutsCard = (props) => {
   const handleAddItemClick = () => {
     showModal("personal_link_create");
   };
+  const handleShowWsQuicklinksModal = () => {};
   useEffect(() => {
     if (!linksFetched) dispatch(getQuickLinks());
   }, []);
@@ -62,17 +63,21 @@ const ShortcutsCard = (props) => {
         <ToolTip content={dictionary.shorcutsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
+        {isWorkspace && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
       </span>
-      {links.length === 0 && linksFetched && <span className="mt-3">{dictionary.noQuickLinks}</span>}
-      <ul className="mt-2">
-        {links.map((l) => {
-          return (
-            <li key={l.id}>
-              <FancyLink link={l.link} title={l.menu_name} />
-            </li>
-          );
-        })}
-      </ul>
+      {links.length === 0 && linksFetched && !isWorkspace && <span className="mt-3">{dictionary.noQuickLinks}</span>}
+      {!isWorkspace && (
+        <ul className="mt-2">
+          {links.map((l) => {
+            return (
+              <li key={l.id}>
+                <FancyLink link={l.link} title={l.menu_name} />
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
       <span className="personal-links-label d-flex mt-2">
         {dictionary.personalLinks}
         <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleAddItemClick} />
