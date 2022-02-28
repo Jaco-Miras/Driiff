@@ -334,6 +334,7 @@ const FileUploadModal = (props) => {
   const dictionary = {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     upload: _t("BUTTON.UPLOAD", "Upload"),
+    addFiles: _t("BUTTON.ADD_FILES", "Add Files"),
     fileUpload: _t("FILE_UPLOAD", "File upload"),
     quillPlaceholder: _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here..."),
     fileUploadLabel: _t("LABEL.EXTERNAL_WORKSPACE_FILES", "Files added to workspace can be seen by internal and external accounts"),
@@ -785,7 +786,8 @@ const FileUploadModal = (props) => {
           <IconButton onClick={handleShowEmojiPicker} icon="smile" />
           {showEmojiPicker === true && <PickerContainer handleShowEmojiPicker={handleShowEmojiPicker} onSelectEmoji={onSelectEmoji} onSelectGif={onSelectGif} orientation={"top"} ref={pickerRef} />}
         </DescriptionInputWrapper>
-        <FilesPreview files={files} onRemoveFile={handleRemoveFile} onAddFile={handleAddFile} />
+        <FilesPreview files={files} onRemoveFile={handleRemoveFile} onAddFile={handleAddFile} dictionary={dictionary} />
+
         <SelectFileOptionContainer className="mt-1">
           <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
         </SelectFileOptionContainer>
@@ -811,7 +813,7 @@ const FileUploadModal = (props) => {
 };
 
 const FilesPreview = (props) => {
-  const { files, onRemoveFile, onAddFile } = props;
+  const { files, onRemoveFile, onAddFile, dictionary } = props;
 
   const dispatch = useDispatch();
 
@@ -870,39 +872,42 @@ const FilesPreview = (props) => {
   };
 
   return (
-    <FilesPreviewContainer hasOneFile={files.length === 1}>
-      <DropDocument
-        hide
-        ref={refs.dropZoneRef}
-        onDrop={({ acceptedFiles }) => {
-          handleAddFile(acceptedFiles);
-        }}
-        // onCancel={handleHideDropzone}
-      />
-      <ul>
-        {files.map((file, i) => {
-          return (
-            <li key={i}>
-              <div className="remove-upload" aria-label="close" onClick={() => handleRemoveFile(file)}>
-                <SvgIconFeather icon="x" />
-              </div>
-              {file.type === "IMAGE" && <img alt="file" src={file.src} />}
-              {file.type !== "IMAGE" && (
-                <DocDiv className="card app-file-list">
-                  <div className="app-file-icon">
-                    <SvgIcon icon={"document"} width="28" height="32" />
-                  </div>
-                  <div className="p-2 small">{file.name}</div>
-                </DocDiv>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <button className="btn btn-primary btn-block border-top-0" onClick={handleOpenFileDialog}>
-        +
+    <>
+      <FilesPreviewContainer hasOneFile={files.length === 1}>
+        <DropDocument
+          hide
+          ref={refs.dropZoneRef}
+          onDrop={({ acceptedFiles }) => {
+            handleAddFile(acceptedFiles);
+          }}
+          // onCancel={handleHideDropzone}
+        />
+        <ul>
+          {files.map((file, i) => {
+            return (
+              <li key={i}>
+                <div className="remove-upload" aria-label="close" onClick={() => handleRemoveFile(file)}>
+                  <SvgIconFeather icon="x" />
+                </div>
+                {file.type === "IMAGE" && <img alt="file" src={file.src} />}
+                {file.type !== "IMAGE" && (
+                  <DocDiv className="card app-file-list">
+                    <div className="app-file-icon">
+                      <SvgIcon icon={"document"} width="28" height="32" />
+                    </div>
+                    <div className="p-2 small">{file.name}</div>
+                  </DocDiv>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </FilesPreviewContainer>
+      <button className="btn btn-primary btn-block my-2" onClick={handleOpenFileDialog}>
+        <SvgIconFeather icon="plus" />
+        <span>{dictionary.addFiles}</span>
       </button>
-    </FilesPreviewContainer>
+    </>
   );
 };
 
