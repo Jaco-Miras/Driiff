@@ -161,7 +161,7 @@ const FileSidebar = (props) => {
               </Filter>
             )}
             {/* <GoogleDrive onChange={handleGoogleDriveSelect} disableOptions={disableOptions} /> */}
-            {!isExternal && workspace && workspace.team_channel && workspace.team_channel.code && (
+            {/* {!isExternal && workspace && workspace.team_channel && workspace.team_channel.code && (
               <>
                 <Filter onClick={filterFile} data-filter="team" active={filter === "team"} className="list-group-item d-flex align-items-center">
                   <Icon className="mr-2" icon="eye-off" />
@@ -180,7 +180,7 @@ const FileSidebar = (props) => {
                   {dictionary.postWithClient}
                 </Filter>
               </>
-            )}
+            )} */}
 
             <Filter onClick={filterFile} data-filter="recent" active={filter === "recent"} className="list-group-item d-flex align-items-center">
               <Icon className="mr-2" icon="monitor" />
