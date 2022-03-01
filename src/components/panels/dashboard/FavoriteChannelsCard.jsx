@@ -9,6 +9,7 @@ import FavChannel from "./FavChannel";
 import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
+  height: 100%;
   > span:first-child {
     display: flex;
     align-items: center;
@@ -28,6 +29,8 @@ const Wrapper = styled.div`
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: auto;
+    max-height: calc(100% - 30px);
     li:not(:last-child) {
       border-bottom: 1px solid #f1f2f7;
       .dark & {
@@ -88,7 +91,7 @@ const FavoriteChannelsCard = (props) => {
       </span>
       {favoriteChannels.length === 0 && <div className="mt-3">{dictionary.clickOnStarChat}</div>}
       <ul className="mt-3">
-        {favoriteChannels.slice(0, 4).map((channel) => {
+        {favoriteChannels.map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;
         })}
       </ul>

@@ -8,6 +8,7 @@ import { setChannelHistoricalPosition } from "../../../redux/actions/chatActions
 import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
+  height: 100%;
   > span {
     display: flex;
     align-items: center;
@@ -27,13 +28,16 @@ const Wrapper = styled.div`
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: auto;
+    max-height: calc(100% - 40px);
+
     .workspace-title-folder > div,
     .feather {
       color: #505050;
     }
     > div {
       border-bottom: 1px solid #f1f2f7;
-      padding: 10px;
+      padding: 5px 0;
       margin-bottom: 0;
       .dark & {
         border-bottom: 1px solid rgba(155, 155, 155, 0.1);
@@ -155,7 +159,7 @@ const FavoriteWorkspaceCard = (props) => {
             </BrowseAll>
           </FavEmptyState>
         )}
-        {favoriteWorkspaces.slice(0, 4).map((ws) => {
+        {favoriteWorkspaces.map((ws) => {
           return <FavWorkspaceList key={ws.id} isExternal={isExternal} onSelectWorkspace={handleSelectWorkspace} workspace={ws} isCompanyWs={companyWs && companyWs.id === ws.id} companyName={companyName} />;
         })}
       </ul>
