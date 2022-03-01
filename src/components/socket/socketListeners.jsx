@@ -764,8 +764,6 @@ class SocketListeners extends Component {
             post = { ...post, show_post: showPost, post_approval_label: isApprover ? "NEED_ACTION" : null };
             this.props.updatePostCategoryCount(post);
             if (this.props.user.id !== post.author.id) {
-              this.props.updateUnreadCounter({ general_post: 1 });
-
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   // chech the topic recipients if active
