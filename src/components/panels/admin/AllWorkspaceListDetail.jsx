@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Viewers from "../../list/post/item/Viewers";
+import { useWorkspaceActions, useWorkspaceSearchActions } from "../../hooks";
 
 const Wrapper = styled.div`
   .workspace-title {
@@ -101,10 +102,23 @@ const Icon = styled(SvgIconFeather)`
 
 const AllWorkspaceListDetail = (props) => {
   const { dictionary, item } = props;
+  const actions = useWorkspaceSearchActions();
+
+  const handleRedirect = () => {
+    let payload = {
+      id: item.id,
+      name: item.name,
+      folder_id: item.workspace ? item.workspace.id : null,
+      folder_name: item.workspace ? item.workspace.name : null,
+    };
+    actions.toWorkspace(payload);
+  };
   return (
     <Wrapper className="workspace-details">
       <div className="title-labels">
-        <span className="workspace-title">{item.name}</span>
+        <span className="workspace-title" onClick={handleRedirect}>
+          {item.name}
+        </span>
         {item.private === 1 && <Icon icon="lock" />}
         {item.workspace && (
           <span className="ml-1 d-flex align-items-center">
