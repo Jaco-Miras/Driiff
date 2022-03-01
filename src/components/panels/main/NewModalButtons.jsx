@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CSSTransition } from "react-transition-group";
 import { SvgIconFeather } from "../../common";
 import { addToModals, postToDo } from "../../../redux/actions/globalActions";
@@ -36,6 +36,8 @@ const NewModalButtons = (props) => {
   const {
     generalSettings: { dark_mode },
   } = useSettings();
+  const user = useSelector((state) => state.session.user);
+  const securitySettings = useSelector((state) => state.admin.security);
   const refs = {
     btn1Ref: useRef(null),
     btn2Ref: useRef(null),
@@ -126,7 +128,7 @@ const NewModalButtons = (props) => {
             {dictionary.reminder}
           </span>
         </div>
-        {!isExternal && (
+        {!isExternal && user.role && user.role.id <= securitySettings.add_workspace && (
           <div>
             <span onClick={handleShowWorkspaceModal} ref={refs.btn4Ref}>
               <Icon icon="compass" />

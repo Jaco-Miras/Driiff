@@ -7,7 +7,6 @@ import { useAdminActions, useTranslationActions, useToaster } from "../../hooks"
 import { Loader, SvgIconFeather } from "../../common";
 import { DomainSelect } from "../../forms";
 import Tooltip from "react-tooltip-lite";
-//import { DropDocument } from "../../dropzone/DropDocument";
 
 const isValidDomain = require("is-valid-domain");
 
@@ -73,15 +72,14 @@ const LoginSettingsBody = () => {
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     customTranslationInfo: _t("SETTINGS.CUSTOM_TRANSLATION_INFO", "Use custom translation"),
     toasterUpdateLoginError: _t("TOASTER.UPDATE_LOGIN_SETTINGS_ERROR", "Error updating login settings"),
+    loginMode: _t("ADMIN.LOGIN_MODE", "Login mode"),
+    loginModeInfo: _t("ADMIN.LOGIN_MODE_INFO", "Default login mode email or mobile"),
   };
 
   const componentIsMounted = useRef(true);
-  const iconDropZone = useRef(null);
 
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
-
-  const logo = useSelector((state) => state.settings.driff.logo);
 
   const loginSettings = useSelector((state) => state.admin.login);
   const loginFetched = useSelector((state) => state.admin.loginFetched);
@@ -90,7 +88,7 @@ const LoginSettingsBody = () => {
   const custom_translation = useSelector((state) => state.settings.driff.settings.custom_translation);
   const themes = useSelector((state) => state.settings.driff.theme);
 
-  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains, uploadLogo, resetLogo } = useAdminActions();
+  const { fetchLoginSettings, updateLoginSettings, setAdminFilter, updateDomains } = useAdminActions();
 
   const [settings, setSettings] = useState({ ...loginSettings, custom_translation: custom_translation });
   const [saving, setSaving] = useState(false);
@@ -156,6 +154,17 @@ const LoginSettingsBody = () => {
     //   value: "zuid.com",
     //   label: "zuid.com",
     // },
+  ];
+
+  const loginOptions = [
+    {
+      value: "mobile",
+      label: "Mobile",
+    },
+    {
+      value: "email",
+      label: "Email",
+    },
   ];
 
   const handleCreateOption = (value) => {
@@ -245,44 +254,8 @@ const LoginSettingsBody = () => {
     });
   };
 
-  const [showIconDropzone, setShowIconDropzone] = useState(false);
-
-  const handleUploadIcon = (file, fileUrl) => {
-    let payload = {
-      file: file,
-      code: "code",
-    };
-    let cb = (err, res) => {
-      if (err) return;
-      toast.success(dictionary.uploadSuccess);
-    };
-    uploadLogo(payload, cb);
-  };
-
-  const dropIconAction = (uploadedFiles) => {
-    if (uploadedFiles.length === 0) {
-      toast.error(dictionary.fileTypeError);
-    } else if (uploadedFiles.length > 1) {
-      toast.warning(dictionary.multipleFileError);
-    }
-
-    handleUploadIcon(uploadedFiles[0]);
-  };
-
-  const handleOpenDropzone = () => {
-    if (iconDropZone.current) iconDropZone.current.open();
-  };
-
-  const handleHideIconDropzone = () => {
-    setShowIconDropzone(false);
-  };
-
-  const handleRemoveLogo = () => {
-    let cb = (err, res) => {
-      if (err) return;
-      toast.success(dictionary.resetLogoSuccess);
-    };
-    resetLogo({}, cb);
+  const handleSelectLogin = (e) => {
+    setSettings({ ...settings, login_mode: e.value });
   };
 
   return (
@@ -401,6 +374,23 @@ const LoginSettingsBody = () => {
               value={translationOptions.find((o) => o.value === settings.custom_translation)}
               onChange={handleSelect}
               options={translationOptions}
+            />
+          </div>
+
+          <div>
+            <LabelInfoWrapper>
+              <label>Login mode</label>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.customTranslationInfo}>
+                <SvgIconFeather icon="info" />
+              </Tooltip>
+            </LabelInfoWrapper>
+            <Select
+              className={"react-select-container"}
+              classNamePrefix="react-select"
+              styles={dark_mode === "0" ? lightTheme : darkTheme}
+              value={loginOptions.find((o) => o.value === settings.login_mode)}
+              onChange={handleSelectLogin}
+              options={loginOptions}
             />
           </div>
 

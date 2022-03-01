@@ -383,7 +383,7 @@ export function fetchTagCounter(payload) {
  * @returns {Promise<*>}
  */
 export function fetchPosts(payload) {
-  const { skip = 0, limit = 25 } = payload;
+  const { skip = 0, limit = 15 } = payload;
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${skip}&limit=${limit}`;
   if (payload.search !== undefined) {
     url += `&search=${payload.search}`;
@@ -745,6 +745,50 @@ export function getPostReadAndClap(payload) {
   return apiCall({
     method: "GET",
     url: `/v2/get-post-read-and-clap/?post_id=${payload.post_id} `,
+    data: payload,
+  });
+}
+
+export function getCompanyPostCategoryCounter(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/company/post-category-counter",
+    data: payload,
+  });
+}
+
+export function getCompanyPostsByCategory(payload) {
+  let url = `/v2/company/posts?skip=${payload.skip}&limit=${payload.limit}`;
+  if (payload.filters !== undefined) {
+    for (var i = 0; i < payload.filters.length; i++) {
+      url += `&filter[${i}]=${payload.filters[i]}`;
+    }
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getWorkspacePostCategoryCounter(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/v2/post-category-entries?topic_id=${payload.topic_id}`,
+    data: payload,
+  });
+}
+
+export function getWorkspacePostsByCategory(payload) {
+  let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${payload.skip}&limit=${payload.limit}`;
+  if (payload.filters !== undefined) {
+    for (var i = 0; i < payload.filters.length; i++) {
+      url += `&filter[${i}]=${payload.filters[i]}`;
+    }
+  }
+  return apiCall({
+    method: "GET",
+    url: url,
     data: payload,
   });
 }

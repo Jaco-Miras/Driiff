@@ -19,6 +19,8 @@ const PostBadge = (props) => {
   //const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
   // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
   const isApprover = post.users_approval.some((ua) => ua.id === user.id && ua.is_approved === false);
+  const usersApproval = post.users_approval;
+  const usersPending = usersApproval.filter((u) => u.ip_address === null);
 
   const renderApprovalLabel = (status) => {
     switch (status) {
@@ -37,7 +39,7 @@ const PostBadge = (props) => {
         return "Split";
       }
       case "REQUEST_APPROVAL": {
-        if (post.author.id === user.id) return dictionary.requestForApproval;
+        if (post.author.id === user.id && usersPending.length === usersApproval.length) return dictionary.requestForApproval;
         return null;
       }
       default:

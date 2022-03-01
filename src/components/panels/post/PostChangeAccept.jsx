@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import { useTranslationActions } from "../../hooks";
 import { Avatar } from "../../common";
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  .read-users-container {
+    max-width: 200px;
+    text-align: left;
+  }
+`;
 const ApprovedText = styled.div`
   .alert {
     color: #fff !important;

@@ -82,7 +82,8 @@ const AppWrapper = styled.div`
     border-color: ${({ theme }) => theme.colors.secondary}!important;
   }
 
-  .badge.badge-pill {
+  .badge.badge-pill,
+  .badge.badge-primary {
     background-color: ${({ theme }) => theme.colors.primary};
   }
   .badge.badge-warning.badge-pill {

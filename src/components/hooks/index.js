@@ -79,3 +79,4 @@ export { default as useChannelUpdateMessage } from "./useChannelUpdateMessage";
 export { default as useZoomActions } from "./useZoomActions";
 export { default as useUserOptions } from "./useUserOptions";
 export { default as useQueryParams } from "./useQueryParams";
+export { default as usePostCategory } from "./usePostCategory";

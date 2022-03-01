@@ -32,6 +32,7 @@ export {
   sendRequestPassword,
   uploadDashboardBg,
   putCompanyDescription,
+  getAllWorkspaces,
 } from "./admin";
 export {
   getGlobalRecipients,
@@ -271,6 +272,10 @@ export {
   readNotification,
   checkPostAccess,
   getPostReadAndClap,
+  getCompanyPostCategoryCounter,
+  getCompanyPostsByCategory,
+  getWorkspacePostCategoryCounter,
+  getWorkspacePostsByCategory,
 } from "./post";
 
 export {

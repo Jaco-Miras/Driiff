@@ -1,15 +1,15 @@
 import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
-import { usePosts, useTranslationActions, useFetchWsCount, useToaster } from "../../hooks";
-import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts, PostsEmptyState } from "../post";
+import { usePosts, useTranslationActions, useFetchWsCount, useToaster, usePostCategory } from "../../hooks";
+import { PostDetail, PostFilterSearchPanel, PostSidebar, Posts } from "../post";
 import { throttle, find } from "lodash";
 import { addToWorkspacePosts } from "../../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../../redux/actions/workspaceActions";
 import { useDispatch } from "react-redux";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { Loading } from "../../common";
 
 const Wrapper = styled.div`
   overflow-y: auto;
@@ -102,18 +102,6 @@ const LoaderContainer = styled.div`
   height: 100%;
 `;
 
-const MaintenanceWrapper = styled.div`
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-flow: column;
-  > div {
-    width: 100%;
-  }
-`;
-
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
@@ -125,15 +113,12 @@ const WorkspacePostsPanel = (props) => {
 
   useFetchWsCount();
 
-  const { actions, posts, filter, tag, sort, post, user, search, count, postLists, counters, filters, postListTag } = usePosts();
-  //const ofNumberOfUsers = post && post.required_users ? post.required_users : [];
+  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag, showLoader, showUnread } = usePosts();
+  const { loadMoreWorkspaceCategory, count } = usePostCategory();
   const [loading, setLoading] = useState(false);
 
   const [loadPosts, setLoadPosts] = useState(false);
   const [activePostListName, setActivePostListName] = useState({});
-
-  const postAccess = useSelector((state) => state.admin.postAccess);
-  //const usersLoaded = useSelector((state) => state.users.usersLoaded);
 
   const componentIsMounted = useRef(true);
 
@@ -147,19 +132,34 @@ const WorkspacePostsPanel = (props) => {
   };
 
   useEffect(() => {
-    if (params.hasOwnProperty("workspaceId")) {
-      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
-    }
     return () => {
       componentIsMounted.current = null;
     };
   }, []);
 
   useEffect(() => {
-    if (params.hasOwnProperty("workspaceId")) {
-      actions.getRecentPosts(params.workspaceId);
+    if (params.postId && !post) {
+      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+        if (componentIsMounted.current) {
+          if (err) {
+            // set to all
+            let payload = {
+              topic_id: workspace.id,
+              filter: "inbox",
+              tag: null,
+            };
+            dispatch(updateWorkspacePostFilterSort(payload));
+            if (params.folderId) {
+              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            } else {
+              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            }
+            toaster.error(dictionary.errorLoadingPost);
+          }
+        }
+      });
     }
-  }, [params.workspaceId]);
+  }, [params.postId, post]);
 
   const { _t } = useTranslationActions();
 
@@ -250,35 +250,13 @@ const WorkspacePostsPanel = (props) => {
     new: _t("POST.NEW", "New"),
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
+    loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
   };
-
-  useEffect(() => {
-    if (params.postId && !post) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
-        if (componentIsMounted.current) {
-          if (err) {
-            // set to all
-            let payload = {
-              topic_id: workspace.id,
-              filter: "inbox",
-              tag: null,
-            };
-            dispatch(updateWorkspacePostFilterSort(payload));
-            if (params.folderId) {
-              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } else {
-              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            }
-            toaster.error(dictionary.errorLoadingPost);
-          }
-        }
-      });
-    }
-  }, [params.postId, post]);
 
   useEffect(() => {
     if (filter === "star") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -294,7 +272,7 @@ const WorkspacePostsPanel = (props) => {
               favourites: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -310,6 +288,7 @@ const WorkspacePostsPanel = (props) => {
       );
     } else if (filter === "my_posts") {
       let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -325,7 +304,7 @@ const WorkspacePostsPanel = (props) => {
               myPosts: {
                 active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
@@ -339,17 +318,9 @@ const WorkspacePostsPanel = (props) => {
         },
         filterCb
       );
-    }
-  }, [filter]);
-
-  const loadMoreUnreadPosts = () => {
-    if (filters && filters.unreadPosts && filters.unreadPosts.hasMore) {
-      let payload = {
-        filters: ["green_dot"],
-        topic_id: workspace.id,
-        skip: filters.unreadPosts.skip,
-      };
-      let cb = (err, res) => {
+    } else if (filter === "archived") {
+      let filterCb = (err, res) => {
+        setLoading(false);
         if (err) return;
         let files = res.data.posts.map((p) => p.files);
         if (files.length) {
@@ -357,42 +328,98 @@ const WorkspacePostsPanel = (props) => {
         }
         dispatch(
           addToWorkspacePosts({
-            topic_id: workspace.id,
+            topic_id: parseInt(params.workspaceId),
             posts: res.data.posts,
+            filter: res.data.posts,
             files,
             filters: {
-              unreadPosts: {
+              archived: {
+                active: true,
                 skip: res.data.next_skip,
-                hasMore: res.data.total_take === 25,
+                hasMore: res.data.total_take === 15,
               },
             },
           })
         );
       };
-      actions.getPosts(payload, cb);
+
+      actions.getPosts(
+        {
+          filters: ["post", "archive"],
+          topic_id: parseInt(params.workspaceId),
+        },
+        filterCb
+      );
     }
-  };
+  }, [filter]);
 
   const handleLoadMore = () => {
     if (search === "" && !post) {
       setLoading(true);
-      loadMoreUnreadPosts();
+      let callback = () => {
+        if (componentIsMounted.current) {
+          setLoading(false);
+          setLoadPosts(false);
+        }
+      };
+      loadMoreWorkspaceCategory(callback);
+      //loadMoreUnreadPosts(callback);
       let payload = {
-        filters: filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
+        filters: filter === "inbox" && showUnread ? ["green_dot"] : filter === "archive" ? ["post", "archived"] : filter === "star" ? ["post", "favourites"] : filter === "my_posts" ? ["post", "created_by_me"] : [],
         topic_id: workspace.id,
-        skip: filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
+        skip: filter === "inbox" && showUnread ? filters?.unreadPosts.skip : filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
 
       if (filter === "all") {
-        if (filters.all && !filters.all.hasMore) return;
+        if (filters.all && !filters.all.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
+      } else if (filter === "inbox") {
+        if (showUnread && filters.unreadPosts && !filters.unreadPosts.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
+        if (!showUnread && filters.all && !filters.all.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "archive") {
-        if (filters.archived && !filters.archived.hasMore) return;
+        if (filters.archived && !filters.archived.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "star") {
-        if (filters.favourites && !filters.favourites.hasMore) return;
+        if (filters.favourites && !filters.favourites.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       } else if (filter === "my_posts") {
-        if (filters.myPosts && !filters.myPosts.hasMore) return;
+        if (filters.myPosts && !filters.myPosts.hasMore) {
+          if (componentIsMounted.current) {
+            setLoading(false);
+            setLoadPosts(false);
+          }
+          return;
+        }
       }
 
+      setLoading(true);
       let cb = (err, res) => {
         if (componentIsMounted.current) {
           setLoading(false);
@@ -413,28 +440,44 @@ const WorkspacePostsPanel = (props) => {
                 all: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
+              ...(filter === "inbox" &&
+                showUnread && {
+                  unreadPosts: {
+                    active: true,
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === 15,
+                  },
+                }),
+              ...(filter === "inbox" &&
+                !showUnread && {
+                  all: {
+                    active: true,
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === 15,
+                  },
+                }),
               ...(filter === "archive" && {
                 archived: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
               ...(filter === "star" && {
                 favourites: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
               ...(filter === "myPosts" && {
                 myPosts: {
                   active: true,
                   skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 25,
+                  hasMore: res.data.total_take === 15,
                 },
               }),
             },
@@ -497,7 +540,7 @@ const WorkspacePostsPanel = (props) => {
 
   let disableOptions = false;
   if (workspace && workspace.active === 0) disableOptions = true;
-  if (posts === null) return <></>;
+  // if (posts === null) return <></>;
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
@@ -611,8 +654,10 @@ const WorkspacePostsPanel = (props) => {
               </PostListWrapper>
             </PostsBtnWrapper>
           )}
-          {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-            <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
+          {showLoader && !post ? (
+            <LoaderContainer className={"card initial-load"}>
+              <Loader />
+            </LoaderContainer>
           ) : (
             <>
               {post !== null ? (
@@ -643,6 +688,7 @@ const WorkspacePostsPanel = (props) => {
               )}
             </>
           )}
+          {loading && <Loading text={dictionary.loadingPosts} />}
           <div className="mt-3 post-btm">&nbsp;</div>
         </div>
       </div>

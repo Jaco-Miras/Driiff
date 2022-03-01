@@ -67,6 +67,7 @@ import {
   refetchUnreadCompanyPosts,
   readNotification,
   getPostReadAndClap,
+  setShowUnread,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -293,7 +294,6 @@ const usePostActions = () => {
 
             if (res) {
               dispatch(updateUnreadCounter({ general_post: -1 }));
-              //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -439,7 +439,6 @@ const usePostActions = () => {
             })
           );
           dispatch(updateUnreadCounter({ general_post: -1 }));
-          //dispatch(getUnreadNotificationCounterEntries({ add_unread_comment: 1 }));
         })
       );
     } else {
@@ -1028,6 +1027,10 @@ const usePostActions = () => {
     dispatch(getPostReadAndClap(payload, callback));
   };
 
+  const setShowUnreadPosts = (value) => {
+    dispatch(setShowUnread(value));
+  };
+
   return {
     approve,
     approveComment,
@@ -1083,6 +1086,7 @@ const usePostActions = () => {
     refetchCompanyPosts,
     readPostNotification,
     fetchPostReadAndClap,
+    setShowUnreadPosts,
   };
 };
 
