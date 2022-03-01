@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { PeopleListItem } from "../../list/people/item";
 import { CustomInput } from "reactstrap";
@@ -33,6 +34,8 @@ const AllPeople = (props) => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const match = useRouteMatch();
+  const history = useHistory();
 
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
@@ -43,7 +46,6 @@ const AllPeople = (props) => {
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
-  //const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
 
   const handleShowInactiveToggle = () => {
     //setShowTeams(false);
@@ -58,6 +60,8 @@ const AllPeople = (props) => {
 
       return newState;
     });
+    if (showInactive) history.push("/system/people/all");
+    else history.push("/system/people/inactive");
     if (showInvited && !showInactive) setShowInvited(false);
   };
 
@@ -74,6 +78,8 @@ const AllPeople = (props) => {
 
       return newState;
     });
+    if (showInvited) history.push("/system/people/all");
+    else history.push("/system/people/invited");
     if (showInactive && !showInvited) setShowInactive(false);
   };
 
@@ -157,6 +163,17 @@ const AllPeople = (props) => {
     };
   }, [search]);
 
+  useEffect(() => {
+    if (match.path === "/system/people/invited") {
+      setShowInvited(true);
+    } else if (match.path === "/system/people/inactive") {
+      setShowInactive(true);
+    } else if (match.path === "/system/people/all") {
+      setShowInvited(false);
+      setShowInactive(false);
+    }
+  }, [match.path]);
+
   return (
     <>
       <div className="people-header">
@@ -180,15 +197,12 @@ const AllPeople = (props) => {
             name="show_invited"
             type="switch"
             onChange={handleShowInvitedToggle}
-            //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
             label={
               <span>
                 {dictionary.showInvited} {showInvited && allUsers.filter((u) => u.hasOwnProperty("has_accepted") && !u.has_accepted && u.active).length}
               </span>
             }
           />
-
-          {/* <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div> */}
           <div className="mr-3 text-muted">
             {dictionary.totalAccounts}: {allUsers.filter((u) => u.active).length}
           </div>
