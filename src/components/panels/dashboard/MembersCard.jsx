@@ -19,6 +19,13 @@ const Wrapper = styled.div`
     max-height: calc(100% - 20px);
     &.list-group li.list-group-item {
       padding: 0.5rem;
+      position: static;
+    }
+    .more-options {
+      position: static;
+    }
+    .more-options-tooltip {
+      right: 50px;
     }
   }
 `;
@@ -123,7 +130,7 @@ const MembersCard = (props) => {
               member={member}
               onLeaveWorkspace={onLeaveWorkspace}
               onAddRole={onAddRole}
-              hideOptions={true}
+              hideOptions={false}
               actions={actions}
               workspace_id={workspace.id}
               dictionary={dictionary}

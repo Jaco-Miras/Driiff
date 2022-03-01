@@ -36,14 +36,8 @@ const Wrapper = styled.div`
       height: 100%;
       display: flex;
       flex-flow: column;
-      .maxh-10 {
-        flex: 1 1 80px;
-      }
-      .maxh-40 {
-        flex: 2 2 50%;
-      }
-      .maxh-50 {
-        flex: 1 1 50%;
+      .welcome-card {
+        min-height: 74px;
       }
     }
   }
@@ -73,15 +67,6 @@ const Wrapper = styled.div`
         display: flex;
         flex-flow: column;
       }
-      // .quicklinks-postmention {
-      //   > div:first-child {
-      //     flex: 1 1 65%;
-      //     //min-height: 15%;
-      //   }
-      //   > div:last-child {
-      //     flex: 2 1 20%;
-      //   }
-      // }
       .count-card {
         min-height: 74px;
       }
@@ -132,10 +117,10 @@ const DashboardPanel = (props) => {
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
       <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
-          <Card className="mb-2">
+          <Card className="mb-2 welcome-card">
             <WelcomeCard dictionary={dictionary} isWorkspace={false} />
           </Card>
-          <Card className="mb-2 maxh-50">
+          <Card className="mb-2 about-card">
             <AboutCard dictionary={dictionary} />
           </Card>
         </div>

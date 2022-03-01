@@ -5,6 +5,7 @@ import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
+  height: 100%;
   .card-title {
     display: flex;
     align-items: center;
@@ -17,7 +18,11 @@ const Wrapper = styled.div`
   }
 `;
 
-const DashboardDescriptionContainer = styled.div``;
+const DashboardDescriptionContainer = styled.div`
+  min-height: 175px;
+  max-height: calc(100% - 30px);
+  overflow: auto;
+`;
 
 const DashboardDescription = styled.div`
   img {

@@ -26,6 +26,10 @@ const Wrapper = styled.div`
       height: 100%;
       display: flex;
       flex-flow: column;
+      .welcome-card {
+        min-height: 74px;
+      }
+
       .maxh-10 {
         flex: 1 1 80px;
       }
@@ -33,7 +37,7 @@ const Wrapper = styled.div`
         flex: 2 2 50%;
       }
       .maxh-50 {
-        flex: 1 1 50%;
+        flex: 0 0 auto;
       }
     }
   }
@@ -115,16 +119,17 @@ const WsDashboardPanel = (props) => {
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
     dailyWsDigest: _t("LABEL.DAILY_WS_DIGEST", "Here's the overview of ::name::", { name: activeTopic ? activeTopic.name : "" }),
     aboutThisWorkspace: _t("DASHBOARD.ABOUT_THIS_WORKSPACE", "About this workspace"),
+    wsShorcutsTooltip: _t("TOOLTIP.WS_SHORCUTS_DASHBOARD", "These quicklinks make it easy to find workspace info back quickly"),
   };
 
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"}>
       <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
-          <Card className="mb-2">
+          <Card className="mb-2 welcome-card">
             <WelcomeCard dictionary={dictionary} isWorkspace={true} />
           </Card>
-          <Card className="mb-2 maxh-50">
+          <Card className="mb-2 about-card">
             <AboutCard dictionary={dictionary} isWorkspace={true} workspace={activeTopic} />
           </Card>
         </div>
