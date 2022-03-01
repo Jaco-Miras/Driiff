@@ -91,7 +91,7 @@ const AllPeoplePageHeader = (props) => {
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
-            <MainNavLink to="/system/people" active={location.pathname === "/system/people"}>
+            <MainNavLink to="/system/people/all" active={location.pathname === "/system/people/all"}>
               {dictionary.people} ({Object.keys(activeUsers).length})
             </MainNavLink>
           </li>

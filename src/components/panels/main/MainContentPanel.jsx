@@ -42,7 +42,13 @@ const MainContentPanel = (props) => {
           {!isExternal && <Route {...props} component={CompanyChatPanel} path={["/chat/:code/:messageId", "/chat/:code", "/chat"]} />}
           <Route {...props} render={(props) => <CompanyFilesPanel {...props} />} path={["/files/folder/:folderId/:folderName", "/files"]} />
           {!isExternal && <Route {...props} component={CompanyPeoplePanel} path={["/people"]} />}
-          {!isExternal && <Route {...props} component={SystemPeoplePanel} path={["/system/people", "/system/people/teams", "/system/people/organization", "/system/people/teams/:teamId/:teamName"]} />}
+          {!isExternal && (
+            <Route
+              {...props}
+              component={SystemPeoplePanel}
+              path={["/system/people/all", "/system/people/inactive", "/system/people/invited", "/system/people/guest", "/system/people/teams", "/system/people/organization", "/system/people/teams/:teamId/:teamName"]}
+            />
+          )}
           <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
           <Route {...props} component={TodosPanel} path={["/todos"]} />
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
