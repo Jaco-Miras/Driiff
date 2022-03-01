@@ -6,7 +6,7 @@ import WelcomeCard from "./WelcomeCard";
 import AboutCard from "./AboutCard";
 import CountCard from "./CountCard";
 import ShortcutsCard from "./ShortcutsCard";
-import SearchCard from "./SearchCard";
+//import SearchCard from "./SearchCard";
 import PostMentionCard from "./PostMentionCard";
 import MembersCard from "./MembersCard";
 import { useTranslationActions } from "../../hooks";
@@ -54,7 +54,8 @@ const Wrapper = styled.div`
     @media (min-width: 768px) {
       padding-left: 0;
       > .row {
-        height: calc(100% - 82px);
+        //height: calc(100% - 82px);
+        height: 100%;
       }
       .row > .count-cards {
         padding-right: 7px;
@@ -137,9 +138,9 @@ const WsDashboardPanel = (props) => {
           </Card>
         </div>
         <div className={"col-md-6 second-column"}>
-          <Card className="mb-2 search-container">
+          {/* <Card className="mb-2 search-container">
             <SearchCard dictionary={dictionary} />
-          </Card>
+          </Card> */}
           <div className={"row"}>
             <div className={"col-md-6 count-cards"}>
               <Card className="mb-2 count-card">
