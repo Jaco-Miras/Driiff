@@ -187,6 +187,7 @@ const AllPeople = (props) => {
     } else if (match.path === "/system/people/all") {
       setShowInvited(false);
       setShowInactive(false);
+      setShowGuest(false);
     }
   }, [match.path]);
 
