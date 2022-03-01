@@ -60,7 +60,15 @@ const Wrapper = styled.div`
         padding-right: 7px;
       }
       .row > div:last-child {
-        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .fav-channels-card {
+        flex: 1 0 200px;
+        min-height: 0;
+      }
+      .fav-ws-card {
+        flex: 1 0 200px;
+        min-height: 0;
       }
       .col-md-6 {
         height: 100%;
@@ -139,10 +147,10 @@ const DashboardPanel = (props) => {
               <Card className="mb-2 count-card">
                 <CountCard text={dictionary.unreadPosts} type={"posts"} />
               </Card>
-              <Card className="mb-2  maxh-40">
+              <Card className="mb-2  fav-channels-card">
                 <FavoriteChannelsCard dictionary={dictionary} />
               </Card>
-              <Card className="mb-2">
+              <Card className="mb-2 fav-ws-card">
                 <FavoriteWorkspaceCard dictionary={dictionary} />
               </Card>
             </div>
