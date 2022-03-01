@@ -9,6 +9,7 @@ import { useTranslationActions } from "../hooks";
 import { putWorkspaceQuickLinks } from "../../redux/actions/workspaceActions";
 import { FormInput } from "../forms";
 import { validURL } from "../../helpers/urlContentHelper";
+import { SvgIconFeather, ToolTip } from "../common";
 
 const Wrapper = styled(Modal)`
   .react-select__control,
@@ -45,6 +46,21 @@ const Wrapper = styled(Modal)`
     margin-bottom: 0.25rem;
     height: 57px;
   }
+  .feather-info {
+    width: 1rem;
+    height: 1rem;
+  }
+  th > div {
+    display: inline-block;
+    margin-left: 0.5rem;
+  }
+`;
+
+const MoreButton = styled.span`
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 const WorkspaceQuickLinksModal = (props) => {
@@ -66,6 +82,10 @@ const WorkspaceQuickLinksModal = (props) => {
     nameRequired: _t("FEEDBACK.NAME_REQUIRED", "Name is required."),
     linkRequired: _t("FEEDBACK.LINK_REQUIRED", "Link is required."),
     invalidUrl: _t("FEEDBACK.INVALID_URL", "Invalid URL."),
+    linkText: _t("LABEL.LINK_TEXT", "Link text"),
+    linkTextTooltip: _t("TOOLTIP.LINK_TEXT", "Link text tooltip"),
+    linkTooltip: _t("TOOLTIP.LINK", "Link tooltip"),
+    addMore: _t("BUTTON.ADD_MORE", "Add more"),
   };
 
   const [inputs, setInputs] = useState([...links]);
@@ -73,6 +93,10 @@ const WorkspaceQuickLinksModal = (props) => {
     valid: {},
     message: {},
   });
+  const linksWithData = links.filter((l) => {
+    return l.link.trim() !== "" || l.menu_name.trim() !== "";
+  }).length;
+  const [showNumberOfRows, setShowNumberOfRows] = useState(linksWithData > 0 ? linksWithData : 3);
 
   const handleLinkChange = (e, id) => {
     const newInputs = inputs.map((i) => {
@@ -163,6 +187,10 @@ const WorkspaceQuickLinksModal = (props) => {
     toggle();
   };
 
+  const handleAddItem = () => {
+    setShowNumberOfRows(showNumberOfRows + 1);
+  };
+
   return (
     <Wrapper isOpen={true} toggle={toggle} centered className={className} size={"lg"}>
       <ModalHeaderSection toggle={toggle}>{dictionary.wsQuickLinks}</ModalHeaderSection>
@@ -175,17 +203,28 @@ const WorkspaceQuickLinksModal = (props) => {
             </colgroup>
             <thead>
               <tr>
-                <th>{dictionary.menuName}</th>
-                <th>{dictionary.link}</th>
+                <th>
+                  {dictionary.linkText}{" "}
+                  <ToolTip content={dictionary.linkTextTooltip}>
+                    <SvgIconFeather icon="info" />
+                  </ToolTip>
+                </th>
+                <th>
+                  {dictionary.link}
+                  <ToolTip content={dictionary.linkTooltip}>
+                    <SvgIconFeather icon="info" />
+                  </ToolTip>
+                </th>
               </tr>
             </thead>
             <tbody>
-              {inputs.map((input, i) => {
+              {inputs.slice(0, showNumberOfRows).map((input, i) => {
                 return (
                   <tr key={i}>
                     <td>
                       <FormInput
                         className="w-100"
+                        placeholder={dictionary.linkText}
                         value={input.menu_name}
                         onChange={(e) => handleNameChange(e, input.id)}
                         type="text"
@@ -196,6 +235,7 @@ const WorkspaceQuickLinksModal = (props) => {
                     <td>
                       <FormInput
                         className="w-100"
+                        placeholder={dictionary.link}
                         value={input.link}
                         onChange={(e) => handleLinkChange(e, input.id)}
                         type="url"
@@ -212,6 +252,15 @@ const WorkspaceQuickLinksModal = (props) => {
                   </tr>
                 );
               })}
+              {showNumberOfRows < 10 && (
+                <tr>
+                  <td>
+                    <MoreButton onClick={handleAddItem}>
+                      <SvgIconFeather icon="plus" /> <span>{dictionary.addMore}</span>
+                    </MoreButton>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

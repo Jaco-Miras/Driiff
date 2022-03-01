@@ -76,7 +76,7 @@ const ShortcutsCard = (props) => {
     <Wrapper>
       <span>
         <SvgIconFeather icon="link" /> <h5 className="card-title mb-0">{dictionary.shortcuts}</h5>{" "}
-        <ToolTip content={dictionary.shorcutsTooltip}>
+        <ToolTip content={isWorkspace ? dictionary.wsShorcutsTooltip : dictionary.shorcutsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
         {isWorkspace && wsQuickLinks && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
