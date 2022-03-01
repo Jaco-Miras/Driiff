@@ -268,7 +268,7 @@ const FilesBody = (props) => {
                         Object.values(wsFiles.files)
                           .filter((f) => f.folder_id === parseInt(params.fileFolderId))
                           .map((f) => {
-                            return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
+                            return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
                           })}
                     </div>
                     {wsFiles && fileIds.length === 0 && (
@@ -295,7 +295,7 @@ const FilesBody = (props) => {
                     Object.values(wsFiles.files)
                       .filter((f) => f.folder_id === null)
                       .map((f) => {
-                        return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} actions={actions} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
+                        return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
                       })}
                 </div>
                 {wsFiles.popular_files.length > 0 && <PopularFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}

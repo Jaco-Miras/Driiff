@@ -120,6 +120,9 @@ const WsDashboardPanel = (props) => {
     dailyWsDigest: _t("LABEL.DAILY_WS_DIGEST", "Here's the overview of ::name::", { name: activeTopic ? activeTopic.name : "" }),
     aboutThisWorkspace: _t("DASHBOARD.ABOUT_THIS_WORKSPACE", "About this workspace"),
     wsShorcutsTooltip: _t("TOOLTIP.WS_SHORCUTS_DASHBOARD", "These quicklinks make it easy to find workspace info back quickly"),
+    foldersOrFilesShared: _t("LABEL.FOLDERS_OR_FILES_SHARED", "Folders or files shared"),
+    foldersOrFilesSharedTooltip: _t("TOOLTIP.FOLDERS_OR_FILES_SHARED", "Folders or files shared tooltip"),
+    openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
   };
 
   return (
@@ -149,7 +152,7 @@ const WsDashboardPanel = (props) => {
                 <CountCard text={dictionary.unreadPosts} type={"posts"} isWorkspace={true} workspace={activeTopic} />
               </Card>
               <Card className="mb-2 files-folder-card">
-                <FilesFolderCard workspace={activeTopic} />
+                <FilesFolderCard workspace={activeTopic} dictionary={dictionary} />
               </Card>
               <Card className="mb-2 overflow-unset members-card">
                 <MembersCard workspace={activeTopic} />

@@ -5,6 +5,7 @@ import { useParams, useHistory } from "react-router-dom";
 // import { getWorkspaceFolders, getWorkspaceFiles } from "../../../redux/actions/fileActions";
 import { FolderListItem, FileListItem } from "../../list/file/item";
 import { useIsMember, useFiles } from "../../hooks";
+import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -25,29 +26,24 @@ const Wrapper = styled.div`
   }
   .row {
     overflow: auto;
-    max-height: calc(100% - 20px);
+    max-height: calc(100% - 40px);
   }
 `;
 
+const RedirectToFilesDiv = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  bottom: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+`;
+
 const FilesFolderCard = (props) => {
-  //const { dictionary } = props;
+  const { dictionary } = props;
   const params = useParams();
   const history = useHistory();
-  //const dispatch = useDispatch();
-  // const wsFiles = useSelector((state) => state.files.workspaceFiles[params.workspaceId]);
-  // const workspace = useSelector((state) => state.workspaces.activeTopic);
   const { wsFiles, topic: workspace, folders } = useFiles(true);
-
-  // useEffect(() => {
-  //   if (params.workspaceId && !wsFiles) {
-  //     //fetch the workspace folders and files
-  //     const payload = {
-  //       topic_id: params.workspaceId,
-  //     };
-  //     dispatch(getWorkspaceFolders(payload));
-  //     dispatch(getWorkspaceFiles(payload));
-  //   }
-  // }, []);
 
   const workspaceMembers = workspace
     ? workspace.members
@@ -61,11 +57,17 @@ const FilesFolderCard = (props) => {
   const isMember = useIsMember(workspace && workspace.member_ids.length ? [...new Set(workspaceMembers)] : []);
   const actions = {};
   const handleAddEditFolder = () => {};
+  const handleRedirectToFiles = () => {
+    history.push(history.location.pathname.replace("/dashboard", "/files"));
+  };
   if (!wsFiles) return null;
   return (
     <Wrapper>
       <span>
-        <h5 className="card-title mb-0">Folders or files shared</h5>
+        <SvgIconFeather icon="star" /> <h5 className="card-title mb-0">{dictionary.foldersOrFilesShared}</h5>{" "}
+        <ToolTip content={dictionary.foldersOrFilesSharedTooltip}>
+          <SvgIconFeather icon="info" />
+        </ToolTip>
       </span>
       {wsFiles.folders && Object.keys(wsFiles.folders).length > 0 && (
         <div className="row mt-2">
@@ -97,6 +99,7 @@ const FilesFolderCard = (props) => {
               })}
         </div>
       )}
+      <RedirectToFilesDiv onClick={handleRedirectToFiles}>{dictionary.openAllSharedFiles}</RedirectToFilesDiv>
     </Wrapper>
   );
 };

@@ -65,13 +65,13 @@ const RemoveFiles = (props) => {
                 }
               })
               .map((f) => {
-                return <FileListItem key={f.id} isMember={isMember} forceDelete={true} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} actions={actions} folders={folders} disableOptions={disableOptions} />;
+                return <FileListItem key={f.id} isMember={isMember} forceDelete={true} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
               })
           : wsFiles &&
             Object.values(wsFiles.trash_files).length > 0 &&
             Object.values(wsFiles.trash_files).map((f) => {
               if (typeof f !== "undefined") {
-                return <FileListItem key={f.id} isMember={isMember} forceDelete={true} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} actions={actions} folders={folders} disableOptions={disableOptions} />;
+                return <FileListItem key={f.id} isMember={isMember} forceDelete={true} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
               } else {
                 return null;
               }
