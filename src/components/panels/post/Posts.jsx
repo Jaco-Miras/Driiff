@@ -5,6 +5,7 @@ import { PostItemPanel } from "./index";
 import { useTranslationActions } from "../../hooks";
 import { useDispatch } from "react-redux";
 import { setPostIsSelected } from "../../../redux/actions/workspaceActions";
+import { setShowUnread } from "../../../redux/actions/postActions";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -135,6 +136,7 @@ const Posts = (props) => {
   // };
 
   const handleShowUnread = () => {
+    dispatch(setShowUnread(!showPosts.showUnread));
     setShowPosts((prevState) => {
       return {
         ...prevState,
@@ -145,6 +147,7 @@ const Posts = (props) => {
   };
 
   const handleShowRead = () => {
+    dispatch(setShowUnread(!showPosts.showUnread));
     setShowPosts((prevState) => {
       return {
         ...prevState,
@@ -168,6 +171,7 @@ const Posts = (props) => {
   };
 
   useEffect(() => {
+    dispatch(setShowUnread(unreadPosts.length > 0));
     const _checkedPosts = posts.filter((p) => p.is_selected).map((_p) => _p.id);
     setCheckedPosts(_checkedPosts);
     return () => {

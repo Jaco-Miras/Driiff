@@ -213,12 +213,22 @@ const InvitedUsersModal = (props) => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
+  const filteredInvitations = invitationItems.filter((item) => {
+    if (hasLastName) {
+      const isEmpty = item.first_name.trim() === "" && item.last_name.trim() === "" && item.email.trim() === "";
+      return !isEmpty;
+    } else {
+      const isEmpty = item.email.trim() === "" && item.name.trim() === "";
+      return !isEmpty;
+    }
+  });
 
   const _validateForm = () => {
     let isValid = true;
     let valid = {};
     let message = {};
-    for (let i = 0; i < invitationItems.length; i++) {
+
+    for (let i = 0; i < filteredInvitations.length; i++) {
       if (hasLastName) {
         if (invitationItems[i].first_name.trim() === "" || invitationItems[i].last_name.trim() === "" || invitationItems[i].email.trim() === "" || invitationItems[i].phone_number === undefined) {
           if (typeof valid[i] === "undefined") {
@@ -226,23 +236,27 @@ const InvitedUsersModal = (props) => {
             message[i] = {};
           }
 
-          if (invitationItems[i].first_name.trim() === "") {
+          if (invitationItems[i].first_name.trim() === "" && invitationItems[i].email.trim() !== "") {
             valid[i].first_name = false;
             message[i].first_name = "First name is required.";
             isValid = false;
+          } else if (invitationItems[i].first_name.trim() === "") {
+            valid[i].first_name = false;
           } else {
             valid[i].first_name = true;
           }
 
-          if (invitationItems[i].last_name.trim() === "") {
+          if (invitationItems[i].last_name.trim() === "" && invitationItems[i].email.trim() !== "") {
             valid[i].last_name = false;
             message[i].last_name = "Last name is required.";
             isValid = false;
+          } else if (invitationItems[i].last_name.trim() === "") {
+            valid[i].last_name = false;
           } else {
             valid[i].last_name = true;
           }
 
-          if (invitationItems[i].email.trim() === "" && invitationItems[i].phone_number === undefined) {
+          if (invitationItems[i].email.trim() === "") {
             valid[i].email = false;
             message[i].email = "Please put email or phone number";
             isValid = false;
@@ -372,6 +386,10 @@ const InvitedUsersModal = (props) => {
   // };
 
   const handleSetRegisterMode = (mode, key) => {
+    setInvitationItems((prevState) => {
+      prevState[key].email = "";
+      return prevState;
+    });
     setRegisterMode((prevState) => {
       return {
         ...prevState,
@@ -485,14 +503,14 @@ const InvitedUsersModal = (props) => {
                     <EmailPhoneInput
                       onChange={(value) => handleEmailNumberChange(value, key)}
                       name="email_phone"
-                      isValid={formResponse.valid.email}
-                      feedback={formResponse.message.email}
+                      isValid={formResponse.valid[key] ? formResponse.valid[key].email : null}
+                      feedback={formResponse.message[key] ? formResponse.message[key].email : null}
                       placeholder={dictionary.emailOnly}
                       registerMode={registerMode[key] ? registerMode[key] : "email"}
                       setRegisterMode={(mode) => handleSetRegisterMode(mode, key)}
                       value={item.email}
                       defaultCountry={countryCode}
-                      autoFocus={true}
+                      autoFocus={false}
                       className={`email-phone-input ${registerMode[key] && registerMode[key] === "number" ? "phone-input" : "email-input"}`}
                     />
                     {/* <FormInput
@@ -536,7 +554,7 @@ const InvitedUsersModal = (props) => {
           <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
             {cancelText}
           </Button>
-          <Button className="btn btn-primary" color="primary" onClick={handleConfirm}>
+          <Button className="btn btn-primary" color="primary" onClick={handleConfirm} disabled={filteredInvitations.length === 0}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {submitText}
           </Button>{" "}
