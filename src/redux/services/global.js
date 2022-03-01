@@ -125,6 +125,7 @@ export function getTranslationObject(payload) {
   return apiNoTokenCall({
     method: "GET",
     actualUrl: payload.url,
+    cancelToken: payload.cancelToken ? payload.cancelToken : null,
   });
 }
 
