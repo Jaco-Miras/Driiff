@@ -244,9 +244,9 @@ const WorkspaceQuickLinksModal = (props) => {
                     <SvgIconFeather icon="info" />
                   </ToolTip>
                 </th>
-                <th className="text-align-center">
+                {/* <th className="text-align-center">
                   <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
