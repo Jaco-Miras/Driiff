@@ -45,6 +45,23 @@ const Wrapper = styled.div`
   }
 `;
 
+const PersonalLinkList = styled.li`
+  display: flex;
+  align-items: center;
+  a {
+    margin: 0;
+  }
+  .feather {
+    margin-left: auto;
+    display: none;
+  }
+  :hover {
+    .feather {
+      display: block;
+    }
+  }
+`;
+
 const ShortcutsCard = (props) => {
   const { dictionary, isWorkspace = false } = props;
   const params = useParams();
@@ -65,6 +82,13 @@ const ShortcutsCard = (props) => {
       workspaceId: params.workspaceId,
     };
     dispatch(addToModals(payload));
+  };
+
+  const handleEditPersonalLink = (index) => {
+    showModal("personal_link_edit", {
+      ...generalSettings.personal_links[index],
+      index: index,
+    });
   };
 
   useEffect(() => {
@@ -117,9 +141,10 @@ const ShortcutsCard = (props) => {
             <ul className="mt-2">
               {generalSettings.personal_links.map((l, index) => {
                 return (
-                  <li key={l.id}>
+                  <PersonalLinkList key={l.id}>
                     <FancyLink link={l.web_address} title={l.name} />
-                  </li>
+                    <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={() => handleEditPersonalLink(index)} />
+                  </PersonalLinkList>
                 );
               })}
             </ul>

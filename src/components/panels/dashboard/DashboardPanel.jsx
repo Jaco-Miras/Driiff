@@ -85,8 +85,7 @@ const Wrapper = styled.div`
 const QuicklinksMentionColumn = styled.div`
   @media (min-width: 768px) {
     > div:first-child {
-      //flex: ${(props) => (props.personalLinks >= 4 ? "1 1 65%" : "1 1 30%")};
-      min-height: ${(props) => (props.personalLinks >= 4 ? "470px" : "300px")};
+      min-height: ${(props) => (props.personalLinks === 0 ? "300px" : "450px")};
     }
     > div:last-child {
       //flex: 2 1 20%;
