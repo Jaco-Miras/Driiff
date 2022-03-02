@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -69,6 +69,7 @@ const ShortcutsCard = (props) => {
   const companyLinks = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
   const wsQuickLinks = useSelector((state) => state.workspaces.workspaceQuickLinks[params.workspaceId]);
+  const [fetchingWsQuicklinks, setFetchingWsQuicklins] = useState(false);
   const { generalSettings, showModal } = useSettings();
 
   const handleAddItemClick = () => {
@@ -93,8 +94,18 @@ const ShortcutsCard = (props) => {
 
   useEffect(() => {
     if (!linksFetched && !isWorkspace) dispatch(getQuickLinks());
-    if (isWorkspace) dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }));
+    if (isWorkspace && !wsQuickLinks) {
+      dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }));
+    }
   }, []);
+
+  useEffect(() => {
+    if (fetchingWsQuicklinks) return;
+    if (isWorkspace && !wsQuickLinks) {
+      setFetchingWsQuicklins(true);
+      dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }, () => setFetchingWsQuicklins(false)));
+    }
+  }, [params.workspaceId, wsQuickLinks]);
 
   return (
     <Wrapper>

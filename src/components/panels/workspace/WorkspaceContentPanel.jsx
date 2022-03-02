@@ -4,8 +4,8 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { SvgEmptyState } from "../../common";
-import { useIsMember, useTranslationActions, useUsers, useWorkspaceActions, useShowDashboardModal } from "../../hooks";
-import MaintenancePanel from "../main/MaintenancePanel";
+import { useIsMember, useTranslationActions, useUsers } from "../../hooks";
+//import MaintenancePanel from "../main/MaintenancePanel";
 import WsDashboardPanel from "../dashboard/WsDashboardPanel";
 const WorkspaceChatPanel = lazy(() => import("../workspace/WorkspaceChatPanel"));
 //const WorkspaceDashboardPanel = lazy(() => import("../workspace/WorkspaceDashboardPanel"));
@@ -65,15 +65,15 @@ const WorkspaceContentPanel = (props) => {
 
   const dispatch = useDispatch();
 
-  useShowDashboardModal();
+  //useShowDashboardModal();
 
   const { loggedUser } = useUsers();
-  const actions = useWorkspaceActions();
+  //const actions = useWorkspaceActions();
   const { workspaces, workspacesLoaded, favoriteWorkspacesLoaded, activeTopic: workspace, workspaceTimeline } = useSelector((state) => state.workspaces);
-  let timeline = null;
-  if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
-    timeline = workspaceTimeline[workspace.id];
-  }
+  // let timeline = null;
+  // if (Object.keys(workspaceTimeline).length && workspace && workspaceTimeline[workspace.id]) {
+  //   timeline = workspaceTimeline[workspace.id];
+  // }
   const workspaceMembers = workspace
     ? workspace.members
         .map((m) => {
