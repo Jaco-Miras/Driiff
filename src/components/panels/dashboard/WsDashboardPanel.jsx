@@ -86,10 +86,7 @@ const Wrapper = styled.div`
 const QuicklinksMentionColumn = styled.div`
   @media (min-width: 768px) {
     > div:first-child {
-      flex: ${(props) => (props.personalLinks >= 4 ? "1 1 450px" : "1 1 250px")};
-    }
-    > div:last-child {
-      flex: 2 1 20%;
+      min-height: 250px;
     }
   }
 `;
@@ -99,7 +96,7 @@ const WsDashboardPanel = (props) => {
   //const dashboardBg = useSelector((state) => state.settings.driff.background);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   const user = useSelector((state) => state.session.user);
-  const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
+  //const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
   const { _t } = useTranslationActions();
   const dictionary = {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
@@ -124,6 +121,7 @@ const WsDashboardPanel = (props) => {
     foldersOrFilesShared: _t("LABEL.FOLDERS_OR_FILES_SHARED", "Folders or files shared"),
     foldersOrFilesSharedTooltip: _t("TOOLTIP.FOLDERS_OR_FILES_SHARED", "Folders or files shared tooltip"),
     openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
+    noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "No quick links yet, click on the plus icon to add quick links"),
   };
 
   return (
@@ -159,7 +157,7 @@ const WsDashboardPanel = (props) => {
                 <MembersCard workspace={activeTopic} />
               </Card>
             </div>
-            <QuicklinksMentionColumn className={"col-md-6 quicklinks-postmention"} personalLinks={personalLinks.length}>
+            <QuicklinksMentionColumn className={"col-md-6 quicklinks-postmention"}>
               <Card className="mb-2">
                 <ShortcutsCard dictionary={dictionary} isWorkspace={true} />
               </Card>
