@@ -24,7 +24,7 @@ const useFilterAllWorkspaces = (props) => {
               })
               .flat();
             const uniqueMembers = [...new Set(workspaceMembers)];
-            const isMember = uniqueMembers.some((id) => id == userId);
+            const isMember = uniqueMembers.some((id) => id == userId) && uniqueMembers.some((id) => id == user.id);
             return isMember;
           }
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) : true;
