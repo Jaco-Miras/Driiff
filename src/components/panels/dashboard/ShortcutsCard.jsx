@@ -52,6 +52,9 @@ const Wrapper = styled.div`
   }
   a {
     box-shadow: none !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 `;
 
