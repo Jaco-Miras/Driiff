@@ -82,6 +82,7 @@ const ShortcutsCard = (props) => {
         {isWorkspace && wsQuickLinks && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
       </span>
       {companyLinks.length === 0 && linksFetched && !isWorkspace && <span className="mt-3">{dictionary.noQuickLinks}</span>}
+      {isWorkspace && wsQuickLinks && wsQuickLinks.filter((l) => l.link !== "").length === 0 && <span className="mt-3">{dictionary.noWsQuickLinks}</span>}
       {!isWorkspace && (
         <ul className="mt-2">
           {companyLinks.map((l) => {
@@ -106,21 +107,24 @@ const ShortcutsCard = (props) => {
             })}
         </ul>
       )}
-
-      <span className="personal-links-label d-flex mt-2">
-        {dictionary.personalLinks}
-        <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleAddItemClick} />
-      </span>
-      {generalSettings.personal_links.length > 0 && (
-        <ul className="mt-2">
-          {generalSettings.personal_links.map((l, index) => {
-            return (
-              <li key={l.id}>
-                <FancyLink link={l.web_address} title={l.name} />
-              </li>
-            );
-          })}
-        </ul>
+      {!isWorkspace && (
+        <>
+          <span className="personal-links-label d-flex mt-2">
+            {dictionary.personalLinks}
+            <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleAddItemClick} />
+          </span>
+          {generalSettings.personal_links.length > 0 && (
+            <ul className="mt-2">
+              {generalSettings.personal_links.map((l, index) => {
+                return (
+                  <li key={l.id}>
+                    <FancyLink link={l.web_address} title={l.name} />
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </>
       )}
     </Wrapper>
   );
