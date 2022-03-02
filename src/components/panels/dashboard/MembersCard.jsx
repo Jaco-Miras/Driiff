@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TeamListItem from "../../list/people/item/TeamListItem";
 import { useWorkspaceActions, useToaster, useTranslationActions } from "../../hooks";
+import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -11,6 +12,11 @@ const Wrapper = styled.div`
     align-items: center;
     font-weight: 600;
   }
+  .feather {
+    width: 1rem;
+    height: 1rem;
+  }
+
   ul {
     list-style: none;
     padding: 0;
@@ -121,7 +127,9 @@ const MembersCard = (props) => {
   if (!workspace) return null;
   return (
     <Wrapper>
-      <span>{dictionary.team}</span>
+      <span>
+        <SvgIconFeather icon="user" className="mr-2" /> <h5 className="card-title mb-0">{dictionary.team}</h5>{" "}
+      </span>
       <ul className="list-group list-group-flush mt-2">
         {workspace.members.map((member, i) => {
           return (

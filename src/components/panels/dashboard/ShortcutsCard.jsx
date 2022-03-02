@@ -119,7 +119,7 @@ const ShortcutsCard = (props) => {
         </ul>
       )}
       {isWorkspace && wsQuickLinks && (
-        <ul className="mt-2">
+        <ul className="mt-2 ws-quicklinks-lists">
           {wsQuickLinks
             .filter((l) => l.link !== "")
             .map((l) => {

@@ -64,7 +64,7 @@ const FilesFolderCard = (props) => {
   return (
     <Wrapper>
       <span>
-        <SvgIconFeather icon="star" /> <h5 className="card-title mb-0">{dictionary.foldersOrFilesShared}</h5>{" "}
+        <SvgIconFeather icon="star" className="mr-2" /> <h5 className="card-title mb-0">{dictionary.foldersOrFilesShared}</h5>{" "}
         <ToolTip content={dictionary.foldersOrFilesSharedTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
