@@ -42,6 +42,7 @@ const Wrapper = styled.div`
     }
     li {
       padding-top: 10px;
+      display: flex;
     }
     li:not(:last-child) {
       border-bottom: 1px solid #f1f2f7;
