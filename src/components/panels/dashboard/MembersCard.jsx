@@ -23,6 +23,16 @@ const Wrapper = styled.div`
     margin: 0;
     overflow: auto;
     max-height: calc(100% - 20px);
+    ::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
     &.list-group li.list-group-item {
       padding: 0.5rem;
       position: static;
