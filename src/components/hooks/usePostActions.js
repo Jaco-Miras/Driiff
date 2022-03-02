@@ -4,7 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { addToModals, deleteDraft, getUnreadNotificationCounterEntries, updateUnreadCounter } from "../../redux/actions/globalActions";
+import { addToModals, deleteDraft, getUnreadNotificationCounterEntries } from "../../redux/actions/globalActions";
 import {
   addCommentReact,
   addPostReact,
@@ -295,7 +295,8 @@ const usePostActions = () => {
             }
 
             if (res) {
-              dispatch(updateUnreadCounter({ general_post: -1 }));
+              getUnreadNotificationEntries();
+              //dispatch(updateUnreadCounter({ general_post: -1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -342,7 +343,8 @@ const usePostActions = () => {
         count: count === 0 ? 1 : count,
       };
       if (res) {
-        dispatch(updateUnreadCounter({ general_post: -1 }));
+        getUnreadNotificationEntries();
+        //dispatch(updateUnreadCounter({ general_post: -1 }));
         if (post.recipients.some((r) => r.type === "TOPIC")) {
           dispatch(getFavoriteWorkspaceCounters());
         }
@@ -440,7 +442,8 @@ const usePostActions = () => {
               is_followed: false,
             })
           );
-          dispatch(updateUnreadCounter({ general_post: -1 }));
+          getUnreadNotificationEntries();
+          //dispatch(updateUnreadCounter({ general_post: -1 }));
         })
       );
     } else {
