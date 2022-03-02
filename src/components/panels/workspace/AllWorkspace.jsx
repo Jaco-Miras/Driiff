@@ -148,7 +148,7 @@ const AllWorkspace = (props) => {
     workspaceSortOptionsDate: _t("WORKSPACE_SORT_OPTIONS.DATE", "Sort by Date (New to Old)"),
     folders: _t("ALL_WORKSPACE.FOLDERS", "Folders"),
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
-    connectedWorkspaceOf: _t("WORKSPACE_BODY.CONNECTED_WORKSPACE_OF", "Connected workspace of:"),
+    workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Workspaces you share with"),
   };
 
   // const handleLoadMore = () => {

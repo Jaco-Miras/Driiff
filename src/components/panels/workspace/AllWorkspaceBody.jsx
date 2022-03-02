@@ -85,7 +85,7 @@ const AllWorkspaceBody = (props) => {
     <Wrapper className={"card"}>
       {connectedUser && (
         <p className="mx-3 my-2">
-          {dictionary.connectedWorkspaceOf}: {connectedUser.name}
+          {dictionary.workspaceYouShareWith}: {connectedUser.name}
         </p>
       )}
       <Lists className="active-workspaces">
