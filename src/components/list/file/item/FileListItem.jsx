@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { SvgIconFeather, ToolTip } from "../../../common";
 import { FileOptions } from "../../../panels/files";
 import { ProgressBar } from "../../../panels/common";
+import { useFileActions } from "../../../hooks";
 
 const Wrapper = styled.div`
   .card {
@@ -48,7 +49,9 @@ const Star = styled(SvgIconFeather)`
 `;
 
 const FileListItem = (props) => {
-  const { className = "", folders, file, actions, isMember, forceDelete = false, disableOptions } = props;
+  const { className = "", folders, file, isMember, forceDelete = false, disableOptions, hideOptions = false } = props;
+
+  const actions = useFileActions();
 
   const fileSizeUnit = actions.getFileSizeUnit(file.hasOwnProperty("size") && typeof file.size === "number" ? file.size : 0);
   const [isFavorite, setIsFavorite] = useState(file.is_favorite);
@@ -68,7 +71,7 @@ const FileListItem = (props) => {
         <div className={typeof file.id === "string" ? "app-file-icon uploading cursor-pointer" : "app-file-icon uploaded cursor-pointer"} onClick={handleFileView}>
           {isFavorite === true && <Star icon="star" />}
           {actions.getFileIcon(file.mime_type)}
-          {typeof file.id === "number" && <FileOptions file={file} folders={folders} actions={{ ...actions, favorite: handleFavorite }} isMember={isMember} forceDelete={forceDelete} disableOptions={disableOptions} />}
+          {typeof file.id === "number" && !hideOptions && <FileOptions file={file} folders={folders} actions={{ ...actions, favorite: handleFavorite }} isMember={isMember} forceDelete={forceDelete} disableOptions={disableOptions} />}
           {typeof file.id === "string" && <ProgressBar amount={100} barClassName={"progress-bar-striped progress-bar-animated"} />}
         </div>
         <div className="p-2 small cursor-pointer" onClick={handleFileView}>

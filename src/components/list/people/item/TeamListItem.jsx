@@ -12,7 +12,6 @@ import { copyTextToClipboard } from "../../../../helpers/commonFunctions";
 import { Viewers } from "../../post/item";
 
 const Wrapper = styled.li`
-  padding: 16px 0 !important;
   .card-title {
     position: relative;
     .feather-edit {
@@ -40,8 +39,13 @@ const Wrapper = styled.li`
     left: auto;
   }
   &:hover {
+    .more-options {
+      display: block;
+    }
     .more-options-tooltip {
       display: block;
+      top: unset;
+      bottom: 0;
     }
   }
   .user-reads-container {
@@ -275,7 +279,7 @@ const TeamListItem = (props) => {
             partialName={member.partial_name}
             noDefaultClick={!member.has_accepted}
             hasAccepted={member.has_accepted}
-            showSlider={true}
+            showSlider={false}
             scrollRef={scrollRef}
             type={isUser ? "USER" : "TEAM"}
           />

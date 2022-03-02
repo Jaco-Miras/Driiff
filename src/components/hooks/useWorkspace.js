@@ -24,7 +24,7 @@ const useWorkspace = () => {
   const channelIds = useSelector((state) => Object.keys(state.chat.channels));
   const selectedChannelId = useSelector((state) => state.chat.selectedChannelId);
   const user = useSelector((state) => state.session.user);
-  const [fetchingPrimary, setFetchingPrimary] = useState(false);
+  //const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
   const { _t } = useTranslationActions();
@@ -53,7 +53,7 @@ const useWorkspace = () => {
     });
 
     if (user.type === "external" && url.startsWith("/workspace/team-chat")) {
-      history.push("/workspace/chat");
+      history.push("/workspace/dashboard");
     }
   }, []);
 
@@ -198,24 +198,24 @@ const useWorkspace = () => {
     }
   }, [params]);
 
-  useEffect(() => {
-    if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
-      setFetchingPrimary(true);
-      const callback = (err, res) => {
-        setTimeout(() => {
-          setFetchingPrimary(false);
-        }, 300);
-        if (err) return;
-        let payload = {
-          id: activeTopic.id,
-          folder_id: activeTopic.workspace_id,
-          files: res.data,
-        };
-        actions.addPrimaryFilesToWorkspace(payload);
-      };
-      actions.getPrimaryFiles(activeTopic.id, callback);
-    }
-  }, [fetchingPrimary, activeTopic, url, user]);
+  // useEffect(() => {
+  //   if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
+  //     setFetchingPrimary(true);
+  //     const callback = (err, res) => {
+  //       setTimeout(() => {
+  //         setFetchingPrimary(false);
+  //       }, 300);
+  //       if (err) return;
+  //       let payload = {
+  //         id: activeTopic.id,
+  //         folder_id: activeTopic.workspace_id,
+  //         files: res.data,
+  //       };
+  //       actions.addPrimaryFilesToWorkspace(payload);
+  //     };
+  //     actions.getPrimaryFiles(activeTopic.id, callback);
+  //   }
+  // }, [fetchingPrimary, activeTopic, url, user]);
 
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {

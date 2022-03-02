@@ -217,15 +217,15 @@ const CreatePersonalLinksModal = (props) => {
       <ModalBody>
         <WrapperDiv>
           <div>
-            <Label for="folder">{dictionary.webAddress}</Label>
-          </div>
-          <FormInput name="web_address" defaultValue={form.web_address} placeholder={`e.g. ${driffActions.getBaseUrl()}`} onChange={handleInputChange} isValid={formResponse.valid.web_address} feedback={formResponse.message.web_address} />
-        </WrapperDiv>
-        <WrapperDiv>
-          <div>
             <Label for="folder">{dictionary.name}</Label>
           </div>
           <FormInput name="name" defaultValue={form.name} placeholder={`e.g. ${driffActions.getName()} Driff website`} onChange={handleInputChange} isValid={formResponse.valid.name} feedback={formResponse.message.name} />
+        </WrapperDiv>
+        <WrapperDiv>
+          <div>
+            <Label for="folder">{dictionary.webAddress}</Label>
+          </div>
+          <FormInput name="web_address" defaultValue={form.web_address} placeholder={`e.g. ${driffActions.getBaseUrl()}`} onChange={handleInputChange} isValid={formResponse.valid.web_address} feedback={formResponse.message.web_address} />
         </WrapperDiv>
         <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
           <button className="btn btn-primary" onClick={handleConfirm}>

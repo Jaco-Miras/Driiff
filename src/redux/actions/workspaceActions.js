@@ -34,6 +34,8 @@ import {
   getAllWorkspaceFolders as getAllWorkspaceFoldersService,
   getExistingFolder as getExistingFolderService,
   putWorkspaceNotification as putWorkspaceNotificationService,
+  getWorkspaceQuickLinks as getWorkspaceQuickLinksService,
+  putWorkspaceQuickLinks as putWorkspaceQuickLinksService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -306,4 +308,16 @@ export function setUnreadPostIds(payload, callback) {
 
 export function setPostIsSelected(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SELECTED_POST", payload, callback);
+}
+
+export function getWorkspaceQuickLinks(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceQuickLinksService(payload), "GET_WORKSPACE_QUICKLINKS_START", "GET_WORKSPACE_QUICKLINKS_SUCCESS", "GET_WORKSPACE_QUICKLINKS_FAIL", callback);
+}
+
+export function putWorkspaceQuickLinks(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceQuickLinksService(payload), "PUT_WORKSPACE_QUICKLINKS_START", "PUT_WORKSPACE_QUICKLINKS_SUCCESS", "PUT_WORKSPACE_QUICKLINKS_FAIL", callback);
+}
+
+export function incomingUpdatedWorkspaceQuickLinks(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_WORKSPACE_QUICK_LINKS", payload, callback);
 }

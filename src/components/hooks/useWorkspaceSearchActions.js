@@ -198,9 +198,9 @@ const useWorkspaceSearchActions = () => {
     if (workspaces[workspace.id]) {
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
       fetchWorkspaceAndRedirect(workspace);
@@ -224,9 +224,9 @@ const useWorkspaceSearchActions = () => {
           }
         } else {
           if (workspace.folder_id) {
-            history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
           } else {
-            history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
           }
         }
       })
