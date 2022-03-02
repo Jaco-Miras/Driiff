@@ -149,6 +149,7 @@ const AllWorkspace = (props) => {
     folders: _t("ALL_WORKSPACE.FOLDERS", "Folders"),
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
     workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Workspaces you share with"),
+    noSharedWorkspace: _t("WORKSPACE_BODY.NO_SHARED_WORKSPACE", "You have no shared workspace with"),
   };
 
   // const handleLoadMore = () => {
