@@ -21,7 +21,8 @@ const Wrapper = styled.div`
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     max-height: calc(100% - 20px);
     ::-webkit-scrollbar {
       -webkit-appearance: none;
