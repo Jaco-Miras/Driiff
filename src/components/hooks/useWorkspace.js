@@ -24,7 +24,7 @@ const useWorkspace = () => {
   const channelIds = useSelector((state) => Object.keys(state.chat.channels));
   const selectedChannelId = useSelector((state) => state.chat.selectedChannelId);
   const user = useSelector((state) => state.session.user);
-  const [fetchingPrimary, setFetchingPrimary] = useState(false);
+  //const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
   const { _t } = useTranslationActions();
@@ -53,7 +53,7 @@ const useWorkspace = () => {
     });
 
     if (user.type === "external" && url.startsWith("/workspace/team-chat")) {
-      history.push("/workspace/chat");
+      history.push("/workspace/dashboard");
     }
   }, []);
 
