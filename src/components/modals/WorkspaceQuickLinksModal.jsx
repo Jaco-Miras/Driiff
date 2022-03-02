@@ -50,9 +50,17 @@ const Wrapper = styled(Modal)`
     width: 1rem;
     height: 1rem;
   }
+  th.text-align-center {
+    text-align: center;
+  }
   th > div {
     display: inline-block;
     margin-left: 0.5rem;
+  }
+  td.delete-button {
+    text-align: center;
+    vertical-align: baseline;
+    padding: 7px 0;
   }
 `;
 
@@ -88,7 +96,16 @@ const WorkspaceQuickLinksModal = (props) => {
     addMore: _t("BUTTON.ADD_MORE", "Add more"),
   };
 
-  const [inputs, setInputs] = useState([...links]);
+  const [inputs, setInputs] = useState([
+    ...links.sort((a, b) => {
+      if (a.link === "" && a.menu_name === "") {
+        return 1;
+      } else {
+        return -1;
+      }
+    }),
+  ]);
+
   const [formResponse, setFormResponse] = useState({
     valid: {},
     message: {},
@@ -188,7 +205,19 @@ const WorkspaceQuickLinksModal = (props) => {
   };
 
   const handleAddItem = () => {
+    if (showNumberOfRows === 10) return;
     setShowNumberOfRows(showNumberOfRows + 1);
+  };
+
+  const handleDeleteLink = (input) => {
+    const removedInput = inputs.find((i) => i.id === input.id);
+    setInputs([
+      ...inputs.filter((i) => {
+        return i.id !== input.id;
+      }),
+      { ...removedInput, menu_name: "", link: "" },
+    ]);
+    setShowNumberOfRows(showNumberOfRows - 1);
   };
 
   return (
@@ -214,6 +243,9 @@ const WorkspaceQuickLinksModal = (props) => {
                   <ToolTip content={dictionary.linkTooltip}>
                     <SvgIconFeather icon="info" />
                   </ToolTip>
+                </th>
+                <th className="text-align-center">
+                  <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
                 </th>
               </tr>
             </thead>
@@ -248,6 +280,9 @@ const WorkspaceQuickLinksModal = (props) => {
                             : null
                         }
                       />
+                    </td>
+                    <td className="delete-button">
+                      <SvgIconFeather className="cursor-pointer" icon="x" onClick={() => handleDeleteLink(input)} />
                     </td>
                   </tr>
                 );
