@@ -84,11 +84,11 @@ const Wrapper = styled.div`
 `;
 
 const QuicklinksMentionColumn = styled.div`
-  @media (min-width: 768px) {
-    > div:first-child {
-      min-height: 250px;
-    }
-  }
+  // @media (min-width: 768px) {
+  //   > div:first-child {
+  //     min-height: 250px;
+  //   }
+  // }
 `;
 
 const WsDashboardPanel = (props) => {
@@ -121,7 +121,7 @@ const WsDashboardPanel = (props) => {
     foldersOrFilesShared: _t("LABEL.FOLDERS_OR_FILES_SHARED", "Folders or files shared"),
     foldersOrFilesSharedTooltip: _t("TOOLTIP.FOLDERS_OR_FILES_SHARED", "Folders or files shared tooltip"),
     openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
-    noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "No quick links yet, click on the plus icon to add quick links"),
+    noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "This WorkSpace has no quicklinks yet. Click on the + icon to add quicklinks for all workspace members."),
   };
 
   return (
