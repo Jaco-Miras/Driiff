@@ -6,6 +6,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { FormInput } from "../forms";
 import { useDriffActions, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
+import { validURL } from "../../helpers/urlContentHelper";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -158,7 +159,12 @@ const CreatePersonalLinksModal = (props) => {
       valid.web_address = false;
       message.web_address = "Link is required.";
     } else {
-      valid.web_address = true;
+      if (!validURL(form.web_address)) {
+        valid.web_address = false;
+        message.web_address = "Invalid URL";
+      } else {
+        valid.web_address = true;
+      }
     }
 
     setFormResponse({
