@@ -30,6 +30,7 @@ const Wrapper = styled.div`
     margin: 0;
     overflow: auto;
     max-height: calc(100% - 30px);
+    overflow-x: hidden;
     ::-webkit-scrollbar {
       -webkit-appearance: none;
       width: 7px;
