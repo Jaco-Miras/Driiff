@@ -5,6 +5,7 @@ import WorkspaceListItem from "./WorkspaceListItem";
 import { ToolTip } from "../../common";
 import useQueryParams from "../../hooks/useQueryParams";
 import { useUsers } from "../../hooks";
+import { useEffect } from "react";
 const Wrapper = styled.div`
   overflow: visible !important;
 `;
@@ -56,6 +57,8 @@ const AllWorkspaceBody = (props) => {
   const [showWorkspaces, setShowWorkspaces] = useState({ showActive: true, showArchived: true });
   const [sortWorkspaces, setSortWorkspaces] = useState({ activeDate: true, archivedDate: true }); // default is date else alphabet
 
+  const [connectedUserLabel, setConnectedUserLabel] = useState(dictionary.noSharedWorkspace);
+
   const { users } = useUsers();
   const { params } = useQueryParams();
   const userId = params ? params["user-id"] : null;
@@ -66,6 +69,12 @@ const AllWorkspaceBody = (props) => {
     }
     return null;
   }, [userId, users, filterBy]);
+
+  useEffect(() => {
+    if (results.length > 0) {
+      setConnectedUserLabel(dictionary.workspaceYouShareWith);
+    }
+  }, [results]);
 
   const handleShowWorkspaces = (type) => {
     setShowWorkspaces({
@@ -85,7 +94,7 @@ const AllWorkspaceBody = (props) => {
     <Wrapper className={"card"}>
       {connectedUser && (
         <p className="mx-3 my-2">
-          {dictionary.connectedWorkspaceOf}: {connectedUser.name}
+          {connectedUserLabel}: {connectedUser.name}
         </p>
       )}
       <Lists className="active-workspaces">
