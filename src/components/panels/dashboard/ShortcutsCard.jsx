@@ -135,9 +135,10 @@ const ShortcutsCard = (props) => {
       {!isWorkspace && (
         <ul className="mt-2">
           {companyLinks.map((l) => {
+            const securedLink = !l.link.startsWith("http") ? "https://" + l.link : l.link;
             return (
               <li key={l.id}>
-                <FancyLink link={l.link} title={l.menu_name} />
+                <FancyLink link={securedLink} title={l.menu_name} />
               </li>
             );
           })}
@@ -148,9 +149,10 @@ const ShortcutsCard = (props) => {
           {wsQuickLinks
             .filter((l) => l.link !== "")
             .map((l) => {
+              const securedLink = !l.link.startsWith("http") ? "https://" + l.link : l.link;
               return (
                 <li key={l.id}>
-                  <FancyLink link={l.link} title={l.menu_name} />
+                  <FancyLink link={securedLink} title={l.menu_name} />
                 </li>
               );
             })}
@@ -165,9 +167,10 @@ const ShortcutsCard = (props) => {
           {generalSettings.personal_links.length > 0 && (
             <ul className="mt-2">
               {generalSettings.personal_links.map((l, index) => {
+                const securedLink = !l.web_address.startsWith("http") ? "https://" + l.web_address : l.web_address;
                 return (
                   <PersonalLinkList key={l.id}>
-                    <FancyLink link={l.web_address} title={l.name} />
+                    <FancyLink link={securedLink} title={l.name} />
                     <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={() => handleEditPersonalLink(index)} />
                   </PersonalLinkList>
                 );

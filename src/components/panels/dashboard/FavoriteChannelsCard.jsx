@@ -13,17 +13,16 @@ const Wrapper = styled.div`
   > span:first-child {
     display: flex;
     align-items: center;
-    //font-weight: 600;
-  }
-  .feather {
-    width: 1rem;
-    height: 1rem;
   }
   .feather-star {
     margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
   }
   .feather-info {
     margin-left: 0.5rem;
+    width: 1rem;
+    height: 1rem;
   }
   ul {
     list-style: none;
