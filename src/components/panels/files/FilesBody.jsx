@@ -185,6 +185,7 @@ const FilesBody = (props) => {
     }
   }, [showDropZone]);
 
+  if (!wsFiles) return;
   return (
     <Wrapper className={`files-body card app-content-body ${className}`} onDragOver={handleShowDropZone}>
       {!disableOptions && (
@@ -298,11 +299,13 @@ const FilesBody = (props) => {
                         return <FileListItem key={f.id} isMember={isMember} scrollRef={scrollRef} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={f} folders={folders} disableOptions={disableOptions} />;
                       })}
                 </div>
-                {wsFiles.popular_files.length > 0 && <PopularFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
-                {wsFiles.recently_edited.length > 0 && <RecentEditedFile search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
+                {wsFiles.popular_files && wsFiles.popular_files.length > 0 && <PopularFiles search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />}
+                {wsFiles.recently_edited && wsFiles.recently_edited.length > 0 && (
+                  <RecentEditedFile search={search} isMember={isMember} scrollRef={scrollRef} wsFiles={wsFiles} actions={actions} folders={folders} disableOptions={disableOptions} />
+                )}
               </>
             )}
-            {fileIds.length === 0 && wsFiles.popular_files.length === 0 && wsFiles.recently_edited.length === 0 && (
+            {fileIds.length === 0 && wsFiles.popular_files && wsFiles.popular_files.length === 0 && wsFiles.recently_edited && wsFiles.recently_edited.length === 0 && (
               <EmptyState>
                 <SvgEmptyState icon={4} height={282} />
                 {isMember && (
