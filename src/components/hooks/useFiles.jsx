@@ -16,7 +16,7 @@ const useFiles = (triggerFetch = false) => {
 
   useEffect(() => {
     if (triggerFetch) {
-      if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
+      if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
         const cb = (err, res) => {
           setFetchingFiles(false);
           fileActions.getFolders({ topic_id: activeTopic.id });
@@ -67,12 +67,15 @@ const useFiles = (triggerFetch = false) => {
         });
       }
     } else {
-      fileIds = Object.values(workspaceFiles[activeTopic.id].files)
-        .filter((f) => f.folder_id === null)
-        .map((f) => f.id)
-        .sort((a, b) => {
-          return b > a ? 1 : -1;
-        });
+      if (workspaceFiles[activeTopic.id].files) {
+        fileIds = Object.values(workspaceFiles[activeTopic.id].files)
+          .filter((f) => f.folder_id === null)
+          .map((f) => f.id)
+          .sort((a, b) => {
+            return b > a ? 1 : -1;
+          });
+      }
+
       if (workspaceFiles[activeTopic.id].hasOwnProperty("search_results") && workspaceFiles[activeTopic.id].search_results.length > 0) {
         fileIds = workspaceFiles[activeTopic.id].search_results.sort((a, b) => {
           return b > a ? 1 : -1;
@@ -82,7 +85,6 @@ const useFiles = (triggerFetch = false) => {
   }
 
   const hasActiveTopic = activeTopic && workspaceFiles[activeTopic.id];
-
   return {
     params,
     wsFiles: hasActiveTopic ? workspaceFiles[activeTopic.id] : null,
