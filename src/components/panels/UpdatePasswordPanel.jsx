@@ -133,9 +133,11 @@ const UpdatePasswordPanel = (props) => {
       </ul>
       <hr />
       <p className="text-muted">{dictionary.noAccount}</p>
-      <Link className={"btn btn-outline-light btn-sm"} to="/register">
-        {dictionary.registerNow}
-      </Link>
+      {driffSettings.settings.sign_up && (
+        <Link className={"btn btn-outline-light btn-sm"} to="/register">
+          {dictionary.registerNow}
+        </Link>
+      )}
     </Wrapper>
   );
 };
