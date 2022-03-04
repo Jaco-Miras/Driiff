@@ -25,7 +25,7 @@ const AdminPanelFilters = (props) => {
   const dictionary = {
     automation: _t("ADMIN.FILTER_AUTOMATION", "Automation"),
     quickLinks: _t("ADMIN.FILTER_QUICKLINKS", "Quick links"),
-    settings: _t("ADMIN.FILTER_SETTINGS", "Settings"),
+    loginSettings: _t("ADMIN.FILTER_SETTINGS", "Login settings"),
     huddleBots: _t("ADMIN.FILTER_HUDDLE", "Huddle bots"),
     subscription: _t("ADMIN.FILTER_SUBSCRIPTION", "Subscription"),
     contact: _t("ADMIN.FILTER_CONTACT", "Contact"),
@@ -58,26 +58,26 @@ const AdminPanelFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filters["automation"] ? "active" : ""}`} data-value="automation" onClick={handleClickFilter}>
         {dictionary.automation}
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["quick_links"] ? "active" : ""}`} data-value="quick-links" onClick={handleClickFilter}>
-        {dictionary.quickLinks}
-      </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["settings"] ? "active" : ""}`} data-value="settings" onClick={handleClickFilter}>
-        {dictionary.settings}
+      <li className={`list-group-item d-flex align-items-center ${filters["company-settings"] ? "active" : ""}`} data-value="company-settings" onClick={handleClickFilter}>
+        {dictionary.company}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["bots"] ? "active" : ""}`} data-value="bots" onClick={handleClickFilter}>
         {dictionary.huddleBots}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["settings"] ? "active" : ""}`} data-value="settings" onClick={handleClickFilter}>
+        {dictionary.loginSettings}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["quick_links"] ? "active" : ""}`} data-value="quick-links" onClick={handleClickFilter}>
+        {dictionary.quickLinks}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
+        {dictionary.securitySettings}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["subscription"] ? "active" : ""}`} data-value="subscription" onClick={handleClickFilter}>
         {dictionary.subscription}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleRedirectToSupport}>
         {dictionary.support}
-      </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["company-settings"] ? "active" : ""}`} data-value="company-settings" onClick={handleClickFilter}>
-        {dictionary.company}
-      </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
-        {dictionary.securitySettings}
       </li>
     </Wrapper>
   );
