@@ -35,6 +35,7 @@ import {
   ZoomConfirmationModal,
   CompanyWorkspaceModal,
   WorkspaceQuickLinksModal,
+  FolderNoAccessModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -136,6 +137,8 @@ const ModalPanel = () => {
             return <CompanyWorkspaceModal key={modal.type} data={modal} />;
           case "workspace-quicklinks":
             return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
+          case "no_access_folder":
+            return <FolderNoAccessModal key={modal.type} data={modal} />;
           default:
             return null;
         }

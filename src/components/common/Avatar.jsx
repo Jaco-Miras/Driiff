@@ -105,9 +105,12 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const Initials = styled.span`
+const Initials = styled.div.attrs((props) => ({
+  style: {
+    background: props.avatarColor ? props.avatarColor : "white",
+  },
+}))`
   color: #fff !important;
-  background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
   font-size: 11px;
   line-height: 0;
   display: flex;
