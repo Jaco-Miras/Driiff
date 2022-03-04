@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { useSettings, useTranslationActions, useWorkspaceActions } from "../../hooks";
+import { useSettings, useTranslationActions, useWorkspaceActions, useUpdateSmartBannerMeta } from "../../hooks";
 import { FavoriteWorkspacesPanel, MainSidebarLinks, MainLogo } from "./index";
 import NewModalButtons from "./NewModalButtons";
 
@@ -177,7 +177,7 @@ const MainNavigationTabPanel = (props) => {
   const { updateCompanyName, driffSettings, generalSettings } = useSettings();
   const user = useSelector((state) => state.session.user);
   const { _t } = useTranslationActions();
-
+  useUpdateSmartBannerMeta();
   const params = useParams();
   const actions = useWorkspaceActions();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
