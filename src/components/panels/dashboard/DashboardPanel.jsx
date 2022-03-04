@@ -120,6 +120,7 @@ const DashboardPanel = (props) => {
     startWritingPost: _t("LABEL.START_WRITING_POST", "Start writing a new post,"),
     noQuickLinks: _t("LABEL.NO_QUICK_LINKS", "No quick links yet, wait for your admin to add quick links"),
     personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
+    nothingToDoHere: _t("LABEL.NOTHING_TO_DO_HERE", "Nothing to do here!"),
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
