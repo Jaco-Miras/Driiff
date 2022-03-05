@@ -80,3 +80,4 @@ export { default as useZoomActions } from "./useZoomActions";
 export { default as useUserOptions } from "./useUserOptions";
 export { default as useQueryParams } from "./useQueryParams";
 export { default as usePostCategory } from "./usePostCategory";
+export { default as useEnlargeEmoticons } from "./useEnlargeEmoticons";

@@ -6,7 +6,7 @@ import { SvgIconFeather, ToolTip } from "../../../common";
 import { FolderOptions } from "../../../panels/files";
 import { BlockPicker } from "react-color";
 import { useOutsideClick } from "../../../hooks";
-import colorWheel from "../../../../assets/img/svgs/RGB_color_wheel_12.svg";
+//import colorWheel from "../../../../assets/img/svgs/RGB_color_wheel_12.svg";
 
 const Wrapper = styled.div`
   .card {
@@ -71,9 +71,9 @@ const PickerWrapper = styled.div`
 `;
 
 const FolderListItem = (props) => {
-  const { className = "", folder, actions, isMember, history, params, handleAddEditFolder, disableOptions } = props;
+  const { className = "", folder, actions, isMember, history, handleAddEditFolder, disableOptions } = props;
 
-  const { path, url } = useRouteMatch();
+  const { path, url, params } = useRouteMatch();
   const pickerRef = useRef(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState(folder.bg_color ? folder.bg_color : "");
@@ -85,20 +85,24 @@ const FolderListItem = (props) => {
     if (folder.hasOwnProperty("payload")) {
       window.open(folder.payload.url, "_blank");
     } else {
-      if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-        let pathname = url.split("/folder/")[0];
-        history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+      if (path.startsWith("/workspace/dashboard")) {
+        history.push(url.replace("/dashboard", "/files") + `/folder/${folder.id}/${replaceChar(folder.search)}`);
       } else {
-        history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+        if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+          let pathname = url.split("/folder/")[0];
+          history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+        } else {
+          history.push(history.location.pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
+        }
       }
     }
   };
 
-  const handleShowColorPicker = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setShowColorPicker(!showColorPicker);
-  };
+  // const handleShowColorPicker = (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  //   setShowColorPicker(!showColorPicker);
+  // };
 
   const handleChange = (color, e) => {
     e.stopPropagation();

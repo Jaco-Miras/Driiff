@@ -5,6 +5,7 @@ import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
+  height: 100%;
   .card-title {
     display: flex;
     align-items: center;
@@ -17,7 +18,21 @@ const Wrapper = styled.div`
   }
 `;
 
-const DashboardDescriptionContainer = styled.div``;
+const DashboardDescriptionContainer = styled.div`
+  min-height: 175px;
+  max-height: calc(100% - 30px);
+  overflow: auto;
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+`;
 
 const DashboardDescription = styled.div`
   img {
@@ -27,7 +42,7 @@ const DashboardDescription = styled.div`
 `;
 
 const AboutCard = (props) => {
-  const { dictionary } = props;
+  const { dictionary, isWorkspace = false, workspace } = props;
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.session.user);
@@ -37,21 +52,34 @@ const AboutCard = (props) => {
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
 
   const handleEditClick = () => {
-    let payload = {
-      type: "company-workspace",
-    };
+    if (isWorkspace) {
+      let payload = {
+        mode: "edit",
+        item: workspace,
+        type: "workspace_create_edit",
+      };
 
-    dispatch(addToModals(payload));
+      dispatch(addToModals(payload));
+    } else {
+      let payload = {
+        type: "company-workspace",
+      };
+
+      dispatch(addToModals(payload));
+    }
   };
 
   return (
     <Wrapper>
       <div className="card-title">
-        <h5 className="card-title mb-0">{dictionary.aboutThisCompany}</h5>
+        <h5 className="card-title mb-0">{isWorkspace ? dictionary.aboutThisWorkspace : dictionary.aboutThisCompany}</h5>
 
         {companyWs && user.role.id <= 2 && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
       </div>
-      <DashboardDescriptionContainer>{companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}</DashboardDescriptionContainer>
+      <DashboardDescriptionContainer>
+        {!isWorkspace && companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}
+        {isWorkspace && workspace && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: workspace.description }} />}
+      </DashboardDescriptionContainer>
     </Wrapper>
   );
 };

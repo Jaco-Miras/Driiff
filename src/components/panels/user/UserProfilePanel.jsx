@@ -176,7 +176,7 @@ const UserProfilePanel = (props) => {
   });
   const [registerMode, setRegisterMode] = useState("email");
   const [countryCode, setCountryCode] = useState(null);
-  const [accountType, setAccountType] = useState(users[props.match.params.id] ? users[props.match.params.id].role.name : null);
+  const [accountType, setAccountType] = useState(users[props.match.params.id] ? users[props.match.params.id].role.id : null);
 
   const refs = {
     dropZoneRef: useRef(null),

@@ -6,6 +6,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { FormInput } from "../forms";
 import { useDriffActions, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
+import { validURL } from "../../helpers/urlContentHelper";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -158,7 +159,12 @@ const CreatePersonalLinksModal = (props) => {
       valid.web_address = false;
       message.web_address = "Link is required.";
     } else {
-      valid.web_address = true;
+      if (!validURL(form.web_address)) {
+        valid.web_address = false;
+        message.web_address = "Invalid URL";
+      } else {
+        valid.web_address = true;
+      }
     }
 
     setFormResponse({
@@ -217,15 +223,15 @@ const CreatePersonalLinksModal = (props) => {
       <ModalBody>
         <WrapperDiv>
           <div>
-            <Label for="folder">{dictionary.webAddress}</Label>
-          </div>
-          <FormInput name="web_address" defaultValue={form.web_address} placeholder={`e.g. ${driffActions.getBaseUrl()}`} onChange={handleInputChange} isValid={formResponse.valid.web_address} feedback={formResponse.message.web_address} />
-        </WrapperDiv>
-        <WrapperDiv>
-          <div>
             <Label for="folder">{dictionary.name}</Label>
           </div>
           <FormInput name="name" defaultValue={form.name} placeholder={`e.g. ${driffActions.getName()} Driff website`} onChange={handleInputChange} isValid={formResponse.valid.name} feedback={formResponse.message.name} />
+        </WrapperDiv>
+        <WrapperDiv>
+          <div>
+            <Label for="folder">{dictionary.webAddress}</Label>
+          </div>
+          <FormInput name="web_address" defaultValue={form.web_address} placeholder={`e.g. ${driffActions.getBaseUrl()}`} onChange={handleInputChange} isValid={formResponse.valid.web_address} feedback={formResponse.message.web_address} />
         </WrapperDiv>
         <WrapperDiv className="action-wrapper" style={{ marginTop: "40px" }}>
           <button className="btn btn-primary" onClick={handleConfirm}>

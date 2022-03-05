@@ -9,7 +9,7 @@ import { updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActi
 import { FileAttachments, PostVisibility } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { DescriptionInput, FolderSelect } from "../forms";
-import { useToaster, useWindowSize, useWorkspaceAndUserOptions, usePostDraft } from "../hooks";
+import { useToaster, useWindowSize, useWorkspaceAndUserOptions, usePostDraft, useEnlargeEmoticons } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadBulkDocument } from "../../redux/services/global";
 import { useHistory } from "react-router-dom";
@@ -360,6 +360,8 @@ const PostModal = (props) => {
     addressTo: form.selectedAddressTo,
   });
 
+  const { enlargeEmoji } = useEnlargeEmoticons({ enlargeSingle: true });
+
   const { draftSaved, handleDeleteDraft } = usePostDraft({
     draftId,
     initTimestamp,
@@ -626,7 +628,7 @@ const PostModal = (props) => {
     setQuillContents(editor.getContents());
     setForm({
       ...form,
-      body: content,
+      body: enlargeEmoji(content),
       textOnly: textOnly.trim(),
       mention_ids: mentionIds.map((id) => parseInt(id)).filter((id) => !isNaN(id)),
     });
@@ -825,7 +827,7 @@ const PostModal = (props) => {
       const isAllSelectedMustReply = item.post.must_reply_users.length > 1 && allUserIds.length === item.post.must_reply_users.length;
       setForm({
         ...form,
-        body: item.post.body,
+        body: enlargeEmoji(item.post.body),
         textOnly: item.post.body,
         title: item.post.title,
         has_folder: item.post.recipients.find((r) => r.type === "TOPIC") ? true : false,
