@@ -22,7 +22,7 @@ const INITIAL_STATE = {
     logo: "",
     background: null,
     login_mode: "email",
-    language: null,
+    language: "nl",
     theme: {
       colors: {
         primary: "#29323F",
@@ -95,7 +95,7 @@ const INITIAL_STATE = {
       dark_mode: "0",
       log_rocket: "0",
       sentry: "0",
-      language: null,
+      language: "nl",
       active_topic: null,
       workspace_open_folder: {},
       date_format: "DD-MM-YYYY",
