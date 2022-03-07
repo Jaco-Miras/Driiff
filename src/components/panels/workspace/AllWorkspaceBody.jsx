@@ -73,6 +73,8 @@ const AllWorkspaceBody = (props) => {
   useEffect(() => {
     if (results.length > 0) {
       setConnectedUserLabel(dictionary.workspaceYouShareWith);
+    } else {
+      setConnectedUserLabel(dictionary.noSharedWorkspace);
     }
   }, [results]);
 
@@ -90,13 +92,19 @@ const AllWorkspaceBody = (props) => {
     });
   };
 
-  return (
-    <Wrapper className={"card"}>
-      {connectedUser && (
+  const renderConnectedUserLabel = () => {
+    if (connectedUser) {
+      return (
         <p className="mx-3 my-2">
           {connectedUserLabel}: {connectedUser.name}
         </p>
-      )}
+      );
+    }
+  };
+
+  return (
+    <Wrapper className={"card"}>
+      {renderConnectedUserLabel()}
       <Lists className="active-workspaces">
         <ListsHeader className="list-group-item">
           <span className="badge badge-light" onClick={() => handleShowWorkspaces("showActive")}>

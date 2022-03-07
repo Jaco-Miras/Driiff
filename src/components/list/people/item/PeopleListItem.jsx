@@ -325,7 +325,7 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
+                  {user.has_accepted && <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />}
                   {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
                     <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
                       <SvgIconFeather className="mr-2" icon="phone" />

@@ -93,10 +93,12 @@ const ProfileSlider = (props) => {
         <h5>{user?.name}</h5>
         <span className="text-muted small">{user?.designation}</span>
         <div style={{ display: "flex", gap: 8 }}>
-          <button className="ml-1 btn btn-outline-light" onClick={handleWorkspaceClick}>
-            {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
-            <Icon icon="compass" loading={loading} />
-          </button>
+          {user.has_accepted && (
+            <button className="ml-1 btn btn-outline-light" onClick={handleWorkspaceClick}>
+              {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
+              <Icon icon="compass" loading={loading} />
+            </button>
+          )}
           {user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
             <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
