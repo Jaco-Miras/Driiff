@@ -307,6 +307,7 @@ const CompanyPostItemPanel = (props) => {
                 <span className="text-truncate">
                   {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
                   {post.title}
+                  <Icon onClick={handleStarPost} className="ml-2" icon="star" fill={post.is_favourite ? "#ffc107" : "none"} stroke={post.is_favourite ? "#ffc107" : "currentcolor"} />
                 </span>
                 <HoverButtons className="hover-btns ml-1">
                   {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
