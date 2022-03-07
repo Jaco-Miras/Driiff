@@ -318,7 +318,7 @@ const SystemPeoplePanel = (props) => {
                 />
               </div>
             )}
-            path={["/system/people"]}
+            path={["/system/people/all", "/system/people/invited", "/system/people/inactive"]}
           />
         </Switch>
       </div>
