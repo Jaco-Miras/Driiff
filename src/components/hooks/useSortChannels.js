@@ -82,7 +82,11 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
       }
 
       if (search === "") {
-        return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
+        if (searchArchivedChannels) {
+          return !(channel.is_hidden || channel.add_user || channel.add_open_topic) && channel.is_archived === false;
+        } else {
+          return !(channel.is_hidden || channel.is_archived === true || channel.add_user || channel.add_open_topic);
+        }
       } else {
         if (channel.type === "DIRECT" && channel.members.length === 2) {
           return channel.members
