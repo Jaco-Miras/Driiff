@@ -91,6 +91,8 @@ const AllPeople = (props) => {
     setShowGuest((prevState) => !prevState);
     setShowInactive(false);
     setShowInvited(false);
+    if (showGuest) history.push("/system/people/all");
+    else history.push("/system/people/guest");
   };
 
   const handleSearchChange = (e) => {
@@ -180,9 +182,12 @@ const AllPeople = (props) => {
       setShowInvited(true);
     } else if (match.path === "/system/people/inactive") {
       setShowInactive(true);
+    } else if (match.path === "/system/people/guest") {
+      setShowGuest(true);
     } else if (match.path === "/system/people/all") {
       setShowInvited(false);
       setShowInactive(false);
+      setShowGuest(false);
     }
   }, [match.path]);
 
