@@ -828,7 +828,7 @@ const TodoReminderModal = (props) => {
               <div className="col-lg-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
               <div className="col-lg-6 float-left">
@@ -897,7 +897,7 @@ const TodoReminderModal = (props) => {
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.workspaceLabel}</div>
                   <WorkspacesContainer className=" mb-2">
-                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                   </WorkspacesContainer>
                 </div>
 
@@ -969,7 +969,7 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
 
@@ -1040,7 +1040,7 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
 
