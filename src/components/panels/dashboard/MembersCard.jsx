@@ -34,15 +34,23 @@ const Wrapper = styled.div`
       background-color: rgba(0, 0, 0, 0.5);
       -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
     }
-    &.list-group li.list-group-item {
-      padding: 0.5rem;
-      position: static;
-    }
     .more-options {
       position: static;
+      //display: flex;
+      align-items: center;
+      justify-content: center;
     }
     .more-options-tooltip {
       right: 50px;
+    }
+    &.list-group li.list-group-item {
+      padding: 0.5rem;
+      position: static;
+      :hover {
+        .more-options {
+          display: flex;
+        }
+      }
     }
   }
 `;

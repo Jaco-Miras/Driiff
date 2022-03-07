@@ -10,7 +10,7 @@ import ShortcutsCard from "./ShortcutsCard";
 import PostMentionCard from "./PostMentionCard";
 import MembersCard from "./MembersCard";
 import { useTranslationActions } from "../../hooks";
-import FilesFolderCard from "./FilesFolderCard";
+//import FilesFolderCard from "./FilesFolderCard";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -70,12 +70,12 @@ const Wrapper = styled.div`
         flex-flow: column;
       }
       .members-card {
-        flex: 1 0 200px;
+        flex: 0 1 auto;
         min-height: 0;
       }
-      .files-folder-card {
-        flex: 1 0 180px;
-      }
+      // .files-folder-card {
+      //   flex: 1 0 180px;
+      // }
       .count-card {
         flex: 0 0 74px;
       }
@@ -122,6 +122,7 @@ const WsDashboardPanel = (props) => {
     foldersOrFilesSharedTooltip: _t("TOOLTIP.FOLDERS_OR_FILES_SHARED", "Folders or files shared tooltip"),
     openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
     noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "This WorkSpace has no quicklinks yet. Click on the + icon to add quicklinks for all workspace members."),
+    nothingToDoHere: _t("LABEL.NOTHING_TO_DO_HERE", "Nothing to do here!"),
   };
 
   return (
@@ -150,9 +151,9 @@ const WsDashboardPanel = (props) => {
               <Card className="mb-2 count-card">
                 <CountCard text={dictionary.unreadPosts} type={"posts"} isWorkspace={true} workspace={activeTopic} />
               </Card>
-              <Card className="mb-2 files-folder-card">
+              {/* <Card className="mb-2 files-folder-card">
                 <FilesFolderCard workspace={activeTopic} dictionary={dictionary} />
-              </Card>
+              </Card> */}
               <Card className="mb-2 overflow-unset members-card">
                 <MembersCard workspace={activeTopic} />
               </Card>
