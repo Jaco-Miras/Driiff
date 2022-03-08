@@ -137,7 +137,7 @@ const AllPeople = (props) => {
         else return false;
       }
 
-      return true;
+      return user.has_accepted && user.active;
     })
     .sort((a, b) => {
       return a.name.localeCompare(b.name);
