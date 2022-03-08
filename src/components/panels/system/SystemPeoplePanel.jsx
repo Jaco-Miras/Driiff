@@ -117,6 +117,8 @@ const SystemPeoplePanel = (props) => {
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
     totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
     thisIsAnAdminAccount: _t("TOOLTIP.THIS_IS_AN_ADMIN_ACCOUNT", "This is an administrator account"),
+    guestBadge: _t("BADGE.GUEST", "Guest"),
+    invitedGuestBadge: _t("BADGE.INVITED_GUEST", "Invited Guest"),
   };
 
   const toaster = useToaster();
