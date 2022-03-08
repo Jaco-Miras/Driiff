@@ -454,9 +454,7 @@ const InvitedUsersModal = (props) => {
               <th>{dictionary.email}</th>
               {/* {!fromRegister && <th className="team-th">Phone number</th>} */}
               {!fromRegister && <th className="team-th">{dictionary.addUserToteams}</th>}
-              <th>
-                <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} />
-              </th>
+              <th>{/* <SvgIconFeather className="cursor-pointer" icon="circle-plus" onClick={handleAddItem} /> */}</th>
             </tr>
             {invitationItems.map((item, key) => {
               return (
