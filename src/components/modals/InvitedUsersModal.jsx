@@ -141,6 +141,9 @@ const InvitedUsersModal = (props) => {
     employeeExplainer: _t("INVITE.EMPLOYEE_DESCRIPTION", "Explainer text what employee account can do"),
     guestExplainer: _t("INVITE.GUEST_DESCRIPTION", "Explainer text what guest account can do"),
     selectUserType: _t("INVITE.SELECT_USER_TYPE", "Select user type"),
+    submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
+    cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
+    addAnother: _t("INVITE.ADD_ANOTHER", "Add another"),
   };
 
   const teamOptions = !fromRegister
@@ -540,7 +543,7 @@ const InvitedUsersModal = (props) => {
             <tr>
               <td>
                 <MoreMemberButton onClick={handleAddItem}>
-                  <SvgIconFeather icon="plus" /> <span>Add another</span>
+                  <SvgIconFeather icon="plus" /> <span>{dictionary.addAnother}</span>
                 </MoreMemberButton>
               </td>
             </tr>
@@ -550,12 +553,12 @@ const InvitedUsersModal = (props) => {
       {(fromRegister || (!fromRegister && selectType === "employee" && user.role.id <= securitySettings.invite_internal)) && (
         <ModalFooter>
           <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
-            {cancelText}
+            {dictionary.cancelText}
           </Button>
           <Button className="btn btn-primary" color="primary" onClick={handleConfirm} disabled={filteredInvitations.length === 0}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {submitText}
-          </Button>{" "}
+            {dictionary.submitText}
+          </Button>
         </ModalFooter>
       )}
       {!fromRegister && user.role.id > securitySettings.invite_internal && (
