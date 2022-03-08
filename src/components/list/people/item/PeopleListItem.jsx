@@ -325,13 +325,24 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  {user.has_accepted && <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />}
-                  {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
-                    <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                      <SvgIconFeather className="mr-2" icon="phone" />
-                    </a>
+                  {user.has_accepted && (
+                    <ToolTip content={dictionary.connectedWorkspaceIcon}>
+                      <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
+                    </ToolTip>
                   )}
-                  {loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
+                  {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
+                    <ToolTip content={dictionary.phoneIcon}>
+                      <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
+                        <SvgIconFeather className="mr-2" icon="phone" />
+                      </a>
+                    </ToolTip>
+                  )}
+                  {loggedUser.id !== user.id && user.active === 1 && (
+                    <ToolTip content={dictionary.messageIcon}>
+                      {" "}
+                      <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />{" "}
+                    </ToolTip>
+                  )}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.type === "internal" && user.role && user.role.id !== 1 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsAdmin}>{dictionary.assignAsAdmin}</div>}
