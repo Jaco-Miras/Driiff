@@ -55,6 +55,7 @@ const GoogleMeetInviteModal = (props) => {
 
   const handleJoin = () => {
     toggle();
+    window.open(data.google_meet_event.hangoutLink, "_blank");
   };
 
   const handleSoundPlay = () => {
