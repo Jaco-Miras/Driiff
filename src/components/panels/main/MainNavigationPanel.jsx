@@ -47,6 +47,7 @@ const MainNavigationPanel = (props) => {
           "/chat/:code",
           "/posts/:postId/:postTitle/:postCommentCode?",
           "/files/folder/:folderId/:folderName",
+          "/system/people/all/online",
           "/system/people/teams/:teamId/:teamName",
           "/system/people/organization",
           "/system/people/teams",

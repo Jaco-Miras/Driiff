@@ -45,6 +45,7 @@ import {
   putUnpublishedAnswers as putUnpublishedAnswersService,
   generateZoomSignature as generateZoomSignatureService,
   createZoomMeeting as createZoomMeetingService,
+  createGoogleMeet as createGoogleMeetService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -524,4 +525,8 @@ export function setChatMessageFail(payload, callback) {
 
 export function removeChatMessage(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_FAILED_CHAT_MESSAGE", payload, callback);
+}
+
+export function createGoogleMeet(payload, callback) {
+  return dispatchActionToReducer(createGoogleMeetService(payload), "CREATE_GOOGLE_MEET_START", "CREATE_GOOGLE_MEET_SUCCESS", "CREATE_GOOGLE_MEET_FAIL", callback);
 }

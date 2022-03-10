@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -179,6 +179,7 @@ const ChatFooterPanel = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
+  const [startingMeet, setStartingMeet] = useState(false);
 
   //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
@@ -393,6 +394,20 @@ const ChatFooterPanel = (props) => {
     }
   };
 
+  const handleGoogleMeet = () => {
+    setStartingMeet(true);
+    if (startingMeet) return;
+    const payload = {
+      channel_id: selectedChannel.id,
+    };
+    const cb = (err, res) => {
+      setStartingMeet(false);
+      if (err) return;
+      window.open(res.data.google_meet_data.hangoutLink, "_blank");
+    };
+    dispatch(createGoogleMeet(payload, cb));
+  };
+
   return (
     <Wrapper className={`chat-footer ${className}`}>
       {selectedChannel && <TypingIndicator />}
@@ -437,6 +452,8 @@ const ChatFooterPanel = (props) => {
                     quote={quote}
                     dictionary={dictionary}
                     //startingZoom={startingZoom}
+                    onStartGoogleMeet={handleGoogleMeet}
+                    startingMeet={startingMeet}
                   />
                 </Dflex>
               </ChatInputContainer>

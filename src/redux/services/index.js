@@ -82,6 +82,7 @@ export {
   getSiteMetaData,
   generateZoomSignature,
   createZoomMeeting,
+  createGoogleMeet,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";

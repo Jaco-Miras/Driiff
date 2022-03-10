@@ -47,6 +47,7 @@ const AllPeople = (props) => {
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
+  const onlineUsers = useSelector((state) => state.users.onlineUsers);
 
   const handleShowInactiveToggle = () => {
     //setShowTeams(false);
@@ -115,7 +116,9 @@ const AllPeople = (props) => {
   const userSort = allUsers
     .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
-      if (showInactive) {
+      if (match.path === "/system/people/all/online") {
+        return onlineUsers.some((ou) => ou.user_id === user.id);
+      } else if (showInactive) {
         if (user.active === 1) {
           return false;
         }
