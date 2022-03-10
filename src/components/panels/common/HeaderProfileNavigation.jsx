@@ -157,6 +157,7 @@ const HomeProfileNavigation = (props) => {
     userSettings,
   } = useSettings();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const uniqueOnlineUsers = [...new Set(onlineUsers.map((ou) => ou.user_id))];
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
   const [form, setForm] = useState({});
@@ -264,14 +265,14 @@ const HomeProfileNavigation = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
-      {loggedUser.role.id === 1 && (
+      {/* {loggedUser.role.id === 1 && (
         <span className="online-wrapper" onClick={() => history.push("/system/people/all/online")}>
           <span className="online-dot"></span>
           <span className="nowrap">
-            {onlineUsers.length} {dictionary.accounts}
+            {uniqueOnlineUsers.length} {dictionary.accounts}
           </span>
         </span>
-      )}
+      )} */}
       {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) &&
         renderGifIcon()}
       <li className="nav-item dropdown">
