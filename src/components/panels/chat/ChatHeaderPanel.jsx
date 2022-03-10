@@ -272,7 +272,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser, startingMeet, onStartGoogleMeet } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser, onStartGoogleMeet } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
