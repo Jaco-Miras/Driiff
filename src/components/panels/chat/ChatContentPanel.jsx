@@ -7,6 +7,7 @@ import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";
+import { createGoogleMeet } from "../../../redux/actions/chatActions";
 
 const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
 const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
@@ -52,6 +53,7 @@ const ChatContentPanel = (props) => {
 
   const [showSearchPanel, setShowSearchPanel] = useState(false);
   const [pP, setPP] = useState(selectedChannel ? selectedChannel.id : 0);
+  const [startingMeet, setStartingMeet] = useState(false);
 
   const handleOpenFileDialog = () => {
     if (refs.dropZoneRef.current) {
@@ -218,6 +220,20 @@ const ChatContentPanel = (props) => {
     }
   }, [pP, selectedChannel]);
 
+  const handleGoogleMeet = () => {
+    setStartingMeet(true);
+    if (startingMeet) return;
+    const payload = {
+      channel_id: selectedChannel.id,
+    };
+    const cb = (err, res) => {
+      setStartingMeet(false);
+      if (err) return;
+      window.open(res.data.google_meet_data.hangoutLink, "_blank");
+    };
+    dispatch(createGoogleMeet(payload, cb));
+  };
+
   const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
 
   return (
@@ -231,7 +247,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} onStartGoogleMeet={handleGoogleMeet} startingMeet={startingMeet} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
