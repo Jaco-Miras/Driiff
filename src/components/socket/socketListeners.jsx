@@ -1734,6 +1734,15 @@ class SocketListeners extends Component {
           g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
         };
         this.props.incomingChatMessage({ ...chatMessage, channel_id: data.channel_id });
+        if (data.author.id !== this.props.user.id) {
+          this.props.addToModals({
+            ...e,
+            type: "meet_invite",
+            hideJoin: false,
+            data: data,
+          });
+        }
+
         //this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
         // const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
         // let timestamp = Math.floor(Date.now() / 1000);
