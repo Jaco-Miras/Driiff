@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-import { copyTextToClipboard } from "../../../helpers/commonFunctions";
-import { useToaster } from "../../hooks";
+// import { copyTextToClipboard } from "../../../helpers/commonFunctions";
+// import { useToaster } from "../../hooks";
+
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column;
@@ -33,10 +34,10 @@ const GoogleMeetMessage = (props) => {
   const handleJoinMeeting = () => {
     window.open(data.google_meet_event.hangoutLink, "_blank");
   };
-  const toaster = useToaster();
-  const handleCopyLink = () => {
-    copyTextToClipboard(toaster, data.google_meet_event.hangoutLink);
-  };
+  // const toaster = useToaster();
+  // const handleCopyLink = () => {
+  //   copyTextToClipboard(toaster, data.google_meet_event.hangoutLink);
+  // };
   return (
     <Wrapper className="google-meeting">
       <SvgIconFeather icon="google-meet" />
@@ -45,7 +46,8 @@ const GoogleMeetMessage = (props) => {
         <SvgIconFeather icon="user-plus" className={"mr-2"} /> Join Meeting
       </button>
       <span className="text-muted">
-        {data.google_meet_event?.hangoutLink} <SvgIconFeather icon="copy" onClick={handleCopyLink} />
+        This meeting is private to the participants in this channel
+        {/* {data.google_meet_event?.hangoutLink} <SvgIconFeather icon="copy" onClick={handleCopyLink} /> */}
       </span>
       <span className="reply-date created text-muted">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
     </Wrapper>

@@ -202,6 +202,10 @@ const ChatContentPanel = (props) => {
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
     toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
     toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    googleMeet: _t("CONFIRMATION.GOOGLE_MEET", "Google meet"),
+    yes: _t("YES", "Yes"),
+    no: _t("NO", "No"),
+    googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -223,15 +227,30 @@ const ChatContentPanel = (props) => {
   const handleGoogleMeet = () => {
     setStartingMeet(true);
     if (startingMeet) return;
-    const payload = {
-      channel_id: selectedChannel.id,
+    const handleStartGoogleMeet = () => {
+      const payload = {
+        channel_id: selectedChannel.id,
+      };
+      const cb = (err, res) => {
+        setStartingMeet(false);
+        if (err) return;
+        window.open(res.data.google_meet_data.hangoutLink, "_blank");
+      };
+      dispatch(createGoogleMeet(payload, cb));
     };
-    const cb = (err, res) => {
-      setStartingMeet(false);
-      if (err) return;
-      window.open(res.data.google_meet_data.hangoutLink, "_blank");
+
+    let modalPayload = {
+      type: "confirmation",
+      cancelText: dictionary.no,
+      headerText: dictionary.googleMeet,
+      submitText: dictionary.yes,
+      bodyText: dictionary.googleMeetConfirmation,
+      actions: {
+        onSubmit: handleStartGoogleMeet,
+      },
     };
-    dispatch(createGoogleMeet(payload, cb));
+
+    dispatch(addToModals(modalPayload));
   };
 
   const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
