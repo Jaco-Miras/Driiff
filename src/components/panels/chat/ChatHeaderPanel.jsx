@@ -115,6 +115,10 @@ const Wrapper = styled.div`
     margin-left: 5px;
     cursor: pointer;
   }
+  .feather-google-meet {
+    cursor: pointer;
+    margin-left: 5px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
@@ -268,7 +272,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel, startingMeet, onStartGoogleMeet } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -542,6 +546,9 @@ const ChatHeaderPanel = (props) => {
           </StyledTooltip>
           {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
           <SearchIcon icon="search" onClick={handleSearchChatPanel} />
+          <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={"Google meet"}>
+            <Icon icon="google-meet" onClick={onStartGoogleMeet} />
+          </StyledTooltip>
 
           <div>
             <ul className="nav align-items-center justify-content-end">

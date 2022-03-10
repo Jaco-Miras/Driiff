@@ -187,14 +187,19 @@ const ReplyPreview = (props) => {
 
       //system message
     } else {
-      previewText = chatHeaderBadgeContainer + "System message update...";
+      if (channel.last_reply && channel.last_reply.body.startsWith("GOOGLE_MEETING::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("GOOGLE_MEETING::", ""));
+        previewText = chatHeaderBadgeContainer + `${data.author.first_name}: initiated a google meeting`;
+      } else {
+        previewText = chatHeaderBadgeContainer + "System message update...";
 
-      if (channel.last_reply.body.includes("POST_CREATE::")) {
-        // console.log(channel.last_reply.body, channel.last_reply);
-        let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
-        if (parsedData.trim() !== "") {
-          let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-          previewText = chatHeaderBadgeContainer + `${item.author.first_name} has created the post ${item.post.title}`;
+        if (channel.last_reply.body.includes("POST_CREATE::")) {
+          // console.log(channel.last_reply.body, channel.last_reply);
+          let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
+          if (parsedData.trim() !== "") {
+            let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+            previewText = chatHeaderBadgeContainer + `${item.author.first_name} has created the post ${item.post.title}`;
+          }
         }
       }
     }
