@@ -1,10 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import WorkspaceListItem from "./WorkspaceListItem";
-import { useWorkspaceSearchActions, useTranslationActions, useQueryParams, useUsers, useToaster } from "../../hooks";
-import { useDispatch, useSelector } from "react-redux";
-import { getRelatedWorkspace, clearRelatedWorkspace } from "../../../redux/actions/workspaceActions";
 import { Loader } from "../../common";
+import { useToaster, useTranslationActions, useWorkspaceSearchActions, useRelatedWorkspace } from "../../hooks";
+import WorkspaceListItem from "./WorkspaceListItem";
 
 const Wrapper = styled.div`
   overflow: visible !important;
@@ -45,21 +43,17 @@ const Lists = styled.ul`
   }
 `;
 
-const LIMIT = 25;
-const SKIP = 25;
+const CenterHorizontal = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 
 const RelatedWorkspaceBody = ({ userId }) => {
   const actions = useWorkspaceSearchActions();
   const { _t } = useTranslationActions();
   const toaster = useToaster();
-  const { users } = useUsers();
 
-  const [skip, setSkip] = useState(0);
-  const [connectedUserLabel, setConnectedUserLabel] = useState("");
-
-  const dispatch = useDispatch();
-
-  const { loading, error, data, hasMore } = useSelector((state) => state.workspaces.relatedworkspace);
+  const { renderConnectedUserLabel, renderLoadMoreButton, loading, error, hasMore, relatedWorkspaces, clearWorkspace } = useRelatedWorkspace(userId);
 
   const dictionary = {
     notJoined: _t("ALL_WORKSPACE.NOT_JOINED", "Not joined"),
@@ -82,80 +76,35 @@ const RelatedWorkspaceBody = ({ userId }) => {
     workspaceSortOptionsDate: _t("WORKSPACE_SORT_OPTIONS.DATE", "Sort by Date (New to Old)"),
     folders: _t("ALL_WORKSPACE.FOLDERS", "Folders"),
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
-    workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Workspaces you share with"),
-    noSharedWorkspace: _t("WORKSPACE_BODY.NO_SHARED_WORKSPACE", "You have no shared workspace with"),
-    loadMoreText: _t("WORKSPACE_BODY.LOAD_MORE", "Load More"),
     errorMessage: _t("WORKSPACE_BODY.ERROR_MESSAGE", "Error fetching related workspaces"),
   };
-
-  const connectedUser = useMemo(() => {
-    if (userId) {
-      return users[userId];
-    }
-    return null;
-  }, [userId, users]);
-
-  useEffect(() => {
-    if (userId) {
-      dispatch(getRelatedWorkspace({ userId, skip, limit: LIMIT }));
-    }
-  }, [userId, skip]);
-
-  useEffect(() => {
-    if (data.length > 0) {
-      setConnectedUserLabel(dictionary.workspaceYouShareWith);
-    } else {
-      setConnectedUserLabel(dictionary.noSharedWorkspace);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (error) {
       toaster.error(dictionary.errorMessage);
     }
   }, [error]);
+
   useEffect(() => {
-    return () => {
-      dispatch(clearRelatedWorkspace());
-    };
+    return clearWorkspace;
   }, []);
-
-  const loadMore = () => {
-    setSkip((prev) => prev + SKIP);
-  };
-
-  const renderConnectedUserLabel = () => {
-    if (connectedUser) {
-      return (
-        <p className="mx-3 my-2">
-          {connectedUserLabel}: {connectedUser.name}
-        </p>
-      );
-    }
-  };
 
   return (
     <>
       <Wrapper className={"card"}>
         {!loading && !error && renderConnectedUserLabel()}
         <Lists className="active-workspaces">
-          {data.map((result) => {
+          {relatedWorkspaces.map((result) => {
             return <WorkspaceListItem actions={actions} key={result.topic.id} dictionary={dictionary} item={result} />;
           })}
         </Lists>
       </Wrapper>
       {loading && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <CenterHorizontal>
           <Loader />
-        </div>
+        </CenterHorizontal>
       )}
-      {hasMore && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <button className="btn btn-primary" onClick={loadMore} disabled={loading}>
-            {dictionary.loadMoreText}
-          </button>
-        </div>
-      )}
+      {hasMore && <CenterHorizontal>{renderLoadMoreButton()}</CenterHorizontal>}
     </>
   );
 };
