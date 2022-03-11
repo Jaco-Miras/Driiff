@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
-import { SvgIconFeather, Loader } from "../../common";
+import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
 //import zoomIcon from "../../../assets/icons/zoom.png";
 
@@ -32,6 +32,10 @@ const Wrapper = styled.div`
     width: 18px;
     height: 18px;
     cursor: pointer;
+  }
+  .feather-google-meet {
+    width: 24px;
+    height: 24px;
   }
   .chat-buttons {
     display: none;
@@ -90,7 +94,7 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
@@ -129,9 +133,16 @@ const ChatInputButtons = (props) => {
       </IconWrapper>
       {meet !== "disable" && (
         <IconWrapper className="btn-zoom">
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-            <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
-          </Tooltip>
+          {meet === "google" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+              <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
+            </Tooltip>
+          )}
+          {meet === "zoom" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+              <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+            </Tooltip>
+          )}
         </IconWrapper>
       )}
 

@@ -115,6 +115,10 @@ const Wrapper = styled.div`
     margin-left: 5px;
     cursor: pointer;
   }
+  .feather-google-meet {
+    cursor: pointer;
+    margin-left: 5px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
