@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.span`
   //display: flex;
@@ -88,6 +89,7 @@ const StyledBadge = styled.div`
 
 const ReplyPreview = (props) => {
   const { channel, drafts, dictionary, selectedChannel } = props;
+  const { _t } = useTranslationActions();
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -118,7 +120,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       let lastReplyBodyHtml = channel.is_translate && channel.last_reply.translated_body ? channel.last_reply.translated_body : channel.last_reply.body;
 
@@ -189,7 +191,7 @@ const ReplyPreview = (props) => {
     } else {
       if (channel.last_reply && channel.last_reply.body.startsWith("GOOGLE_MEETING::")) {
         const data = JSON.parse(channel.last_reply.body.replace("GOOGLE_MEETING::", ""));
-        previewText = chatHeaderBadgeContainer + `${data.author.first_name}: initiated a google meeting`;
+        previewText = chatHeaderBadgeContainer + `${_t("GOOGLE_MEET_LAST_REPLY_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
       } else {
         previewText = chatHeaderBadgeContainer + "System message update...";
 
