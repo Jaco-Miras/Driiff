@@ -25,7 +25,8 @@ const IconWrapper = styled.div`
   }
 `;
 const Wrapper = styled.div`
-  min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
+  //min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
+  min-width: ${(props) => (props.editMode && props.disabledMeet ? "120px" : props.editMode && !props.disabledMeet ? "160px" : !props.editMode && props.disabledMeet ? "80px" : " 120px")};
   display: flex;
   .feather {
     width: 18px;
@@ -92,6 +93,7 @@ const ChatInputButtons = (props) => {
   const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const meet = useSelector((state) => state.settings.driff.meet);
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
@@ -112,7 +114,7 @@ const ChatInputButtons = (props) => {
   const isClientChat = channel && workspaces[channel.entity_id] && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id;
 
   return (
-    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat}>
+    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat} disabledMeet={meet === "disable"}>
       {editChatMessage && (
         <IconWrapper>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
@@ -125,11 +127,14 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      <IconWrapper className="btn-zoom">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
-        </Tooltip>
-      </IconWrapper>
+      {meet !== "disable" && (
+        <IconWrapper className="btn-zoom">
+          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+            <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+          </Tooltip>
+        </IconWrapper>
+      )}
+
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
