@@ -177,6 +177,13 @@ const ChatBubbleContainer = styled.div`
   }
   &.google-meet-message {
     margin-left: 0;
+    margin-top: 1rem;
+    > div.chat-bubble-quote-div {
+      width: 100%;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 10px;
+    }
   }
 `;
 const ChatActionsContainer = styled.div`
