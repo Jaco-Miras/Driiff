@@ -128,7 +128,7 @@ const AllPeople = (props) => {
       } else if (showInvited) {
         return !user.has_accepted && user.active;
       } else if (showGuest) {
-        return user.has_accepted && user.type === "external";
+        return user.has_accepted && user.active && user.type === "external";
       } else {
         if (user.active !== 1) {
           return false;
