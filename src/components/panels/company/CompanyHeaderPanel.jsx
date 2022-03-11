@@ -167,6 +167,7 @@ const CompanyHeaderPanel = () => {
     btnTeam: _t("BUTTON.TEAM", "Team"),
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
     updateTeam: _t("TEAM_MODAL.UPDATE_TEAM_BTN", "Update team"),
+    accounts: _t("ACCOUNTS", "Accounts"),
   };
 
   const dispatch = useDispatch();
