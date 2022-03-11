@@ -69,7 +69,7 @@ const AdminPanelFilters = (props) => {
         {dictionary.huddleBots}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["settings"] ? "active" : ""}`} data-value="settings" onClick={handleClickFilter}>
-        {dictionary.loginSettings}
+        {dictionary.settings}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["quick_links"] ? "active" : ""}`} data-value="quick-links" onClick={handleClickFilter}>
         {dictionary.quickLinks}
