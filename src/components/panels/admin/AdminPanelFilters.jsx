@@ -59,7 +59,7 @@ const AdminPanelFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filters["automation"] ? "active" : ""}`} data-value="automation" onClick={handleClickFilter}>
         {dictionary.automation}
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["company-settings"] ? "active" : ""}`} data-value="company-settings" onClick={handleClickFilter}>
+      <li className={`list-group-item d-flex align-items-center ${filters["company"] ? "active" : ""}`} data-value="company" onClick={handleClickFilter}>
         {dictionary.company}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["driff"] ? "active" : ""}`} data-value="driff" onClick={handleClickFilter}>
@@ -74,7 +74,7 @@ const AdminPanelFilters = (props) => {
       <li className={`list-group-item d-flex align-items-center ${filters["quick_links"] ? "active" : ""}`} data-value="quick-links" onClick={handleClickFilter}>
         {dictionary.quickLinks}
       </li>
-      <li className={`list-group-item d-flex align-items-center ${filters["security-settings"] ? "active" : ""}`} data-value="security-settings" onClick={handleClickFilter}>
+      <li className={`list-group-item d-flex align-items-center ${filters["security"] ? "active" : ""}`} data-value="security" onClick={handleClickFilter}>
         {dictionary.securitySettings}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["subscription"] ? "active" : ""}`} data-value="subscription" onClick={handleClickFilter}>
