@@ -33,6 +33,8 @@ export {
   uploadDashboardBg,
   putCompanyDescription,
   getAllWorkspaces,
+  getMeetingSettings,
+  putMeetingSettings,
 } from "./admin";
 export {
   getGlobalRecipients,
@@ -79,6 +81,7 @@ export {
   postChatMessageTranslate,
   generateZoomSignature,
   createZoomMeeting,
+  createGoogleMeet,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";
