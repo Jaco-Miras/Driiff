@@ -10,6 +10,7 @@ import SubscriptionBody from "./SubscriptionBody";
 import StylingSettingsBody from "./StylingSettingsBody";
 import SecuritySettingsBody from "./SecuritySettingsBody";
 import WorkspaceBody from "./WorkspacesBody";
+import DriffBody from "./DriffBody";
 
 const Wrapper = styled.div`
   overflow: visible !important;
@@ -27,9 +28,10 @@ const AdminPanelBody = (props) => {
         <Route {...props} component={HuddleBotsBody} path={["/admin-settings/bots"]} />
         <Route {...props} component={SubscriptionBody} path={["/admin-settings/subscription"]} />
         <Route {...props} component={SupportBody} path={["/admin-settings/support"]} />
-        <Route {...props} component={StylingSettingsBody} path={["/admin-settings/company-settings"]} />
+        <Route {...props} component={StylingSettingsBody} path={["/admin-settings/company"]} />
         {/* <Route {...props} component={PageSettingsBody} path={["/admin-settings/page-settings"]} /> */}
-        <Route {...props} component={SecuritySettingsBody} path={["/admin-settings/security-settings"]} />
+        <Route {...props} component={SecuritySettingsBody} path={["/admin-settings/security"]} />
+        <Route {...props} component={DriffBody} path={["/admin-settings/driff"]} />
         <Redirect
           from="*"
           to={{

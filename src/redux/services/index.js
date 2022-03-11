@@ -33,6 +33,8 @@ export {
   putCompanyDescription,
   sendRequestPassword,
   getAllWorkspaces,
+  getMeetingSettings,
+  putMeetingSettings,
 } from "./admin";
 export {
   getGlobalRecipients,
