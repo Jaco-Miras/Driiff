@@ -4,8 +4,7 @@ import useTranslationActions from "./useTranslationActions";
 import { useDispatch, useSelector } from "react-redux";
 import { getRelatedWorkspace, clearRelatedWorkspace } from "../../redux/actions/workspaceActions";
 
-const LIMIT = 25;
-const SKIP = 25;
+const SKIP_LIMIT = 15;
 
 const useRelatedWorkspace = (userId) => {
   const { users } = useUsers();
@@ -32,7 +31,7 @@ const useRelatedWorkspace = (userId) => {
 
   useEffect(() => {
     if (userId) {
-      dispatch(getRelatedWorkspace({ userId, skip, limit: LIMIT }));
+      dispatch(getRelatedWorkspace({ userId, skip, limit: SKIP_LIMIT }));
     }
   }, [userId, skip]);
 
@@ -45,14 +44,8 @@ const useRelatedWorkspace = (userId) => {
     setRelatedWorkspaces(data);
   }, [data]);
 
-  useEffect(() => {
-    if (userId) {
-      dispatch(getRelatedWorkspace({ userId, skip, limit: LIMIT }));
-    }
-  }, [userId, skip]);
-
   const loadMore = () => {
-    setSkip((prev) => prev + SKIP);
+    setSkip((prev) => prev + SKIP_LIMIT);
   };
 
   const clearWorkspace = () => {
