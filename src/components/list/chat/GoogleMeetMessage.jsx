@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
-// import { copyTextToClipboard } from "../../../helpers/commonFunctions";
-// import { useToaster } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   display: flex;
@@ -34,21 +33,20 @@ const GoogleMeetMessage = (props) => {
   const handleJoinMeeting = () => {
     window.open(data.google_meet_event.hangoutLink, "_blank");
   };
-  // const toaster = useToaster();
-  // const handleCopyLink = () => {
-  //   copyTextToClipboard(toaster, data.google_meet_event.hangoutLink);
-  // };
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    googleMeetMessage: _t("GOOGLE_MEET_CHAT_MESSAGE", "This meeting is private to the participants in this channel"),
+    userStartMeet: _t("GOOGLE_MEET_USER_START", "::name:: started a video meeting", { name: data.author.name }),
+    joinMeeting: _t("GOOGLE.JOIN_MEETING", "Join Meeting"),
+  };
   return (
     <Wrapper className="google-meeting">
       <SvgIconFeather icon="google-meet" />
-      <span>{data.author.name} started a video meeting</span>
+      <span>{dictionary.userStartMeet}</span>
       <button className="btn btn-primary" onClick={handleJoinMeeting}>
-        <SvgIconFeather icon="user-plus" className={"mr-2"} /> Join Meeting
+        <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
       </button>
-      <span className="text-muted">
-        This meeting is private to the participants in this channel
-        {/* {data.google_meet_event?.hangoutLink} <SvgIconFeather icon="copy" onClick={handleCopyLink} /> */}
-      </span>
+      <span className="text-muted">{dictionary.googleMeetMessage}</span>
       <span className="reply-date created text-muted">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
     </Wrapper>
   );
