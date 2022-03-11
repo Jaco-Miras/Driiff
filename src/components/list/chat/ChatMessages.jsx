@@ -229,7 +229,7 @@ const ChatBubbleQuoteDiv = styled.div`
   position: relative;
   flex-flow: column;
   display: inherit;
-  // margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
+  margin-left: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
   > img {
     max-height: 300px;
     max-width: 100%;
