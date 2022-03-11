@@ -313,6 +313,7 @@ export {
   putWorkspaceNotification,
   getWorkspaceQuickLinks,
   putWorkspaceQuickLinks,
+  getRelatedWorkspace,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";
