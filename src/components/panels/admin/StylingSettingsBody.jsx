@@ -7,11 +7,8 @@ import { updateThemeColors } from "../../../redux/actions/settingsActions";
 import { putLoginSettings } from "../../../redux/actions/adminActions";
 import { BlockPicker } from "react-color";
 import { CustomInput } from "reactstrap";
-import Select from "react-select";
-import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import colorWheel from "../../../assets/img/svgs/RGB_color_wheel_12.svg";
 import { putNotificationSettings, getNotificationSettings } from "../../../redux/actions/adminActions";
-import Flag from "../../common/Flag";
 import { Loader } from "../../common";
 
 const Wrapper = styled.div`
@@ -101,15 +98,6 @@ const ColorWheelIcon = styled.img`
   cursor: pointer;
 `;
 
-const LabelInfoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  label {
-    margin: 0 !important;
-  }
-  margin-bottom: 0.5rem;
-`;
-
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -163,27 +151,6 @@ function StylingSettingsBody() {
     toasterSettingsUpdated: _t("TOASTER.COMPANY_SETTINGS_UPDATED", "Successfully updated company settings"),
   };
 
-  const languageOptions = [
-    {
-      value: "en",
-      label: (
-        <>
-          <Flag countryAbbr="en" className="mr-2" width="18" />
-          {_t("LANGUAGE.ENGLISH", "English")}
-        </>
-      ),
-    },
-    {
-      value: "nl",
-      label: (
-        <>
-          <Flag countryAbbr="nl" className="mr-2" width="18" />
-          {_t("LANGUAGE.DUTCH", "Dutch")}
-        </>
-      ),
-    },
-  ];
-
   const iconDropZone = useRef(null);
   const [showIconDropzone, setShowIconDropzone] = useState(false);
   const bgDropZone = useRef(null);
@@ -209,8 +176,6 @@ function StylingSettingsBody() {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const [notifications, setNotifications] = useState(notificationSettings);
   const [savingNotifications, setSavingNotifications] = useState(false);
-  const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { dark_mode } = generalSettings;
 
   useEffect(() => {
     if (!notificationsLoaded) {
@@ -404,10 +369,6 @@ function StylingSettingsBody() {
     );
   };
 
-  const handleSelectLanguage = (e) => {
-    setSettings({ ...settings, language: e.value });
-  };
-
   return (
     <Wrapper theme={theme}>
       {!loginFetched && (
@@ -459,25 +420,6 @@ function StylingSettingsBody() {
             <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
               {dictionary.uploadBg}
             </button>
-          </div>
-          <h4 className="mt-3">{dictionary.languageLabel}</h4>
-          <div>
-            <LabelInfoWrapper>
-              <label>{dictionary.companyLanguage}</label>
-            </LabelInfoWrapper>
-            <Select
-              className={"react-select-container"}
-              classNamePrefix="react-select"
-              styles={dark_mode === "0" ? lightTheme : darkTheme}
-              value={languageOptions.find((o) => settings.language === o.value)}
-              onChange={handleSelectLanguage}
-              options={languageOptions}
-            />
-          </div>
-          <div className="d-flex align-items-center mt-2">
-            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
-              {dictionary.updateLanguage}
-            </SubmitButton>
           </div>
           <h4 className="mt-3">{dictionary.styling}</h4>
           {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>

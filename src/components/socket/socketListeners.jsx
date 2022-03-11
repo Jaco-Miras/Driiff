@@ -198,6 +198,7 @@ import {
   incomingCompanyDescription,
   incomingCompanyDashboardBackground,
   incomingLoginSettings,
+  incomingMeetingSettings,
 } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
@@ -1141,6 +1142,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-meeting-option-notification", (e) => {
+        this.props.incomingMeetingSettings(e);
+      })
       .listen(".update-login-option-notification", (e) => {
         delete e.SOCKET_TYPE;
         delete e.socket;
@@ -2496,6 +2500,7 @@ function mapDispatchToProps(dispatch) {
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
     incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
+    incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
   };
 }
 
