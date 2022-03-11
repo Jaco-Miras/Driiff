@@ -389,19 +389,31 @@ const ChatFooterPanel = (props) => {
     }
   };
 
-  // const handleGoogleMeet = () => {
-  //   setStartingMeet(true);
-  //   if (startingMeet) return;
-  //   const payload = {
-  //     channel_id: selectedChannel.id,
-  //   };
-  //   const cb = (err, res) => {
-  //     setStartingMeet(false);
-  //     if (err) return;
-  //     window.open(res.data.google_meet_data.hangoutLink, "_blank");
-  //   };
-  //   dispatch(createGoogleMeet(payload, cb));
-  // };
+  const handleGoogleMeet = () => {
+    const handleStartGoogleMeet = () => {
+      const payload = {
+        channel_id: selectedChannel.id,
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        window.open(res.data.google_meet_data.hangoutLink, "_blank");
+      };
+      dispatch(createGoogleMeet(payload, cb));
+    };
+
+    let modalPayload = {
+      type: "confirmation",
+      cancelText: dictionary.no,
+      headerText: dictionary.googleMeet,
+      submitText: dictionary.yes,
+      bodyText: dictionary.googleMeetConfirmation,
+      actions: {
+        onSubmit: handleStartGoogleMeet,
+      },
+    };
+
+    dispatch(addToModals(modalPayload));
+  };
 
   return (
     <Wrapper className={`chat-footer ${className}`}>
@@ -444,7 +456,7 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
-                    // onStartGoogleMeet={handleGoogleMeet}
+                    onStartGoogleMeet={handleGoogleMeet}
                     // startingMeet={startingMeet}
                   />
                 </Dflex>

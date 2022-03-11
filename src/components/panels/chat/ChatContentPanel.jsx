@@ -7,7 +7,6 @@ import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";
-import { createGoogleMeet } from "../../../redux/actions/chatActions";
 
 const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
 const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
@@ -223,32 +222,6 @@ const ChatContentPanel = (props) => {
     }
   }, [pP, selectedChannel]);
 
-  const handleGoogleMeet = () => {
-    const handleStartGoogleMeet = () => {
-      const payload = {
-        channel_id: selectedChannel.id,
-      };
-      const cb = (err, res) => {
-        if (err) return;
-        window.open(res.data.google_meet_data.hangoutLink, "_blank");
-      };
-      dispatch(createGoogleMeet(payload, cb));
-    };
-
-    let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.googleMeet,
-      submitText: dictionary.yes,
-      bodyText: dictionary.googleMeetConfirmation,
-      actions: {
-        onSubmit: handleStartGoogleMeet,
-      },
-    };
-
-    dispatch(addToModals(modalPayload));
-  };
-
   const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
 
   return (
@@ -262,7 +235,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} onStartGoogleMeet={handleGoogleMeet} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>

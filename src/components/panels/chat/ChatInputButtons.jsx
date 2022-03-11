@@ -81,19 +81,19 @@ const Wrapper = styled.div`
   }
 `;
 
-const ZoomIcon = styled(SvgIconFeather)`
-  circle {
-    fill: #cacaca;
-  }
-  :hover {
-    circle {
-      fill: #2196f3;
-    }
-  }
-`;
+// const ZoomIcon = styled(SvgIconFeather)`
+//   circle {
+//     fill: #cacaca;
+//   }
+//   :hover {
+//     circle {
+//       fill: #2196f3;
+//     }
+//   }
+// `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const [showButtons, setShowButtons] = useState(false);
@@ -130,13 +130,12 @@ const ChatInputButtons = (props) => {
         </Tooltip>
       </IconWrapper>
       <IconWrapper className="btn-zoom">
-        {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-          {!startingMeet && <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />}
-          {startingMeet && <Loader />}
-        </Tooltip> */}
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+          <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
         </Tooltip>
+        {/* <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+          <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+        </Tooltip> */}
       </IconWrapper>
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
