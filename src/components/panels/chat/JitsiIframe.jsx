@@ -72,7 +72,7 @@ const VideoConference = (props) => {
     <JaaSMeeting
       appId={appId}
       jwt={jitsi._token}
-      roomName={getSlug() + "-" + jitsi.room_name}
+      roomName={getSlug() + "-" + jitsi.channel_id + "-" + jitsi.room_name}
       configOverwrite={{
         startWithAudioMuted: true,
         hiddenPremeetingButtons: ["microphone"],
