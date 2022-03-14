@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
-import { putLoginSettings, putMeetingSettings, getMeetingSettings } from "../../../redux/actions/adminActions";
+import { putLoginSettings, putMeetingSettings } from "../../../redux/actions/adminActions";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import Flag from "../../common/Flag";

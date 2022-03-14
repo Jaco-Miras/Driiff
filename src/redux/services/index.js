@@ -85,6 +85,7 @@ export {
   generateZoomSignature,
   createZoomMeeting,
   createGoogleMeet,
+  createJitsiMeet,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";

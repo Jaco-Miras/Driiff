@@ -545,3 +545,12 @@ export function createGoogleMeet(payload) {
     data: payload,
   });
 }
+
+export function createJitsiMeet(payload) {
+  let url = `/meet/signature?channel_id=${payload.channel_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
