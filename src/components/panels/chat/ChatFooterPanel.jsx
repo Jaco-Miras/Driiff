@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet, startJitsi, createJitsiMeet } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -178,7 +178,8 @@ const ChatFooterPanel = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
-  const [startingMeet, setStartingMeet] = useState(false);
+  const jitsi = useSelector((state) => state.chat.jitsi);
+  //const [startingMeet, setStartingMeet] = useState(false);
 
   //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
@@ -415,6 +416,17 @@ const ChatFooterPanel = (props) => {
     dispatch(addToModals(modalPayload));
   };
 
+  const handleJitsiMeet = () => {
+    if (jitsi) return;
+
+    dispatch(
+      createJitsiMeet({ channel_id: selectedChannel.id }, (err, res) => {
+        if (err) return;
+        console.log(res);
+      })
+    );
+  };
+
   return (
     <Wrapper className={`chat-footer ${className}`}>
       {selectedChannel && <TypingIndicator />}
@@ -457,6 +469,7 @@ const ChatFooterPanel = (props) => {
                     editChatMessage={editChatMessage}
                     quote={quote}
                     onStartGoogleMeet={handleGoogleMeet}
+                    onStartJitsi={handleJitsiMeet}
                     // startingMeet={startingMeet}
                   />
                 </Dflex>

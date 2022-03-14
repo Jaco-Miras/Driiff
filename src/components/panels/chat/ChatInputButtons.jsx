@@ -94,7 +94,7 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet } = props;
+  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet, onStartJitsi } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
@@ -141,6 +141,11 @@ const ChatInputButtons = (props) => {
           {meet === "zoom" && (
             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
               <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+            </Tooltip>
+          )}
+          {meet === "jitsi" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
+              <SvgIconFeather icon="video" onClick={onStartJitsi} />
             </Tooltip>
           )}
         </IconWrapper>

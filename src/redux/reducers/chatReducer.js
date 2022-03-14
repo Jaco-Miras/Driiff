@@ -48,6 +48,7 @@ const INITIAL_STATE = {
     hasMore: true,
     fetching: false,
   },
+  jitsi: null,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -2987,6 +2988,24 @@ export default function (state = INITIAL_STATE, action) {
           return acc;
         }, {}),
         selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? { ...state.selectedChannel, replies: [...state.selectedChannel.replies, action.data.chat] } : state.selectedChannel,
+      };
+    }
+    case "CREATE_JITSI_MEET_SUCCESS": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "START_JITSI": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "CLEAR_JITSI": {
+      return {
+        ...state,
+        jitsi: null,
       };
     }
     default:

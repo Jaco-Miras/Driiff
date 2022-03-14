@@ -1521,6 +1521,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@jitsi/react-sdk@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@jitsi/react-sdk/-/react-sdk-1.0.0.tgz#3c534caf2083ae5dc68d77fe986f15c2e0398d9b"
+  integrity sha512-ioD16WVSfvP+FBfL5CCcmXWQfzfr/CHUhH8aYmXjEjLFpSqFGJbu4C6ndtpc1SV6/JTCeaRGZB2nNJExFy/VOA==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.npmjs.org/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz"
