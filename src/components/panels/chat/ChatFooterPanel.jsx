@@ -425,7 +425,7 @@ const ChatFooterPanel = (props) => {
     if (jitsi) return;
 
     dispatch(
-      createJitsiMeet({ channel_id: selectedChannel.id }, (err, res) => {
+      createJitsiMeet({ channel_id: selectedChannel.id, host: true }, (err, res) => {
         if (err) return;
         console.log(res);
       })
