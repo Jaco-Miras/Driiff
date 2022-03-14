@@ -3,6 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { JitsiMeeting, JaaSMeeting } from "@jitsi/react-sdk";
 import { clearJitsi } from "../../../redux/actions/chatActions";
 
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 const VideoConference = (props) => {
   //const { jitsi } = props;
   const dispatch = useDispatch();
@@ -57,10 +72,45 @@ const VideoConference = (props) => {
     <JaaSMeeting
       appId={appId}
       jwt={jitsi._token}
-      roomName={jitsi.room_name}
+      roomName={getSlug() + "-" + jitsi.room_name}
       configOverwrite={{
         startWithAudioMuted: true,
         hiddenPremeetingButtons: ["microphone"],
+        enableLobbyChat: false,
+        toolbarButtons: [
+          "camera",
+          "closedcaptions",
+          "desktop",
+          "download",
+          "embedmeeting",
+          "etherpad",
+          "feedback",
+          "filmstrip",
+          "fullscreen",
+          "hangup",
+          "help",
+          "highlight",
+          "invite",
+          "livestreaming",
+          "microphone",
+          "mute-everyone",
+          "mute-video-everyone",
+          "participants-pane",
+          "profile",
+          "raisehand",
+          "recording",
+          "security",
+          "select-background",
+          "settings",
+          "shareaudio",
+          "sharedvideo",
+          "shortcuts",
+          "stats",
+          "tileview",
+          "toggle-camera",
+          "videoquality",
+          "__end",
+        ],
       }}
       onReadyToClose={handleClearJitsi}
       onApiReady={(externalApi) => {
