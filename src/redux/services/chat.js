@@ -515,7 +515,7 @@ export function createGoogleMeet(payload) {
 }
 
 export function createJitsiMeet(payload) {
-  let url = `/meet/signature?channel_id=${payload.channel_id}`;
+  let url = `/meet/signature?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
