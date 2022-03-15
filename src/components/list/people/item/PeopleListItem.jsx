@@ -288,7 +288,7 @@ const PeopleListItem = (props) => {
                     <h6 className="user-name mb-0">
                       {renderUserName({ user })}
                       {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
-                      <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />
+                      <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
