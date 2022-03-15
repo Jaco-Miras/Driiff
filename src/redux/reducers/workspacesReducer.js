@@ -78,6 +78,12 @@ const INITIAL_STATE = {
   workspaceReminders: {},
   connectedTeamIds: [],
   workspaceQuickLinks: {},
+  relatedworkspace: {
+    loading: false,
+    error: null,
+    data: [],
+    hasMore: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -4342,6 +4348,50 @@ export default (state = INITIAL_STATE, action) => {
         workspaceQuickLinks: {
           ...state.workspaceQuickLinks,
           [workspaceId]: action.data,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_START": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: true,
+          error: null,
+          hasMore: false,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_SUCCESS": {
+      return {
+        ...state,
+        relatedworkspace: {
+          loading: false,
+          error: null,
+          data: [...state.relatedworkspace.data, ...action.data.workspaces],
+          hasMore: action.data.has_more,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_FAIL": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          error: action.error.response.message || "Something went wrong",
+          hasMore: false,
+        },
+      };
+    }
+    case "CLEAR_RELATED_WORKSPACE": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          data: [],
+          hasMore: false,
         },
       };
     }

@@ -36,6 +36,7 @@ import {
   putWorkspaceNotification as putWorkspaceNotificationService,
   getWorkspaceQuickLinks as getWorkspaceQuickLinksService,
   putWorkspaceQuickLinks as putWorkspaceQuickLinksService,
+  getRelatedWorkspace as getRelatedWorkspaceService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -319,4 +320,11 @@ export function putWorkspaceQuickLinks(payload, callback) {
 
 export function incomingUpdatedWorkspaceQuickLinks(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_UPDATED_WORKSPACE_QUICK_LINKS", payload, callback);
+}
+
+export function getRelatedWorkspace(payload, callback) {
+  return dispatchActionToReducer(getRelatedWorkspaceService(payload), "GET_RELATED_WORKSPACE_START", "GET_RELATED_WORKSPACE_SUCCESS", "GET_RELATED_WORKSPACE_FAIL", callback);
+}
+export function clearRelatedWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_RELATED_WORKSPACE", payload, callback);
 }
