@@ -208,9 +208,6 @@ const usePosts = () => {
       })
       .sort((a, b) => {
         return b.updated_at.timestamp > a.updated_at.timestamp ? 1 : -1;
-      })
-      .sort((x, y) => {
-        return x.is_favourite === y.is_favourite ? 0 : x.is_favourite ? -1 : 1;
       });
 
     // count = {
