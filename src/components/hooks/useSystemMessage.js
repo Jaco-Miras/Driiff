@@ -90,6 +90,9 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
         // eslint-disable-next-line quotes
         parseBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
       }
+    } else if (reply.body.startsWith("DRIFF_TALK::")) {
+      const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
+      parseBody = `<div><b>${data.author.name}</b> started a Meeting: <strong>Click here to join</strong></div>`;
     } else if (reply.body.startsWith("ZOOM_MEETING::")) {
       const data = JSON.parse(reply.body.replace("ZOOM_MEETING::", ""));
       parseBody = `<div><b>${data.author.name}</b> started a ZOOM Meeting: <strong>Click here to join</strong></div>`;

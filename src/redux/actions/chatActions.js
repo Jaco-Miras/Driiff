@@ -543,3 +543,11 @@ export function clearJitsi(payload, callback) {
 export function createJitsiMeet(payload, callback) {
   return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START", "CREATE_JITSI_MEET_SUCCESS", "CREATE_JITSI_MEET_FAIL", callback);
 }
+
+export function incomingJitsi(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_JITSI", payload, callback);
+}
+
+export function clearJitsiInvite(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_JITSI_INVITE", payload, callback);
+}

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { JitsiMeeting, JaaSMeeting } from "@jitsi/react-sdk";
+import { JaaSMeeting } from "@jitsi/react-sdk";
 import { clearJitsi } from "../../../redux/actions/chatActions";
 
 const getSlug = () => {
