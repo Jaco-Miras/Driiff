@@ -34,3 +34,4 @@ export { default as ZoomConfirmationModal } from "./ZoomConfirmationModal";
 export { default as CompanyWorkspaceModal } from "./CompanyWorkspaceModal";
 export { default as WorkspaceQuickLinksModal } from "./WorkspaceQuickLinksModal";
 export { default as GoogleMeetInviteModal } from "./GoogleMeetInviteModal";
+export { default as JitsiInviteModal } from "./JitsiInviteModal";

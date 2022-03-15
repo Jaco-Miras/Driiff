@@ -34,6 +34,7 @@ import {
   CompanyWorkspaceModal,
   WorkspaceQuickLinksModal,
   GoogleMeetInviteModal,
+  JitsiInviteModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -133,6 +134,8 @@ const ModalPanel = () => {
             return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
           case "meet_invite":
             return <GoogleMeetInviteModal key={modal.type} data={modal} />;
+          case "jitsi_invite":
+            return <JitsiInviteModal key={modal.type} data={modal} />;
           default:
             return null;
         }
