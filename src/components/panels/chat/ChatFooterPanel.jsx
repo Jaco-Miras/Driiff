@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet, startJitsi, createJitsiMeet } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -418,37 +418,40 @@ const ChatFooterPanel = (props) => {
     dispatch(addToModals(modalPayload));
   };
 
-  const getSlug = () => {
-    let driff = localStorage.getItem("slug");
-    if (driff) {
-      return driff;
-    } else {
-      const host = window.location.host.split(".");
-      if (host.length === 3) {
-        localStorage.setItem("slug", host[0]);
-        return host[0];
-      } else {
-        return null;
-      }
-    }
-  };
+  // const getSlug = () => {
+  //   let driff = localStorage.getItem("slug");
+  //   if (driff) {
+  //     return driff;
+  //   } else {
+  //     const host = window.location.host.split(".");
+  //     if (host.length === 3) {
+  //       localStorage.setItem("slug", host[0]);
+  //       return host[0];
+  //     } else {
+  //       return null;
+  //     }
+  //   }
+  // };
 
   const handleJitsiMeet = () => {
     if (jitsi) return;
 
-    const handleCreateJitsi = () => {
-      dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }));
-    };
+    // const handleCreateJitsi = () => {
+    //   dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }));
+    // };
 
+    // let modalPayload = {
+    //   type: "confirmation",
+    //   cancelText: dictionary.no,
+    //   headerText: dictionary.jitsiMeet,
+    //   submitText: dictionary.yes,
+    //   bodyText: dictionary.jitsiMeetConfirmation,
+    //   actions: {
+    //     onSubmit: handleCreateJitsi,
+    //   },
+    // };
     let modalPayload = {
-      type: "confirmation",
-      cancelText: dictionary.no,
-      headerText: dictionary.jitsiMeet,
-      submitText: dictionary.yes,
-      bodyText: dictionary.jitsiMeetConfirmation,
-      actions: {
-        onSubmit: handleCreateJitsi,
-      },
+      type: "jitsi_confirmation",
     };
 
     dispatch(addToModals(modalPayload));
