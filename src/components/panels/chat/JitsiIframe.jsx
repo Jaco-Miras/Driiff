@@ -72,11 +72,12 @@ const VideoConference = (props) => {
     <JaaSMeeting
       appId={appId}
       jwt={jitsi._token}
-      roomName={getSlug() + "-" + jitsi.channel_id + "-" + jitsi.room_name}
+      roomName={getSlug() + "-Meeting_Room-" + jitsi.channel_id}
       configOverwrite={{
         startWithAudioMuted: true,
         hiddenPremeetingButtons: ["microphone"],
         enableLobbyChat: false,
+        disableInviteFunctions: true,
         toolbarButtons: [
           "camera",
           "closedcaptions",
@@ -90,7 +91,6 @@ const VideoConference = (props) => {
           "hangup",
           "help",
           "highlight",
-          "invite",
           "livestreaming",
           "microphone",
           "mute-everyone",
