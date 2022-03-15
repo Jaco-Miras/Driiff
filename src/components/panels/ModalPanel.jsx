@@ -33,6 +33,7 @@ import {
   ZoomConfirmationModal,
   CompanyWorkspaceModal,
   WorkspaceQuickLinksModal,
+  GoogleMeetInviteModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -130,6 +131,8 @@ const ModalPanel = () => {
             return <CompanyWorkspaceModal key={modal.type} data={modal} />;
           case "workspace-quicklinks":
             return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
+          case "meet_invite":
+            return <GoogleMeetInviteModal key={modal.type} data={modal} />;
           default:
             return null;
         }

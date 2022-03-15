@@ -200,6 +200,10 @@ const ChatContentPanel = (props) => {
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
     toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
     toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    googleMeet: _t("CONFIRMATION.GOOGLE_MEET", "Google meet"),
+    yes: _t("YES", "Yes"),
+    no: _t("NO", "No"),
+    googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

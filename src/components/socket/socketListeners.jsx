@@ -198,6 +198,7 @@ import {
   incomingCompanyDescription,
   incomingCompanyDashboardBackground,
   incomingLoginSettings,
+  incomingMeetingSettings,
 } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
@@ -1141,6 +1142,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-meeting-option-notification", (e) => {
+        this.props.incomingMeetingSettings(e);
+      })
       .listen(".update-login-option-notification", (e) => {
         delete e.SOCKET_TYPE;
         delete e.socket;
@@ -1707,32 +1711,70 @@ class SocketListeners extends Component {
       })
       .listen(".zoom-system-message-notification", (e) => {
         if (!e.hasOwnProperty("system_message")) return;
-        const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
-        let timestamp = Math.floor(Date.now() / 1000);
-        const chatMessage = {
-          message: e.system_message,
-          body: e.system_message,
-          mention_ids: [],
-          user: null,
-          original_body: e.system_message,
-          is_read: true,
-          editable: true,
-          files: [],
-          is_archive: false,
-          is_completed: true,
-          is_transferred: false,
-          is_deleted: false,
-          created_at: { timestamp: timestamp },
-          updated_at: { timestamp: timestamp },
-          channel_id: data.channel_id,
-          reactions: [],
-          id: e.chat_id,
-          reference_id: null,
-          quote: null,
-          unfurls: [],
-          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
-        };
-        this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
+        if (e.system_message.startsWith("GOOGLE_MEETING")) {
+          const data = JSON.parse(e.system_message.replace("GOOGLE_MEETING::", ""));
+          let timestamp = Math.floor(Date.now() / 1000);
+
+          const chatMessage = {
+            message: e.system_message,
+            body: e.system_message,
+            mention_ids: [],
+            user: null,
+            original_body: e.system_message,
+            is_read: true,
+            editable: true,
+            files: [],
+            is_archive: false,
+            is_completed: true,
+            is_transferred: false,
+            is_deleted: false,
+            created_at: { timestamp: timestamp },
+            updated_at: { timestamp: timestamp },
+            channel_id: data.channel_id,
+            reactions: [],
+            id: e.chat_id,
+            reference_id: null,
+            quote: null,
+            unfurls: [],
+            g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+          };
+          this.props.incomingChatMessage({ ...chatMessage, channel_id: data.channel_id });
+          if (data.author.id !== this.props.user.id) {
+            this.props.addToModals({
+              ...e,
+              type: "meet_invite",
+              hideJoin: false,
+              data: data,
+            });
+          }
+        } else if (e.system_message.startsWith("ZOOM_MEETING")) {
+          const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
+          let timestamp = Math.floor(Date.now() / 1000);
+          const chatMessage = {
+            message: e.system_message,
+            body: e.system_message,
+            mention_ids: [],
+            user: null,
+            original_body: e.system_message,
+            is_read: true,
+            editable: true,
+            files: [],
+            is_archive: false,
+            is_completed: true,
+            is_transferred: false,
+            is_deleted: false,
+            created_at: { timestamp: timestamp },
+            updated_at: { timestamp: timestamp },
+            channel_id: data.channel_id,
+            reactions: [],
+            id: e.chat_id,
+            reference_id: null,
+            quote: null,
+            unfurls: [],
+            g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+          };
+          this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
+        }
       })
       .listen(".left-meeting-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
@@ -2496,6 +2538,7 @@ function mapDispatchToProps(dispatch) {
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
     incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
+    incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
   };
 }
 
