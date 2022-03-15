@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
@@ -37,16 +37,18 @@ const ButtonsContainer = styled.div`
 const JitsiInviteModal = (props) => {
   const { type, title, host, hideJoin, channel_id } = props.data;
   const dispatch = useDispatch();
-  const isIdle = useSelector((state) => state.global.isIdle);
-  const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
+  //   const isIdle = useSelector((state) => state.global.isIdle);
+  //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   const { _t } = useTranslationActions();
-  const audioRef = useRef(null);
+  //   const audioRef = useRef(null);
   const dictionary = {
-    zoomInvite: _t("JITSI.INVITE_POP_UP", "::host:: has started a new Meeting for ::title::", { host: host.name, title: title }),
+    jitsiInvite: _t("JITSI.INVITE_POP_UP", "::host:: has started a new Meeting for ::title::", { host: host.name, title: title }),
     reject: _t("REJECT", "Reject"),
     join: _t("JOIN", "Join"),
+    startingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
   };
   const [modal, setModal] = useState(true);
+  const [startingMeet, setStartingMeet] = useState(false);
 
   const toggle = () => {
     setModal(!modal);
@@ -69,8 +71,8 @@ const JitsiInviteModal = (props) => {
   };
 
   const handleJoin = () => {
-    toggle();
-    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-Meeting_Room-" + channel_id }));
+    setStartingMeet(true);
+    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-Meeting_Room-" + channel_id }, () => toggle()));
   };
 
   //   const handleSoundPlay = () => {
@@ -122,17 +124,19 @@ const JitsiInviteModal = (props) => {
           <source src={require("../../assets/audio/zoomcall.mp3")} type="audio/mp3" />
           Your browser does not support the audio element.
         </AudioStyle> */}
-        <h3>{dictionary.zoomInvite}</h3>
-        <ButtonsContainer>
-          <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
-            {dictionary.reject}
-          </Button>
-          {!hideJoin && (
-            <Button color="primary" onClick={handleJoin}>
-              {dictionary.join}
+        <h3>{startingMeet ? dictionary.startingMeeting : dictionary.jitsiInvite}</h3>
+        {!startingMeet && (
+          <ButtonsContainer>
+            <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
+              {dictionary.reject}
             </Button>
-          )}
-        </ButtonsContainer>
+            {!hideJoin && (
+              <Button color="primary" onClick={handleJoin}>
+                {dictionary.join}
+              </Button>
+            )}
+          </ButtonsContainer>
+        )}
       </ModalBody>
     </Modal>
   );

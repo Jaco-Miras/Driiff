@@ -38,6 +38,7 @@ import {
   FolderNoAccessModal,
   GoogleMeetInviteModal,
   JitsiInviteModal,
+  JitsiConfirmationModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -145,6 +146,8 @@ const ModalPanel = () => {
             return <GoogleMeetInviteModal key={modal.type} data={modal} />;
           case "jitsi_invite":
             return <JitsiInviteModal key={modal.type} data={modal} />;
+          case "jitsi_confirmation":
+            return <JitsiConfirmationModal key={modal.type} data={modal} />;
           default:
             return null;
         }
