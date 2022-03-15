@@ -3303,6 +3303,7 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
+    case "INCOMING_JITSI_ENDED":
     case "INCOMING_ZOOM_ENDED": {
       return {
         ...state,

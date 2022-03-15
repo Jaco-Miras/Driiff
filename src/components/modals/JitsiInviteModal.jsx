@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
@@ -73,23 +73,23 @@ const JitsiInviteModal = (props) => {
     dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-Meeting_Room-" + channel_id }));
   };
 
-  const handleSoundPlay = () => {
-    if (audioRef.current && !isIdle && isBrowserActive && !hideJoin) {
-      const promiseAudioPlay = audioRef.current.play();
-      if (promiseAudioPlay !== undefined) {
-        promiseAudioPlay
-          .then(() => {
-            // Start whatever you need to do only after playback
-            // has begun.
-          })
-          .catch((error) => {
-            /**
-             * @todo need a fallback in case autoplay is not allowed
-             **/
-          });
-      }
-    }
-  };
+  //   const handleSoundPlay = () => {
+  //     if (audioRef.current && !isIdle && isBrowserActive && !hideJoin) {
+  //       const promiseAudioPlay = audioRef.current.play();
+  //       if (promiseAudioPlay !== undefined) {
+  //         promiseAudioPlay
+  //           .then(() => {
+  //             // Start whatever you need to do only after playback
+  //             // has begun.
+  //           })
+  //           .catch((error) => {
+  //             /**
+  //              * @todo need a fallback in case autoplay is not allowed
+  //              **/
+  //           });
+  //       }
+  //     }
+  //   };
 
   //   useEffect(() => {
   //     setTimeout(() => {

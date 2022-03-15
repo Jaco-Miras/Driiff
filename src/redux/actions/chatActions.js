@@ -551,3 +551,6 @@ export function incomingJitsi(payload, callback) {
 export function clearJitsiInvite(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_JITSI_INVITE", payload, callback);
 }
+export function incomingJitsiEnded(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_JITSI_ENDED", payload, callback);
+}
