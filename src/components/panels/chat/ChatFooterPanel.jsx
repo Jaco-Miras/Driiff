@@ -260,6 +260,8 @@ const ChatFooterPanel = (props) => {
     }),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     meetingInProgress: _t("TOASTER.MEETING_IN_PROGRESS", "Meeting for this channel is still in progress. When that's ended you can start a new meeting."),
+    jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
+    jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -424,12 +426,22 @@ const ChatFooterPanel = (props) => {
   const handleJitsiMeet = () => {
     if (jitsi) return;
 
-    dispatch(
-      createJitsiMeet({ channel_id: selectedChannel.id, host: true }, (err, res) => {
-        if (err) return;
-        console.log(res);
-      })
-    );
+    const handleCreateJitsi = () => {
+      dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true }));
+    };
+
+    let modalPayload = {
+      type: "confirmation",
+      cancelText: dictionary.no,
+      headerText: dictionary.jitsiMeet,
+      submitText: dictionary.yes,
+      bodyText: dictionary.jitsiMeetConfirmation,
+      actions: {
+        onSubmit: handleCreateJitsi,
+      },
+    };
+
+    dispatch(addToModals(modalPayload));
   };
 
   return (
