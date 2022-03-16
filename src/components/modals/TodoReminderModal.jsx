@@ -420,8 +420,19 @@ const TodoReminderModal = (props) => {
       setForm({
         ...form,
         topic_id: { value: parentItem.entity_id },
-        title: { value: `${item.user ? item.user.name : ""} | ${parentItem.title} | ${chatBody}` },
+        title: { value: `${item.user ? item.user.name : ""} | ${parentItem.title} | Chat Message` },
         description: { value: chatBody },
+      });
+    }
+
+    if (user.type === "external" && mode === "create") {
+      setSelectedUser({
+        ...user,
+        icon: "user-avatar",
+        value: user.id,
+        label: user.name,
+        type: "USER",
+        useLabel: true,
       });
     }
     setMounted(true);
