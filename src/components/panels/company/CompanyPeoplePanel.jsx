@@ -25,9 +25,9 @@ const Wrapper = styled.div`
     min-height: calc(100% - 40px);
     overflow: unset;
   }
-  .card-body {
+  /* .card-body {
     overflow: auto;
-  }
+  } */
 `;
 
 const Search = styled(SearchForm)`

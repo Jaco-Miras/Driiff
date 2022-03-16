@@ -1,8 +1,13 @@
 import { useSelector } from "react-redux";
+import useQueryParams from "./useQueryParams";
 
 const useFilterAllWorkspaces = (props) => {
   const search = useSelector((state) => state.workspaces.search);
   const user = useSelector((state) => state.session.user);
+
+  const { params } = useQueryParams();
+  const userId = params ? params["user-id"] : null;
+
   const { results, filterBy, value, filterByFolder } = search;
   const filteredResults = results
     .filter((ws) => {
@@ -10,6 +15,18 @@ const useFilterAllWorkspaces = (props) => {
         return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && filterByFolder.workspaces.some((w) => w.id === ws.topic.id) : filterByFolder.workspaces.some((w) => w.id === ws.topic.id);
       } else {
         if (filterBy === "all" || filterBy === "new") {
+          if (userId) {
+            const workspaceMembers = ws.members
+              .map((m) => {
+                if (m.member_ids) {
+                  return m.member_ids;
+                } else return m.id;
+              })
+              .flat();
+            const uniqueMembers = [...new Set(workspaceMembers)];
+            const isMember = uniqueMembers.some((id) => id == userId) && uniqueMembers.some((id) => id == user.id);
+            return isMember;
+          }
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) : true;
         } else if (filterBy === "member") {
           const workspaceMembers = ws.members

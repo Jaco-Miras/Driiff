@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import useQueryParams from "../../hooks/useQueryParams";
 
 const Wrapper = styled.ul`
   .list-group-item:last-child {
@@ -27,9 +28,11 @@ const AllWorkspaceFilters = (props) => {
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
 
+  const { removeParam } = useQueryParams();
+
   const handleClickFilter = (e) => {
     e.persist();
-
+    removeParam("user-id");
     if (filterBy === e.target.dataset.value) return;
     actions.updateSearch({
       filterBy: e.target.dataset.value,

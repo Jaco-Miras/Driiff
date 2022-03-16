@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.span`
   //display: flex;
@@ -88,6 +89,7 @@ const StyledBadge = styled.div`
 
 const ReplyPreview = (props) => {
   const { channel, drafts, dictionary, selectedChannel } = props;
+  const { _t } = useTranslationActions();
   const settings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -118,7 +120,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);
@@ -178,14 +180,19 @@ const ReplyPreview = (props) => {
 
       //system message
     } else {
-      previewText = chatHeaderBadgeContainer + "System message update...";
+      if (channel.last_reply && channel.last_reply.body.startsWith("GOOGLE_MEETING::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("GOOGLE_MEETING::", ""));
+        previewText = chatHeaderBadgeContainer + `${_t("GOOGLE_MEET_LAST_REPLY_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
+      } else {
+        previewText = chatHeaderBadgeContainer + "System message update...";
 
-      if (channel.last_reply.body.includes("POST_CREATE::")) {
-        // console.log(channel.last_reply.body, channel.last_reply);
-        let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
-        if (parsedData.trim() !== "") {
-          let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
-          previewText = chatHeaderBadgeContainer + `${item.author.first_name} has created the post ${item.post.title}`;
+        if (channel.last_reply.body.includes("POST_CREATE::")) {
+          // console.log(channel.last_reply.body, channel.last_reply);
+          let parsedData = channel.last_reply.body.replace("POST_CREATE::", "");
+          if (parsedData.trim() !== "") {
+            let item = JSON.parse(channel.last_reply.body.replace("POST_CREATE::", ""));
+            previewText = chatHeaderBadgeContainer + `${item.author.first_name} has created the post ${item.post.title}`;
+          }
         }
       }
     }

@@ -1,10 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { NotificationTimelineItem } from "../../list/notification/item";
 import { SvgIconFeather, ToolTip } from "../../common";
-import { addToModals } from "../../../redux/actions/globalActions";
+//import { addToModals } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -57,32 +57,32 @@ const Wrapper = styled.div`
   }
 `;
 
-const PostBtn = styled.button`
-  border: 1px solid;
-  .dark & {
-    color: #fff;
-  }
-  :hover {
-    cursor: pointer;
-  }
-`;
+// const PostBtn = styled.button`
+//   border: 1px solid;
+//   .dark & {
+//     color: #fff;
+//   }
+//   :hover {
+//     cursor: pointer;
+//   }
+// `;
 
 const PostMentionCard = (props) => {
   const { dictionary, isWorkspace = false } = props;
   const params = useParams();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const notifications = useSelector((state) => state.notifications.notifications);
   const user = useSelector((state) => state.session.user);
-  const handleShowPostModal = () => {
-    let payload = {
-      type: "post_modal",
-      mode: "create",
-      item: {
-        post: null,
-      },
-    };
-    dispatch(addToModals(payload));
-  };
+  // const handleShowPostModal = () => {
+  //   let payload = {
+  //     type: "post_modal",
+  //     mode: "create",
+  //     item: {
+  //       post: null,
+  //     },
+  //   };
+  //   dispatch(addToModals(payload));
+  // };
 
   const sortedNotifications = Object.values(notifications)
     .filter((n) => {
@@ -135,12 +135,10 @@ const PostMentionCard = (props) => {
       </span>
       {sortedNotifications.length === 0 && (
         <div className="mt-3">
-          <div>
-            {dictionary.startWritingPost} {user.name}
-          </div>
-          <PostBtn className="btn" onClick={handleShowPostModal}>
+          <div>{dictionary.nothingToDoHere}</div>
+          {/* <PostBtn className="btn" onClick={handleShowPostModal}>
             {dictionary.createNewPost}
-          </PostBtn>
+          </PostBtn> */}
         </div>
       )}
 
