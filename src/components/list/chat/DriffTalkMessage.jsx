@@ -46,14 +46,21 @@ const getSlug = () => {
 };
 
 const DriffTalkMessage = (props) => {
-  const { reply, timeFormat, channelId, channelTitle } = props;
+  const { reply, timeFormat, channelId, channelTitle, type } = props;
   const dispatch = useDispatch();
   const [startingMeet, setStartingMeet] = useState(false);
   const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
   const handleJoinMeeting = () => {
     if (startingMeet) return;
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: channelId, host: true, room_name: getSlug() + "-" + replaceChar(channelTitle, "_") + "-" + channelId }, () => setStartingMeet(true)));
+    let parseChannel = type === "DIRECT" ? "Meeting_Room" : replaceChar(channelTitle, "_");
+    setStartingMeet(true);
+    const payload = {
+      channel_id: channelId,
+      host: true,
+      room_name: getSlug() + "-" + parseChannel + "-" + channelId,
+    };
+    dispatch(createJitsiMeet(payload, () => setStartingMeet(true)));
   };
   const { _t } = useTranslationActions();
   const dictionary = {

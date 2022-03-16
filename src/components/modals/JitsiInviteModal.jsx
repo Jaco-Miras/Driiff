@@ -36,7 +36,7 @@ const ButtonsContainer = styled.div`
 // `;
 
 const JitsiInviteModal = (props) => {
-  const { type, title, host, hideJoin, channel_id } = props.data;
+  const { type, title, host, hideJoin, channel_id, channelType } = props.data;
   const dispatch = useDispatch();
   //   const isIdle = useSelector((state) => state.global.isIdle);
   //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
@@ -71,9 +71,17 @@ const JitsiInviteModal = (props) => {
     }
   };
 
+  let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : replaceChar(title, "_");
+  setStartingMeet(true);
+  const payload = {
+    channel_id: channel_id,
+    host: true,
+    room_name: getSlug() + "-" + parseChannel + "-" + channel_id,
+  };
+
   const handleJoin = () => {
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-" + replaceChar(title, "_") + "-" + channel_id }, () => toggle()));
+    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   //   const handleSoundPlay = () => {

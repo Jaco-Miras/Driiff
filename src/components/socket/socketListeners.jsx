@@ -321,6 +321,7 @@ class SocketListeners extends Component {
           this.props.addToModals({
             ...e,
             type: "jitsi_invite",
+            channelType: e.type,
             hideJoin: this.props.jitsi !== null,
           });
         }

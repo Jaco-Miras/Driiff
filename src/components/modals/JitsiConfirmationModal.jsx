@@ -75,8 +75,14 @@ const JitsiConfirmationModal = (props) => {
   };
 
   const handleConfirm = () => {
+    let parseChannel = selectedChannel.type === "DIRECT" ? "Meeting_Room" : replaceChar(selectedChannel.title, "_");
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true, room_name: getSlug() + "-" + replaceChar(selectedChannel.title, "_") + "-" + selectedChannel.id }, () => toggle()));
+    const payload = {
+      channel_id: selectedChannel.id,
+      host: true,
+      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
+    };
+    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   return (
