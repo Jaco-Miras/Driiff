@@ -15,6 +15,7 @@ import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
 import GoogleMeetMessage from "./GoogleMeetMessage";
+import DriffTalkMessage from "./DriffTalkMessage";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -873,6 +874,13 @@ class ChatMessages extends React.PureComponent {
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <GoogleMeetMessage reply={reply} timeFormat={this.props.timeFormat} />
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && reply.body.startsWith("DRIFF_TALK::") && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} />
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
