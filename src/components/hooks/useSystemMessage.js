@@ -116,6 +116,10 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       }
     } else if (reply.body.includes("CHANNEL_UPDATE::")) {
       parseBody = renderToString(channelUpdateMessage);
+    } else if (reply.body.startsWith("RECORDING_UPLOADED::")) {
+      const data = JSON.parse(reply.body.replace("RECORDING_UPLOADED::", ""));
+      const translatedText = _t("SYSTEM.JITSI_RECORD", "The meeting is ended, you can watch the recording:");
+      parseBody = `<div>${translatedText} <a href=${data.recording_details.recording_link}>${data.recording_details.recording_link}</a></div>`;
     }
     return parseBody;
   };
