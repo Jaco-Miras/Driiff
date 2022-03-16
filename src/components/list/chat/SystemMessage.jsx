@@ -161,7 +161,7 @@ const SystemMessage = (props) => {
   };
 
   const handleJitsiLink = () => {
-    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: false, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }));
+    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: false, room_name: getSlug() + "-" + replaceChar(selectedChannel.title, "_") + "-" + selectedChannel.id }));
   };
 
   useEffect(() => {
