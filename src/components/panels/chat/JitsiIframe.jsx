@@ -71,10 +71,11 @@ const VideoConference = (props) => {
 
   // return <div id={jitsiContainerId} />;
 
-  let roomName = getSlug() + "-Meeting_Room-" + jitsi.channel_id;
-  if (channels[jitsi.channel_id] && channels[jitsi.channel_id].type !== "DIRECT") {
-    roomName = channels[jitsi.channel_id].title;
-  }
+  let roomName = jitsi.room_name;
+  // let roomName = getSlug() + "-Meeting_Room-" + jitsi.channel_id;
+  // if (channels[jitsi.channel_id] && channels[jitsi.channel_id].type !== "DIRECT") {
+  //   roomName = channels[jitsi.channel_id].title;
+  // }
   return (
     <JaaSMeeting
       appId={appId}

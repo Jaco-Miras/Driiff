@@ -5,6 +5,7 @@ import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -72,7 +73,7 @@ const JitsiInviteModal = (props) => {
 
   const handleJoin = () => {
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-Meeting_Room-" + channel_id }, () => toggle()));
+    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-" + replaceChar(title, "_") + "-" + channel_id }, () => toggle()));
   };
 
   //   const handleSoundPlay = () => {
