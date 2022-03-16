@@ -884,7 +884,7 @@ class ChatMessages extends React.PureComponent {
                             {reply.user === null && reply.body.startsWith("DRIFF_TALK::") && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} />
+                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
