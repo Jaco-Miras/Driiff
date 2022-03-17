@@ -319,8 +319,11 @@ class SocketListeners extends Component {
         };
         if (e.host.id !== this.props.user.id) {
           this.props.addToModals({
-            ...e,
             type: "jitsi_invite",
+            channelType: e.type,
+            host: e.host,
+            title: e.title,
+            channel_id: e.channel_id,
             hideJoin: this.props.jitsi !== null,
           });
         }
@@ -355,6 +358,33 @@ class SocketListeners extends Component {
         this.props.incomingJitsiEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
       })
       .listen(".left-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".recording-uploaded-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
         const chatMessage = {
           message: e.system_message,

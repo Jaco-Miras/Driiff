@@ -6,6 +6,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {
@@ -74,8 +75,14 @@ const JitsiConfirmationModal = (props) => {
   };
 
   const handleConfirm = () => {
+    let parseChannel = selectedChannel.type === "DIRECT" ? "Meeting_Room" : replaceChar(selectedChannel.title, "_");
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }, () => toggle()));
+    const payload = {
+      channel_id: selectedChannel.id,
+      host: true,
+      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
+    };
+    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   return (

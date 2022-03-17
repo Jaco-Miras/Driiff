@@ -5,6 +5,7 @@ import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -35,7 +36,7 @@ const ButtonsContainer = styled.div`
 // `;
 
 const JitsiInviteModal = (props) => {
-  const { type, title, host, hideJoin, channel_id } = props.data;
+  const { type, title, host, hideJoin, channel_id, channelType } = props.data;
   const dispatch = useDispatch();
   //   const isIdle = useSelector((state) => state.global.isIdle);
   //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
@@ -70,9 +71,16 @@ const JitsiInviteModal = (props) => {
     }
   };
 
+  let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : replaceChar(title, "_");
+  const payload = {
+    channel_id: channel_id,
+    host: true,
+    room_name: getSlug() + "-" + parseChannel + "-" + channel_id,
+  };
+
   const handleJoin = () => {
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: channel_id, host: false, room_name: getSlug() + "-Meeting_Room-" + channel_id }, () => toggle()));
+    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   //   const handleSoundPlay = () => {
