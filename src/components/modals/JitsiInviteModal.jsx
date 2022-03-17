@@ -72,7 +72,6 @@ const JitsiInviteModal = (props) => {
   };
 
   let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : replaceChar(title, "_");
-  setStartingMeet(true);
   const payload = {
     channel_id: channel_id,
     host: true,
