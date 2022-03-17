@@ -380,9 +380,11 @@ class SocketListeners extends Component {
         };
         if (e.host.id !== this.props.user.id) {
           this.props.addToModals({
-            ...e,
             type: "jitsi_invite",
             channelType: e.type,
+            host: e.host,
+            title: e.title,
+            channel_id: e.channel_id,
             hideJoin: this.props.jitsi !== null,
           });
         }
