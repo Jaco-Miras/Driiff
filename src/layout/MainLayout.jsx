@@ -1,17 +1,30 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useIdleTimer } from "react-idle-timer";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
+import {
+  useDriff,
+  useFilesUpload,
+  useInitialLoad,
+  useSettings,
+  useSocketConnection,
+  useTimeFormat,
+  useToaster,
+  useTranslationActions,
+  useUserActions,
+  useVisibilityChange,
+  useWorkspaceActions,
+  useProfilePicUpload,
+} from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
+import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
-import { useIdleTimer } from "react-idle-timer";
+import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { setIdleStatus } from "../redux/actions/globalActions";
-import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -33,9 +46,12 @@ const MainLayout = (props) => {
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
 
   const { path } = useRouteMatch();
-  const { displayWelcomeBanner } = useUserActions();
+  const { displayWelcomeBanner, updateProfileImage } = useUserActions();
   const uDriff = useDriff();
   const { _t } = useTranslationActions();
+
+  const [clickCounter, setClickCounter] = useState(0);
+  const { renderDropDocument, uploadModal } = useProfilePicUpload();
 
   const dictionary = {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
@@ -50,6 +66,7 @@ const MainLayout = (props) => {
   const workspaceActions = useWorkspaceActions();
   const refs = {
     audio: useRef(null),
+    dropZoneRef: useRef(null),
   };
 
   const dispatch = useDispatch();
@@ -57,7 +74,7 @@ const MainLayout = (props) => {
   const {
     driffSettings: { isCompSettingsLoaded },
     chatSettings: { sound_enabled },
-    generalSettings: { notifications_on, notification_sound },
+    generalSettings: { notifications_on, notification_sound, is_new, userCanceledProfileUpload },
   } = useSettings();
 
   const history = useHistory();
@@ -103,6 +120,22 @@ const MainLayout = (props) => {
     }
   }, [notification_sound]);
 
+  useEffect(() => {
+    const onClick = () => {
+      setClickCounter((prev) => prev + 1);
+    };
+    document.body.addEventListener("click", onClick);
+    if (clickCounter === 3 && !userCanceledProfileUpload && is_new) {
+      uploadModal();
+    } else if (clickCounter > 3) {
+      document.body.removeEventListener("click", onClick);
+    }
+
+    return () => {
+      document.body.removeEventListener("click", onClick);
+    };
+  }, [clickCounter]);
+
   const handleOnActive = () => {
     dispatch(setIdleStatus(false));
   };
@@ -120,6 +153,7 @@ const MainLayout = (props) => {
 
   return (
     <>
+      {renderDropDocument()}
       <AudioStyle ref={refs.audio} controls>
         <>
           <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg" />
