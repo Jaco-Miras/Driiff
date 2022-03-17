@@ -67,7 +67,7 @@ const DriffTalkMessage = (props) => {
   };
   const { _t } = useTranslationActions();
   const dictionary = {
-    driffTalkMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This meeting is private to the participants in this channel"),
+    driffTalkMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This call is private to the participants in this channel"),
     userStartMeet: _t("DRIFF_TALK_USER_START", "::name:: started a video meeting", { name: data.author.name }),
     joinMeeting: _t("JOIN_MEETING", "Join Meeting"),
   };
