@@ -81,3 +81,4 @@ export { default as useUserOptions } from "./useUserOptions";
 export { default as useQueryParams } from "./useQueryParams";
 export { default as usePostCategory } from "./usePostCategory";
 export { default as useEnlargeEmoticons } from "./useEnlargeEmoticons";
+export { default as useProfilePicUpload } from "./useProfilePicUpload";
