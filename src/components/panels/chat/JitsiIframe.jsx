@@ -2,27 +2,29 @@ import React, { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
 import { clearJitsi } from "../../../redux/actions/chatActions";
+import { isMobile } from "react-device-detect";
 
-const getSlug = () => {
-  let driff = localStorage.getItem("slug");
-  if (driff) {
-    return driff;
-  } else {
-    const host = window.location.host.split(".");
-    if (host.length === 3) {
-      localStorage.setItem("slug", host[0]);
-      return host[0];
-    } else {
-      return null;
-    }
-  }
-};
+// const getSlug = () => {
+//   let driff = localStorage.getItem("slug");
+//   if (driff) {
+//     return driff;
+//   } else {
+//     const host = window.location.host.split(".");
+//     if (host.length === 3) {
+//       localStorage.setItem("slug", host[0]);
+//       return host[0];
+//     } else {
+//       return null;
+//     }
+//   }
+// };
 
 const VideoConference = (props) => {
   //const { jitsi } = props;
   const dispatch = useDispatch();
   const apiRef = useRef(null);
   const jitsi = useSelector((state) => state.chat.jitsi);
+  //const channels = useSelector((state) => state.chat.channels);
   const appId = "vpaas-magic-cookie-c0cc9d62fd3340d58d783df7885be71c";
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
@@ -68,16 +70,25 @@ const VideoConference = (props) => {
   //   }, []);
 
   // return <div id={jitsiContainerId} />;
+
+  let roomName = jitsi.room_name;
+  // let roomName = getSlug() + "-Meeting_Room-" + jitsi.channel_id;
+  // if (channels[jitsi.channel_id] && channels[jitsi.channel_id].type !== "DIRECT") {
+  //   roomName = channels[jitsi.channel_id].title;
+  // }
   return (
     <JaaSMeeting
       appId={appId}
       jwt={jitsi._token}
-      roomName={getSlug() + "-Meeting_Room-" + jitsi.channel_id}
+      roomName={roomName}
       configOverwrite={{
         startWithAudioMuted: true,
         hiddenPremeetingButtons: ["microphone"],
         enableLobbyChat: false,
         disableInviteFunctions: true,
+        disableDeepLinking: isMobile,
+        liveStreamingEnabled: false,
+        transcribingEnabled: false,
         // Configs for prejoin page.
         prejoinConfig: {
           // When 'true', it shows an intermediate page before joining, where the user can configure their devices.
@@ -88,7 +99,6 @@ const VideoConference = (props) => {
         },
         toolbarButtons: [
           "camera",
-          "closedcaptions",
           "desktop",
           "download",
           "embedmeeting",
@@ -99,7 +109,6 @@ const VideoConference = (props) => {
           "hangup",
           "help",
           "highlight",
-          "livestreaming",
           "microphone",
           "mute-everyone",
           "mute-video-everyone",
@@ -110,13 +119,11 @@ const VideoConference = (props) => {
           "security",
           "select-background",
           "settings",
-          "shareaudio",
           "sharedvideo",
           "shortcuts",
           "stats",
           "tileview",
           "toggle-camera",
-          "videoquality",
           "__end",
         ],
       }}

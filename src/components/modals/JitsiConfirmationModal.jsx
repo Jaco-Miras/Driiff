@@ -6,6 +6,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {
@@ -41,12 +42,12 @@ const JitsiConfirmationModal = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     yes: _t("YES", "Yes"),
     no: _t("NO", "No"),
-    zoomMeetingConfirmation: _t("CONFIRMATION.ZOOM_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Do you want to start this meeting?", {
+    meetingConfirmation: _t("CONFIRMATION.DRIFF_TALKS_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Driff Talks has a 100 participants limitation. Do you want to start this video meeting?", {
       number: selectedChannel ? selectedChannel.members.length : "",
       online: selectedChannel ? selectedChannel.members.filter((m) => user.id !== m.id && onlineUsers.some((o) => o.user_id === m.id)).length + 1 : 1,
     }),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
-    zoomStartingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
+    startingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
     jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
     jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
   };
@@ -74,15 +75,21 @@ const JitsiConfirmationModal = (props) => {
   };
 
   const handleConfirm = () => {
+    let parseChannel = selectedChannel.type === "DIRECT" ? "Meeting_Room" : replaceChar(selectedChannel.title, "_");
     setStartingMeet(true);
-    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: true, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }, () => toggle()));
+    const payload = {
+      channel_id: selectedChannel.id,
+      host: true,
+      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
+    };
+    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   return (
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.jitsiMeet}</ModalHeaderSection>
       <ModalBody>
-        <span dangerouslySetInnerHTML={{ __html: startingMeet ? dictionary.zoomStartingMeeting : dictionary.zoomMeetingConfirmation }} />
+        <span dangerouslySetInnerHTML={{ __html: startingMeet ? dictionary.startingMeeting : dictionary.meetingConfirmation }} />
       </ModalBody>
       <ModalFooter>
         <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle} disabled={startingMeet}>

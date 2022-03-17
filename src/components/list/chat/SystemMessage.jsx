@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { createJitsiMeet } from "../../../redux/actions/chatActions";
+//import { createJitsiMeet } from "../../../redux/actions/chatActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -87,20 +87,20 @@ const ChatTimeStamp = styled.div`
   align-items: center;
   white-space: nowrap;
 `;
-const getSlug = () => {
-  let driff = localStorage.getItem("slug");
-  if (driff) {
-    return driff;
-  } else {
-    const host = window.location.host.split(".");
-    if (host.length === 3) {
-      localStorage.setItem("slug", host[0]);
-      return host[0];
-    } else {
-      return null;
-    }
-  }
-};
+// const getSlug = () => {
+//   let driff = localStorage.getItem("slug");
+//   if (driff) {
+//     return driff;
+//   } else {
+//     const host = window.location.host.split(".");
+//     if (host.length === 3) {
+//       localStorage.setItem("slug", host[0]);
+//       return host[0];
+//     } else {
+//       return null;
+//     }
+//   }
+// };
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = (props) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary } = props;
@@ -160,30 +160,30 @@ const SystemMessage = (props) => {
     return false;
   };
 
-  const handleJitsiLink = () => {
-    dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: false, room_name: getSlug() + "-Meeting_Room-" + selectedChannel.id }));
-  };
+  // const handleJitsiLink = () => {
+  //   dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: false, room_name: getSlug() + "-" + replaceChar(selectedChannel.title, "_") + "-" + selectedChannel.id }));
+  // };
 
   useEffect(() => {
     // const zoomLink = refs.container.current.querySelector("a.zoom-link");
     // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
 
     let zLink = null;
-    let jLink = null;
+    //let jLink = null;
 
     if (reply.body.startsWith("ZOOM_MEETING::{")) {
       zLink = messageRef.current.querySelector("strong");
       if (zLink) zLink.addEventListener("click", handleZoomLink, true);
     }
 
-    if (reply.body.startsWith("DRIFF_TALK::{")) {
-      jLink = messageRef.current.querySelector("strong");
-      if (jLink) jLink.addEventListener("click", handleJitsiLink, true);
-    }
+    // if (reply.body.startsWith("DRIFF_TALK::{")) {
+    //   jLink = messageRef.current.querySelector("strong");
+    //   if (jLink) jLink.addEventListener("click", handleJitsiLink, true);
+    // }
 
     return () => {
       if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
-      if (jLink) jLink.removeEventListener("click", handleJitsiLink, true);
+      //if (jLink) jLink.removeEventListener("click", handleJitsiLink, true);
     };
   }, []);
 
