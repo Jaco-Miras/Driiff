@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
+import _ from 'lodash'
 
 const Wrapper = styled.span`
   //display: flex;
@@ -118,7 +119,7 @@ const ReplyPreview = (props) => {
 
   if (channel.last_reply && settings.preview_message) {
     if (channel.last_reply.is_deleted) {
-      lastReplyBody = "<span class=\"is-deleted\">" + dictionary.messageRemoved + "</span>";
+      lastReplyBody = '<span class="is-deleted">' + dictionary.messageRemoved + "</span>";
     } else {
       //strip gif to prevent refetching of gif
       lastReplyBody = stripImgTag(channel.last_reply.body);
@@ -165,8 +166,23 @@ const ReplyPreview = (props) => {
       }
       let x = "";
       if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
+        let fileType = ''
         if (!noText && showPreviewIcon) {
-          previewText = previewText + "Photo";
+          const lastReply = _.last(channel.replies)
+          if(lastReply && lastReply.files.length > 0) {
+            switch (_.last(lastReply.files).type) {
+              case "image":
+                fileType = "Photo";
+                break;
+              case "video":
+                fileType = "Video";
+                break;
+              default:
+                fileType = 'File';
+            }
+          }
+     
+          previewText = previewText + fileType;
         }
         previewText = chatHeaderBadgeContainer + renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
