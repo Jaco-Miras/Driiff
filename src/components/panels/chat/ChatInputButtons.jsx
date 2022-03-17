@@ -48,6 +48,9 @@ const Wrapper = styled.div`
   //     margin-bottom: -5px;
   //   }
   // }
+  .jitsi {
+    padding: 12px;
+  }
   @media (max-width: 414px) {
     min-width: ${(props) =>
       props.clientChat && props.showButtons && props.editMode
@@ -70,7 +73,11 @@ const Wrapper = styled.div`
       display: block;
     }
     .btn-zoom {
-      padding: 10px 0;
+      padding: 13px 8px;
+      width: 35px;
+      .jitsi {
+        padding: 0;
+      }
     }
   }
   .zoom-icon {
@@ -136,7 +143,7 @@ const ChatInputButtons = (props) => {
         </Tooltip>
       </IconWrapper>
       {meet !== "disable" && (
-        <IconWrapper className="btn-zoom">
+        <IconWrapper className={`btn-zoom ${meet}`}>
           {meet === "google" && (
             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
               <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />

@@ -208,6 +208,14 @@ const ReplyPreview = (props) => {
       if (channel.last_reply && channel.last_reply.body.startsWith("GOOGLE_MEETING::")) {
         const data = JSON.parse(channel.last_reply.body.replace("GOOGLE_MEETING::", ""));
         previewText = chatHeaderBadgeContainer + `${_t("GOOGLE_MEET_LAST_REPLY_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
+      } else if (channel.last_reply && channel.last_reply.body.startsWith("LEFT_MEETING::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("LEFT_MEETING::", ""));
+        let parseBody = `${_t("LEFT_MEETING_PREVIEW", "::first_name::: has left the call", { first_name: data.participant.name })}`;
+        previewText = chatHeaderBadgeContainer + parseBody;
+      } else if (channel.last_reply && channel.last_reply.body.startsWith("DRIFF_TALK::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("DRIFF_TALK::", ""));
+        let parseBody = `${_t("DRIFF_TALK_MEETING_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
+        previewText = chatHeaderBadgeContainer + parseBody;
       } else {
         previewText = chatHeaderBadgeContainer + "System message update...";
 

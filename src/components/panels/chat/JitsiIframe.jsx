@@ -4,27 +4,27 @@ import { JaaSMeeting } from "@jitsi/react-sdk";
 import { clearJitsi } from "../../../redux/actions/chatActions";
 import { isMobile } from "react-device-detect";
 
-const getSlug = () => {
-  let driff = localStorage.getItem("slug");
-  if (driff) {
-    return driff;
-  } else {
-    const host = window.location.host.split(".");
-    if (host.length === 3) {
-      localStorage.setItem("slug", host[0]);
-      return host[0];
-    } else {
-      return null;
-    }
-  }
-};
+// const getSlug = () => {
+//   let driff = localStorage.getItem("slug");
+//   if (driff) {
+//     return driff;
+//   } else {
+//     const host = window.location.host.split(".");
+//     if (host.length === 3) {
+//       localStorage.setItem("slug", host[0]);
+//       return host[0];
+//     } else {
+//       return null;
+//     }
+//   }
+// };
 
 const VideoConference = (props) => {
   //const { jitsi } = props;
   const dispatch = useDispatch();
   const apiRef = useRef(null);
   const jitsi = useSelector((state) => state.chat.jitsi);
-  const channels = useSelector((state) => state.chat.channels);
+  //const channels = useSelector((state) => state.chat.channels);
   const appId = "vpaas-magic-cookie-c0cc9d62fd3340d58d783df7885be71c";
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
@@ -87,6 +87,8 @@ const VideoConference = (props) => {
         enableLobbyChat: false,
         disableInviteFunctions: true,
         disableDeepLinking: isMobile,
+        liveStreamingEnabled: false,
+        transcribingEnabled: false,
         // Configs for prejoin page.
         prejoinConfig: {
           // When 'true', it shows an intermediate page before joining, where the user can configure their devices.
@@ -107,7 +109,6 @@ const VideoConference = (props) => {
           "hangup",
           "help",
           "highlight",
-          "livestreaming",
           "microphone",
           "mute-everyone",
           "mute-video-everyone",
@@ -118,7 +119,6 @@ const VideoConference = (props) => {
           "security",
           "select-background",
           "settings",
-          "shareaudio",
           "sharedvideo",
           "shortcuts",
           "stats",

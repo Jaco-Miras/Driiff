@@ -6,7 +6,7 @@ import { WorkspaceHeaderPanel } from "../workspace";
 
 const Wrapper = styled.div`
   @media (max-width: 560px) {
-    height: 110px;
+    height: 90px;
   }
 `;
 

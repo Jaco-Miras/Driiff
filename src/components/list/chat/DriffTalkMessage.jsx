@@ -19,6 +19,9 @@ const Wrapper = styled.div`
   button {
     margin-bottom: 0.25rem;
   }
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.fourth}!important;
+  }
   .text-muted {
     font-size: 0.7rem;
   }
