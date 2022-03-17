@@ -33,3 +33,4 @@ export { default as ZoomMeetingInProgress } from "./ZoomMeetingInProgress";
 export { default as ZoomConfirmationModal } from "./ZoomConfirmationModal";
 export { default as CompanyWorkspaceModal } from "./CompanyWorkspaceModal";
 export { default as WorkspaceQuickLinksModal } from "./WorkspaceQuickLinksModal";
+export { default as UploadProfilePicModal } from "./UploadProfilePicModal";

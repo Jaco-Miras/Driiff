@@ -33,6 +33,7 @@ import {
   ZoomConfirmationModal,
   CompanyWorkspaceModal,
   WorkspaceQuickLinksModal,
+  UploadProfilePicModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -130,6 +131,8 @@ const ModalPanel = () => {
             return <CompanyWorkspaceModal key={modal.type} data={modal} />;
           case "workspace-quicklinks":
             return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
+          case "upload-profile-pic":
+            return <UploadProfilePicModal key={modal.type} data={modal} />;
           default:
             return null;
         }
