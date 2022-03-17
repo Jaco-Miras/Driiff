@@ -42,12 +42,12 @@ const JitsiConfirmationModal = (props) => {
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     yes: _t("YES", "Yes"),
     no: _t("NO", "No"),
-    zoomMeetingConfirmation: _t("CONFIRMATION.ZOOM_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Do you want to start this meeting?", {
+    meetingConfirmation: _t("CONFIRMATION.DRIFF_TALKS_MEETING_BODY", "This channel contains ::number:: members and ::online:: are online. Driff Talks has a 100 participants limitation. Do you want to start this video meeting?", {
       number: selectedChannel ? selectedChannel.members.length : "",
       online: selectedChannel ? selectedChannel.members.filter((m) => user.id !== m.id && onlineUsers.some((o) => o.user_id === m.id)).length + 1 : 1,
     }),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
-    zoomStartingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
+    startingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
     jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
     jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
   };
@@ -89,7 +89,7 @@ const JitsiConfirmationModal = (props) => {
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.jitsiMeet}</ModalHeaderSection>
       <ModalBody>
-        <span dangerouslySetInnerHTML={{ __html: startingMeet ? dictionary.zoomStartingMeeting : dictionary.zoomMeetingConfirmation }} />
+        <span dangerouslySetInnerHTML={{ __html: startingMeet ? dictionary.startingMeeting : dictionary.meetingConfirmation }} />
       </ModalBody>
       <ModalFooter>
         <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle} disabled={startingMeet}>
