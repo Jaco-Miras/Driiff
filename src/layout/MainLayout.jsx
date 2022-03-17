@@ -12,6 +12,7 @@ import { PushNotificationBar, usePushNotification } from "../components/webpush"
 import { useIdleTimer } from "react-idle-timer";
 import { setIdleStatus } from "../redux/actions/globalActions";
 import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
+import JitsiContainer from "../components/panels/chat/JitsiContainer";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -153,7 +154,7 @@ const MainLayout = (props) => {
           </Switch>
           <MainSnoozePanel />
         </MainContent>
-      )} */}
+      )}
       {/* stripe code*/}
       {mounted && (
         <MainContent id="main">
@@ -168,6 +169,7 @@ const MainLayout = (props) => {
           {subscriptions && subscriptions.status === "active" && <MainSnoozePanel />}
         </MainContent>
       )}
+      <JitsiContainer />
       <MobileOverlay />
       {user.id !== undefined && window.Echo !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
