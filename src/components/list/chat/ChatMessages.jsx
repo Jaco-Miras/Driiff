@@ -831,7 +831,7 @@ class ChatMessages extends React.PureComponent {
                                 )}
                               </ChatBubbleContainer>
                             )}
-                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && (
+                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && !reply.body.startsWith("MEETING_ENDED::") && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
@@ -881,7 +881,7 @@ class ChatMessages extends React.PureComponent {
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
-                            {reply.user === null && reply.body.startsWith("DRIFF_TALK::") && (
+                            {reply.user === null && (reply.body.startsWith("DRIFF_TALK::") || reply.body.startsWith("MEETING_ENDED::")) && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
