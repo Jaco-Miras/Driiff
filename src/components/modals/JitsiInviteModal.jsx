@@ -5,7 +5,6 @@ import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
-import { replaceChar } from "../../helpers/stringFormatter";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -70,11 +69,11 @@ const JitsiInviteModal = (props) => {
       }
     }
   };
-
-  let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : replaceChar(title, "_");
+  let stripTitle = title.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
+  let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : stripTitle;
   const payload = {
     channel_id: channel_id,
-    host: true,
+    host: false,
     room_name: getSlug() + "-" + parseChannel + "-" + channel_id,
   };
 
