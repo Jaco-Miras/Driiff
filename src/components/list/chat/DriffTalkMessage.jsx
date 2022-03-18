@@ -52,9 +52,18 @@ const DriffTalkMessage = (props) => {
   const { reply, timeFormat, channelId, channelTitle, type } = props;
   const dispatch = useDispatch();
   const [startingMeet, setStartingMeet] = useState(false);
-  const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
+  let author;
+  const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
+  if (isCreateMessage) {
+    const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
+    author = data.author;
+  } else {
+    const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
+    author = data.host;
+  }
+
   const handleJoinMeeting = () => {
-    if (startingMeet) return;
+    if (startingMeet || !isCreateMessage) return;
     setStartingMeet(true);
     let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
     let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
@@ -69,16 +78,24 @@ const DriffTalkMessage = (props) => {
   const { _t } = useTranslationActions();
   const dictionary = {
     driffTalkMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This call is private to the participants in this channel"),
-    userStartMeet: _t("DRIFF_TALK_USER_START", "::name:: started a video meeting", { name: data.author.name }),
+    userStartMeet: _t("DRIFF_TALK_USER_START", "::name:: started a video meeting", { name: author.name }),
     joinMeeting: _t("JOIN_MEETING", "Join Meeting"),
+    meetingEnded: _t("MEETING_ENDED", "Meeting ended"),
   };
   return (
     <Wrapper className="google-meeting">
       <SvgIconFeather icon="video" />
       <span>{dictionary.userStartMeet}</span>
-      <button className="btn btn-primary" onClick={handleJoinMeeting}>
-        <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
-      </button>
+      {isCreateMessage ? (
+        <button className="btn btn-primary" onClick={handleJoinMeeting}>
+          <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
+        </button>
+      ) : (
+        <button className="btn btn-secondary" disabled={true}>
+          {dictionary.meetingEnded}
+        </button>
+      )}
+
       <span className="text-muted">{dictionary.driffTalkMessage}</span>
       <span className="reply-date created text-muted">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
     </Wrapper>
