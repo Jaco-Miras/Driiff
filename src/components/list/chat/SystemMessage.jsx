@@ -6,7 +6,6 @@ import { useInView } from "react-intersection-observer";
 import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
-//import { createJitsiMeet } from "../../../redux/actions/chatActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -159,10 +158,6 @@ const SystemMessage = (props) => {
 
     return false;
   };
-
-  // const handleJitsiLink = () => {
-  //   dispatch(createJitsiMeet({ channel_id: selectedChannel.id, host: false, room_name: getSlug() + "-" + replaceChar(selectedChannel.title, "_") + "-" + selectedChannel.id }));
-  // };
 
   useEffect(() => {
     // const zoomLink = refs.container.current.querySelector("a.zoom-link");

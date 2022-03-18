@@ -56,11 +56,12 @@ const DriffTalkMessage = (props) => {
   const handleJoinMeeting = () => {
     if (startingMeet) return;
     setStartingMeet(true);
-    let parseChannel = type === "DIRECT" ? "Meeting_Room" : replaceChar(channelTitle, "_");
+    let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
+    let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
     setStartingMeet(true);
     const payload = {
       channel_id: channelId,
-      host: true,
+      host: false,
       room_name: getSlug() + "-" + parseChannel + "-" + channelId,
     };
     dispatch(createJitsiMeet(payload, () => setStartingMeet(true)));
