@@ -36,6 +36,7 @@ import {
   CompanyWorkspaceModal,
   WorkspaceQuickLinksModal,
   FolderNoAccessModal,
+  UploadProfilePicModal,
   GoogleMeetInviteModal,
   JitsiInviteModal,
   JitsiConfirmationModal,
@@ -142,6 +143,8 @@ const ModalPanel = () => {
             return <WorkspaceQuickLinksModal key={modal.type} data={modal} />;
           case "no_access_folder":
             return <FolderNoAccessModal key={modal.type} data={modal} />;
+          case "upload-profile-pic":
+            return <UploadProfilePicModal key={modal.type} data={modal} />;
           case "meet_invite":
             return <GoogleMeetInviteModal key={modal.type} data={modal} />;
           case "jitsi_invite":
