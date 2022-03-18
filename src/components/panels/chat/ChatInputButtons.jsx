@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
-import { SvgIconFeather, Loader } from "../../common";
+import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
 //import zoomIcon from "../../../assets/icons/zoom.png";
 
@@ -25,12 +25,17 @@ const IconWrapper = styled.div`
   }
 `;
 const Wrapper = styled.div`
-  min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
+  //min-width: ${(props) => (props.editMode && !props.clientChat ? "160px" : props.editMode && props.clientChat ? "120px" : !props.editMode && props.clientChat ? "80px" : "120px")};
+  min-width: ${(props) => (props.editMode && props.disabledMeet ? "120px" : props.editMode && !props.disabledMeet ? "160px" : !props.editMode && props.disabledMeet ? "80px" : " 120px")};
   display: flex;
   .feather {
     width: 18px;
     height: 18px;
     cursor: pointer;
+  }
+  .feather-google-meet {
+    width: 24px;
+    height: 24px;
   }
   .chat-buttons {
     display: none;
@@ -43,6 +48,9 @@ const Wrapper = styled.div`
   //     margin-bottom: -5px;
   //   }
   // }
+  .jitsi {
+    padding: 12px;
+  }
   @media (max-width: 414px) {
     min-width: ${(props) =>
       props.clientChat && props.showButtons && props.editMode
@@ -65,7 +73,11 @@ const Wrapper = styled.div`
       display: block;
     }
     .btn-zoom {
-      padding: 10px 0;
+      padding: 13px 8px;
+      width: 35px;
+      .jitsi {
+        padding: 0;
+      }
     }
   }
   .feather-zoom {
@@ -89,9 +101,10 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleShowEmojiPicker, handleZoomMeet, onShowFileDialog, editChatMessage, quote } = props;
+  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet, onStartJitsi } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const meet = useSelector((state) => state.settings.driff.meet);
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
@@ -112,7 +125,7 @@ const ChatInputButtons = (props) => {
   const isClientChat = channel && workspaces[channel.entity_id] && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id;
 
   return (
-    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat}>
+    <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat} disabledMeet={meet === "disable"}>
       {editChatMessage && (
         <IconWrapper>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
@@ -125,11 +138,26 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
       </IconWrapper>
-      <IconWrapper className="btn-zoom">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-          <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
-        </Tooltip>
-      </IconWrapper>
+      {meet !== "disable" && (
+        <IconWrapper className={`btn-zoom ${meet}`}>
+          {meet === "google" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+              <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
+            </Tooltip>
+          )}
+          {meet === "zoom" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+              <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+            </Tooltip>
+          )}
+          {meet === "jitsi" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
+              <SvgIconFeather icon="video" onClick={onStartJitsi} />
+            </Tooltip>
+          )}
+        </IconWrapper>
+      )}
+
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />

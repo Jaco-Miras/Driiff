@@ -19,12 +19,13 @@ import {
 } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
-import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
 import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { setIdleStatus } from "../redux/actions/globalActions";
+import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
+import JitsiContainer from "../components/panels/chat/JitsiContainer";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -188,6 +189,7 @@ const MainLayout = (props) => {
           <MainSnoozePanel />
         </MainContent>
       )}
+      <JitsiContainer />
       {/* stripe code*/}
       {/* {mounted && (
         <MainContent id="main">

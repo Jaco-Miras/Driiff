@@ -14,6 +14,7 @@ import moment from "moment";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
+import { stripHtml } from "../../helpers/stringFormatter";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
@@ -380,6 +381,59 @@ const TodoReminderModal = (props) => {
           return { ...f, id: f.file_id };
         })
       );
+    }
+
+    // set form for chat reminders on mount
+    if (mode === "create" && itemType && parentItem && itemType === "CHAT") {
+      if (parentItem.type === "TOPIC") {
+        setSelectedWorkspace({
+          icon: "compass",
+          value: parentItem.entity_id,
+          label: parentItem.title,
+        });
+
+        setUserOptions(
+          parentItem.members.map((u) => {
+            return {
+              ...u,
+              icon: "user-avatar",
+              value: u.id,
+              label: u.name && u.name.trim() !== "" ? u.name : u.email,
+              type: "USER",
+              useLabel: true,
+            };
+          })
+        );
+      }
+
+      let chatBody = "";
+
+      if (item.user === null) {
+        const message = document.getElementById(`bot-${item.id}`);
+        if (message) {
+          chatBody = stripHtml(message.innerHTML);
+        }
+      } else {
+        chatBody = stripHtml(item.body);
+      }
+
+      setForm({
+        ...form,
+        topic_id: { value: parentItem.entity_id },
+        title: { value: `${item.user ? item.user.name : ""} | ${parentItem.title} | Chat Message` },
+        description: { value: chatBody },
+      });
+    }
+
+    if (user.type === "external" && mode === "create") {
+      setSelectedUser({
+        ...user,
+        icon: "user-avatar",
+        value: user.id,
+        label: user.name,
+        type: "USER",
+        useLabel: true,
+      });
     }
     setMounted(true);
   }, []);
@@ -785,7 +839,7 @@ const TodoReminderModal = (props) => {
               <div className="col-lg-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
               <div className="col-lg-6 float-left">
@@ -854,7 +908,7 @@ const TodoReminderModal = (props) => {
                 <div className="col-6 float-left">
                   <div className="modal-label">{dictionary.workspaceLabel}</div>
                   <WorkspacesContainer className=" mb-2">
-                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                    <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                   </WorkspacesContainer>
                 </div>
 
@@ -926,7 +980,7 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
 
@@ -997,7 +1051,7 @@ const TodoReminderModal = (props) => {
               <div className="col-6 float-left">
                 <div className="modal-label">{dictionary.workspaceLabel}</div>
                 <WorkspacesContainer className="mb-2">
-                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} />
+                  <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
                 </WorkspacesContainer>
               </div>
 

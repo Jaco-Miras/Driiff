@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import RedirectPanel from "../redirect/RedirectPanel";
-import MaintenancePanel from "./MaintenancePanel";
+//import MaintenancePanel from "./MaintenancePanel";
 import DashboardPanel from "../dashboard/DashboardPanel";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
 const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
@@ -46,7 +46,16 @@ const MainContentPanel = (props) => {
             <Route
               {...props}
               component={SystemPeoplePanel}
-              path={["/system/people/all", "/system/people/inactive", "/system/people/invited", "/system/people/guest", "/system/people/teams", "/system/people/organization", "/system/people/teams/:teamId/:teamName"]}
+              path={[
+                "/system/people/all/online",
+                "/system/people/all",
+                "/system/people/inactive",
+                "/system/people/invited",
+                "/system/people/guest",
+                "/system/people/teams",
+                "/system/people/organization",
+                "/system/people/teams/:teamId/:teamName",
+              ]}
             />
           )}
           <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />

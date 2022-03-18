@@ -23,6 +23,7 @@ const INITIAL_STATE = {
     background: null,
     login_mode: "email",
     language: "nl",
+    meet: "zoom",
     theme: {
       colors: {
         primary: "#29323F",
@@ -145,6 +146,7 @@ export default (state = INITIAL_STATE, action) => {
       let background = state.driff.background;
       let login_mode = state.driff.login_mode;
       let language = state.driff.language;
+      let meet = state.driff.meet;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -191,6 +193,7 @@ export default (state = INITIAL_STATE, action) => {
           background: background,
           login_mode: login_mode,
           language: language,
+          meet: meet,
         },
       };
     }
@@ -506,6 +509,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state.driff,
           language: action.data.language,
           login_mode: action.data.login_mode,
+        },
+      };
+    }
+    case "INCOMING_MEETING_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          meet: action.data.meet,
         },
       };
     }

@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
-import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature } from "../../../redux/actions/chatActions";
+import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet } from "../../../redux/actions/chatActions";
 import { joinWorkspace } from "../../../redux/actions/workspaceActions";
 import { SvgIconFeather } from "../../common";
 import ChatInput from "../../forms/ChatInput";
@@ -178,6 +178,8 @@ const ChatFooterPanel = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
+  const jitsi = useSelector((state) => state.chat.jitsi);
+  //const [startingMeet, setStartingMeet] = useState(false);
 
   //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
@@ -253,6 +255,8 @@ const ChatFooterPanel = (props) => {
     }),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     meetingInProgress: _t("TOASTER.MEETING_IN_PROGRESS", "Meeting for this channel is still in progress. When that's ended you can start a new meeting."),
+    jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
+    jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -388,6 +392,42 @@ const ChatFooterPanel = (props) => {
     }
   };
 
+  const handleGoogleMeet = () => {
+    const handleStartGoogleMeet = () => {
+      const payload = {
+        channel_id: selectedChannel.id,
+      };
+      const cb = (err, res) => {
+        if (err) return;
+        window.open(res.data.google_meet_data.hangoutLink, "_blank");
+      };
+      dispatch(createGoogleMeet(payload, cb));
+    };
+
+    let modalPayload = {
+      type: "confirmation",
+      cancelText: dictionary.no,
+      headerText: dictionary.googleMeet,
+      submitText: dictionary.yes,
+      bodyText: dictionary.googleMeetConfirmation,
+      actions: {
+        onSubmit: handleStartGoogleMeet,
+      },
+    };
+
+    dispatch(addToModals(modalPayload));
+  };
+
+  const handleJitsiMeet = () => {
+    if (jitsi) return;
+
+    let modalPayload = {
+      type: "jitsi_confirmation",
+    };
+
+    dispatch(addToModals(modalPayload));
+  };
+
   return (
     <Wrapper className={`chat-footer ${className}`}>
       {selectedChannel && <TypingIndicator />}
@@ -429,6 +469,9 @@ const ChatFooterPanel = (props) => {
                     onShowFileDialog={onShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
+                    onStartGoogleMeet={handleGoogleMeet}
+                    onStartJitsi={handleJitsiMeet}
+                    // startingMeet={startingMeet}
                   />
                 </Dflex>
               </ChatInputContainer>

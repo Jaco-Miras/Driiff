@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@convertkit/slate-lists": "^0.2.11",
+    "@jitsi/react-sdk": "^1.0.0",
     "@sentry/react": "6.9.0",
     "@sentry/tracing": "6.9.0",
     "@testing-library/jest-dom": "^4.2.4",
