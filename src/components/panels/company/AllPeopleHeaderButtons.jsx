@@ -88,6 +88,8 @@ const AllPeopleHeaderButtons = (props) => {
           }
         });
       },
+      submitText: dictionary.submitText,
+      cancelText: dictionary.cancelText,
     };
 
     dispatch(addToModals(payload));
