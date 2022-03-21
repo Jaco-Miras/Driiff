@@ -6,36 +6,12 @@ import Draggable from "react-draggable";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
-  // > div:first-child {
-  //   position: fixed;
-  //   top: 0;
-  //   left: 0;
-  //   height: 70%;
-  //   width: 70%;
-  //   z-index: 9999;
-  //   left: 50%;
-  //   top: 50%;
-  //   transform: translate(-50%, -50%);
-  // }
-
-  // > div:first-child {
-  //   position: absolute;
-  //   cursor: move;
-  //   color: black;
-  //   width: 70%;
-  //   height: 70%;
-  //   border-radius: 5px;
-  //   padding: 1em;
-  //   user-select: none;
-  //   z-index: 9999;
-  //   top: 0;
-  // }
   position: absolute;
   z-index: 9999;
   width: 70%;
   height: 70%;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
   cursor: move;
   padding: 1rem;
   background: #29323f;
@@ -66,15 +42,39 @@ const Wrapper = styled.div`
 const JitsiContainer = () => {
   const jitsi = useSelector((state) => state.chat.jitsi);
   const [size, setSize] = useState("maximize");
+  //const [activeDrags, setActiveDrags] = useState(0);
+  const [controlledPosition, setControlledPosition] = useState({
+    x: 0,
+    y: 0,
+  });
   const handleMinimize = () => {
+    const x = window.innerWidth / 2 - 175;
+    setControlledPosition({ x: x, y: -275 });
+    if (size === "minimize") return;
     setSize("minimize");
   };
   const handleMaximize = () => {
+    setControlledPosition({ x: 0, y: 0 });
+    if (size === "maximize") return;
     setSize("maximize");
   };
+
+  // const onStart = () => {
+  //   setActiveDrags((prevState) => prevState++);
+  // };
+
+  // const onStop = () => {
+  //   setActiveDrags((prevState) => prevState--);
+  // };
+
+  const onControlledDrag = (e, position) => {
+    const { x, y } = position;
+    setControlledPosition({ x, y });
+  };
+
   if (!jitsi) return null;
   return (
-    <Draggable>
+    <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition}>
       <Wrapper className={`jitsi-container ${size}`}>
         {jitsi && (
           <>
