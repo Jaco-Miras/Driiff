@@ -49,6 +49,7 @@ const INITIAL_STATE = {
     fetching: false,
   },
   jitsi: null,
+  initialLoad: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -3007,6 +3008,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         jitsi: null,
+      };
+    }
+    case "SET_CHANNEL_INITIAL_LOAD": {
+      return {
+        ...state,
+        initialLoad: true,
       };
     }
     default:
