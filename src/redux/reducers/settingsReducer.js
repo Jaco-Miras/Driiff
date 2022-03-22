@@ -23,7 +23,7 @@ const INITIAL_STATE = {
     background: null,
     login_mode: "email",
     language: "nl",
-    meet: "zoom",
+    meet: "jitsi",
     theme: {
       colors: {
         primary: "#29323F",
