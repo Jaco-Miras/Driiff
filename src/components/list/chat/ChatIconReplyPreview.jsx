@@ -214,7 +214,7 @@ const ReplyPreview = (props) => {
         previewText = chatHeaderBadgeContainer + parseBody;
       } else if (channel.last_reply && channel.last_reply.body.startsWith("DRIFF_TALK::")) {
         const data = JSON.parse(channel.last_reply.body.replace("DRIFF_TALK::", ""));
-        let parseBody = `${_t("DRIFF_TALK_MEETING_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
+        let parseBody = `${_t("DRIFF_TALK_MEETING_PREVIEW", "::first_name::: initiated a meeting", { first_name: data.author.first_name })}`;
         previewText = chatHeaderBadgeContainer + parseBody;
       } else {
         previewText = chatHeaderBadgeContainer + "System message update...";
