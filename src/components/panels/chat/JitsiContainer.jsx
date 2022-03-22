@@ -37,12 +37,26 @@ const Wrapper = styled.div`
     width: 350px;
     height: 300px;
   }
+  .react-draggable-transparent-selection .draggable-iframe-cover {
+    display: block;
+    z-index: 999999;
+  }
+
+  .draggable-iframe-cover {
+    position: absolute;
+    display: none;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
 `;
 
 const JitsiContainer = () => {
   const jitsi = useSelector((state) => state.chat.jitsi);
   const [size, setSize] = useState("maximize");
   //const [activeDrags, setActiveDrags] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const [controlledPosition, setControlledPosition] = useState({
     x: 0,
     y: 0,
@@ -59,13 +73,13 @@ const JitsiContainer = () => {
     setSize("maximize");
   };
 
-  // const onStart = () => {
-  //   setActiveDrags((prevState) => prevState++);
-  // };
+  const onStart = () => {
+    setIsDragging(true);
+  };
 
-  // const onStop = () => {
-  //   setActiveDrags((prevState) => prevState--);
-  // };
+  const onStop = () => {
+    setIsDragging(false);
+  };
 
   const onControlledDrag = (e, position) => {
     const { x, y } = position;
@@ -74,23 +88,26 @@ const JitsiContainer = () => {
 
   if (!jitsi) return null;
   return (
-    <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition}>
-      <Wrapper className={`jitsi-container ${size}`}>
-        {jitsi && (
-          <>
-            <div className="buttons-container">
-              <div className="ml-auto">
-                <SvgIconFeather className="mr-2" icon="minimize" onClick={handleMinimize} />
-                <SvgIconFeather icon="maximize" onClick={handleMaximize} />
+    <>
+      <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition} onStart={onStart} onStop={onStop}>
+        <Wrapper className={`jitsi-container ${size}`}>
+          {jitsi && (
+            <>
+              <div className="buttons-container">
+                <div className="ml-auto">
+                  <SvgIconFeather className="mr-2" icon="minimize" onClick={handleMinimize} />
+                  <SvgIconFeather icon="maximize" onClick={handleMaximize} />
+                </div>
               </div>
-            </div>
-            <div className="j-container">
-              <JitsiIframe channel={jitsi} />
-            </div>
-          </>
-        )}
-      </Wrapper>
-    </Draggable>
+              <div className="j-container" style={{ position: "relative" }}>
+                <JitsiIframe channel={jitsi} />
+                {isDragging && <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, top: 0, zIndex: 9999 }}></div>}
+              </div>
+            </>
+          )}
+        </Wrapper>
+      </Draggable>
+    </>
   );
 };
 
