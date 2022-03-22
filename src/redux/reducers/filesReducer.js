@@ -838,6 +838,32 @@ export default (state = INITIAL_STATE, action) => {
               ],
             },
           }),
+        ...(action.data.workspace_id &&
+          action.data.files.length &&
+          state.workspaceFiles[action.data.workspace_id] && {
+            workspaceFiles: {
+              ...state.workspaceFiles,
+              [action.data.workspace_id]: {
+                ...state.workspaceFiles[action.data.workspace_id],
+                files: {
+                  ...state.workspaceFiles[action.data.workspace_id].files,
+                  ...action.data.files.reduce((res, file) => {
+                    res[file.file_id] = {
+                      ...file,
+                      id: file.file_id,
+                      is_favorite: false,
+                      link_type: "CHANNEL",
+                      user_id: action.data.user ? action.data.user.id : null,
+                      updated_at: action.data.created_at,
+                      search: file.filename,
+                      thumbnail_link: null,
+                    };
+                    return res;
+                  }, {}),
+                },
+              },
+            },
+          }),
       };
     }
     case "ADD_CHANNEL_FILES": {
