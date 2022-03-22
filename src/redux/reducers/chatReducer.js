@@ -51,6 +51,7 @@ const INITIAL_STATE = {
     fetching: false,
   },
   jitsi: null,
+  initialLoad: false,
 };
 
 const date = new Date();
@@ -3370,6 +3371,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         jitsi: null,
+      };
+    }
+    case "SET_CHANNEL_INITIAL_LOAD": {
+      return {
+        ...state,
+        initialLoad: true,
       };
     }
     default:
