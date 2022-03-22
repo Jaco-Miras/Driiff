@@ -255,6 +255,7 @@ const FileRender = (props) => {
 
   const handleVideoOnLoad = (e) => {
     e.currentTarget.classList.remove("d-none");
+    e.currentTarget.classList.remove("opacity-0");
     e.currentTarget.removeAttribute("height");
   };
 
@@ -333,6 +334,7 @@ const FileRender = (props) => {
           })
           .catch((error) => {
             console.log("error fetching image");
+            setIsLoaded(true);
           });
       });
     } else {
@@ -347,7 +349,7 @@ const FileRender = (props) => {
         {isLoaded ? (
           <>
             <img className={"d-none"} src={require("../../assets/icon/limitations/l/text.svg")} alt={"File not found."} />
-            <video
+            {/* <video
               className={"file opacity-0"}
               data-index={file.id}
               data-attempt={0}
@@ -358,8 +360,12 @@ const FileRender = (props) => {
               autoPlay={false}
               onLoadStart={handleVideoOnLoad}
               onError={handleVideoOnError}
-              src={fileBlobs[file.id]}
-            />
+              src={file.view_link} 
+            />*/}
+            <video key={file.id} data-attempt={0} className={"file opacity-0"} data-index={file.id} ref={(e) => (refFiles[file.id] = e)} controls playsInline autoPlay={false} onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
+              <source src={`${file.view_link}?playsinline=1`} type={file.type} />
+              Your browser does not support the video tag.
+            </video>
           </>
         ) : (
           <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
