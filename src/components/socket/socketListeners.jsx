@@ -233,32 +233,51 @@ class SocketListeners extends Component {
     });
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
-      this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
+      this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id }, (err, res) => {
+        if (err) return;
+
+        if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
+          const channel_ids = res.data.latest_channels.map((c) => c.id).filter((id) => id !== this.props.lastReceivedMessage.channel_id);
+          this.props.refetchOtherMessages(
+            {
+              message_id: this.props.lastReceivedMessage.id,
+              channel_ids: channel_ids,
+            },
+            (err, res) => {
+              if (err) return;
+              let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+              channelsWithMessage.forEach((c) => {
+                this.props.getChannelDetail({ id: c.channel_id });
+              });
+            }
+          );
+        }
+      });
     }
   };
 
-  refetchOtherMessages = () => {
-    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
-      let channels = Object.values(this.props.channels);
-      this.props.refetchOtherMessages(
-        {
-          message_id: this.props.lastReceivedMessage.id,
-          channel_ids: channels
-            .filter((c) => {
-              return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id;
-            })
-            .map((c) => c.id),
-        },
-        (err, res) => {
-          if (err) return;
-          let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
-          channelsWithMessage.forEach((c) => {
-            this.props.getChannelDetail({ id: c.channel_id });
-          });
-        }
-      );
-    }
-  };
+  // refetchOtherMessages = () => {
+  //   if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
+  //     let channels = Object.values(this.props.channels);
+  //     this.props.refetchOtherMessages(
+  //       {
+  //         message_id: this.props.lastReceivedMessage.id,
+  //         channel_ids: channels
+  //           .filter((c) => {
+  //             return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id;
+  //           })
+  //           .map((c) => c.id),
+  //       },
+  //       (err, res) => {
+  //         if (err) return;
+  //         let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+  //         channelsWithMessage.forEach((c) => {
+  //           this.props.getChannelDetail({ id: c.channel_id });
+  //         });
+  //       }
+  //     );
+  //   }
+  // };
 
   componentDidMount() {
     this.props.getOnlineUsers();
@@ -277,7 +296,7 @@ class SocketListeners extends Component {
       //console.log("socket reconnected");
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
-      this.refetchOtherMessages();
+      //this.refetchOtherMessages();
       //this.refetchPosts();
       this.refetchPostComments();
       this.props.getFavoriteWorkspaceCounters();
