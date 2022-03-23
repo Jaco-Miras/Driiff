@@ -37,6 +37,7 @@ import {
   transferChannelMessages,
   removeWorkspaceChannel,
   removeWorkspaceChannelMembers,
+  incomingJitsiEnded,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -291,6 +292,125 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".create-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        if (e.host.id !== this.props.user.id) {
+          this.props.addToModals({
+            type: "jitsi_invite",
+            channelType: e.type,
+            host: e.host,
+            title: e.title,
+            channel_id: e.channel_id,
+            hideJoin: this.props.jitsi !== null,
+          });
+        }
+
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".end-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingJitsiEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".left-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".recording-uploaded-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
       .listen(".create-meeting-notification", (e) => {
         if (this.props.user.id !== e.host.id) {
           const meetingSDKELement = document.getElementById("meetingSDKElement");
@@ -2323,7 +2443,7 @@ class SocketListeners extends Component {
 function mapStateToProps({
   session: { user },
   settings: { userSettings },
-  chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
+  chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage, jitsi },
   workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
   global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
@@ -2352,6 +2472,7 @@ function mapStateToProps({
     isIdle,
     isBrowserActive,
     posts,
+    jitsi,
   };
 }
 
@@ -2539,6 +2660,7 @@ function mapDispatchToProps(dispatch) {
     incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
     incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
+    incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
   };
 }
 

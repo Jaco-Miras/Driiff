@@ -178,7 +178,8 @@ const ChatFooterPanel = (props) => {
   const editChatMessage = useSelector((state) => state.chat.editChatMessage);
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const user = useSelector((state) => state.session.user);
-  const [startingMeet, setStartingMeet] = useState(false);
+  const jitsi = useSelector((state) => state.chat.jitsi);
+  //const [startingMeet, setStartingMeet] = useState(false);
 
   //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
@@ -254,6 +255,8 @@ const ChatFooterPanel = (props) => {
     }),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     meetingInProgress: _t("TOASTER.MEETING_IN_PROGRESS", "Meeting for this channel is still in progress. When that's ended you can start a new meeting."),
+    jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
+    jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     //startedGoogleMeet: _t("GOOGLE.STARTED_GOOGLE_MEET", "")
   };
 
@@ -415,6 +418,16 @@ const ChatFooterPanel = (props) => {
     dispatch(addToModals(modalPayload));
   };
 
+  const handleJitsiMeet = () => {
+    if (jitsi) return;
+
+    let modalPayload = {
+      type: "jitsi_confirmation",
+    };
+
+    dispatch(addToModals(modalPayload));
+  };
+
   return (
     <Wrapper className={`chat-footer ${className}`}>
       {selectedChannel && <TypingIndicator />}
@@ -457,6 +470,7 @@ const ChatFooterPanel = (props) => {
                     editChatMessage={editChatMessage}
                     quote={quote}
                     onStartGoogleMeet={handleGoogleMeet}
+                    onStartJitsi={handleJitsiMeet}
                     // startingMeet={startingMeet}
                   />
                 </Dflex>

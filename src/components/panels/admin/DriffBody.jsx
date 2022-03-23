@@ -120,10 +120,10 @@ function DriffBody() {
       value: "disable",
       label: "Disable",
     },
-    // {
-    //   value: "jitsi",
-    //   label: "Driff Talk",
-    // },
+    {
+      value: "jitsi",
+      label: "Driff Talk",
+    },
     {
       value: "google",
       label: "Google Meet",

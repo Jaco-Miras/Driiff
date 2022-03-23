@@ -48,6 +48,8 @@ const INITIAL_STATE = {
     hasMore: true,
     fetching: false,
   },
+  jitsi: null,
+  initialLoad: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -2939,6 +2941,7 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
+    case "INCOMING_JITSI_ENDED":
     case "INCOMING_ZOOM_ENDED": {
       return {
         ...state,
@@ -2987,6 +2990,30 @@ export default function (state = INITIAL_STATE, action) {
           return acc;
         }, {}),
         selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? { ...state.selectedChannel, replies: [...state.selectedChannel.replies, action.data.chat] } : state.selectedChannel,
+      };
+    }
+    case "CREATE_JITSI_MEET_SUCCESS": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "START_JITSI": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "CLEAR_JITSI": {
+      return {
+        ...state,
+        jitsi: null,
+      };
+    }
+    case "SET_CHANNEL_INITIAL_LOAD": {
+      return {
+        ...state,
+        initialLoad: true,
       };
     }
     default:

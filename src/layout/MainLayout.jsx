@@ -12,6 +12,7 @@ import { PushNotificationBar, usePushNotification } from "../components/webpush"
 import { useIdleTimer } from "react-idle-timer";
 import { setIdleStatus } from "../redux/actions/globalActions";
 import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
+import JitsiContainer from "../components/panels/chat/JitsiContainer";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -154,6 +155,7 @@ const MainLayout = (props) => {
           <MainSnoozePanel />
         </MainContent>
       )}
+      <JitsiContainer />
       {/* stripe code*/}
       {/* {mounted && (
         <MainContent id="main">

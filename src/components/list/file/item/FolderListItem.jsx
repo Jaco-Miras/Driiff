@@ -134,6 +134,8 @@ const FolderListItem = (props) => {
 
   useOutsideClick(pickerRef, () => setShowColorPicker(!showColorPicker), showColorPicker);
 
+  const isChannelFolder = folder.channel_folder;
+
   return (
     <Wrapper className={`file-list-item ${className}`} color={color}>
       <div className="card  app-file-list">
@@ -141,7 +143,7 @@ const FolderListItem = (props) => {
           <div onClick={handleRedirect}>
             {folder.hasOwnProperty("payload") && <Drive icon="gdrive" viewBox="0 0 512 512" height="20" width="15" fill="#000" opacity=".8" />}
             <i className="fa fa-folder-o text-instagram" />
-            {!disableOptions && <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />}
+            {!disableOptions && !isChannelFolder && <FolderOptions folder={folder} actions={actions} isMember={isMember} history={history} params={params} handleAddEditFolder={handleAddEditFolder} />}
             {/* <ColorWheelIcon className="color-picker" src={colorWheel} alt="color picker" disableOptions={disableOptions} onClick={handleShowColorPicker} /> */}
           </div>
           {showColorPicker && (

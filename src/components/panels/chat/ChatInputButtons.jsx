@@ -48,6 +48,9 @@ const Wrapper = styled.div`
   //     margin-bottom: -5px;
   //   }
   // }
+  .jitsi {
+    padding: 12px;
+  }
   @media (max-width: 414px) {
     min-width: ${(props) =>
       props.clientChat && props.showButtons && props.editMode
@@ -70,7 +73,11 @@ const Wrapper = styled.div`
       display: block;
     }
     .btn-zoom {
-      padding: 10px 0;
+      padding: 13px 8px;
+      width: 35px;
+      .jitsi {
+        padding: 0;
+      }
     }
   }
   .feather-zoom {
@@ -94,7 +101,7 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet } = props;
+  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, onStartGoogleMeet, onStartJitsi } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
@@ -132,7 +139,7 @@ const ChatInputButtons = (props) => {
         </Tooltip>
       </IconWrapper>
       {meet !== "disable" && (
-        <IconWrapper className="btn-zoom">
+        <IconWrapper className={`btn-zoom ${meet}`}>
           {meet === "google" && (
             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
               <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
@@ -141,6 +148,11 @@ const ChatInputButtons = (props) => {
           {meet === "zoom" && (
             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
               <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+            </Tooltip>
+          )}
+          {meet === "jitsi" && (
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
+              <SvgIconFeather icon="video" onClick={onStartJitsi} />
             </Tooltip>
           )}
         </IconWrapper>

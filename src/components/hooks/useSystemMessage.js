@@ -89,17 +89,28 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
         // eslint-disable-next-line quotes
         parseBody = _t("SYSTEM.USER_UPLOADED_FILES", '<span class="chat-file-notification">::name:: uploaded ::count::  <b>files</b></span>', { name: data.author.first_name, count: data.files.length });
       }
-    } else if (reply.body.startsWith("ZOOM_MEETING::")) {
+    }
+    // else if (reply.body.startsWith("DRIFF_TALK::")) {
+    //   const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
+    //   parseBody = `<div><b>${data.author.name}</b> started a Meeting: <strong>Click here to join</strong></div>`;
+    // }
+    else if (reply.body.startsWith("ZOOM_MEETING::")) {
       const data = JSON.parse(reply.body.replace("ZOOM_MEETING::", ""));
       parseBody = `<div><b>${data.author.name}</b> started a ZOOM Meeting: <strong>Click here to join</strong></div>`;
     } else if (reply.body.startsWith("LEFT_MEETING::")) {
       const data = JSON.parse(reply.body.replace("LEFT_MEETING::", ""));
       parseBody = `<div><b>${data.participant.name}</b> has left the meeting</div>`;
-    } else if (reply.body.startsWith("MEETING_ENDED::")) {
-      const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
-      parseBody = `<div><b>${data.host.name}</b> has ended the meeting</div>`;
-    } else if (reply.body.includes("CHANNEL_UPDATE::")) {
+    }
+    // else if (reply.body.startsWith("MEETING_ENDED::")) {
+    //   const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
+    //   parseBody = `<div><b>${data.host.name}</b> has ended the meeting</div>`;
+    // }
+    else if (reply.body.includes("CHANNEL_UPDATE::")) {
       parseBody = renderToString(channelUpdateMessage);
+    } else if (reply.body.startsWith("RECORDING_UPLOADED::")) {
+      const data = JSON.parse(reply.body.replace("RECORDING_UPLOADED::", ""));
+      const translatedText = _t("SYSTEM.JITSI_RECORD", "The meeting is ended, you can watch the recording:");
+      parseBody = `<div>${translatedText} <a href=${data.recording_details.recording_link}>${data.recording_details.recording_link}</a></div>`;
     }
     return parseBody;
   };

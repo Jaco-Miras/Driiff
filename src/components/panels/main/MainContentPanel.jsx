@@ -3,7 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import RedirectPanel from "../redirect/RedirectPanel";
-import MaintenancePanel from "./MaintenancePanel";
+//import MaintenancePanel from "./MaintenancePanel";
 import DashboardPanel from "../dashboard/DashboardPanel";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
 const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));

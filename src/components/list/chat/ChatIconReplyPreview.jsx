@@ -7,6 +7,7 @@ import { stripHtml, stripImgTag } from "../../../helpers/stringFormatter";
 import { SvgIcon, SvgIconFeather } from "../../common";
 import ChannelOptions from "./ChannelOptions";
 import { useTranslationActions } from "../../hooks";
+import _ from "lodash";
 
 const Wrapper = styled.span`
   //display: flex;
@@ -167,8 +168,23 @@ const ReplyPreview = (props) => {
       }
       let x = "";
       if (channel.last_reply.user && channel.last_reply.user.id === user.id) {
+        let fileType = "";
         if (!noText && showPreviewIcon) {
-          previewText = previewText + "Photo";
+          const lastReply = _.last(channel.replies);
+          if (lastReply && lastReply.files.length > 0) {
+            switch (_.last(lastReply.files).type) {
+              case "image":
+                fileType = "Photo";
+                break;
+              case "video":
+                fileType = "Video";
+                break;
+              default:
+                fileType = "File";
+            }
+          }
+
+          previewText = previewText + fileType;
         }
         previewText = chatHeaderBadgeContainer + renderToString(<LastReplyName className="last-reply-name">{dictionary.you}:</LastReplyName>) + " " + previewText;
       } else {
@@ -183,6 +199,14 @@ const ReplyPreview = (props) => {
       if (channel.last_reply && channel.last_reply.body.startsWith("GOOGLE_MEETING::")) {
         const data = JSON.parse(channel.last_reply.body.replace("GOOGLE_MEETING::", ""));
         previewText = chatHeaderBadgeContainer + `${_t("GOOGLE_MEET_LAST_REPLY_PREVIEW", "::first_name::: initiated a google meeting", { first_name: data.author.first_name })}`;
+      } else if (channel.last_reply && channel.last_reply.body.startsWith("LEFT_MEETING::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("LEFT_MEETING::", ""));
+        let parseBody = `${_t("LEFT_MEETING_PREVIEW", "::first_name::: has left the call", { first_name: data.participant.name })}`;
+        previewText = chatHeaderBadgeContainer + parseBody;
+      } else if (channel.last_reply && channel.last_reply.body.startsWith("DRIFF_TALK::")) {
+        const data = JSON.parse(channel.last_reply.body.replace("DRIFF_TALK::", ""));
+        let parseBody = `${_t("DRIFF_TALK_MEETING_PREVIEW", "::first_name::: initiated a meeting", { first_name: data.author.first_name })}`;
+        previewText = chatHeaderBadgeContainer + parseBody;
       } else {
         previewText = chatHeaderBadgeContainer + "System message update...";
 
