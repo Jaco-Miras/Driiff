@@ -74,7 +74,6 @@ const EmptyStateLabel = styled.div`
 
 const FilesBody = (props) => {
   const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions } = props;
-  console.log(folders);
 
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
