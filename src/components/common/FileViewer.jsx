@@ -128,11 +128,15 @@ const PreviewContainer = styled.div`
     .mfp-close {
       position: absolute;
       width: 22px;
-      right: 10;
-      color: "black";
+      right: 10px;
+      color: #000;
     }
   }
   .mfp-figure {
+    position: relative;
+    padding: 32px;
+    background-color: #fff;
+    border-bottom: 2px solid #ccc;
     &::after {
       top: 58px;
       bottom: 0;
@@ -146,6 +150,7 @@ const FileDetails = styled.div`
   position: relative;
 `;
 const CloseButton = styled.button`
+  color: #000;
   &:focus {
     outline: none;
   }
@@ -222,6 +227,12 @@ const StyledFileRender = styled.div`
       }
     }
   }
+`;
+
+const DetailsContainer = styled.div`
+  background-color: #fff;
+  color: #000;
+  padding: 0 2rem 2rem 2rem;
 `;
 
 const FileRender = (props) => {
@@ -558,13 +569,13 @@ const FileViewer = (props) => {
           <div ref={fileRef}>
             <div className="mfp-content">
               <div className="d-flex justify-content-between align-items-center"></div>
-              <div className="mfp-figure" style={{ padding: 32, backgroundColor: "white", position: "relative" }}>
-                <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close" style={{ position: "absolute", right: 10, color: "black" }}>
+              <div className="mfp-figure rounded-top">
+                <CloseButton onClick={(e) => handleClose(e)} title="Close (Esc)" type="button" className="mfp-close">
                   ×
                 </CloseButton>
                 <FileWrapper>{<FileRender files={files} file={files[activeIndex]} setFiles={setFiles} viewFiles={viewFiles} />}</FileWrapper>
               </div>
-              <div className="d-flex justify-content-between align-items-start" style={{ backgroundColor: "white", color: "black", padding: "0 32px 32px 32px" }}>
+              <DetailsContainer className="d-flex justify-content-between align-items-end rounded-bottom">
                 <FileDetails>
                   <FileNameContainer>
                     <FileName onClick={(e) => handleDownloadFile(e, file)}>{file.filename ? file.filename : file.search}</FileName>
@@ -578,7 +589,7 @@ const FileViewer = (props) => {
                 <button className="btn btn-primary" onClick={(e) => handleDownloadFile(e, file)}>
                   <DownloadIcon icon={"download"} /> Download
                 </button>
-              </div>
+              </DetailsContainer>
               <figcaption>
                 <div className="mfp-bottom-bar">
                   <div className="mfp-title" />
