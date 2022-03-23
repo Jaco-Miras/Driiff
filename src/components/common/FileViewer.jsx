@@ -44,8 +44,8 @@ const FileViewerContainer = styled.div`
     }
   }
   .iframe.file {
-    min-width: 80vw;
-    min-height: 80vh;
+    min-width: 60vw;
+    min-height: 60vh;
   }
 `;
 
@@ -171,12 +171,13 @@ const FileWrapper = styled.figure`
   margin: 0 auto;
   img {
     max-width: 100%;
-    max-height: 80vh;
+    max-height: 60vh;
   }
 `;
 
 const StyledFileRender = styled.div`
   text-align: center;
+  height: ${({ isLoaded }) => (isLoaded ? "60vh" : "initial")};
 
   .spinner-border {
     border-width: 3px;
@@ -187,7 +188,7 @@ const StyledFileRender = styled.div`
     margin: 0 auto;
     transition: all 0.5s ease;
     opacity: 1;
-    max-height: 80vh;
+    max-height: 60vh;
     max-width: 100%;
 
     &:not([src]) {
@@ -199,7 +200,7 @@ const StyledFileRender = styled.div`
         props.isLoaded
           ? `
         opacity: 1;
-        max-height: 80vh;      
+        max-height: 60vh;      
       `
           : `
         opacity: 0;
