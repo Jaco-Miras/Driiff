@@ -72,7 +72,6 @@ const PickerWrapper = styled.div`
 
 const FolderListItem = (props) => {
   const { className = "", folder, actions, isMember, history, handleAddEditFolder, disableOptions } = props;
-  console.log(folder);
 
   const { path, url, params } = useRouteMatch();
   const pickerRef = useRef(null);

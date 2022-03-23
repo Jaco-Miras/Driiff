@@ -1349,12 +1349,14 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_WORKSPACE_FOLDER_SUCCESS": {
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      let folders = action.data.folders.map((f) => {
-        return {
-          ...f,
-          files: [],
-        };
-      });
+      let folders = action.data.folders
+        .filter((f) => !(!f.shared_with_client && state.user.type === "external"))
+        .map((f) => {
+          return {
+            ...f,
+            files: [],
+          };
+        });
       if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
         newWorkspaceFiles = {
           [action.data.topic_id]: {
