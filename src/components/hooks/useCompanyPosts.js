@@ -67,7 +67,15 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     //fetchMore();
-    actions.getUnreadNotificationEntries();
+    actions.getUnreadNotificationEntries({}, (err, res) => {
+      if (err) return;
+      if (res) {
+        const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
+        if (generalPost && generalPost.count > 0) {
+          actions.refetchCompanyPosts({ skip: 0, limit: generalPost.count, filters: ["green_dot"] });
+        }
+      }
+    });
     if (unreadPosts.has_more) {
       actions.fetchUnreadCompanyPosts({
         skip: unreadPosts.skip,
@@ -81,9 +89,6 @@ const useCompanyPosts = () => {
         limit: 15,
         filters: ["read_post"],
       });
-    }
-    if (unreadCounter.general_post > 0) {
-      actions.refetchCompanyPosts({ skip: 0, limit: unreadCounter.general_post });
     }
     return () => actions.setShowUnreadPosts(true);
   }, []);
