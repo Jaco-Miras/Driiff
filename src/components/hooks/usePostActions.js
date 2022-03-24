@@ -296,7 +296,6 @@ const usePostActions = () => {
 
             if (res) {
               getUnreadNotificationEntries();
-              //dispatch(updateUnreadCounter({ general_post: -1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -344,7 +343,6 @@ const usePostActions = () => {
       };
       if (res) {
         getUnreadNotificationEntries();
-        //dispatch(updateUnreadCounter({ general_post: -1 }));
         if (post.recipients.some((r) => r.type === "TOPIC")) {
           dispatch(getFavoriteWorkspaceCounters());
         }
@@ -443,7 +441,6 @@ const usePostActions = () => {
             })
           );
           getUnreadNotificationEntries();
-          //dispatch(updateUnreadCounter({ general_post: -1 }));
         })
       );
     } else {
@@ -933,8 +930,8 @@ const usePostActions = () => {
     dispatch(getUnreadPostComments());
   };
 
-  const getUnreadNotificationEntries = (payload = {}) => {
-    dispatch(getUnreadNotificationCounterEntries(payload));
+  const getUnreadNotificationEntries = (payload = {}, callback = () => {}) => {
+    dispatch(getUnreadNotificationCounterEntries(payload, callback));
   };
 
   const like = (payload = {}, callback) => {

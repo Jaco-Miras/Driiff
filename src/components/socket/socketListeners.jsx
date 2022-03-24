@@ -241,7 +241,7 @@ class SocketListeners extends Component {
       if (res) {
         const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
         if (generalPost && generalPost.count > 0) {
-          this.props.refetchPosts({ skip: 0, limit: generalPost.count });
+          this.props.refetchPosts({ skip: 0, limit: generalPost.count, filters: ["green_dot"] });
         }
       }
     });
