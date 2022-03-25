@@ -1067,10 +1067,11 @@ const PostModal = (props) => {
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody onDragOver={onDragEnter}>
         <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
-          <ModalHeaderSection toggle={toggleNested}>Remove external</ModalHeaderSection>
+          <ModalHeaderSection toggle={toggleNested}>Set to internal post</ModalHeaderSection>
           <ModalBody>
-            <p>You have external users on one of your post settings (must read, must reply and post approver).</p>
-            <p>Click confirm to remove external users. Cancelling will set the post to internal and guest.</p>
+            <p>You have external users in one of your post settings (must read, must reply and post approver).</p>
+            <p>Click confirm to remove external users.</p>
+            <p>Cancelling will set the post to internal and guest.</p>
           </ModalBody>
           <StyledModalFooter>
             <Button className="btn btn-outline-secondary" onClick={onCancel}>
