@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
@@ -274,6 +274,25 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const StyledModalFooter = styled(ModalFooter)`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    color: #fff !important;
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+`;
+
 //onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
@@ -324,6 +343,7 @@ const PostModal = (props) => {
   const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
   const [fileOption, setFileOption] = useState(null);
+  const [showNestedModal, setShowNestedModal] = useState(false);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -385,12 +405,13 @@ const PostModal = (props) => {
     addressIds,
   });
 
-  const [shareOption, setShareOption] = useState({
-    id: "internal",
-    value: "internal",
-    label: dictionary.internalTeamLabel,
-    icon: null,
-  });
+  const [shareOption, setShareOption] = useState(null);
+  // const [shareOption, setShareOption] = useState({
+  //   id: "internal",
+  //   value: "internal",
+  //   label: dictionary.internalTeamLabel,
+  //   icon: null,
+  // });
 
   const toastId = useRef(null);
   const sendNotify = (text) => (toastId.current = toaster.info(text));
@@ -940,7 +961,7 @@ const PostModal = (props) => {
   };
 
   useEffect(() => {
-    if (componentIsMounted.current) {
+    if (componentIsMounted.current && shareOption) {
       if (form.shared_with_client) {
         setShareOption({
           id: "external",
@@ -959,6 +980,80 @@ const PostModal = (props) => {
     }
   }, [form.shared_with_client]);
 
+  const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
+
+  useEffect(() => {
+    if (shareOption && shareOption.value === "internal") {
+      // check if any of the options has external
+      const hasExternal =
+        form.approvers.some((a) => a.user_type === "external") ||
+        form.approvers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReadUsers.some((a) => a.user_type === "external") ||
+        form.mustReadUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReplyUsers.some((a) => a.user_type === "external") ||
+        form.mustReplyUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id)));
+
+      if (hasExternal) setShowNestedModal(true);
+    }
+  }, [shareOption, form.approvers, form.mustReadUsers, form.mustReplyUsers]);
+
+  const toggleNested = () => {
+    setShowNestedModal((prevState) => !prevState);
+    if (showNestedModal) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
+    }
+  };
+
+  const onCancel = () => {
+    setShareOption({
+      id: "external",
+      value: "external",
+      label: dictionary.internalAndExternalTeamLabel,
+      icon: "eye",
+    });
+    setShowNestedModal(false);
+  };
+
+  const onRemoveExternals = () => {
+    //remove externals in form
+    setForm({
+      ...form,
+      approvers: form.approvers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+      mustReadUsers: form.mustReadUsers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+      mustReplyUsers: form.mustReplyUsers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+    });
+    setShowNestedModal(false);
+  };
+
   const handleSelectFileUploadOption = (e) => {
     setFileOption(e);
   };
@@ -971,18 +1066,21 @@ const PostModal = (props) => {
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody onDragOver={onDragEnter}>
-        {/* <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-          <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
-          <ModalBody>{dictionary.draftBody}</ModalBody>
-          <ModalFooter>
-            <Button className="btn-outline-secondary" onClick={() => toggleAll(false, true)}>
-              {dictionary.discard}
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
+          <ModalHeaderSection toggle={toggleNested}>Remove external</ModalHeaderSection>
+          <ModalBody>
+            <p>You have external users on one of your post settings (must read, must reply and post approver).</p>
+            <p>Click confirm to remove external users. Cancelling will set the post to internal and guest.</p>
+          </ModalBody>
+          <StyledModalFooter>
+            <Button className="btn btn-outline-secondary" onClick={onCancel}>
+              Cancel
             </Button>
-            <Button color="primary" onClick={() => toggleAll(true)}>
-              {dictionary.save}
+            <Button className="btn btn-primary ml-2" onClick={onRemoveExternals}>
+              Confirm
             </Button>
-          </ModalFooter>
-        </Modal> */}
+          </StyledModalFooter>
+        </Modal>
         <DropDocument
           hide={!showDropzone}
           ref={formRef.dropzone}
@@ -1065,7 +1163,7 @@ const PostModal = (props) => {
           <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
+          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading || (hasExternalWs && !shareOption)} onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>

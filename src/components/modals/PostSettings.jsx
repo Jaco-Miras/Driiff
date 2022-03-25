@@ -39,8 +39,15 @@ const SelectApprover = styled(FolderSelect)``;
 const PostSettings = (props) => {
   const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user } = props;
 
+  let options = userOptions;
+  if (shareOption && shareOption.value === "internal") {
+    options = userOptions.filter((o) => {
+      return o.user_type === "internal";
+    });
+  }
+
   let approverOptions = [
-    ...userOptions
+    ...options
       .filter((u) => u.id !== user.id)
       .map((u) => {
         return {

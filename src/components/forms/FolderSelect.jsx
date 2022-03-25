@@ -20,6 +20,9 @@ const SelectOption = styled.div`
       color: #ffffff;
     }
   }
+  .react-select__option--is-selected {
+    background-color: ${(props) => props.theme.colors.primary}!important;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
