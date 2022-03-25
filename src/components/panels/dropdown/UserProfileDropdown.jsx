@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useTranslationActions, useUserActions, useOutsideClick } from "../../hooks";
+import { useTranslationActions, useUserActions, useOutsideClick, useSettings } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -32,7 +32,10 @@ const UserProfileDropdown = (props) => {
 
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
-
+  const {
+    generalSettings: { first_login },
+  } = useSettings;
+  const { setGeneralSetting } = useSettings();
   const refs = {
     container: useRef(null),
   };
@@ -47,6 +50,9 @@ const UserProfileDropdown = (props) => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     processBackendLogout();
+    if (first_login) {
+      setGeneralSetting({ first_login: false });
+    }
   };
 
   const handleProfile = () => {

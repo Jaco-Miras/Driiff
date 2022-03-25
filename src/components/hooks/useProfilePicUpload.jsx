@@ -60,6 +60,7 @@ const useProfilePicUpload = () => {
       if (err) {
         toaster.error("Unable to update profile picture.");
       }
+      setGeneralSetting({ first_login: false });
     });
   };
 

@@ -76,7 +76,7 @@ const MainLayout = (props) => {
   const {
     driffSettings: { isCompSettingsLoaded },
     chatSettings: { sound_enabled },
-    generalSettings: { notifications_on, notification_sound, is_new, userCanceledProfileUpload },
+    generalSettings: { notifications_on, notification_sound, first_login, userCanceledProfileUpload },
   } = useSettings();
 
   const history = useHistory();
@@ -127,7 +127,7 @@ const MainLayout = (props) => {
       setClickCounter((prev) => prev + 1);
     };
     document.body.addEventListener("click", onClick);
-    if (clickCounter === 3 && !userCanceledProfileUpload && is_new) {
+    if (clickCounter === 3 && !userCanceledProfileUpload && first_login) {
       uploadModal();
     } else if (clickCounter > 3) {
       document.body.removeEventListener("click", onClick);
