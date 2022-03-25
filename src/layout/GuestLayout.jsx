@@ -167,6 +167,8 @@ const GuestLayout = (props) => {
     welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
     setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
+    submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
+    cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);

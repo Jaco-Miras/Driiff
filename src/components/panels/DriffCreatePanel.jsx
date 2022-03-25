@@ -177,6 +177,8 @@ const DriffCreatePanel = (props) => {
       invitations: typeof form.invitations !== "undefined" ? form.invitations : [],
       onPrimaryAction: handleSetUserInvitation,
       fromRegister: true,
+      submitText: dictionary.submitText,
+      cancelText: dictionary.cancelText,
     };
 
     dispatch(addToModals(payload));

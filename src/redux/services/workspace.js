@@ -477,3 +477,12 @@ export function putWorkspaceQuickLinks(payload) {
     data: payload,
   });
 }
+
+export function getRelatedWorkspace(payload) {
+  let url = `/v2/workspace-shared/${payload.userId}?skip=${payload.skip}&limit=${payload.limit}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    // data: payload,
+  });
+}

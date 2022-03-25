@@ -119,12 +119,7 @@ const AllPeople = (props) => {
       if (match.path === "/system/people/all/online") {
         return onlineUsers.some((ou) => ou.user_id === user.id);
       } else if (showInactive) {
-        if (user.active === 1) {
-          return false;
-        }
-        if (user.name.trim() === "") {
-          return false;
-        }
+        return user.active === 0 && user.name.trim() !== "";
       } else if (showInvited) {
         return !user.has_accepted && user.active;
       } else if (showGuest) {
@@ -140,7 +135,7 @@ const AllPeople = (props) => {
         else return false;
       }
 
-      return true;
+      return user.has_accepted && user.active;
     })
     .sort((a, b) => {
       return a.name.localeCompare(b.name);

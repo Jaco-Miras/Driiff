@@ -13,6 +13,7 @@ import { useIdleTimer } from "react-idle-timer";
 import { setIdleStatus } from "../redux/actions/globalActions";
 import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import JitsiContainer from "../components/panels/chat/JitsiContainer";
+import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
