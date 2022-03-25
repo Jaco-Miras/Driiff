@@ -128,10 +128,10 @@ function DriffBody() {
       value: "google",
       label: "Google Meet",
     },
-    {
-      value: "zoom",
-      label: "Zoom",
-    },
+    // {
+    //   value: "zoom",
+    //   label: "Zoom",
+    // },
   ];
 
   const toast = useToaster();
