@@ -424,6 +424,78 @@ const TodoReminderModal = (props) => {
         description: { value: chatBody },
       });
     }
+    // set form for post reminders on mount
+    if (mode === "create" && itemType && itemType === "POST") {
+      const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
+      if (workspaceRecipient && workspaces[workspaceRecipient.id]) {
+        const ws = { ...workspaces[workspaceRecipient.id] };
+        if (ws) {
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+          );
+        }
+      }
+      setForm((prevState) => ({
+        ...prevState,
+        title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : null} | Post` },
+        description: { value: item.title },
+      }));
+    }
+
+    if (mode === "create" && parentItem && itemType && itemType === "POST_COMMENT") {
+      const workspaceRecipient = parentItem.recipients.find((r) => r.type === "TOPIC");
+      if (workspaceRecipient && workspaces[workspaceRecipient.id]) {
+        const ws = { ...workspaces[workspaceRecipient.id] };
+        if (ws) {
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+          );
+        }
+      }
+      setForm((prevState) => ({
+        ...prevState,
+        title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : null} | Post comment` },
+        description: { value: item.body },
+      }));
+    }
 
     if (user.type === "external" && mode === "create") {
       setSelectedUser({
