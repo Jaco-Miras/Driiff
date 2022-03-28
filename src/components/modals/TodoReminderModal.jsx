@@ -1135,7 +1135,7 @@ const TodoReminderModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === ""}>
+        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || (!form.assigned_to.value && !form.topic_id.value)}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}
