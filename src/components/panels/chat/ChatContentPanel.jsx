@@ -212,15 +212,12 @@ const ChatContentPanel = (props) => {
     setShowSearchPanel(!showSearchPanel);
   };
 
-  // const [newSeachToogle, setNewSeachToogle] = useState(false);
-
-  // useEffect(() => {
-  //   selectedChannel !== null && setPP(selectedChannel.id);
-  //   if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
-  //     setNewSeachToogle(!newSeachToogle);
-  //     setShowSearchPanel(false);
-  //   }
-  // }, [pP, selectedChannel]);
+  useEffect(() => {
+    selectedChannel !== null && setPP(selectedChannel.id);
+    if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
+      setShowSearchPanel(false);
+    }
+  }, [pP, selectedChannel]);
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
@@ -260,15 +257,7 @@ const ChatContentPanel = (props) => {
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
       {selectedChannel !== null && showSearchPanel && (
-        <ChatSearchPanel
-          //newSeachToogle={newSeachToogle}
-          chatMessageActions={chatMessageActions}
-          showSearchPanel={showSearchPanel}
-          setShowSearchPanel={setShowSearchPanel}
-          handleSearchChatPanel={handleSearchChatPanel}
-          selectedChannel={selectedChannel}
-          user={user}
-        />
+        <ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} setShowSearchPanel={setShowSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} user={user} />
       )}
     </Wrapper>
   );

@@ -52,7 +52,7 @@ const ChatSearchInput = (props) => {
 
   const loadMore = () => {
     setSearching(true);
-    getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: searchValue, skip: skip, limit: limit })
+    getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: submittedValue, skip: skip, limit: limit })
       .then((res) => {
         return res;
       })
