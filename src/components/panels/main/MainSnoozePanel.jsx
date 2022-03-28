@@ -112,7 +112,7 @@ const MainSnooze = (props) => {
 
   const snoozeTime = 180;
   const snoozeCycle = 180;
-  const expTodo = 179; //mins
+  const expTodo = 5; //mins
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
