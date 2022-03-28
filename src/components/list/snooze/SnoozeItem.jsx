@@ -4,7 +4,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import { stripHtml } from "../../../helpers/stringFormatter";
 import { toast } from "react-toastify";
-import { useSnoozeActions } from "../../hooks";
+import { useSnoozeActions, useTranslationActions } from "../../hooks";
 //import { getCurrentTimestamp } from "../../../helpers/dateFormatter";
 
 // const Icon = styled(SvgIconFeather)`
@@ -145,7 +145,7 @@ const RobotAvatar = styled.div`
 `;
 const SnoozeItem = (props) => {
   const { type, item, user, dictionary, users, handleRedirect, darkMode, snoozeData, actions } = props;
-  // const { _t } = useTranslationActions();
+  const { _t } = useTranslationActions();
 
   const snoozeActions = useSnoozeActions();
 
@@ -321,7 +321,7 @@ const SnoozeItem = (props) => {
         );
       }
     } else if (type === "todo") {
-      header = dictionary.todoReminder;
+      header = _t("SNOOZE.LEFT_REMINDER", "::title:: due in 5 minutes", { title: stripHtml(n.title) });
       body = (
         <span className="d-flex align-items-center post-mention-body">
           <SnoozeBody className={"snooze-body"}>{stripHtml(n.title)}</SnoozeBody>

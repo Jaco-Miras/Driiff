@@ -41,7 +41,8 @@ const useTimeFormat = () => {
       calendar: {
         lastDay: "[Yesterday]",
         nextDay: "[Tomorrow]",
-        sameDay: "[Today]",
+        //sameDay: "[Today]",
+        sameDay: dateFormat,
         nextWeek: "[Next] dddd",
         lastWeek: "[Last] dddd",
         sameElse: dateFormat,
@@ -51,7 +52,8 @@ const useTimeFormat = () => {
       calendar: {
         lastDay: "[gisteren]",
         nextDay: "[morgen]",
-        sameDay: "[vandaag]",
+        //sameDay: "[vandaag]",
+        sameDay: dateFormat,
         nextWeek: "[deze] dddd",
         lastWeek: "[afgelopen] dddd",
         sameElse: dateFormat,
