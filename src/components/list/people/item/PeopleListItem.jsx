@@ -338,10 +338,9 @@ const PeopleListItem = (props) => {
                       </a>
                     </ToolTip>
                   )}
-                  {loggedUser.id !== user.id && user.active === 1 && (
+                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && (
                     <ToolTip content={dictionary.messageIcon}>
-                      {" "}
-                      <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />{" "}
+                      <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                     </ToolTip>
                   )}
                   {showOptions && loggedUser.id !== user.id && (
