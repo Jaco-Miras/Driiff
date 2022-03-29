@@ -855,6 +855,11 @@ const TodoReminderModal = (props) => {
       });
   }
   const userOnly = user.type === "external" && selectedWorkspace === null;
+  const sortedUserOptions = userOptions.sort((a, b) => {
+    if (a.name === user.name) return -1;
+    else return 0;
+  });
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -918,7 +923,7 @@ const TodoReminderModal = (props) => {
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
                   <PeopleSelect
-                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    options={sortedUserOptions.filter((o) => (userOnly ? o.value === user.id : true))}
                     value={selectedUser}
                     inputValue={userInputValue}
                     onChange={handleSelectUser}
@@ -988,7 +993,7 @@ const TodoReminderModal = (props) => {
                   <div className="modal-label">{dictionary.assignedToLabel}</div>
                   <SelectedUserContainer className="mb-2">
                     <PeopleSelect
-                      options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                      options={sortedUserOptions.filter((o) => (userOnly ? o.value === user.id : true))}
                       value={selectedUser}
                       inputValue={userInputValue}
                       onChange={handleSelectUser}
@@ -1060,7 +1065,7 @@ const TodoReminderModal = (props) => {
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
                   <PeopleSelect
-                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    options={sortedUserOptions.filter((o) => (userOnly ? o.value === user.id : true))}
                     value={selectedUser}
                     inputValue={userInputValue}
                     onChange={handleSelectUser}
@@ -1131,7 +1136,7 @@ const TodoReminderModal = (props) => {
                 <div className="modal-label">{dictionary.assignedToLabel}</div>
                 <SelectedUserContainer className="mb-2">
                   <PeopleSelect
-                    options={userOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                    options={sortedUserOptions.filter((o) => (userOnly ? o.value === user.id : true))}
                     value={selectedUser}
                     inputValue={userInputValue}
                     onChange={handleSelectUser}
@@ -1207,7 +1212,7 @@ const TodoReminderModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || (!form.assigned_to.value && !form.topic_id.value)}>
+        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || (!form.assigned_to.value && !form.topic_id.value) || timeValue === ""}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}
