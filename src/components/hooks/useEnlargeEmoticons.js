@@ -1,3 +1,5 @@
+import { parseEmojis } from "../../helpers/stringFormatter";
+
 const useEnlargeEmoticons = (args = { enlargeEmoji: false }) => {
   const enlargeEmoji = (textWithHtml) => {
     let body = "";
@@ -14,9 +16,9 @@ const useEnlargeEmoticons = (args = { enlargeEmoji: false }) => {
     const isEmojiWithString = typeof bodyWithoutEmoji === "string" && bodyWithoutEmoji.trim() !== ""; //check if body has text and emoji
     const isMultipleEmojisOnly = el.textContent.trim().match(pattern) && el.textContent.trim().match(pattern).length > 1; //if message is only emoji but multiple
     if (isEmojiWithString || isMultipleEmojisOnly) {
-      return el.innerHTML.replace(pattern, '<span class="font-size-24 line-height-32">$1</span>');
+      return el.innerHTML.replace(pattern, "<span class=\"font-size-24 line-height-32\">$1</span>");
     }
-    return args.enlargeSingle ? el.innerHTML.replace(pattern, '<div class="mx-3 my-3 font-size-40">$1</div>') : el.innerHTML;
+    return args.enlargeSingle ? el.innerHTML.replace(pattern, "<div class=\"mx-3 my-3 font-size-40\">$1</div>") : el.innerHTML;
   };
 
   return {
