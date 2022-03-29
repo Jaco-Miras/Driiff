@@ -32,10 +32,10 @@ const UserProfileDropdown = (props) => {
 
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
-  const {
-    generalSettings: { first_login },
-  } = useSettings;
-  const { setGeneralSetting } = useSettings();
+  // const {
+  //   generalSettings: { first_login },
+  // } = useSettings;
+  const { setGeneralSetting, generalSettings } = useSettings();
   const refs = {
     container: useRef(null),
   };
@@ -50,7 +50,7 @@ const UserProfileDropdown = (props) => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     processBackendLogout();
-    if (first_login) {
+    if (generalSettings.first_login) {
       setGeneralSetting({ first_login: false });
     }
   };
