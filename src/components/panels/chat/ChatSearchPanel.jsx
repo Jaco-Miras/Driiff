@@ -10,11 +10,11 @@ import { throttle } from "lodash";
 
 const Wrapper = styled.div`
   position: absolute;
-  top: 0;
+  top: 59px;
   bottom: 0;
   right: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 59px);
   transform: translateX(100%);
   transition: 0.1s ease-out;
   padding: 0 1em;
@@ -29,9 +29,9 @@ const Wrapper = styled.div`
   }
 `;
 
-const BackIcon = styled(SvgIconFeather)`
-  cursor: pointer;
-`;
+// const BackIcon = styled(SvgIconFeather)`
+//   cursor: pointer;
+// `;
 
 const ResultWrapper = styled.ul`
   list-style: none;
@@ -220,7 +220,7 @@ const ChatSearchPanel = (props) => {
   return (
     <Wrapper isActive={showSearchPanel}>
       <div className="d-flex justify-content-between align-items-flex-start align-items-center mb-2">
-        <BackIcon icon="chevron-left" onClick={handleSearchChatPanel} />
+        {/* <BackIcon icon="chevron-left" onClick={handleSearchChatPanel} /> */}
         <ChatSearchInput placeholder={"Search chat"} results={results} setResults={setResults} selectedChannel={selectedChannel} triggerLoadMore={triggerLoadMore} setTriggerLoadMore={setTriggerLoadMore} />
       </div>
       <ResultDivWrapper className="justify-content-between align-items-center" onScroll={handleScroll}>
