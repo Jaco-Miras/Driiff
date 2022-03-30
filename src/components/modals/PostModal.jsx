@@ -380,7 +380,7 @@ const PostModal = (props) => {
     addressTo: form.selectedAddressTo,
   });
 
-  const { enlargeEmoji } = useEnlargeEmoticons({ enlargeSingle: true });
+  const { enlargeEmoji } = useEnlargeEmoticons();
 
   const { draftSaved, handleDeleteDraft } = usePostDraft({
     draftId,
