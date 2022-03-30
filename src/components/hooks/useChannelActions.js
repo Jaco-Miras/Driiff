@@ -652,7 +652,7 @@ const useChannelActions = () => {
    * @param {"hidden"|"archived"} [filter.filter]
    * @param {function} [callback]
    */
-  const loadMore = ({ skip = 0, limit = 15 }, callback = () => {}) => {
+  const loadMore = ({ skip = 0, limit = 15, search = null }, callback = () => {}) => {
     if (chatSettings.filter_channel) {
       if (callback) callback();
       return;
@@ -663,6 +663,14 @@ const useChannelActions = () => {
       order_by: chatSettings.order_channel.order_by,
       sort_by: chatSettings.order_channel.sort_by.toLowerCase(),
     };
+
+    if (search) {
+      params = {
+        ...params,
+        search: search,
+        order_by: "channel_name",
+      };
+    }
 
     dispatch(
       getChannels(params, (err, res) => {
