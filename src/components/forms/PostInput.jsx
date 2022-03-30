@@ -150,7 +150,7 @@ const PostInput = forwardRef((props, ref) => {
 
   const { _t } = useTranslationActions();
 
-  const { enlargeEmoji } = useEnlargeEmoticons({ enlargeSingle: true });
+  const { enlargeEmoji } = useEnlargeEmoticons();
 
   const dictionary = {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
