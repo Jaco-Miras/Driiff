@@ -2,7 +2,6 @@ import { parseEmojis } from "../../helpers/stringFormatter";
 
 const useEnlargeEmoticons = (args = { enlargeEmoji: false }) => {
   const enlargeEmoji = (textWithHtml) => {
-    debugger;
     let body = "";
     let el = textWithHtml;
     if (typeof textWithHtml === "string") {
