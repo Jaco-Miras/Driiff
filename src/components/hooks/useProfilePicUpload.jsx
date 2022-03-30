@@ -23,7 +23,7 @@ const useProfilePicUpload = () => {
   const toaster = useToaster();
   const dispatch = useDispatch();
 
-  const uploadModal = () => {
+  const uploadModal = (cb) => {
     let payload = {
       type: "upload-profile-pic",
       headerText: "Upload profile picture?",
@@ -36,6 +36,9 @@ const useProfilePicUpload = () => {
       },
     };
     dispatch(addToModals(payload));
+    if (cb) {
+      cb();
+    }
   };
 
   const dropAction = (uploadedFiles) => {
@@ -69,7 +72,7 @@ const useProfilePicUpload = () => {
   };
   const cancelUploadProfilePic = () => {
     setGeneralSetting({ userCanceledProfileUpload: true });
-    const remind_time = localizeDate(moment().add(2, "d"), "YYYY-MM-DD HH:mm:ss");
+    const remind_time = localizeDate(moment().add(3, "d"), "YYYY-MM-DD HH:mm:ss");
 
     createTodo({
       title: "##remind_upload_profile_picture##",
