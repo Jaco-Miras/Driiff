@@ -818,7 +818,8 @@ class ChatMessages extends React.PureComponent {
                                     isForwardedMessage={reply.is_transferred}
                                     id={reply.user.id}
                                     type="USER"
-                                    imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                    imageLink={reply.user.profile_image_link}
+                                    // imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
                                     name={reply.user.name}
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
