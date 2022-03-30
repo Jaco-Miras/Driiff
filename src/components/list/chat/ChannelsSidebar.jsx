@@ -52,6 +52,7 @@ const ChannelsSidebar = (props) => {
   const firstResult = useRef(null);
   const channels = useSelector((state) => state.chat.channels);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const searchChannel = useSelector((state) => state.chat.search);
   // const searchingChannels = useSelector((state) => state.chat.searchingChannels);
   // const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
   const [fetchingChannels, setFetchingChannels] = useState(false);
@@ -63,10 +64,18 @@ const ChannelsSidebar = (props) => {
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
   const initialLoad = useSelector((state) => state.chat.initialLoad);
   const handleLoadMore = () => {
-    let cb = () => setFetchingChannels(false);
-    if (!fetching && hasMore && !fetchingChannels && initialLoad) {
-      setFetchingChannels(true);
-      actions.loadMore({ skip: skip }, cb);
+    if (search !== "") {
+      let cb = () => setFetchingChannels(false);
+      if (!fetching && searchChannel.hasMore && !fetchingChannels && initialLoad) {
+        setFetchingChannels(true);
+        actions.loadMore({ skip: searchChannel.skip, search: search }, cb);
+      }
+    } else {
+      let cb = () => setFetchingChannels(false);
+      if (!fetching && hasMore && !fetchingChannels && initialLoad) {
+        setFetchingChannels(true);
+        actions.loadMore({ skip: skip }, cb);
+      }
     }
   };
   const handleShowArchiveToggle = () => {
@@ -109,6 +118,7 @@ const ChannelsSidebar = (props) => {
             <CustomInput className="cursor-pointer text-muted" checked={searchArchivedChannels} type="switch" id="show_archive" name="show archive" onChange={handleShowArchiveToggle} label={<span>{dictionary.showArchived}</span>} />
           </ChatHeaderContainer>
         )} */}
+
         {sortedChannels.map((channel, k, arr) => {
           let chatHeader = "";
           let showArchiveButton = false;
@@ -176,7 +186,7 @@ const ChannelsSidebar = (props) => {
                 channelDrafts={channelDrafts}
                 dictionary={dictionary}
                 search={search}
-                addLoadRef={search === "" && k > sortedChannels.length - 5}
+                addLoadRef={!isNaN(channel.id) && k > sortedChannels.filter((c) => !isNaN(c.id)).length - 5}
                 onLoadMore={handleLoadMore}
                 onSelectChannel={onSelectChannel}
                 onClearSearch={handleClearSearch}

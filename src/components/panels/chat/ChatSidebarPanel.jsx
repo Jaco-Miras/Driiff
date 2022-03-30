@@ -174,7 +174,7 @@ const ChatSidebarPanel = (props) => {
       //   firstChannel.focus();
       // }
       if (query.trim() !== "") {
-        let payload = { search: query, skip: 0, limit: 25 };
+        let payload = { search: query, skip: 0, limit: 15 };
         if (searchArchivedChannels) {
           payload = {
             ...payload,

@@ -50,6 +50,12 @@ const INITIAL_STATE = {
     hasMore: true,
     fetching: false,
   },
+  search: {
+    skip: 0,
+    limit: 15,
+    hasMore: true,
+    results: [],
+  },
   jitsi: null,
   initialLoad: false,
 };
@@ -247,13 +253,24 @@ export default function (state = INITIAL_STATE, action) {
           }),
           //...fetchedChannels,
         },
-        fetch: {
-          skip: action.data.channels.length + state.fetch.skip,
-          limit: 15,
-          fetching: false,
-          hasMore: action.data.channels.length === 15,
-        },
         channelsLoaded: true,
+        ...(state.chatSidebarSearch === "" && {
+          fetch: {
+            skip: action.data.channels.length + state.fetch.skip,
+            limit: 15,
+            fetching: false,
+            hasMore: action.data.channels.length === 15,
+          },
+        }),
+        ...(state.chatSidebarSearch !== "" && {
+          searchingChannels: false,
+          search: {
+            skip: action.data.channels.length + state.search.skip,
+            limit: 15,
+            hasMore: action.data.channels.length === 15,
+            results: [...state.search.results, ...action.data.channels.map((r) => r.id)],
+          },
+        }),
       };
     }
     case "SEARCH_CHANNELS_SUCCESS": {
@@ -282,6 +299,12 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: channels,
         searchingChannels: false,
+        search: {
+          skip: action.data.results.length + state.search.skip,
+          limit: 15,
+          hasMore: action.data.channels.length === 15,
+          results: [...state.search.results, ...action.data.results.map((r) => r.id)],
+        },
       };
     }
     case "GET_WORKSPACE_CHANNELS_SUCCESS": {
