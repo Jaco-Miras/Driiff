@@ -136,7 +136,7 @@ const Avatar = (props) => {
     noDefaultClick = false,
     isBot = false,
     isHuddleBot = false,
-    forceThumbnail = true,
+    forceThumbnail = false,
     fromSlider = false,
     showSlider = true,
     tooltipName = null,
