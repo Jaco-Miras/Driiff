@@ -4,9 +4,8 @@ import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
-import { useTimeFormat } from "../../hooks";
+import { useTimeFormat, useWorkspace } from "../../hooks";
 import { PostCheckBox } from "../../forms";
-import { TodoCheckBox } from "../../forms";
 import PostApprovalLabels from "./PostApprovalLabels";
 //import Tooltip from "react-tooltip-lite";
 
@@ -212,6 +211,7 @@ const PostItemPanel = (props) => {
 
   const [archivedClicked, setArchivedClicked] = useState(false);
   const [checkboxFocus, setCheckboxFocus] = useState(false);
+  const { workspaces } = useWorkspace();
 
   const componentIsMounted = useRef(true);
 
@@ -291,7 +291,7 @@ const PostItemPanel = (props) => {
   // };
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`}>
-      <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
+      <PostRecipients workspaces={workspaces} post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
       <div className="d-flex">
         <CheckBoxContainer
           onClick={handleCheckboxClick}

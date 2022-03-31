@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { renderToString } from "react-dom/server";
-import { useWindowSize } from "../../hooks";
+import { useRedirect, useWindowSize } from "../../hooks";
 import { SvgIconFeather } from "../../common";
+import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../../helpers/stringFormatter";
 
 const Wrapper = styled.div`
   .client-shared {
@@ -65,37 +67,73 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const PostRecipients = (props) => {
-  const { classNames = "", dictionary, post, user, isExternalUser } = props;
+  const { classNames = "", dictionary, post, user, isExternalUser, workspaces } = props;
   const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
   const winSize = useWindowSize();
+
+  /* const workspaces = useSelector((state) => state.workspaces.workspaces); */
+  const history = useHistory();
+  const redirect = useRedirect();
+
+  const refs = {
+    container: useRef(null),
+    body: useRef(null),
+  };
+
+  const handleReceiverClick = (e) => {
+    const { id, type } = e.target.dataset;
+    switch (type) {
+      case "DEPARTMENT": {
+        history.push("/chat");
+        break;
+      }
+      case "TOPIC": {
+        let workspace = workspaces[id];
+        if (workspace) redirect.toWorkspace(workspace);
+        break;
+      }
+      case "USER": {
+        history.push(`/profile/${id}/${replaceChar(e.target.innerHTML)}`);
+        break;
+      }
+      case "TEAM": {
+        history.push(`/system/people/teams/${id}/${replaceChar(e.target.innerHTML)}`);
+        break;
+      }
+      default: {
+        //console.log(id, type);
+      }
+    }
+  };
+
   const renderUserResponsibleNames = () => {
     const hasMe = post.recipients.some((r) => r.type_id === user.id);
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-
-    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} ${dictionary.sharedClientBadge}</span>`;
-    } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-not-shared">${renderToString(<LockIcon icon="eye-off" />)} ${dictionary.notSharedClientBadge}</span>`;
-    }
-
+    // if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+    //   recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+    // } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+    //   recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+    // }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
-          else return `<span class="receiver">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
+            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
+            }</span>`;
+          else return `<span class="receiver mb-1" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join(", ");
     }
 
     if (hasMe) {
       if (otherPostRecipients.length >= 1) {
-        recipient_names += `<span class="receiver">${dictionary.me}</span>`;
+        recipient_names += `<span class="receiver mb-1">${dictionary.me}</span>`;
       } else {
-        recipient_names += `<span class="receiver">${dictionary.me}</span>`;
+        recipient_names += `<span class="receiver mb-1">${dictionary.me}</span>`;
       }
     }
 
@@ -105,8 +143,10 @@ const PostRecipients = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span class="receiver">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""}</span>`;
-          else return `<span class="receiver">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
+            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
+              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
+            }</span>`;
+          else return `<span class="receiver" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join("");
 
@@ -115,8 +155,17 @@ const PostRecipients = (props) => {
 
     return `${recipient_names} ${otherRecipientNames}`;
   };
+
+  useEffect(() => {
+    if (refs.container.current) {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
+        e.dataset.init = 1;
+        e.addEventListener("click", handleReceiverClick);
+      });
+    }
+  });
   return (
-    <Wrapper className={`post-recipients ${classNames} ${hasExternalWorkspace && !isExternalUser && "has-external"}`}>
+    <Wrapper ref={refs.container} className={`post-recipients ${classNames} ${hasExternalWorkspace && !isExternalUser && "has-external"}`}>
       <span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />
     </Wrapper>
   );
