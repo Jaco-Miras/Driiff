@@ -32,10 +32,8 @@ const UserProfileDropdown = (props) => {
 
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
-  // const {
-  //   generalSettings: { first_login },
-  // } = useSettings;
-  const { setGeneralSetting, generalSettings } = useSettings();
+  const { generalSettings } = useSettings;
+  const { setGeneralSetting } = useSettings();
   const refs = {
     container: useRef(null),
   };

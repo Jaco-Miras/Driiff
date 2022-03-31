@@ -40,6 +40,8 @@ const AudioStyle = styled.audio`
   visibility: hidden;
 `;
 
+const MODAL_TIMER = 30000;
+
 const MainLayout = (props) => {
   useFilesUpload(props);
   useVisibilityChange();
@@ -123,20 +125,18 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   useEffect(() => {
-    const onClick = () => {
-      setClickCounter((prev) => prev + 1);
-    };
-    document.body.addEventListener("click", onClick);
-    if (clickCounter === 3 && !userCanceledProfileUpload && first_login) {
-      uploadModal();
-    } else if (clickCounter > 3) {
-      document.body.removeEventListener("click", onClick);
-    }
+    const modalTimer = setTimeout(() => {
+      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link) {
+        uploadModal(() => {
+          clearTimeout(modalTimer);
+        });
+      }
+    }, MODAL_TIMER);
 
     return () => {
-      document.body.removeEventListener("click", onClick);
+      clearTimeout(modalTimer);
     };
-  }, [clickCounter]);
+  }, []);
 
   const handleOnActive = () => {
     dispatch(setIdleStatus(false));
