@@ -115,6 +115,12 @@ const AllPeople = (props) => {
 
   const userSort = allUsers
     .filter((user) => {
+      if (search !== "") {
+        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
+        else return false;
+      } else return true;
+    })
+    .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
       if (match.path === "/system/people/all/online") {
         return onlineUsers.some((ou) => ou.user_id === user.id);
@@ -128,11 +134,6 @@ const AllPeople = (props) => {
         if (user.active !== 1) {
           return false;
         }
-      }
-
-      if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
-        else return false;
       }
 
       return user.has_accepted && user.active;
