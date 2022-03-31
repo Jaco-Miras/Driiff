@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
+import { PostCheckBox } from "../../../forms";
+import { useTimeFormat } from "../../../hooks";
 import { MoreOptions } from "../../common";
 import { PostBadge, PostRecipients } from "../index";
-import { useTimeFormat, useWorkspace } from "../../../hooks";
-import { PostCheckBox } from "../../../forms";
 import PostApprovalLabels from "../PostApprovalLabels";
 
 const Wrapper = styled.li`
@@ -204,8 +204,6 @@ const CompanyPostItemPanel = (props) => {
 
   const componentIsMounted = useRef(true);
 
-  const { workspaces } = useWorkspace();
-
   useEffect(() => {
     return () => {
       componentIsMounted.current = false;
@@ -279,7 +277,7 @@ const CompanyPostItemPanel = (props) => {
 
   return (
     <Wrapper data-toggle={flipper ? "1" : "0"} appListWidthDiff={postBadgeWidth + 50} className={`list-group-item post-item-panel ${isUnread ? "has-unread" : ""} ${className} pl-3`}>
-      <PostRecipients workspaces={workspaces} post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
+      <PostRecipients post={post} user={user} dictionary={dictionary} isExternalUser={isExternalUser} classNames="text-truncate" />
       <div style={{ display: "flex" }}>
         <CheckBoxContainer
           onClick={handleCheckboxClick}

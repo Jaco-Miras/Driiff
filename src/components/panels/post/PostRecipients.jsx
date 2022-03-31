@@ -5,6 +5,7 @@ import { useRedirect, useWindowSize } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.div`
   .client-shared {
@@ -67,11 +68,11 @@ const LockIcon = styled(SvgIconFeather)`
 `;
 
 const PostRecipients = (props) => {
-  const { classNames = "", dictionary, post, user, isExternalUser, workspaces } = props;
+  const { classNames = "", dictionary, post, user, isExternalUser } = props;
   const hasExternalWorkspace = post.recipients.some((r) => r.type === "TOPIC" && r.is_shared);
   const winSize = useWindowSize();
 
-  /* const workspaces = useSelector((state) => state.workspaces.workspaces); */
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const history = useHistory();
   const redirect = useRedirect();
 
