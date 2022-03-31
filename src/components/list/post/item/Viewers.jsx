@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, ProfileSlider } from "../../../common";
 import { CSSTransition } from "react-transition-group";
 
@@ -10,13 +10,21 @@ const Viewers = ({ users }) => {
     e.preventDefault();
     e.stopPropagation();
     setShowSlider(true);
-    setUser(user);
+    /*  setUser(user); */
   };
 
   const orientation = {
     vertical: "bottom",
     horizontal: "left",
   };
+
+  useEffect(() => {
+    const uniq = {};
+    if (users) {
+      /* This method removes duplicated data from the users array of object. */
+      setUser(() => users.filter((obj) => !uniq[obj.id] && (uniq[obj.id] = true)))
+    }
+  }, []);
 
   return (
     <>
