@@ -577,7 +577,7 @@ const WorspaceHeaderPanel = (props) => {
 
   return (
     <>
-      <NavBarLeft className="navbar-left">
+      <NavBarLeft className="navbar-left" style={{border:"3px solid green"}}>
         <NavBar className="navbar-nav">
           {match.params.page === "search" ? (
             <>
