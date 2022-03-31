@@ -164,7 +164,7 @@ export const dataURLtoFile = (dataurl, filename) => {
 };
 
 export const replaceChar = (name, char = "-") => {
-  if (name) return name.toLowerCase().replace(/\s|\/|\?|\#/g, char);
+  if (name) return name.toLowerCase().replace(/\s|%|\/|\?|\#/g, char);
   else return "";
 };
 
