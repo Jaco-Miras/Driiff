@@ -960,42 +960,7 @@ const PostModal = (props) => {
     if (!showDropzone) setShowDropzone(true);
   };
 
-  useEffect(() => {
-    if (componentIsMounted.current && shareOption) {
-      if (form.shared_with_client) {
-        setShareOption({
-          id: "external",
-          value: "external",
-          label: dictionary.internalAndExternalTeamLabel,
-          icon: "eye",
-        });
-      } else {
-        setShareOption({
-          id: "internal",
-          value: "internal",
-          label: dictionary.internalTeamLabel,
-          icon: "eye-off",
-        });
-      }
-    }
-  }, [form.shared_with_client]);
-
   const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
-
-  useEffect(() => {
-    if (shareOption && shareOption.value === "internal") {
-      // check if any of the options has external
-      const hasExternal =
-        form.approvers.some((a) => a.user_type === "external") ||
-        form.approvers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
-        form.mustReadUsers.some((a) => a.user_type === "external") ||
-        form.mustReadUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
-        form.mustReplyUsers.some((a) => a.user_type === "external") ||
-        form.mustReplyUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id)));
-
-      if (hasExternal) setShowNestedModal(true);
-    }
-  }, [shareOption, form.approvers, form.mustReadUsers, form.mustReplyUsers]);
 
   const toggleNested = () => {
     setShowNestedModal((prevState) => !prevState);
@@ -1050,6 +1015,12 @@ const PostModal = (props) => {
             return o;
           }
         }),
+    });
+    setShareOption({
+      id: "internal",
+      value: "internal",
+      label: dictionary.internalTeamLabel,
+      icon: "eye-off",
     });
     setShowNestedModal(false);
   };
@@ -1161,7 +1132,17 @@ const PostModal = (props) => {
         )}
         <WrapperDiv className="modal-label more-option">
           <MoreOption className="mb-1">{dictionary.moreOptions}</MoreOption>
-          <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
+          <PostSettings
+            userOptions={userOptions}
+            dictionary={dictionary}
+            form={form}
+            isExternalUser={isExternalUser}
+            shareOption={shareOption}
+            setShareOption={setShareOption}
+            setForm={setForm}
+            user={user}
+            setShowNestedModal={setShowNestedModal}
+          />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
           <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading || (hasExternalWs && !shareOption)} onClick={handleConfirm}>

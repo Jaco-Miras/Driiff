@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { CheckBox, FolderSelect } from "../forms";
 
@@ -37,8 +37,8 @@ const Wrapper = styled.div``;
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user } = props;
-
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal } = props;
+  const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
   let options = userOptions;
   if (shareOption && shareOption.value === "internal") {
     options = userOptions.filter((o) => {
@@ -149,10 +149,21 @@ const PostSettings = (props) => {
         shared_with_client: true,
       });
     } else {
-      setForm({
-        ...form,
-        shared_with_client: false,
-      });
+      const hasExternal =
+        form.approvers.some((a) => a.user_type === "external") ||
+        form.approvers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReadUsers.some((a) => a.user_type === "external") ||
+        form.mustReadUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReplyUsers.some((a) => a.user_type === "external") ||
+        form.mustReplyUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id)));
+
+      if (hasExternal) setShowNestedModal(true);
+      else {
+        setForm({
+          ...form,
+          shared_with_client: false,
+        });
+      }
     }
   };
 
@@ -188,7 +199,7 @@ const PostSettings = (props) => {
         setForm({
           ...form,
           mustReadUsers: e.filter((a) => a.value === "all"),
-          shared_with_client: true,
+          //shared_with_client: true,
         });
       } else {
         setForm({
@@ -210,7 +221,7 @@ const PostSettings = (props) => {
         setForm({
           ...form,
           mustReplyUsers: e.filter((a) => a.value === "all"),
-          shared_with_client: true,
+          //shared_with_client: true,
         });
       } else {
         setForm({
@@ -221,11 +232,11 @@ const PostSettings = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (form.mustReplyUsers.find((r) => r.value === "all") || form.mustReadUsers.find((r) => r.value === "all")) {
-      if (!form.shared_with_client) setForm({ ...form, shared_with_client: true });
-    }
-  }, [form]);
+  // useEffect(() => {
+  //   if (form.mustReplyUsers.find((r) => r.value === "all") || form.mustReadUsers.find((r) => r.value === "all")) {
+  //     if (!form.shared_with_client) setForm({ ...form, shared_with_client: true });
+  //   }
+  // }, [form]);
 
   // if (form.requiredUsers.length && form.requiredUsers.find((a) => a.value === "all")) {
   //   requiredUserOptions = approverOptions.filter((a) => a.value === "all");
