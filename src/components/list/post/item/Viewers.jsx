@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { Avatar, ProfileSlider } from "../../../common";
 import { CSSTransition } from "react-transition-group";
+import { uniqBy } from "lodash";
 
 const Viewers = ({ users }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -10,7 +11,7 @@ const Viewers = ({ users }) => {
     e.preventDefault();
     e.stopPropagation();
     setShowSlider(true);
-    /*  setUser(user); */
+    setUser(user);
   };
 
   const orientation = {
@@ -18,18 +19,11 @@ const Viewers = ({ users }) => {
     horizontal: "left",
   };
 
-  useEffect(() => {
-    const uniq = {};
-    if (users) {
-      /* This method removes duplicated data from the users array of object. */
-      setUser(() => users.filter((obj) => !uniq[obj.id] && (uniq[obj.id] = true)))
-    }
-  }, []);
-
+  const filteredUsers = uniqBy(users, "id");
   return (
     <>
       <span className="hover read-users-container">
-        {users.map((u) => {
+        {filteredUsers.map((u) => {
           return (
             <span key={u.id}>
               <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} onClick={(e) => handleUserClick(e, u)} />{" "}
@@ -47,4 +41,4 @@ const Viewers = ({ users }) => {
   );
 };
 
-export default Viewers;
+export default memo(Viewers);
