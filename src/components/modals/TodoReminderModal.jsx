@@ -497,7 +497,7 @@ const TodoReminderModal = (props) => {
       }));
     }
 
-    if (user.type === "external" && mode === "create") {
+    if (mode === "create") {
       setSelectedUser({
         ...user,
         icon: "user-avatar",
