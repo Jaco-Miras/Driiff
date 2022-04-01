@@ -783,7 +783,6 @@ const TodoReminderModal = (props) => {
       });
   }
   const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value;
-  console.log(hasAssignedUserOrWs);
   const userOnly = user.type === "external" && selectedWorkspace === null;
   const sortedUserOptions = userOptions.sort((a, b) => {
     if (a.name === user.name) return -1;
