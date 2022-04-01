@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
+import { PostCheckBox } from "../../forms";
+import { useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
-import { useTimeFormat } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import PostApprovalLabels from "./PostApprovalLabels";
-import { PostCheckBox } from "../../forms";
 
 const Wrapper = styled.li`
   flex-flow: column;
