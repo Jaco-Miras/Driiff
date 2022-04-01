@@ -74,10 +74,15 @@ const useProfilePicUpload = () => {
     setGeneralSetting({ userCanceledProfileUpload: true });
     const remind_time = localizeDate(moment().add(3, "d"), "YYYY-MM-DD HH:mm:ss");
 
-    createTodo({
-      title: "##remind_upload_profile_picture##",
-      set_time: remind_time,
-    });
+    createTodo(
+      {
+        title: "Upload Profile Picture",
+        set_time: remind_time,
+      },
+      () => {
+        toaster.success(`Upload Profile Picture Reminder set to ${remind_time}`);
+      }
+    );
   };
 
   const renderDropDocument = () => {
