@@ -854,6 +854,7 @@ const TodoReminderModal = (props) => {
         handleNetWorkError(error);
       });
   }
+  const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value;
   const userOnly = user.type === "external" && selectedWorkspace === null;
   const sortedUserOptions = userOptions.sort((a, b) => {
     if (a.name === user.name) return -1;
@@ -1212,7 +1213,7 @@ const TodoReminderModal = (props) => {
         <Button outline color="secondary" onClick={toggle}>
           {dictionary.cancel}
         </Button>
-        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || (!form.assigned_to.value && !form.topic_id.value) || timeValue === ""}>
+        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
           {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
           {dictionary.snooze}
         </Button>{" "}
