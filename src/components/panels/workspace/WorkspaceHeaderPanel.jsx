@@ -47,6 +47,18 @@ const NavBarLeft = styled.div`
       }
     }
   }
+  .more-item {
+    position: absolute;
+    bottom: 0;
+    top: 3;
+    left: 57;
+  }
+  .is-external {
+    margin-left: 4rem;
+    @media all and (min-width: 440px) {
+      margin-left: 0;
+    }
+  }
   @media (max-width: 991.99px) {
     margin-right: 5px;
     padding-right: 10px;
@@ -220,7 +232,7 @@ const WorkspaceWrapper = styled.span`
   white-space: nowrap;
   display: block;
   @media all and (max-width: 1200px) {
-    max-width: 200px;
+    max-width: 100px;
   }
 `;
 
@@ -507,12 +519,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.member_ids;
-          } else return m.id;
-        })
-        .flat()
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -577,8 +589,8 @@ const WorspaceHeaderPanel = (props) => {
 
   return (
     <>
-      <NavBarLeft className="navbar-left">
-        <NavBar className="navbar-nav">
+      <NavBarLeft className="navbar-left"  >
+        <NavBar className="navbar-nav"  >
           {match.params.page === "search" ? (
             <>
               <li className="nav-item navigation-toggler mobile-toggler">
@@ -627,7 +639,7 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       {activeTopic.is_shared && !isExternal && (
-                        <li className="nav-item">
+                        <li className="nav-item is-external">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
                             <Icon icon="eye" /> {dictionary.withClient}
                           </div>
@@ -697,9 +709,9 @@ const WorspaceHeaderPanel = (props) => {
                     </>
                   )}
                   {!isMobile && <div style={{ flexGrow: 1 }}></div>}
-                  <li className="nav-item">
+                  <li className="nav-item more-options">
                     {isMobile && (
-                      <MoreOptions className="ml-2" disableHoverEffect>
+                      <MoreOptions disableHoverEffect>
                         <MemberLists members={activeTopic.members} size={3} />
                         <StyledDivider />
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>
