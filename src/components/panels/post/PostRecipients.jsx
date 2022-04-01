@@ -119,9 +119,9 @@ const PostRecipients = (props) => {
     let recipient_names = "";
     const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
     if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+      recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} ${dictionary.sharedClientBadge}</span>`;
     } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+      recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} ${dictionary.notSharedClientBadge}</span>`;
     }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
