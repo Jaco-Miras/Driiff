@@ -15,6 +15,9 @@ const Wrapper = styled.div`
     .feather {
       margin-right: 5px;
     }
+    &:hover {
+      cursor: default;
+    }
   }
   .client-not-shared {
     background: #d6edff;
@@ -22,6 +25,9 @@ const Wrapper = styled.div`
     margin-right: 5px;
     .feather {
       margin-right: 5px;
+    }
+    &:hover {
+      cursor: default;
     }
   }
   .receiver {
@@ -112,11 +118,11 @@ const PostRecipients = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    // if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-    //   recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
-    // } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-    //   recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
-    // }
+    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+      recipient_names += `<span class="receiver client-shared mb-1">${renderToString(<LockIcon icon="eye" />)} The client can see this post</span>`;
+    } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+      recipient_names += `<span class="receiver client-not-shared mb-1">${renderToString(<LockIcon icon="eye-off" />)} This post is private to our team</span>`;
+    }
     if (otherPostRecipients.length) {
       recipient_names += otherPostRecipients
         .filter((r, i) => i < recipientSize)
