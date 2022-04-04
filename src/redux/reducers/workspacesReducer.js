@@ -1,6 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { uniqBy } from "lodash";
 
 const INITIAL_STATE = {
   selectedWorkspaceId: null,
@@ -37,6 +38,15 @@ const INITIAL_STATE = {
     maxPage: 1,
     count: 0,
     hasMore: false,
+    limit: 25,
+    skip: 0,
+    query: {
+      hasMore: false,
+      limit: 25,
+      skip: 0,
+      filterBy: "all",
+      value: "",
+    },
     counters: {
       all: 0,
       new: 0,
@@ -3252,6 +3262,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         search: {
           ...state.search,
+          results: uniqBy([...state.search.results, ...action.data.workspaces], "topic.id"),
           folders: action.data.workspaces
             .filter((ws) => ws.workspace !== null)
             .reduce((acc, ws) => {
