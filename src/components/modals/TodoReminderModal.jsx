@@ -140,7 +140,7 @@ const TodoReminderModal = (props) => {
       value: null,
     },
     assigned_to: {
-      value: null,
+      value: mode === "create" ? user.id : null,
     },
   });
 
