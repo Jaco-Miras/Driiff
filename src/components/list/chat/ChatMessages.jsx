@@ -635,6 +635,9 @@ class ChatMessages extends React.PureComponent {
   gMessages = memoizeOne((replies) =>
     Object.entries(
       replies
+        .filter((r) => {
+          return r.channel_id === this.props.selectedChannel.id;
+        })
         .sort((a, b) => {
           if (a.created_at.timestamp - b.created_at.timestamp === 0) {
             return a.id - b.id;
@@ -697,7 +700,7 @@ class ChatMessages extends React.PureComponent {
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
-                    <div key={`${gm[0]}`}>
+                    <div key={`${this.props.selectedChannel.code + gm[0]}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm[1].map((reply, k, e) => {
@@ -756,7 +759,7 @@ class ChatMessages extends React.PureComponent {
                           isBot = botCodes.includes(reply.user.code);
                         }
                         return (
-                          <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
+                          <ChatList key={this.props.selectedChannel.code + reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
                             {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                             {reply.user && (
                               <ChatBubbleContainer
