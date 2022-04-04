@@ -49,6 +49,8 @@ const useTodos = (fetchTodosOnMount = false) => {
     }
   };
 
+  let timestamp = Math.floor(Date.now() / 1000);
+
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {
@@ -90,11 +92,12 @@ const useTodos = (fetchTodosOnMount = false) => {
             }
             return false;
           } else {
+            const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
             //if (t.workspace && !t.assigned_to) return false;
-            if (t.user && t.user === loggedUser.id) return true;
+            if (t.user && t.user === loggedUser.id && notExpired) return true;
             if (t.assigned_to && t.assigned_to.id !== loggedUser.id) return false;
             //if (t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id) return false;
-            return true;
+            return notExpired;
           }
         }
         return true;

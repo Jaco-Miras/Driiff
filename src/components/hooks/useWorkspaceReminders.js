@@ -86,6 +86,8 @@ const useWorkspaceReminders = () => {
     added_by_others: 0,
   };
 
+  let timestamp = Math.floor(Date.now() / 1000);
+
   const getWorkspaceReminders = ({ filter = "" }) => {
     return Object.values(items)
       .map((t) => {
@@ -123,7 +125,8 @@ const useWorkspaceReminders = () => {
               }
               return false;
             } else {
-              return !t.assigned_to_others;
+              const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
+              return !t.assigned_to_others && notExpired;
             }
           }
           return true;
