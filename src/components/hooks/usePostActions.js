@@ -947,6 +947,7 @@ const usePostActions = () => {
   const getUnreadWsPostsCount = (payload = {}, callback = () => {}) => {
     dispatch(
       getUnreadWorkspacePostEntries(payload, (err, res) => {
+        if (callback) callback(err, res);
         if (err) return;
         dispatch(
           updateWorkspacePostCount({
