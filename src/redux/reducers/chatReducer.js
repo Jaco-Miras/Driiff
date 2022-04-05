@@ -2878,8 +2878,8 @@ export default function (state = INITIAL_STATE, action) {
             return acc;
           }, {}),
           selectedChannel:
-            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
-            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel && state.selectedChannel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
               ? {
                   ...state.selectedChannel,
                   members: state.selectedChannel.members.some((m) => m.id === action.data.id)

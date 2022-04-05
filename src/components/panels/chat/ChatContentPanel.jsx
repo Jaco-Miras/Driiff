@@ -212,17 +212,12 @@ const ChatContentPanel = (props) => {
     setShowSearchPanel(!showSearchPanel);
   };
 
-  const [newSeachToogle, setNewSeachToogle] = useState(false);
-
   useEffect(() => {
     selectedChannel !== null && setPP(selectedChannel.id);
     if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
-      setNewSeachToogle(!newSeachToogle);
       setShowSearchPanel(false);
     }
   }, [pP, selectedChannel]);
-
-  const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
@@ -235,7 +230,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
@@ -261,16 +256,8 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
-        <ChatSearchPanel
-          newSeachToogle={newSeachToogle}
-          chatMessageActions={chatMessageActions}
-          showSearchPanel={showSearchPanel}
-          setShowSearchPanel={setShowSearchPanel}
-          handleSearchChatPanel={handleSearchChatPanel}
-          selectedChannel={selectedChannel}
-          user={user}
-        />
+      {selectedChannel !== null && showSearchPanel && (
+        <ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} setShowSearchPanel={setShowSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} user={user} />
       )}
     </Wrapper>
   );
