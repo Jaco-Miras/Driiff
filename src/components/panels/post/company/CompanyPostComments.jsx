@@ -18,12 +18,11 @@ const Wrapper = styled.div`
 const CompanyPostComments = (props) => {
   const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false, postActions } = props;
 
-  const filteredUsers = uniqBy(comments, "id");
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
-      {filteredUsers && (
+      {comments && (
         <ul>
-          {Object.values(filteredUsers).map((c) => {
+          {Object.values(comments).map((c) => {
             return (
               <Comment
                 key={c.id}
