@@ -1,3 +1,4 @@
+import { uniqBy } from "lodash";
 import React from "react";
 import styled from "styled-components";
 import { Comment } from "../../../list/post/item";
@@ -17,11 +18,12 @@ const Wrapper = styled.div`
 const CompanyPostComments = (props) => {
   const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false, postActions } = props;
 
+  const filteredUsers = uniqBy(comments, "id");
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
-      {comments && (
+      {filteredUsers && (
         <ul>
-          {Object.values(comments).map((c) => {
+          {Object.values(filteredUsers).map((c) => {
             return (
               <Comment
                 key={c.id}
