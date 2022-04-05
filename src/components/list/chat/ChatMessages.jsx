@@ -635,9 +635,9 @@ class ChatMessages extends React.PureComponent {
   gMessages = memoizeOne((replies) =>
     Object.entries(
       replies
-        // .filter((r) => {
-        //   return r.channel_id === this.props.selectedChannel.id;
-        // })
+        .filter((r) => {
+          return r.channel_id === this.props.selectedChannel.id;
+        })
         .sort((a, b) => {
           if (a.created_at.timestamp - b.created_at.timestamp === 0) {
             return a.id - b.id;
