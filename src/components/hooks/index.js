@@ -78,5 +78,8 @@ export { default as useTeamActions } from "./useTeamActions";
 export { default as useChannelUpdateMessage } from "./useChannelUpdateMessage";
 export { default as useZoomActions } from "./useZoomActions";
 export { default as useUserOptions } from "./useUserOptions";
+export { default as useQueryParams } from "./useQueryParams";
 export { default as usePostCategory } from "./usePostCategory";
 export { default as useEnlargeEmoticons } from "./useEnlargeEmoticons";
+export { default as useUpdateSmartBannerMeta } from "./useUpdateSmartBannerMeta";
+export { default as useRelatedWorkspace } from "./useRelatedWorkspace";

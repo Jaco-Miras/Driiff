@@ -33,6 +33,8 @@ export {
   uploadDashboardBg,
   putCompanyDescription,
   getAllWorkspaces,
+  getMeetingSettings,
+  putMeetingSettings,
 } from "./admin";
 export {
   getGlobalRecipients,
@@ -79,6 +81,8 @@ export {
   postChatMessageTranslate,
   generateZoomSignature,
   createZoomMeeting,
+  createGoogleMeet,
+  createJitsiMeet,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";
@@ -313,6 +317,7 @@ export {
   putWorkspaceNotification,
   getWorkspaceQuickLinks,
   putWorkspaceQuickLinks,
+  getRelatedWorkspace,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

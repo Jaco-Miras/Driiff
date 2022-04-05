@@ -148,7 +148,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
 
-  const { enlargeEmoji } = useEnlargeEmoticons({ enlargeSingle: true });
+  const { enlargeEmoji } = useEnlargeEmoticons();
 
   const { _t } = useTranslationActions();
 

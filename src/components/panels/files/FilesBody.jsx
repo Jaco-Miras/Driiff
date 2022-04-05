@@ -200,7 +200,7 @@ const FilesBody = (props) => {
         />
       )}
       <div className="card-body app-lists">
-        {folder && isMember && filter !== "removed" && !disableOptions && (
+        {folder && isMember && filter !== "removed" && !disableOptions && !folder.channel_folder && (
           <MoreButton moreButton="settings">
             <div onClick={handleEditFolder}>{dictionary.editFolder}</div>
             <div onClick={handleRemoveFolder}>{dictionary.removeFolder}</div>

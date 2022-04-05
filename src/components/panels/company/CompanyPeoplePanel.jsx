@@ -25,9 +25,9 @@ const Wrapper = styled.div`
     min-height: calc(100% - 40px);
     overflow: unset;
   }
-  .card-body {
+  /* .card-body {
     overflow: auto;
-  }
+  } */
 `;
 
 const Search = styled(SearchForm)`
@@ -125,6 +125,9 @@ const CompanyPeoplePanel = (props) => {
     peopleView: _t("PEOPLE.PEOPLE_VIEW_TOGGLE", "People view"),
     employeeAccounts: _t("LABEL.EMPLOYEE_ACCOUNTS", "Employee accounts"),
     thisIsAnAdminAccount: _t("TOOLTIP.THIS_IS_AN_ADMIN_ACCOUNT", "This is an administrator account"),
+    connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
+    phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
+    messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
   };
 
   // const handlePeopleViewToggle = () => {

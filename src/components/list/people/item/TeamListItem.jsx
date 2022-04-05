@@ -20,15 +20,30 @@ const Wrapper = styled.li`
       position: absolute;
     }
   }
+  > div:first-child {
+    max-width: calc(100% - 25px);
+  }
   .more-options {
     display: none;
+    min-width: 25px;
   }
   .avatar {
     cursor: pointer;
   }
   .profile-name {
     cursor: pointer;
-    margin-bottom: 4px;
+    margin-bottom: 0;
+  }
+  .name-designation-badge {
+    display: flex;
+    flex-flow: column;
+    max-width: calc(100% - 65px);
+    .badge {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+      overflow: hidden;
+    }
   }
   > .more-options svg {
     width: auto;
@@ -270,7 +285,7 @@ const TeamListItem = (props) => {
 
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className} ${(showMoreButton || showLessButton) && "mb-3"}`}>
-      <div className="d-flex align-items-center ">
+      <div className="d-flex align-items-center">
         <div className="pr-3">
           <Avatar
             id={member.id}
@@ -284,7 +299,7 @@ const TeamListItem = (props) => {
             type={isUser ? "USER" : "TEAM"}
           />
         </div>
-        <div>
+        <div className="name-designation-badge">
           {isUser && (
             <h6 className="profile-name" onClick={handleClickName}>
               {!member.has_accepted && member.name === "" ? member.email : member.name}
@@ -301,20 +316,21 @@ const TeamListItem = (props) => {
 
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
+          <div className="badge-container">
+            {member.workspace_role && member.workspace_role !== "" && (
+              <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
+            )}
+            {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+            {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
+            {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
+              <>
+                <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
+              </>
+            )}
+          </div>
         </div>
       </div>
-      <div className="ml-auto">
-        {member.workspace_role && member.workspace_role !== "" && (
-          <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
-        )}
-        {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
-        {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
-        {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
-          <>
-            <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
-          </>
-        )}
-      </div>
+
       {showMoreButton && (
         <ShowMoreBtn className="btn-toggle-show">
           <button className="btn btn-primary cursor-pointer" onClick={toggleShow}>
@@ -330,7 +346,7 @@ const TeamListItem = (props) => {
         </ShowMoreBtn>
       )}
       {!hideOptions && isUser && (
-        <MoreOptions moreButton="more-horizontal" width={250}>
+        <MoreOptions moreButton="more-horizontal" width={250} className="ml-auto">
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
           {member.workspace_role !== "APPROVER" && <div onClick={() => onAddRole(member, "approver")}>{dictionary.assignAsApprover}</div>}

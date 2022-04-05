@@ -20,6 +20,9 @@ const SelectOption = styled.div`
       color: #ffffff;
     }
   }
+  .react-select__option--is-selected {
+    background-color: ${(props) => props.theme.colors.primary}!important;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -144,7 +147,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 };
 
 const FolderSelect = forwardRef((props, ref) => {
-  const { className = "", isMulti = false, isClearable = false, creatable = false, ...otherProps } = props;
+  const { className = "", isMulti = false, isClearable = false, creatable = false, isDisabled = false, ...otherProps } = props;
 
   const {
     generalSettings: { dark_mode },
@@ -166,6 +169,7 @@ const FolderSelect = forwardRef((props, ref) => {
         isMulti={isMulti}
         isClearable={isClearable}
         components={components}
+        isDisabled={isDisabled}
         {...otherProps}
       />
     );
@@ -178,6 +182,7 @@ const FolderSelect = forwardRef((props, ref) => {
         styles={dark_mode === "0" ? lightTheme : darkTheme}
         isMulti={isMulti}
         isClearable={isClearable}
+        isDisabled={isDisabled}
         components={components}
         {...otherProps}
       />

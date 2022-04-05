@@ -37,6 +37,7 @@ import {
   transferChannelMessages,
   removeWorkspaceChannel,
   removeWorkspaceChannelMembers,
+  incomingJitsiEnded,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -198,6 +199,7 @@ import {
   incomingCompanyDescription,
   incomingCompanyDashboardBackground,
   incomingLoginSettings,
+  incomingMeetingSettings,
 } from "../../redux/actions/adminActions";
 
 class SocketListeners extends Component {
@@ -225,38 +227,57 @@ class SocketListeners extends Component {
       if (res) {
         const generalPost = res.data.find((d) => d.entity_type === "GENERAL_POST");
         if (generalPost && generalPost.count > 0) {
-          this.props.refetchPosts({ skip: 0, limit: generalPost.count });
+          this.props.refetchPosts({ skip: 0, limit: generalPost.count, filters: ["green_dot"] });
         }
       }
     });
     //this.props.getPostAccess();
     if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
-      this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id });
+      this.props.refetchMessages({ message_id: this.props.lastReceivedMessage.id }, (err, res) => {
+        if (err) return;
+
+        if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id) {
+          const channel_ids = res.data.latest_channels.map((c) => c.id).filter((id) => id !== this.props.lastReceivedMessage.channel_id);
+          this.props.refetchOtherMessages(
+            {
+              message_id: this.props.lastReceivedMessage.id,
+              channel_ids: channel_ids,
+            },
+            (err, res) => {
+              if (err) return;
+              let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+              channelsWithMessage.forEach((c) => {
+                this.props.getChannelDetail({ id: c.channel_id });
+              });
+            }
+          );
+        }
+      });
     }
   };
 
-  refetchOtherMessages = () => {
-    if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
-      let channels = Object.values(this.props.channels);
-      this.props.refetchOtherMessages(
-        {
-          message_id: this.props.lastReceivedMessage.id,
-          channel_ids: channels
-            .filter((c) => {
-              return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id;
-            })
-            .map((c) => c.id),
-        },
-        (err, res) => {
-          if (err) return;
-          let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
-          channelsWithMessage.forEach((c) => {
-            this.props.getChannelDetail({ id: c.channel_id });
-          });
-        }
-      );
-    }
-  };
+  // refetchOtherMessages = () => {
+  //   if (this.props.lastReceivedMessage && this.props.lastReceivedMessage.id && Object.values(this.props.channels).length) {
+  //     let channels = Object.values(this.props.channels);
+  //     this.props.refetchOtherMessages(
+  //       {
+  //         message_id: this.props.lastReceivedMessage.id,
+  //         channel_ids: channels
+  //           .filter((c) => {
+  //             return typeof c.id === "number" && c.id !== this.props.lastReceivedMessage.channel_id;
+  //           })
+  //           .map((c) => c.id),
+  //       },
+  //       (err, res) => {
+  //         if (err) return;
+  //         let channelsWithMessage = res.data.filter((c) => c.count_message > 0);
+  //         channelsWithMessage.forEach((c) => {
+  //           this.props.getChannelDetail({ id: c.channel_id });
+  //         });
+  //       }
+  //     );
+  //   }
+  // };
 
   componentDidMount() {
     this.props.getOnlineUsers();
@@ -275,7 +296,7 @@ class SocketListeners extends Component {
       //console.log("socket reconnected");
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
-      this.refetchOtherMessages();
+      //this.refetchOtherMessages();
       //this.refetchPosts();
       this.refetchPostComments();
       this.props.getFavoriteWorkspaceCounters();
@@ -290,6 +311,125 @@ class SocketListeners extends Component {
 
     // new socket
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.Driff.User.${this.props.user.id}`)
+      .listen(".create-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        if (e.host.id !== this.props.user.id) {
+          this.props.addToModals({
+            type: "jitsi_invite",
+            channelType: e.type,
+            host: e.host,
+            title: e.title,
+            channel_id: e.channel_id,
+            hideJoin: this.props.jitsi !== null,
+          });
+        }
+
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".end-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingJitsiEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".left-driff-talk-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
+      .listen(".recording-uploaded-notification", (e) => {
+        let timestamp = Math.floor(Date.now() / 1000);
+        const chatMessage = {
+          message: e.system_message,
+          body: e.system_message,
+          mention_ids: [],
+          user: null,
+          original_body: e.system_message,
+          is_read: true,
+          editable: true,
+          files: [],
+          is_archive: false,
+          is_completed: true,
+          is_transferred: false,
+          is_deleted: false,
+          created_at: { timestamp: timestamp },
+          updated_at: { timestamp: timestamp },
+          channel_id: e.channel_id,
+          reactions: [],
+          id: e.chat_id,
+          reference_id: null,
+          quote: null,
+          unfurls: [],
+          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+        };
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+      })
       .listen(".create-meeting-notification", (e) => {
         if (this.props.user.id !== e.host.id) {
           const meetingSDKELement = document.getElementById("meetingSDKElement");
@@ -1141,6 +1281,9 @@ class SocketListeners extends Component {
       });
 
     window.Echo.private(`${localStorage.getItem("slug") === "dev24admin" ? "dev" : localStorage.getItem("slug")}.App.Broadcast`)
+      .listen(".update-meeting-option-notification", (e) => {
+        this.props.incomingMeetingSettings(e);
+      })
       .listen(".update-login-option-notification", (e) => {
         delete e.SOCKET_TYPE;
         delete e.socket;
@@ -1707,32 +1850,70 @@ class SocketListeners extends Component {
       })
       .listen(".zoom-system-message-notification", (e) => {
         if (!e.hasOwnProperty("system_message")) return;
-        const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
-        let timestamp = Math.floor(Date.now() / 1000);
-        const chatMessage = {
-          message: e.system_message,
-          body: e.system_message,
-          mention_ids: [],
-          user: null,
-          original_body: e.system_message,
-          is_read: true,
-          editable: true,
-          files: [],
-          is_archive: false,
-          is_completed: true,
-          is_transferred: false,
-          is_deleted: false,
-          created_at: { timestamp: timestamp },
-          updated_at: { timestamp: timestamp },
-          channel_id: data.channel_id,
-          reactions: [],
-          id: e.chat_id,
-          reference_id: null,
-          quote: null,
-          unfurls: [],
-          g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
-        };
-        this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
+        if (e.system_message.startsWith("GOOGLE_MEETING")) {
+          const data = JSON.parse(e.system_message.replace("GOOGLE_MEETING::", ""));
+          let timestamp = Math.floor(Date.now() / 1000);
+
+          const chatMessage = {
+            message: e.system_message,
+            body: e.system_message,
+            mention_ids: [],
+            user: null,
+            original_body: e.system_message,
+            is_read: true,
+            editable: true,
+            files: [],
+            is_archive: false,
+            is_completed: true,
+            is_transferred: false,
+            is_deleted: false,
+            created_at: { timestamp: timestamp },
+            updated_at: { timestamp: timestamp },
+            channel_id: data.channel_id,
+            reactions: [],
+            id: e.chat_id,
+            reference_id: null,
+            quote: null,
+            unfurls: [],
+            g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+          };
+          this.props.incomingChatMessage({ ...chatMessage, channel_id: data.channel_id });
+          if (data.author.id !== this.props.user.id) {
+            this.props.addToModals({
+              ...e,
+              type: "meet_invite",
+              hideJoin: false,
+              data: data,
+            });
+          }
+        } else if (e.system_message.startsWith("ZOOM_MEETING")) {
+          const data = JSON.parse(e.system_message.replace("ZOOM_MEETING::", ""));
+          let timestamp = Math.floor(Date.now() / 1000);
+          const chatMessage = {
+            message: e.system_message,
+            body: e.system_message,
+            mention_ids: [],
+            user: null,
+            original_body: e.system_message,
+            is_read: true,
+            editable: true,
+            files: [],
+            is_archive: false,
+            is_completed: true,
+            is_transferred: false,
+            is_deleted: false,
+            created_at: { timestamp: timestamp },
+            updated_at: { timestamp: timestamp },
+            channel_id: data.channel_id,
+            reactions: [],
+            id: e.chat_id,
+            reference_id: null,
+            quote: null,
+            unfurls: [],
+            g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
+          };
+          this.props.incomingZoomCreate({ ...e, chat: chatMessage, channel_id: data.channel_id });
+        }
       })
       .listen(".left-meeting-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
@@ -2281,7 +2462,7 @@ class SocketListeners extends Component {
 function mapStateToProps({
   session: { user },
   settings: { userSettings },
-  chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage },
+  chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage, jitsi },
   workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
   global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
@@ -2310,6 +2491,7 @@ function mapStateToProps({
     isIdle,
     isBrowserActive,
     posts,
+    jitsi,
   };
 }
 
@@ -2496,6 +2678,8 @@ function mapDispatchToProps(dispatch) {
     incomingLoginSettings: bindActionCreators(incomingLoginSettings, dispatch),
     incomingWorkspacePost: bindActionCreators(incomingWorkspacePost, dispatch),
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
+    incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
+    incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
   };
 }
 

@@ -116,6 +116,9 @@ const WorkspacePeoplePanel = (props) => {
     roleTechnicalAdvisor: _t("ROLE.TECHNICAL_ADVISOR", "Technical advisor"),
     roleTechnicalLead: _t("ROLE.TECHNICAL_LEAD", "Technical lead"),
     roleWatcher: _t("ROLE.WATCHER", "Watcher"),
+    connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
+    phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
+    messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
   };
 
   useFocusInput(refs.search.current);

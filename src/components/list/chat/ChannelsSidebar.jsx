@@ -61,9 +61,10 @@ const ChannelsSidebar = (props) => {
   const history = useHistory();
   const channelDrafts = useSelector((state) => state.chat.channelDrafts);
   const { skip, fetching, hasMore } = useSelector((state) => state.chat.fetch);
+  const initialLoad = useSelector((state) => state.chat.initialLoad);
   const handleLoadMore = () => {
     let cb = () => setFetchingChannels(false);
-    if (!fetching && hasMore && !fetchingChannels) {
+    if (!fetching && hasMore && !fetchingChannels && initialLoad) {
       setFetchingChannels(true);
       actions.loadMore({ skip: skip }, cb);
     }

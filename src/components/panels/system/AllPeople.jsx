@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useRouteMatch, useHistory } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { PeopleListItem } from "../../list/people/item";
 import { CustomInput } from "reactstrap";
@@ -33,9 +34,12 @@ const AllPeople = (props) => {
 
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const match = useRouteMatch();
+  const history = useHistory();
 
   const [showInactive, setShowInactive] = useState(false);
   const [showInvited, setShowInvited] = useState(false);
+  const [showGuest, setShowGuest] = useState(false);
   const [search, setSearch] = useState("");
   const [searching, setSearching] = useState(false);
 
@@ -43,7 +47,7 @@ const AllPeople = (props) => {
   const roles = useSelector((state) => state.users.roles);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const usersWithoutActivity = useSelector((state) => state.users.usersWithoutActivity);
-  //const usersWithoutActivityLoaded = useSelector((state) => state.users.usersWithoutActivityLoaded);
+  const onlineUsers = useSelector((state) => state.users.onlineUsers);
 
   const handleShowInactiveToggle = () => {
     //setShowTeams(false);
@@ -58,7 +62,10 @@ const AllPeople = (props) => {
 
       return newState;
     });
+    if (showInactive) history.push("/system/people/all");
+    else history.push("/system/people/inactive");
     if (showInvited && !showInactive) setShowInvited(false);
+    setShowGuest(false);
   };
 
   const handleShowInvitedToggle = () => {
@@ -74,7 +81,19 @@ const AllPeople = (props) => {
 
       return newState;
     });
+    if (showInvited) history.push("/system/people/all");
+    else history.push("/system/people/invited");
     if (showInactive && !showInvited) setShowInactive(false);
+    setShowGuest(false);
+  };
+
+  const handleShowGuestToggle = () => {
+    //setShowTeams(false);
+    setShowGuest((prevState) => !prevState);
+    setShowInactive(false);
+    setShowInvited(false);
+    if (showGuest) history.push("/system/people/all");
+    else history.push("/system/people/guest");
   };
 
   const handleSearchChange = (e) => {
@@ -96,28 +115,28 @@ const AllPeople = (props) => {
 
   const userSort = allUsers
     .filter((user) => {
+      if (search !== "") {
+        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
+        else return false;
+      } else return true;
+    })
+    .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
-      if (showInactive) {
-        if (user.active === 1) {
-          return false;
-        }
-        if (user.name.trim() === "") {
-          return false;
-        }
+      if (match.path === "/system/people/all/online") {
+        return onlineUsers.some((ou) => ou.user_id === user.id);
+      } else if (showInactive) {
+        return user.active === 0 && user.name.trim() !== "";
       } else if (showInvited) {
         return !user.has_accepted && user.active;
+      } else if (showGuest) {
+        return user.has_accepted && user.active && user.type === "external";
       } else {
         if (user.active !== 1) {
           return false;
         }
       }
 
-      if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
-        else return false;
-      }
-
-      return true;
+      return user.has_accepted && user.active;
     })
     .sort((a, b) => {
       return a.name.localeCompare(b.name);
@@ -157,6 +176,20 @@ const AllPeople = (props) => {
     };
   }, [search]);
 
+  useEffect(() => {
+    if (match.path === "/system/people/invited") {
+      setShowInvited(true);
+    } else if (match.path === "/system/people/inactive") {
+      setShowInactive(true);
+    } else if (match.path === "/system/people/guest") {
+      setShowGuest(true);
+    } else if (match.path === "/system/people/all") {
+      setShowInvited(false);
+      setShowInactive(false);
+      setShowGuest(false);
+    }
+  }, [match.path]);
+
   return (
     <>
       <div className="people-header">
@@ -180,18 +213,27 @@ const AllPeople = (props) => {
             name="show_invited"
             type="switch"
             onChange={handleShowInvitedToggle}
-            //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
             label={
               <span>
                 {dictionary.showInvited} {showInvited && allUsers.filter((u) => u.hasOwnProperty("has_accepted") && !u.has_accepted && u.active).length}
               </span>
             }
           />
+          <CustomInput
+            className="mr-3 cursor-pointer text-muted cursor-pointer"
+            checked={showGuest}
+            id="show_guest"
+            name="show_guest"
+            type="switch"
+            onChange={handleShowGuestToggle}
+            //data-success-message={`${showInactive ? "Inactive users are shown" : "Inactive users are no longer visible"}`}
+            label={<span>{dictionary.showGuest}</span>}
+          />
 
           {/* <div className="mr-3 text-muted">Active employee accounts: {allUsers.filter((u) => u.active && u.type === "internal").length}</div> */}
-          <div className="mr-3 text-muted">
+          {/* <div className="mr-3 text-muted">
             {dictionary.totalAccounts}: {allUsers.filter((u) => u.active).length}
-          </div>
+          </div> */}
         </PeopleSearch>
       </div>
       <div className="row">

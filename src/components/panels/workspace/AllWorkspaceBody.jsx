@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, ToolTip } from "../../common";
 import WorkspaceListItem from "./WorkspaceListItem";
-import { ToolTip } from "../../common";
 const Wrapper = styled.div`
   overflow: visible !important;
 `;

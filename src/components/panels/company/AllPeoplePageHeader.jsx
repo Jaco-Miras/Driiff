@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { NavLink } from "../../common";
 import { useLocation } from "react-router-dom";
-import { useTranslationActions } from "../../hooks";
+import { useTranslationActions, useUsers } from "../../hooks";
 
 const Wrapper = styled.div``;
 
@@ -78,6 +78,7 @@ const AllPeoplePageHeader = (props) => {
   const location = useLocation();
 
   const { _t } = useTranslationActions();
+  const { activeUsers } = useUsers();
 
   const dictionary = {
     people: _t("ALL_PEOPLE_PAGE_HEADER_LINKS.PEOPLE", "People"),
@@ -90,8 +91,8 @@ const AllPeoplePageHeader = (props) => {
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
-            <MainNavLink to="/system/people" active={location.pathname === "/system/people"}>
-              {dictionary.people}
+            <MainNavLink to="/system/people/all" active={location.pathname === "/system/people/all"}>
+              {dictionary.people} ({Object.keys(activeUsers).length})
             </MainNavLink>
           </li>
           <li className="nav-item">

@@ -14,6 +14,8 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
+import GoogleMeetMessage from "./GoogleMeetMessage";
+import DriffTalkMessage from "./DriffTalkMessage";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -171,6 +173,16 @@ const ChatBubbleContainer = styled.div`
   .dark & {
     &:before {
       display: none;
+    }
+  }
+  &.google-meet-message {
+    margin-left: 0;
+    margin-top: 1rem;
+    > div.chat-bubble-quote-div {
+      width: 100%;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 10px;
     }
   }
 `;
@@ -623,6 +635,9 @@ class ChatMessages extends React.PureComponent {
   gMessages = memoizeOne((replies) =>
     Object.entries(
       replies
+        // .filter((r) => {
+        //   return r.channel_id === this.props.selectedChannel.id;
+        // })
         .sort((a, b) => {
           if (a.created_at.timestamp - b.created_at.timestamp === 0) {
             return a.id - b.id;
@@ -685,7 +700,7 @@ class ChatMessages extends React.PureComponent {
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
-                    <div key={`${gm[0]}`}>
+                    <div key={`${this.props.selectedChannel.code + gm[0]}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm[1].map((reply, k, e) => {
@@ -744,7 +759,7 @@ class ChatMessages extends React.PureComponent {
                           isBot = botCodes.includes(reply.user.code);
                         }
                         return (
-                          <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
+                          <ChatList key={this.props.selectedChannel.code + reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
                             {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                             {reply.user && (
                               <ChatBubbleContainer
@@ -806,7 +821,8 @@ class ChatMessages extends React.PureComponent {
                                     isForwardedMessage={reply.is_transferred}
                                     id={reply.user.id}
                                     type="USER"
-                                    imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                    imageLink={reply.user.profile_image_link}
+                                    // imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
                                     name={reply.user.name}
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
@@ -815,7 +831,7 @@ class ChatMessages extends React.PureComponent {
                                 )}
                               </ChatBubbleContainer>
                             )}
-                            {reply.user === null && (
+                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && !reply.body.startsWith("MEETING_ENDED::") && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
@@ -855,6 +871,20 @@ class ChatMessages extends React.PureComponent {
                                     </SystemChatActionsContainer>
                                   </SystemMessageContainer>
                                   {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} reply={reply} isAuthor={false} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && reply.body.startsWith("GOOGLE_MEETING::") && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <GoogleMeetMessage reply={reply} timeFormat={this.props.timeFormat} />
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && (reply.body.startsWith("DRIFF_TALK::") || reply.body.startsWith("MEETING_ENDED::")) && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
