@@ -352,12 +352,10 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
-    console.log(textOnly)
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
       setMentionUsersPayload({});
     }
-    
     if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0 && !content.includes("<img")) {
       setEditMode(false);
       setEditMessage(null);
