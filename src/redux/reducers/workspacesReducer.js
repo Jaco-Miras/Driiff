@@ -78,6 +78,12 @@ const INITIAL_STATE = {
   workspaceReminders: {},
   connectedTeamIds: [],
   workspaceQuickLinks: {},
+  relatedworkspace: {
+    loading: false,
+    error: null,
+    data: [],
+    hasMore: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -3130,21 +3136,23 @@ export default (state = INITIAL_STATE, action) => {
                       must_reply_users: action.data.must_reply_users,
                     },
                   },
-                  ...(state.workspacePosts[ws.topic.id].categories && {
-                    ...state.workspacePosts[ws.topic.id].categories,
-                    mustRead: {
-                      ...state.mustRead,
-                      count:
-                        action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
-                          ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
-                          : state.workspacePosts[ws.topic.id].categories.mustRead.count,
-                    },
-                    mustReply: {
-                      ...state.mustReply,
-                      count:
-                        action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
-                          ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
-                          : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                  ...(state.workspacePosts[ws.topic.id].hasOwnProperty("categories") && {
+                    categories: {
+                      ...state.workspacePosts[ws.topic.id].categories,
+                      mustRead: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustRead,
+                        count:
+                          action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
+                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
+                            : state.workspacePosts[ws.topic.id].categories.mustRead.count,
+                      },
+                      mustReply: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustReply,
+                        count:
+                          action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
+                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
+                            : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                      },
                     },
                   }),
                 };
@@ -4301,6 +4309,50 @@ export default (state = INITIAL_STATE, action) => {
         workspaceQuickLinks: {
           ...state.workspaceQuickLinks,
           [workspaceId]: action.data,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_START": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: true,
+          error: null,
+          hasMore: false,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_SUCCESS": {
+      return {
+        ...state,
+        relatedworkspace: {
+          loading: false,
+          error: null,
+          data: [...state.relatedworkspace.data, ...action.data.workspaces],
+          hasMore: action.data.has_more,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_FAIL": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          error: action.error.response.message || "Something went wrong",
+          hasMore: false,
+        },
+      };
+    }
+    case "CLEAR_RELATED_WORKSPACE": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          data: [],
+          hasMore: false,
         },
       };
     }

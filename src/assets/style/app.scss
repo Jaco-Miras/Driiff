@@ -14713,6 +14713,8 @@ body.modal-open .modal.show .modal-dialog {
     line-height: 1;
     width: 100%;
     height: 100%;
+    transform: translateZ(0);
+    image-rendering: optimizeQuality;
   }
   .profile-slider {
     height: auto;

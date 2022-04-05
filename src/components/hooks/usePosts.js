@@ -20,7 +20,40 @@ const usePosts = () => {
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
-      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId });
+      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId }, (err, res) => {
+        if (err) return;
+        if (res.data && res.data.result > 0) {
+          //fetch the unread post
+          let unreadCb = (err, res) => {
+            if (componentIsMounted.current) {
+              setFetchingPost(false);
+            }
+            if (err) return;
+            let files = res.data.posts.map((p) => p.files);
+            if (files.length) {
+              files = files.flat();
+            }
+            dispatch(
+              addToWorkspacePosts({
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts,
+                filter: res.data.posts,
+                files,
+              })
+            );
+          };
+
+          actions.getPosts(
+            {
+              filters: ["green_dot"],
+              topic_id: parseInt(params.workspaceId),
+              skip: 0,
+              limit: res.data.result,
+            },
+            unreadCb
+          );
+        }
+      });
     }
     return () => {
       actions.setShowUnreadPosts(true);

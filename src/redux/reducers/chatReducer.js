@@ -1634,6 +1634,15 @@ export default function (state = INITIAL_STATE, action) {
           team: channels[action.data.channel_detail.id].team,
         };
         channels[action.data.channel_detail.id] = channel;
+      } else if (action.data.channel_detail && !channels.hasOwnProperty(action.data.channel_detail.id)) {
+        channel = {
+          ...action.data.channel_detail,
+          replies: [],
+          hasMore: true,
+          skip: 0,
+          isFetching: false,
+        };
+        channels[action.data.channel_detail.id] = channel;
       }
       return {
         ...state,
@@ -1671,6 +1680,14 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: channels[action.data.id].hasMore,
           is_active: channels[action.data.id].is_active,
           skip: channels[action.data.id].skip,
+          isFetching: false,
+        };
+      } else {
+        channels[action.data.id] = {
+          ...action.data,
+          replies: [],
+          hasMore: true,
+          skip: 0,
           isFetching: false,
         };
       }
@@ -2861,8 +2878,8 @@ export default function (state = INITIAL_STATE, action) {
             return acc;
           }, {}),
           selectedChannel:
-            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
-            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel && state.selectedChannel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
               ? {
                   ...state.selectedChannel,
                   members: state.selectedChannel.members.some((m) => m.id === action.data.id)

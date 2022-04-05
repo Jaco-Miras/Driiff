@@ -4,9 +4,10 @@ import styled from "styled-components";
 import AllWorkspaceSidebar from "./AllWorkspaceSidebar";
 import AllWorkspaceSearch from "./AllWorkspaceSearch";
 import AllWorkspaceBody from "./AllWorkspaceBody";
-import { useTranslationActions, useWorkspaceSearchActions, useFilterAllWorkspaces } from "../../hooks";
+import { useTranslationActions, useWorkspaceSearchActions, useFilterAllWorkspaces, useQueryParams } from "../../hooks";
 //import { throttle } from "lodash";
 import { Loader } from "../../common";
+import RelatedWorkspaceBody from "./RelatedWorkspaceBody";
 
 const Wrapper = styled.div`
   overflow: hidden auto;
@@ -36,6 +37,9 @@ const AllWorkspace = (props) => {
   const [initialFetch, setInitialFetch] = useState(null);
 
   const componentIsMounted = useRef(true);
+
+  const { params } = useQueryParams();
+  const userId = params ? params["user-id"] : null;
 
   useEffect(() => {
     document.body.classList.add("stretch-layout");
@@ -208,7 +212,8 @@ const AllWorkspace = (props) => {
         <div className="col-lg-9 app-content mb-4">
           <div className="app-content-overlay" />
           <AllWorkspaceSearch actions={actions} dictionary={dictionary} search={search} />
-          {loaded && <AllWorkspaceBody actions={actions} dictionary={dictionary} filterBy={filterBy} results={filteredResults} />}
+          {/* {loaded && <AllWorkspaceBody actions={actions} dictionary={dictionary} filterBy={filterBy} results={filteredResults} />} */}
+          {userId ? <RelatedWorkspaceBody userId={userId} /> : loaded && <AllWorkspaceBody actions={actions} dictionary={dictionary} filterBy={filterBy} results={filteredResults} />}
           {loading && (
             <LoaderContainer className={"card initial-load"}>
               <Loader />

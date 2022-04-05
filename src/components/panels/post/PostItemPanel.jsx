@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
+import { PostCheckBox } from "../../forms";
+import { useTimeFormat } from "../../hooks";
 import { MoreOptions } from "../common";
 import { PostBadge, PostRecipients } from "./index";
-import { useTimeFormat } from "../../hooks";
-import { PostCheckBox } from "../../forms";
-import { TodoCheckBox } from "../../forms";
 import PostApprovalLabels from "./PostApprovalLabels";
 //import Tooltip from "react-tooltip-lite";
 

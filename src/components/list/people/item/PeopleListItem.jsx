@@ -287,14 +287,15 @@ const PeopleListItem = (props) => {
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
                     <h6 className="user-name mb-0">
                       {renderUserName({ user })}
-                      <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" />
-                      <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />
+                      {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
+                      <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
+                      {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
                       <div className="mr-2 d-flex">
                         {renderUserName({ user })}
-                        {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> : null}
+                        {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" /> : null}
                         {user.role && user.role.id === 1 && (
                           <ToolTip content={dictionary.thisIsAnAdminAccount}>
                             <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
@@ -303,7 +304,7 @@ const PeopleListItem = (props) => {
                       </div>
 
                       <span className="label-wrapper d-inline-flex start align-items-center">
-                        {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.peopleExternal} badgeClassName="badge badge-info badge-external text-white" />}
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
@@ -325,13 +326,23 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  {user.has_accepted && <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />}
-                  {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
-                    <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
-                      <SvgIconFeather className="mr-2" icon="phone" />
-                    </a>
+                  {user.has_accepted && (
+                    <ToolTip content={dictionary.connectedWorkspaceIcon}>
+                      <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
+                    </ToolTip>
                   )}
-                  {loggedUser.id !== user.id && user.active === 1 && <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />}
+                  {user.contact && user.contact !== "" && loggedUser.id !== user.id && (
+                    <ToolTip content={dictionary.phoneIcon}>
+                      <a href={`tel:${user.contact.replace(/ /g, "").replace(/-/g, "")}`}>
+                        <SvgIconFeather className="mr-2" icon="phone" />
+                      </a>
+                    </ToolTip>
+                  )}
+                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && (
+                    <ToolTip content={dictionary.messageIcon}>
+                      <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
+                    </ToolTip>
+                  )}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.type === "internal" && user.role && user.role.id !== 1 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsAdmin}>{dictionary.assignAsAdmin}</div>}

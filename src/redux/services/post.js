@@ -288,6 +288,8 @@ export function getCompanyPosts(payload) {
       url += `&filter[${i}]=${f}`;
     });
   }
+  url += "&filter_by=all";
+
   if (payload.cancelToken) {
     return apiCall({
       method: "GET",
@@ -764,6 +766,7 @@ export function getCompanyPostsByCategory(payload) {
       url += `&filter[${i}]=${payload.filters[i]}`;
     }
   }
+  url += "&filter_by=all";
   return apiCall({
     method: "GET",
     url: url,

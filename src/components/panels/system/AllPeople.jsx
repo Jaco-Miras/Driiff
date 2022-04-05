@@ -115,16 +115,17 @@ const AllPeople = (props) => {
 
   const userSort = allUsers
     .filter((user) => {
+      if (search !== "") {
+        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
+        else return false;
+      } else return true;
+    })
+    .filter((user) => {
       if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
       if (match.path === "/system/people/all/online") {
         return onlineUsers.some((ou) => ou.user_id === user.id);
       } else if (showInactive) {
-        if (user.active === 1) {
-          return false;
-        }
-        if (user.name.trim() === "") {
-          return false;
-        }
+        return user.active === 0 && user.name.trim() !== "";
       } else if (showInvited) {
         return !user.has_accepted && user.active;
       } else if (showGuest) {
@@ -135,12 +136,7 @@ const AllPeople = (props) => {
         }
       }
 
-      if (search !== "") {
-        if (user.name.toLowerCase().search(search.toLowerCase()) !== -1 || user.email.toLowerCase().search(search.toLowerCase()) !== -1 || (user.role && user.role.name.toLowerCase().search(search.toLowerCase()) !== -1)) return true;
-        else return false;
-      }
-
-      return true;
+      return user.has_accepted && user.active;
     })
     .sort((a, b) => {
       return a.name.localeCompare(b.name);
