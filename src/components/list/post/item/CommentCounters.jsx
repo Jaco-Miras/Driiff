@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { Avatar, SvgIconFeather } from "../../../common";
@@ -53,6 +53,8 @@ const CommentCounters = (props) => {
   const users = useSelector((state) => state.users.users);
   const likers = Object.values(users).filter((u) => comment.claps.some((c) => c.user_id === u.id));
 
+  const [showViewer, setShowViewer] = useState(false);
+
   const userReadPost = () => {
     if (post.post_reads) {
       return post.post_reads.filter((u) => {
@@ -90,12 +92,18 @@ const CommentCounters = (props) => {
         </Reply>
       )}
       {
-        <div className="user-reads-container">
-          <span className="no-readers">
+        <div
+          role="button"
+          className="user-reads-container"
+          onClick={() => {
+            setShowViewer((prev) => !prev);
+          }}
+        >
+          <span className="no-readers" style={{ cursor: "pointer" }}>
             <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
             {userReadPost().length}
           </span>
-          <Viewers users={userReadPost()} />
+          <Viewers users={userReadPost()} close={() => setShowViewer(false)} show={showViewer} />
         </div>
       }
     </Wrapper>
