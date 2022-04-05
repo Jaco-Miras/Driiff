@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import Viewers from "../../list/post/item/Viewers";
@@ -104,6 +104,8 @@ const AllWorkspaceListDetail = (props) => {
   const { dictionary, item } = props;
   const actions = useWorkspaceSearchActions();
 
+  const [showViewer, setShowViewer] = useState(false);
+
   const handleRedirect = () => {
     let payload = {
       id: item.id,
@@ -126,12 +128,18 @@ const AllWorkspaceListDetail = (props) => {
             {item.workspace.name}
           </span>
         )}
-        <span className="ml-1 d-flex align-items-center user-reads-container">
+        <span
+          role="button"
+          className="ml-1 d-flex align-items-center user-reads-container"
+          onClick={() => {
+            setShowViewer((prev) => !prev);
+          }}
+        >
           <span className="no-readers">
             <Icon icon="user" />
             {Object.values(item.members).length}
           </span>
-          <Viewers users={item.members} />
+          <Viewers users={item.members} close={() => setShowViewer(false)} show={showViewer} />
         </span>
 
         {item.is_shared && (

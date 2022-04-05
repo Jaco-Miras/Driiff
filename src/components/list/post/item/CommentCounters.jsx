@@ -88,6 +88,7 @@ const CommentCounters = (props) => {
       )}
       {
         <div
+          role="button"
           className="user-reads-container"
           onClick={() => {
             setShowViewer((prev) => !prev);
