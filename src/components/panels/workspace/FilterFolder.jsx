@@ -15,13 +15,15 @@ const Wrapper = styled.li`
     }
   }
   .feather {
-    width: 1rem;
-    height: 1rem;
-    display: none;
+    width: 0;
+    height: 0;
+    transition: 0.3s ease;
+    display: inline-block;
   }
   :hover {
     .feather {
-      display: block;
+      width: 1rem;
+      height: 1rem;
     }
   }
 `;
