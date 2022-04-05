@@ -249,6 +249,7 @@ const FileRender = (props) => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   let refFiles = {};
+  const videoRef = useRef();
 
   const handlePdfOnLoad = (e) => {
     //console.log(e.target);
@@ -376,7 +377,19 @@ const FileRender = (props) => {
               onError={handleVideoOnError}
               src={file.view_link} 
             />*/}
-            <video key={file.id} data-attempt={0} className={"file opacity-0"} data-index={file.id} ref={(e) => (refFiles[file.id] = e)} controls playsInline autoPlay={false} onLoadStart={handleVideoOnLoad} onError={handleVideoOnError}>
+            <video
+              key={file.id}
+              ref={videoRef}
+              data-attempt={0}
+              className={"file opacity-0"}
+              data-index={file.id}
+              //ref={(e) => (refFiles[file.id] = e)}
+              controls
+              playsInline
+              autoPlay={false}
+              onLoadStart={handleVideoOnLoad}
+              onError={handleVideoOnError}
+            >
               <source src={`${file.view_link}?playsinline=1`} type={file.type} />
               Your browser does not support the video tag.
             </video>
