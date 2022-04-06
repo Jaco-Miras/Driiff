@@ -155,7 +155,7 @@ const TodosList = (props) => {
 
   const getTextColorClass = (todo) => {
     if (todo.status === "OVERDUE") {
-      if (todoFormatShortCode(todo.remind_at.timestamp) === "Yesterday") return "text-warning";
+      // if (todoFormatShortCode(todo.remind_at.timestamp) === "Yesterday") return "text-warning";
       return "text-danger";
     }
 
