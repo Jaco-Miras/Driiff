@@ -4356,6 +4356,21 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "ADD_WORKSPACE_TO_FOLDER": {
+      return {
+        ...state,
+        folders: {
+          ...state.folders,
+          [action.data.id]: action.data,
+        },
+      };
+    }
+    case "REMOVE_WORKSPACE_FROM_FOLDER": {
+      return {
+        ...state,
+        folders: state.folders.filter((f) => f !== action.data.id),
+      };
+    }
     default:
       return state;
   }

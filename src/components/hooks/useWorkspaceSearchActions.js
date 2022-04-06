@@ -15,6 +15,8 @@ import {
   getWorkspace,
   setWorkspaceToDelete,
   putWorkspaceNotification,
+  addWorkspaceToFolder,
+  removeWorkspaceFromFolder,
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslationActions } from "./index";
@@ -135,6 +137,9 @@ const useWorkspaceSearchActions = () => {
         folder_id: item.workspace ? item.workspace.id : null,
         folder_name: item.workspace ? item.workspace.name : null,
       });
+
+      dispatch(addWorkspaceToFolder(item.workspace));
+
       toaster.success(
         <>
           {dictionary.joinWorkspace}
@@ -191,6 +196,7 @@ const useWorkspaceSearchActions = () => {
       };
       dispatch(leaveWorkspace({ workspace_id: item.topic.id, channel_id: item.channel.id }, callback));
       dispatch(updateWorkspace(payload));
+      dispatch(removeWorkspaceFromFolder(item.workspace));
     }
   };
 
