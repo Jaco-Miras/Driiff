@@ -119,7 +119,7 @@ const PostInput = forwardRef((props, ref) => {
     prioMentionIds,
     approvers,
     onClearApprovers,
-    onSubmitCallback = () => {},
+    onSubmitCallback = () => { },
     mainInput,
     imageLoading = null,
     setImageLoading = null,
@@ -356,7 +356,7 @@ const PostInput = forwardRef((props, ref) => {
       setMentionUsersPayload({});
     }
 
-    if (textOnly.trim() === "" && editMode) {
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
       setEditMode(false);
       setEditMessage(null);
       setMentionUsersPayload({});
@@ -411,12 +411,12 @@ const PostInput = forwardRef((props, ref) => {
 
   const workspaceMembers = workspace
     ? workspace.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.member_ids;
-          } else return m.id;
-        })
-        .flat()
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat()
     : [];
 
   const handleSetEditMessageStates = (reply) => {
@@ -568,14 +568,14 @@ const PostInput = forwardRef((props, ref) => {
       user.type === "external"
         ? members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-              return true;
-            } else {
-              return false;
-            }
-          }),
+          if (u.id === user.id) {
+            return false;
+          } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            return true;
+          } else {
+            return false;
+          }
+        }),
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,
