@@ -19,8 +19,7 @@ const useEnlargeEmoticons = () => {
     if (isEmojiWithString || isMultipleEmojisOnly) {
       return body.replace(pattern, '<span class="font-size-24 line-height-32">$1</span>');
     }
-
-    return body.replace(pattern, '<div class="mx-3 my-4 font-size-40">$1</div>');
+    return body.replace(pattern, `<div class="mx-3 my-4 font-size-40" ${body.includes("❤") ? 'style="height: 0;"' : ""}>$1</div>`);
   };
 
   return {
