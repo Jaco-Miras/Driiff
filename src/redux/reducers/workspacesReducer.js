@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import _ from "lodash";
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
@@ -4368,7 +4369,7 @@ export default (state = INITIAL_STATE, action) => {
     case "REMOVE_WORKSPACE_FROM_FOLDER": {
       return {
         ...state,
-        folders: state.folders.filter((f) => f !== action.data.id),
+        folders: _.omit(state.folders, action.data.id),
       };
     }
     default:
