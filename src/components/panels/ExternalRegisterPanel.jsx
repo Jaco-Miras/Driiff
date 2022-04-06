@@ -82,7 +82,7 @@ const ExternalRegisterPanel = (props) => {
     sendLink: _t("MAGIC_LINK.SEND_LINK", "Send link"),
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
     passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
-    confirmPasswordRequired: _t("FEEDBACK.CONFIRM_PASSWORD_REQUIRED", "Confirm Password must be the same with Password."),
+    confirmPasswordRequired: _t("FEEDBACK.REGISTER.REPEAT_PASSWORD", "Confirm Password must be the same with Password."),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     yourNameRequired: _t("FEEDBACK.YOUR_NAME_REQUIRED", "Your name is required."),
     firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
