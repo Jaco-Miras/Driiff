@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import useSettings from "./useSettings";
 import useToaster from "./useToaster";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,6 +8,7 @@ import useTimeFormat from "./useTimeFormat";
 import useTodoActions from "./useTodoActions";
 import moment from "moment";
 import { DropDocument } from "../dropzone/DropDocument";
+import useTranslationActions from "./useTranslationActions";
 
 const useProfilePicUpload = () => {
   const refs = {
@@ -16,20 +17,33 @@ const useProfilePicUpload = () => {
 
   const { setGeneralSetting } = useSettings();
   const { updateProfileImage } = useUserActions();
-  const { localizeDate } = useTimeFormat();
+  const { localizeDate, todoFormat } = useTimeFormat();
+  const { _t } = useTranslationActions();
   const { create: createTodo } = useTodoActions();
   const user = useSelector((state) => state.session.user);
 
   const toaster = useToaster();
   const dispatch = useDispatch();
 
+  const dictionary = {
+    uploadModalHeaderText: _t("UPLOAD_MODAL.HEADER", "Upload profile picture?"),
+    uploadModalSubmitText: _t("UPLOAD_MODAL.SUBMIT", "Yes"),
+    uploadModalCancelText: _t("UPLOAD_MODAL.CANCEL", "Cancel"),
+    uploadModalBodyText: _t("UPLOAD_MODAL.BODY", "You don't have profile picture just yet, upload one right now?"),
+    uploadModalErrorFileType: _t("UPLOAD_MODAL.FILE_NOT_ALLOWED", "File type not allowed. Please use an image file."),
+    multipleFileDetected: _t("UPLOAD_MODAL.MULTI_FILE_DETECTED", "Multiple files detected. First selected image will be used."),
+    unableToUpdate: _t("UPLOAD_MODAL.UNABLE_TO_UPDATE", "Unable to update profile picture."),
+    uploadProfileTitle: _t("UPLOAD_MODAL.UPLOAD_PROFILE_TITLE", "Upload Profile Picture"),
+    reminderSetTo: _t("UPLOAD_MODAL.REMINDER_SET_TO", "Upload Profile Picture Reminder set to"),
+  };
+
   const uploadModal = (cb) => {
     let payload = {
       type: "upload-profile-pic",
-      headerText: "Upload profile picture?",
-      submitText: "Yes",
-      cancelText: "Cancel",
-      bodyText: "You don't have profile picture just yet, upload one right now?",
+      headerText: dictionary.uploadModalHeaderText,
+      submitText: dictionary.uploadModalSubmitText,
+      cancelText: dictionary.uploadModalCancelText,
+      bodyText: dictionary.uploadModalBodyText,
       actions: {
         onSubmit: uploadProfilePicHandler,
         onCancel: cancelUploadProfilePic,
@@ -43,9 +57,9 @@ const useProfilePicUpload = () => {
 
   const dropAction = (uploadedFiles) => {
     if (uploadedFiles.length === 0) {
-      toaster.error("File type not allowed. Please use an image file.");
+      toaster.error(dictionary.uploadModalErrorFileType);
     } else if (uploadedFiles.length > 1) {
-      toaster.warning("Multiple files detected. First selected image will be used.");
+      toaster.warning(dictionary.multipleFileDetected);
     }
 
     let modal = {
@@ -61,7 +75,7 @@ const useProfilePicUpload = () => {
   const handleUseProfilePic = (file) => {
     updateProfileImage(user, file, (err, res) => {
       if (err) {
-        toaster.error("Unable to update profile picture.");
+        toaster.error(dictionary.unableToUpdate);
       }
       setGeneralSetting({ first_login: false });
     });
@@ -76,11 +90,12 @@ const useProfilePicUpload = () => {
 
     createTodo(
       {
-        title: "Upload Profile Picture",
+        title: dictionary.uploadProfileTitle,
         set_time: remind_time,
       },
-      () => {
-        toaster.success(`Upload Profile Picture Reminder set to ${remind_time}`);
+      (err, result) => {
+        const reminder = todoFormat(result.data.remind_at.timestamp);
+        toaster.success(`${dictionary.reminderSetTo} ${reminder}`);
       }
     );
   };
@@ -105,3 +120,5 @@ const useProfilePicUpload = () => {
 };
 
 export default useProfilePicUpload;
+
+// loom vidoe remove this https://www.loom.com/share/2e6fdfc2c22b4a89a48d4ff961593a05
