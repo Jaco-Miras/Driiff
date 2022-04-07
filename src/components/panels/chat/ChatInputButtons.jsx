@@ -156,7 +156,7 @@ const ChatInputButtons = (props) => {
           )}
           {meet === "jitsi" && (
             <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
-              <SvgIconFeather icon="video" onClick={onStartJitsi} />
+              <SvgIconFeather icon="video-driff" onClick={onStartJitsi} />
             </Tooltip>
           )}
         </IconWrapper>
