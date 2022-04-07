@@ -370,7 +370,7 @@ class ChatMessages extends React.PureComponent {
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
-    const scrollComponent = this.scrollComponent.current;
+    //const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
@@ -390,15 +390,17 @@ class ChatMessages extends React.PureComponent {
           return;
         }
 
-        if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
-          scrollComponent.scrollTop = scrollComponent.scrollHeight;
-          let initialScrollHeight = scrollComponent.scrollHeight;
-          setTimeout(() => {
-            if (initialScrollHeight < scrollComponent.scrollHeight) {
-              scrollComponent.scrollTop = scrollComponent.scrollHeight;
-            }
-          }, 1000);
-        }
+        // if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
+        //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        //   let initialScrollHeight = scrollComponent.scrollHeight;
+        //   if (channelId === selectedChannel.id) {
+        //     setTimeout(() => {
+        //       if (initialScrollHeight < scrollComponent.scrollHeight) {
+        //         scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        //       }
+        //     }, 1000);
+        //   }
+        // }
       });
     }
   };
@@ -515,6 +517,14 @@ class ChatMessages extends React.PureComponent {
               }
             }
           }
+        }
+      }
+      //initial load of replies
+      if (selectedChannel && prevProps.selectedChannel.skip === 0 && selectedChannel.replies.length > 0 && selectedChannel.skip !== 0) {
+        scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        let initialScrollHeight = scrollComponent.scrollHeight;
+        if (initialScrollHeight < scrollComponent.scrollHeight) {
+          scrollComponent.scrollTop = scrollComponent.scrollHeight;
         }
       }
     }

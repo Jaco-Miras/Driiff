@@ -1471,12 +1471,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
-        activeTopic: addUnreadPost
-          ? {
-              ...state.activeTopic,
-              //unread_posts: state.activeTopic.unread_posts + 1,
-            }
-          : state.activeTopic,
+        // activeTopic: addUnreadPost
+        //   ? {
+        //       ...state.activeTopic,
+        //       //unread_posts: state.activeTopic.unread_posts + 1,
+        //     }
+        //   : state.activeTopic,
       };
     }
     // case "INCOMING_POST": {
