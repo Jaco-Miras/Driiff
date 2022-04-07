@@ -155,10 +155,10 @@ const MainBody = styled.div`
       opacity: 0;
       max-height: 0;
 
-      &:hover {
+      /* &:hover {
         opacity: 1;
         max-height: 175px;
-      }
+      } */
 
       .dark & {
         background-color: #25282c;
