@@ -1,4 +1,5 @@
 /* eslint-disable no-prototype-builtins */
+import _ from "lodash";
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 import { uniqBy } from "lodash";
@@ -4431,6 +4432,21 @@ export default (state = INITIAL_STATE, action) => {
           data: [],
           hasMore: false,
         },
+      };
+    }
+    case "ADD_WORKSPACE_TO_FOLDER": {
+      return {
+        ...state,
+        folders: {
+          ...state.folders,
+          [action.data.id]: action.data,
+        },
+      };
+    }
+    case "REMOVE_WORKSPACE_FROM_FOLDER": {
+      return {
+        ...state,
+        folders: _.omit(state.folders, action.data.id),
       };
     }
     default:
