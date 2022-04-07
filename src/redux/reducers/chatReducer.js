@@ -1746,7 +1746,11 @@ export default function (state = INITIAL_STATE, action) {
         let channels = { ...state.channels };
         let channel = {
           ...action.data,
-          replies: action.data.replies.length ? action.data.replies : [],
+          replies: action.data.replies.length
+            ? action.data.replies.map((r) => {
+                return { ...r, channel_id: action.data.id };
+              })
+            : [],
           hasMore: action.data.replies.length === 20,
           skip: action.data.replies.length,
           selected: true,
