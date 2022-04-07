@@ -10,6 +10,7 @@ import ShortcutsCard from "./ShortcutsCard";
 import PostMentionCard from "./PostMentionCard";
 import MembersCard from "./MembersCard";
 import { useTranslationActions } from "../../hooks";
+import ChatWebhooksCard from "./ChatWebhooksCard";
 //import FilesFolderCard from "./FilesFolderCard";
 
 const Wrapper = styled.div`
@@ -123,6 +124,11 @@ const WsDashboardPanel = (props) => {
     openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
     noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "This WorkSpace has no quicklinks yet. Click on the + icon to add quicklinks for all workspace members."),
     nothingToDoHere: _t("LABEL.NOTHING_TO_DO_HERE", "Nothing to do here!"),
+    chatWebhooksTitle: _t("CHAT_WEBHOOKS.TITLE", "Chat Webhooks"),
+    chatWebhooksTeams: _t("CHAT_WEBHOOKS.TEAMS", "Teams"),
+    chatWebhooksGuest: _t("CHAT_WEBHOOKS.GUEST", "Guest"),
+    chatWebhooksCopy: _t("CHAT_WEBHOOKS.COPY", "copy"),
+    chatWebhooksClipboardCopy: _t("CHAT_WEBHOOKS.CLIPBOARD_COPY", "Copied to clipboard"),
   };
 
   return (
@@ -165,6 +171,11 @@ const WsDashboardPanel = (props) => {
               <Card className="mb-2">
                 <PostMentionCard dictionary={dictionary} isWorkspace={true} />
               </Card>
+              {user.type === "internal" && (
+                <Card className="mb-2">
+                  <ChatWebhooksCard dictionary={dictionary} />
+                </Card>
+              )}
             </QuicklinksMentionColumn>
           </div>
         </div>
