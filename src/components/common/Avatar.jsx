@@ -262,12 +262,13 @@ const Avatar = (props) => {
     return result.substring(0, 2);
   };
 
-  if (forceThumbnail && imageLink && !imageLink.includes("thumbnail")) {
+  /* if (forceThumbnail && imageLink && !imageLink.includes("thumbnail")) {
     imageLink += "&need_thumbnail=1";
-  }
+  } */
 
   return (
     <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} hasTeamIcon={type === "TEAM" && imageLink !== null} ref={avatarRef}>
+      <button onClick={() => console.log(props)}>hi</button>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
         {type === "TEAM" ? (
