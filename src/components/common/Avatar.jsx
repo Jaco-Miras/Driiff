@@ -268,7 +268,6 @@ const Avatar = (props) => {
 
   return (
     <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} hasTeamIcon={type === "TEAM" && imageLink !== null} ref={avatarRef}>
-      <button onClick={() => console.log(props)}>hi</button>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
         {type === "TEAM" ? (
