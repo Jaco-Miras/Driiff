@@ -82,7 +82,7 @@ const UserProfileDropdown = (props) => {
           </span>
         </h6>
         <RoleName>
-          <span className="badge badge-primary">{user.role.display_name}</span>
+          <span className="badge badge-primary">{user.type === "external" ? "Guest" : user.role.display_name}</span>
         </RoleName>
       </div>
       <div className="dropdown-menu-body">
