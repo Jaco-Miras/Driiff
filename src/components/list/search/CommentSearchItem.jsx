@@ -53,7 +53,7 @@ const CommentSearchItem = (props) => {
       {data !== null && (
         <>
           <div>
-            <Avatar id={data.comment.author.id} name={data.comment.author.name} imageLink={data.comment.author.profile_image_thumbnail_link} showSlider={true} />
+            <Avatar id={data.comment.author.id} name={data.comment.author.name} imageLink={data.comment.author.profile_image_link} showSlider={true} />
           </div>
           <div className="ml-2">
             <p>{data.comment.author.name}</p>

@@ -290,7 +290,7 @@ const TeamListItem = (props) => {
           <Avatar
             id={member.id}
             name={member.name}
-            imageLink={member.profile_image_link}
+            imageLink={!isUser ? member.icon_link : member.profile_image_link}
             partialName={member.partial_name}
             noDefaultClick={!member.has_accepted}
             hasAccepted={member.has_accepted}
