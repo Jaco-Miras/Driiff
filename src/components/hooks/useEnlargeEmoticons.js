@@ -1,4 +1,4 @@
-import { parseEmojis } from "../../helpers/stringFormatter";
+import { parseEmojis, replaceAll } from "../../helpers/stringFormatter";
 
 const useEnlargeEmoticons = () => {
   const enlargeEmoji = (textWithHtml) => {
@@ -15,11 +15,11 @@ const useEnlargeEmoticons = () => {
     const bodyWithoutEmoji = parseEmojis(el.textContent).trim().replace(pattern, ""); //removes all emoji instance
     const isEmojiWithString = typeof bodyWithoutEmoji === "string" && bodyWithoutEmoji.trim() !== ""; //check if body has text and emoji
     const isMultipleEmojisOnly = el.textContent.trim().match(pattern) && el.textContent.trim().match(pattern).length > 1; //if message is only emoji but multiple
+    body = replaceAll(body, "❤", '<span style="color: red">❤</span>'); //detects heart emoji to have a color of red
     if (isEmojiWithString || isMultipleEmojisOnly) {
       return body.replace(pattern, '<span class="font-size-24 line-height-32">$1</span>');
     }
-
-    return body.replace(pattern, '<div class="mx-3 my-4 font-size-40">$1</div>');
+    return body.replace(pattern, `<div class="mx-3 my-4 font-size-40" ${body.includes("❤") ? 'style="height: 0;"' : ""}>$1</div>`);
   };
 
   return {

@@ -1746,7 +1746,11 @@ export default function (state = INITIAL_STATE, action) {
         let channels = { ...state.channels };
         let channel = {
           ...action.data,
-          replies: action.data.replies.length ? action.data.replies : [],
+          replies: action.data.replies.length
+            ? action.data.replies.map((r) => {
+                return { ...r, channel_id: action.data.id };
+              })
+            : [],
           hasMore: action.data.replies.length === 20,
           skip: action.data.replies.length,
           selected: true,
@@ -2878,8 +2882,8 @@ export default function (state = INITIAL_STATE, action) {
             return acc;
           }, {}),
           selectedChannel:
-            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
-            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel && state.selectedChannel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
               ? {
                   ...state.selectedChannel,
                   members: state.selectedChannel.members.some((m) => m.id === action.data.id)

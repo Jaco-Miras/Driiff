@@ -81,6 +81,12 @@ const ChatInputContainer = styled.div`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
+  #btn-disagree {
+    &:hover {
+      background: ${(props) => props.theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.primary};
+    }
+  }
   .feather-send {
     background: ${(props) => props.backgroundSend} !important;
     fill: ${(props) => props.fillSend};
@@ -794,7 +800,7 @@ const PostDetailFooter = (props) => {
       {((hasPendingAproval && isApprover && !approving.change) || (isMultipleApprovers && isApprover && !hasAnswered)) && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
+            <button id="btn-disagree" className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
             <Suspense fallback={<></>}>

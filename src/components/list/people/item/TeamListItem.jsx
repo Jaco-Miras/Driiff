@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -190,6 +190,8 @@ const TeamListItem = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
 
+  const [showViewer, setShowViewer] = useState(false);
+
   const { _t } = useTranslationActions();
 
   const handleClickName = () => {
@@ -306,11 +308,17 @@ const TeamListItem = (props) => {
             </h6>
           )}
           {!isUser && (
-            <div className="user-reads-container">
+            <div
+              className="user-reads-container"
+              role="button"
+              onClick={() => {
+                setShowViewer((prev) => !prev);
+              }}
+            >
               <h6 className="no-readers profile-name">
                 {dictionary.team} {member.name} {!isUser && _t("PEOPLE.TEAM_MEMBERS_NUMBER", "(::number:: members)", { number: member.members.length })}
               </h6>
-              <Viewers users={member.members} />
+              <Viewers users={member.members} close={() => setShowViewer(false)} show={showViewer} />
             </div>
           )}
 
