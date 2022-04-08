@@ -53,13 +53,7 @@ const RecentPostItem = (props) => {
   };
   return (
     <Wrapper>
-      <Avatar
-        title={`FROM: ${post.author.name}`}
-        className="author-avatar mr-2"
-        id={post.author.id}
-        name={post.author.name}
-        imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
-      />
+      <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
       <div>
         <div className="post-title" onClick={handleRedirectToPost}>
           {post.title}

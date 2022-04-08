@@ -322,7 +322,7 @@ const TodosList = (props) => {
             </LabelWrapper>
             <div className="avatars-container">
               {todo.author !== null && (
-                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
+                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />
               )}
               {showAssignedTo && (
                 <>

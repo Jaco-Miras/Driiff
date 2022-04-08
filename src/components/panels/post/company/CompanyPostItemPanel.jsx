@@ -304,7 +304,7 @@ const CompanyPostItemPanel = (props) => {
               className="author-avatar mr-2"
               id={post.author.id}
               name={post.author.name}
-              imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
+              imageLink={post.author.profile_image_link}
             />
           </Author>
           <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">

@@ -145,7 +145,7 @@ const MemberTimeline = (props) => {
         {message !== null ? (
           <>
             {author ? (
-              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_thumbnail_link ? author.profile_image_thumbnail_link : author.profile_image_link} id={author.id} showSlider={true} scrollRef={scrollRef} />
+              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_link} id={author.id} showSlider={true} scrollRef={scrollRef} />
             ) : (
               <Avatar className="mr-3" imageLink={null} isBot={true} />
             )}

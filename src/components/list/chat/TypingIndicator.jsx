@@ -43,7 +43,7 @@ const TypingIndicator = (props) => {
       {usersTyping.length > 2 ? <PlusUsersDiv>{`${usersTyping.length - 2}+`}</PlusUsersDiv> : null}
       {usersTyping.map((u, k) => {
         if (k <= 1) {
-          return <Avatar key={k} className="xs avatar-typing" imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} name={u.name ? u.name : u.email} id={u.id} noDefaultClick={true} />;
+          return <Avatar key={k} className="xs avatar-typing" imageLink={u.profile_image_link} name={u.name ? u.name : u.email} id={u.id} noDefaultClick={true} />;
         } else return null;
       })}
       <TypingDiv className={"typing-indicator"}>
