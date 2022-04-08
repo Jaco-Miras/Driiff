@@ -114,7 +114,7 @@ const WorkspaceDashboardPanel = (props) => {
   }
 
   return (
-    <Wrapper className={`container-fluid container-inner fadeIn ${className}`} style={{ border: "3px solid red" }}>
+    <Wrapper className={`container-fluid container-inner fadeIn ${className}`}>
       <div className={"row"}>
         {workspace === null ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
