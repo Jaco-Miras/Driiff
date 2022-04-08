@@ -14,10 +14,7 @@ import PostMentionCard from "./PostMentionCard";
 import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
-  overflow: scroll;
-  @media (min-width: 768px) {
-    overflow: hidden;
-  }
+  overflow-x: auto;
   ${(props) =>
     props.bg &&
     `
@@ -30,9 +27,6 @@ const Wrapper = styled.div`
   `};
   .card.overflow-unset {
     overflow: unset;
-  }
-  .container-inner {
-    overflow-x: scroll;
   }
   .first-column {
     @media (min-width: 768px) {
@@ -127,7 +121,7 @@ const DashboardPanel = (props) => {
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
-      <div className={"row h-100 container-inner"}>
+      <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
           <Card className="mb-2 welcome-card">
             <WelcomeCard dictionary={dictionary} isWorkspace={false} />
