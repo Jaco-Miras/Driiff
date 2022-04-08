@@ -222,7 +222,7 @@ export const NotificationListItem = (props) => {
               showSlider={true}
             />
           )}
-          {notification.type === "NEW_TODO" && <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={true} />}
+          {notification.type === "NEW_TODO" && <Avatar id={user.id} name={user.name} imageLink={user.profile_image_link} showSlider={true} />}
         </div>
         {notifDisplay()}
         <div style={{ minWidth: "10px" }}>

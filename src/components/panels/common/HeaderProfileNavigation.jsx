@@ -305,7 +305,7 @@ const HomeProfileNavigation = (props) => {
         <span className="nav-link profile-button">
           <ToolTip content={loggedUser.name}>
             <div className="avatar-overlay" />
-            <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link} noDefaultClick={true} />
+            <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_link} noDefaultClick={true} />
           </ToolTip>
         </span>
         {showUserProfileDropdown && <UserProfileDropDown user={loggedUser} closeDropdown={toggleShowProfileDropdown} />}

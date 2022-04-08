@@ -279,14 +279,9 @@ export const NotificationTimelineItem = (props) => {
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
         {notification.author ? (
-          <Avatar
-            id={notification.author.id}
-            name={notification.author.name}
-            imageLink={notification.author.profile_image_thumbnail_link ? notification.author.profile_image_thumbnail_link : notification.author.profile_image_link}
-            showSlider={true}
-          />
+          <Avatar id={notification.author.id} name={notification.author.name} imageLink={notification.author.profile_image_link} showSlider={true} />
         ) : (
-          <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={true} />
+          <Avatar id={user.id} name={user.name} imageLink={user.profile_image_link} showSlider={true} />
         )}
       </div>
       <div>

@@ -73,7 +73,7 @@ const GrippUser = (props) => {
                   hasAccepted={user.has_accepted}
                   // onClick={handleOnNameClick}
                   // noDefaultClick={true}
-                  imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}
+                  imageLink={user.profile_image_link}
                   showSlider={true}
                 />
                 <div className="user-info-wrapper ml-3">

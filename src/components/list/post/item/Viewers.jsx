@@ -24,7 +24,7 @@ const Viewers = ({ users }) => {
         {users.map((u) => {
           return (
             <span key={u.id}>
-              <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} onClick={(e) => handleUserClick(e, u)} />{" "}
+              <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} onClick={(e) => handleUserClick(e, u)} />{" "}
               <span className="name">{u.name}</span>
             </span>
           );
