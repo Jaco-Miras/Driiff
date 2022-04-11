@@ -572,14 +572,8 @@ const WorspaceHeaderPanel = (props) => {
     );
   };
 
-  const handleRedirectToWorkspace = (e) => {
-    let payload = {
-      id: e.id,
-      name: e.name,
-      folder_id: e ? e.id : null,
-      folder_name: e ? e.name : null,
-    };
-    redirect.toWorkspace(payload, "dashboard");
+  const handleRedirectToWorkspace = (activeTopic) => {
+    redirect.toWorkspace(activeTopic, "dashboard");
   };
 
   return (
