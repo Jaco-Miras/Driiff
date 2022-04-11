@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation, MoreOptions } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember, useRedirect } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
@@ -332,7 +332,8 @@ const WorspaceHeaderPanel = (props) => {
 
   const isMobile = useMemo(() => winSize.width < 1440, [winSize]);
   const { _t } = useTranslationActions();
-  const history = useHistory();
+  const redirect = useRedirect();
+
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -572,7 +573,13 @@ const WorspaceHeaderPanel = (props) => {
   };
 
   const handleRedirectToWorkspace = (e) => {
-    history.push(`/workspace/dashboard/${e.id}/${e.name}`);
+    let payload = {
+      id: e.id,
+      name: e.name,
+      folder_id: e ? e.id : null,
+      folder_name: e ? e.name : null,
+    };
+    redirect.toWorkspace(payload, "dashboard");
   };
 
   return (
