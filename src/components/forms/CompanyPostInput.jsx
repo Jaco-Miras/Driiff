@@ -357,7 +357,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       handleClearUserMention();
       setMentionUsersPayload({});
     }
-    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0 && !content.includes("<img")) {
       setEditMode(false);
       setEditMessage(null);
       setMentionUsersPayload({});
