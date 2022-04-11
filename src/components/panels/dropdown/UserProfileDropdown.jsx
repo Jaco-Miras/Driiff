@@ -70,6 +70,7 @@ const UserProfileDropdown = (props) => {
     profile: _t("PROFILE.PROFILE", "Profile"),
     settings: _t("PROFILE.SETTINGS", "Settings"),
     signOut: _t("PROFILE.SIGN_OUT", "Sign out!"),
+    guest: _t("BADGE.GUEST", "Guest"),
   };
 
   useOutsideClick(refs.container, closeDropdown, true);
@@ -85,7 +86,7 @@ const UserProfileDropdown = (props) => {
           </span>
         </h6>
         <RoleName>
-          <span className="badge badge-primary">{user.role.display_name}</span>
+          <span className="badge badge-primary">{user.type === "external" ? dictionary.guest : user.role.display_name}</span>
         </RoleName>
       </div>
       <div className="dropdown-menu-body">
