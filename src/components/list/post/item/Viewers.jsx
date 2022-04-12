@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { Avatar, ProfileSlider } from "../../../common";
 import { CSSTransition } from "react-transition-group";
 import { useOutsideClick } from "../../../hooks";
+import { uniqBy } from "lodash";
 
 const Viewers = ({ users, show, close }) => {
   const [showSlider, setShowSlider] = useState(false);
@@ -19,13 +20,13 @@ const Viewers = ({ users, show, close }) => {
     vertical: "bottom",
     horizontal: "left",
   };
-
+  const filteredUsers = uniqBy(users, "id");
   useOutsideClick(userContainerRef, close, show);
 
   return (
     <>
       <span ref={userContainerRef} className="hover read-users-container" style={{ opacity: show ? 1 : 0, maxHeight: show ? 175 : 0 }}>
-        {users.map((u) => {
+        {filteredUsers.map((u) => {
           return (
             <span key={u.id}>
               <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} onClick={(e) => handleUserClick(e, u)} />{" "}
@@ -43,4 +44,4 @@ const Viewers = ({ users, show, close }) => {
   );
 };
 
-export default Viewers;
+export default memo(Viewers);

@@ -514,12 +514,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-      .map((m) => {
-        if (m.member_ids) {
-          return m.member_ids;
-        } else return m.id;
-      })
-      .flat()
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -584,8 +584,8 @@ const WorspaceHeaderPanel = (props) => {
 
   return (
     <>
-      <NavBarLeft className="navbar-left"  >
-        <NavBar className="navbar-nav"  >
+      <NavBarLeft className="navbar-left">
+        <NavBar className="navbar-nav">
           {match.params.page === "search" ? (
             <>
               <li className="nav-item navigation-toggler mobile-toggler">
