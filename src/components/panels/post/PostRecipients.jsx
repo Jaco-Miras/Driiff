@@ -75,7 +75,7 @@ const PostRecipients = (props) => {
     const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
 
     if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
-      recipient_names += `<span class="receiver client-shared">${renderToString(<LockIcon icon="eye" />)} ${dictionary.sharedClientBadge}</span>`;
+      recipient_names += `<span class="receiver client-shared" style="color:#29323F;">${renderToString(<LockIcon icon="eye" />)} ${dictionary.sharedClientBadge}</span>`;
     } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
       recipient_names += `<span class="receiver client-not-shared">${renderToString(<LockIcon icon="eye-off" />)} ${dictionary.notSharedClientBadge}</span>`;
     }
