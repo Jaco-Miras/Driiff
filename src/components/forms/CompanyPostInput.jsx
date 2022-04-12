@@ -352,12 +352,12 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
+    console.log(textOnly)
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
       setMentionUsersPayload({});
     }
-
-    if (textOnly.trim() === "" && editMode) {
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0 && !content.includes("<img")) {
       setEditMode(false);
       setEditMessage(null);
       setMentionUsersPayload({});
@@ -366,6 +366,15 @@ const CompanyPostInput = forwardRef((props, ref) => {
         dispatch(setEditComment(null));
       }
     }
+    /* if (textOnly.trim() === "" && editMode) {
+      setEditMode(false);
+      setEditMessage(null);
+      setMentionUsersPayload({});
+      //edit message in redux
+      if (editPostComment !== null) {
+        dispatch(setEditComment(null));
+      }
+    } */
 
     if (textOnly.trim() === "" && draftId) {
       removeDraft(draftId);
