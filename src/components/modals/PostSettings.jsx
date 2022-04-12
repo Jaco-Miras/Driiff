@@ -121,10 +121,10 @@ const PostSettings = (props) => {
           ...prevState,
           [name]: !prevState[name],
           no_reply: !prevState[name] === true ? false : prevState["no_reply"],
-          mustReplyUsers:
-            prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
-              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-              : prevState.mustReplyUsers,
+          // mustReplyUsers:
+          //   prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
+          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+          //     : prevState.mustReplyUsers,
         }));
         break;
       }
@@ -132,10 +132,10 @@ const PostSettings = (props) => {
         setForm((prevState) => ({
           ...prevState,
           [name]: !prevState[name],
-          mustReadUsers:
-            prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
-              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-              : prevState.mustReadUsers,
+          // mustReadUsers:
+          //   prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
+          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+          //     : prevState.mustReadUsers,
         }));
       }
     }
