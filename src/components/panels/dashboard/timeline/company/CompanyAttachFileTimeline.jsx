@@ -54,7 +54,7 @@ const CompanyAttachFileTimeline = (props) => {
   return (
     <Wrapper className={`attach-file-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       {
         <div>
