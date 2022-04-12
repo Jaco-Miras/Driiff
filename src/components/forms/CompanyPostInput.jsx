@@ -352,7 +352,6 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
   const handleQuillChange = (content, delta, source, editor) => {
     const textOnly = editor.getText(content);
-    console.log(textOnly)
     if (textOnly.trim() === "" && userMention) {
       handleClearUserMention();
       setMentionUsersPayload({});

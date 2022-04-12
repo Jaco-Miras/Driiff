@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { useTranslationActions } from "../../hooks";
-import { replaceChar } from "../../../helpers/stringFormatter";
-import { createJitsiMeet } from "../../../redux/actions/chatActions";
+//import { replaceChar } from "../../../helpers/stringFormatter";
+import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
+import { browserName, deviceType } from "react-device-detect";
 
 const Wrapper = styled.div`
   display: flex;
@@ -67,13 +68,23 @@ const DriffTalkMessage = (props) => {
     setStartingMeet(true);
     let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
     let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
-    setStartingMeet(true);
     const payload = {
       channel_id: channelId,
       host: false,
       room_name: getSlug() + "-" + parseChannel + "-" + channelId,
     };
-    dispatch(createJitsiMeet(payload, () => setStartingMeet(true)));
+    if (deviceType === "mobile" && browserName === "WebKit") {
+      dispatch(
+        createJitsiMeetMobile(payload, (err, res) => {
+          if (err) {
+            return;
+          }
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ token: res.data._token, room: res.data.room_name });
+        })
+      );
+    } else {
+      dispatch(createJitsiMeet(payload, () => setStartingMeet(false)));
+    }
   };
   const { _t } = useTranslationActions();
   const dictionary = {

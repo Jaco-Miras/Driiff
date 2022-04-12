@@ -559,3 +559,7 @@ export function incomingJitsiEnded(payload, callback) {
 export function setChannelInitialLoad(payload, callback) {
   return SimpleDispatchActionToReducer("SET_CHANNEL_INITIAL_LOAD", payload, callback);
 }
+
+export function createJitsiMeetMobile(payload, callback) {
+  return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START_MOBILE", "CREATE_JITSI_MEET_SUCCESS_MOBILE", "CREATE_JITSI_MEET_FAIL_MOBILE", callback);
+}
