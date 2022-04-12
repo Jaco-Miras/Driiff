@@ -4,7 +4,8 @@ import { useDispatch } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
-import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { createJitsiMeet, createJitsiMeetMobile } from "../../redux/actions/chatActions";
+import { browserName, deviceType } from "react-device-detect";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -79,7 +80,20 @@ const JitsiInviteModal = (props) => {
 
   const handleJoin = () => {
     setStartingMeet(true);
-    dispatch(createJitsiMeet(payload, () => toggle()));
+    if (deviceType === "mobile" && browserName === "WebKit") {
+      dispatch(
+        createJitsiMeetMobile(payload, (err, res) => {
+          if (err) {
+            toggle();
+            return;
+          }
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ token: res.data._token, room: res.data.room_name });
+          toggle();
+        })
+      );
+    } else {
+      dispatch(createJitsiMeet(payload, () => toggle()));
+    }
   };
 
   //   const handleSoundPlay = () => {
