@@ -4356,6 +4356,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "UPDATE_WORKSPACE_MEMBERS": {
+      const workspaceId = action.data.workspaceId;
+      return {
+        ...state,
+        activeTopic: {
+          ...state.activeTopic,
+          members: action.data.members,
+          member_ids: action.data.members.map((m) => m.id),
+        },
+        workspaces: {
+          ...state.workspaces,
+          [workspaceId]: {
+            ...state.workspaces[workspaceId],
+            members: action.data.members,
+            member_ids: action.data.members.map((m) => m.id),
+          },
+        },
+      };
+    }
     default:
       return state;
   }

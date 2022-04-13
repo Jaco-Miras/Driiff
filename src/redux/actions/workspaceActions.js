@@ -329,3 +329,7 @@ export function getRelatedWorkspace(payload, callback) {
 export function clearRelatedWorkspace(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_RELATED_WORKSPACE", payload, callback);
 }
+
+export function updateWorkspaceMember(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_MEMBERS", payload, callback);
+}
