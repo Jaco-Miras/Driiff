@@ -92,6 +92,7 @@ const useTodos = (fetchTodosOnMount = false) => {
             }
             return false;
           } else {
+            const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
             //if (t.workspace && !t.assigned_to) return false;
             if (t.user && t.user === loggedUser.id && notExpired) return true;
             if (t.assigned_to && t.assigned_to.id !== loggedUser.id) return false;

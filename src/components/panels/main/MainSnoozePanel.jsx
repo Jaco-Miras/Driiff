@@ -112,7 +112,7 @@ const MainSnooze = (props) => {
 
   const snoozeTime = 180;
   const snoozeCycle = 180;
-  const expTodo = 5; //mins
+  const todoShow = 5 * 60; //minutes * seconds
 
   const dictionary = {
     notificationMention: _t("SNOOZE.MENTION", "mentioned you in ::title::", { title: "" }),
@@ -206,9 +206,10 @@ const MainSnooze = (props) => {
   };
 
   const todoCLean = () => {
-    var inMins = getTimestampInMins(expTodo);
+    //var inMins = getTimestampInMins(expTodo);
+    let timestamp = Math.floor(Date.now() / 1000);
     const todos = getReminders({ filter: { status: "", search: "" } });
-    return todos.filter((t) => t.remind_at && t.remind_at.timestamp <= inMins && t.status !== "OVERDUE" && t.show_notification);
+    return todos.filter((t) => t.remind_at && t.remind_at.timestamp - timestamp <= todoShow && t.status !== "OVERDUE");
   };
 
   const huddleClean = (h) => {

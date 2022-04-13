@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import Tooltip from "react-tooltip-lite";
 import styled from "styled-components";
 import { onClickSendButton, putChannel, createZoomMeeting, generateZoomSignature, createGoogleMeet } from "../../../redux/actions/chatActions";
@@ -162,6 +163,7 @@ const ChatFooterPanel = (props) => {
 
   //const history = useHistory();
   //const zoomActions = useZoomActions();
+  const params = useParams();
   const { localizeChatDate } = useTimeFormat();
 
   const dispatch = useDispatch();
@@ -428,6 +430,7 @@ const ChatFooterPanel = (props) => {
 
     let modalPayload = {
       type: "jitsi_confirmation",
+      params: params,
     };
 
     dispatch(addToModals(modalPayload));
