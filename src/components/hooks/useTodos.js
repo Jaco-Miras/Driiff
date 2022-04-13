@@ -79,9 +79,9 @@ const useTodos = (fetchTodosOnMount = false) => {
           if (filter.status !== "")
             return t.status === filter.status;
           */
-
+          const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
           if (filter.status !== "") {
-            if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== loggedUser.id && t.user === loggedUser.id;
+            if (filter.status === "ASSIGNED_TO_OTHERS") return t.user === loggedUser.id && notExpired;
             if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id;
             if (t.status === filter.status) return !(t.workspace && !t.assigned_to);
             if (t.status === "DONE") {
@@ -92,7 +92,6 @@ const useTodos = (fetchTodosOnMount = false) => {
             }
             return false;
           } else {
-            const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
             //if (t.workspace && !t.assigned_to) return false;
             if (t.user && t.user === loggedUser.id && notExpired) return true;
             if (t.assigned_to && t.assigned_to.id !== loggedUser.id) return false;

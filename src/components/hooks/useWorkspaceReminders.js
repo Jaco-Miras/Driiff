@@ -113,8 +113,9 @@ const useWorkspaceReminders = () => {
                 return false;
               }
             }
+            const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
             if (filter.status !== "") {
-              if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== loggedUser.id && t.user === loggedUser.id;
+              if (filter.status === "ASSIGNED_TO_OTHERS") return t.user === loggedUser.id && notExpired;
               if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id;
               if (t.status === filter.status) return true;
               if (t.status === "DONE") {
@@ -125,7 +126,6 @@ const useWorkspaceReminders = () => {
               }
               return false;
             } else {
-              const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
               return !t.assigned_to_others && notExpired;
             }
           }
