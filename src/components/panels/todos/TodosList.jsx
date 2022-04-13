@@ -115,6 +115,7 @@ const LabelWrapper = styled.div`
 `;
 
 const RightSectionWrapper = styled.div`
+  min-width: 415px;
   @media all and (max-width: 480px) {
     flex-flow: row wrap;
   }
