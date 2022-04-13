@@ -15,6 +15,12 @@ import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
 import { stripHtml } from "../../helpers/stringFormatter";
+import ChannelSelect from "../forms/ChannelSelect";
+import { CheckBox } from "../forms";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { getChannels } from "../../redux/services";
+import { uniqBy } from "lodash";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
@@ -55,6 +61,18 @@ const Wrapper = styled(Modal)`
   }
   .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
     border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .react-datepicker-wrapper {
+    min-width: 180px;
+    max-width: 210px;
+    input {
+      width: 210px;
+    }
+  }
+  .modal-footer {
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
   }
 `;
 
@@ -109,7 +127,7 @@ const TodoReminderModal = (props) => {
   /**
    * @todo refactor
    */
-  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create" } = props.data;
+  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create", videoMeeting = false, channel = null } = props.data;
 
   const {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
@@ -124,6 +142,7 @@ const TodoReminderModal = (props) => {
   const users = useSelector((state) => state.users.users);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
+  const channels = useSelector((state) => state.chat.channels);
   const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -143,6 +162,10 @@ const TodoReminderModal = (props) => {
       value: mode === "create" ? user.id : null,
     },
   });
+  const [videoChecked, setVideoChecked] = useState(videoMeeting);
+  const [calendarInvite, setCalendarInvite] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState(channel ? { ...channel, label: channel.title, value: channel.id } : null);
+  const [channelInputValue, setChannelInputValue] = useState("");
 
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
@@ -152,7 +175,7 @@ const TodoReminderModal = (props) => {
   const [initFocused, setInitFocused] = useState(false);
 
   const [workspaceOptions, setWorkspaceOptions] = useState([]);
-  const [selectedWorkspace, setSelectedWorkspace] = useState(null);
+  const [selectedWorkspace, setSelectedWorkspace] = useState(params && workspaces[params.workspaceId] ? { ...workspaces[params.workspaceId], label: workspaces[params.workspaceId].name, value: workspaces[params.workspaceId].id } : null);
   const [userOptions, setUserOptions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [userInputValue, setUserInputValue] = useState("");
@@ -581,6 +604,36 @@ const TodoReminderModal = (props) => {
       file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
       remove_file_ids: removedFiles.map((f) => f.id),
     };
+    // if (videoChecked) {
+    //   if (selectedWorkspace) {
+    //     const channel_id = selectedWorkspace.channel && selectedWorkspace.channel.id ? selectedWorkspace.channel.id : selectedWorkspace.team_channel ? selectedWorkspace.team_channel.id : 0;
+    //     payload = {
+    //       ...payload,
+    //       link_type: "DRIFF_TALK",
+    //       link_id: channel_id,
+    //     };
+    //   } else if (!selectedWorkspace && selectedUser) {
+    //     //find the direct channel between logged user and selected user
+    //   }
+    //   if (calendarInvite) {
+    //     payload = { ...payload, send_invite: true };
+    //   }
+    // }
+    if (videoChecked && selectedChannel) {
+      if (calendarInvite) {
+        payload = { ...payload, send_invite: true };
+      }
+      if (isNaN(selectedChannel.id)) {
+        //create channel first
+      } else {
+        payload = {
+          ...payload,
+          link_type: "DRIFF_TALK",
+          link_id: selectedChannel.id,
+        };
+      }
+    }
+
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
       toggle();
@@ -788,6 +841,94 @@ const TodoReminderModal = (props) => {
     if (a.name === user.name) return -1;
     else return 0;
   });
+
+  const toggleCheck = () => {
+    setVideoChecked((prevState) => !prevState);
+  };
+
+  const filterPassedTime = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(time);
+    return currentDate.getTime() < selectedDate.getTime();
+  };
+
+  const handlePickDate = (date) => {
+    setCustomTimeValue(date);
+  };
+
+  const toggleCalendarInvite = () => {
+    setCalendarInvite((prevState) => !prevState);
+  };
+
+  const handleSelectChannel = (value) => {
+    setSelectedChannel(value);
+  };
+
+  const handleChannelInputChange = (e) => {
+    setChannelInputValue(e);
+  };
+
+  let selectedWorkspaceChannels = [];
+  if (selectedWorkspace) {
+    const teamChannel =
+      selectedWorkspace.team_channel && selectedWorkspace.team_channel.id
+        ? {
+            ...selectedWorkspace.team_channel,
+            team: true,
+            title: selectedWorkspace.name,
+            id: selectedWorkspace.team_channel.id,
+            label: selectedWorkspace.name,
+            value: selectedWorkspace.team_channel.id,
+            entity_id: selectedWorkspace.id,
+            type: "TOPIC",
+          }
+        : null;
+    const guestChannel =
+      selectedWorkspace.channel && selectedWorkspace.channel.id
+        ? {
+            ...selectedWorkspace.channel,
+            team: false,
+            title: selectedWorkspace.name,
+            id: selectedWorkspace.channel.id,
+            label: selectedWorkspace.name,
+            value: selectedWorkspace.channel.id,
+            entity_id: selectedWorkspace.id,
+            type: "TOPIC",
+          }
+        : null;
+    if (selectedWorkspace.is_shared) {
+      selectedWorkspaceChannels = [guestChannel, teamChannel].filter((c) => c);
+    } else {
+      selectedWorkspaceChannels = [teamChannel].filter((c) => c);
+    }
+  }
+  //console.log(selectedWorkspace, selectedWorkspaceChannels);
+  const channelOptions = selectedWorkspace
+    ? selectedWorkspaceChannels
+    : Object.values(channels).map((channel) => {
+        return { ...channel, label: channel.title, value: channel.id };
+      });
+
+  const promiseOptions = (value) =>
+    new Promise((resolve) => {
+      resolve(getChannels({ search: channelInputValue, skip: 0, limit: 15 }));
+    })
+      .then((result) => {
+        if (result.data) {
+          const options = uniqBy(
+            [...channelOptions, ...result.data.results].map((o) => {
+              return { ...o, label: o.title, value: o.id };
+            }),
+            "id"
+          ).filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+          return options;
+        } else {
+          return uniqBy(channelOptions, "id").filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+        }
+      })
+      .catch((error) => {
+        //error
+      });
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
@@ -1079,6 +1220,35 @@ const TodoReminderModal = (props) => {
             </div>
           </>
         )}
+        <div className="column mb-2 mt-2 clearfix">
+          <div className="col-6 float-left">
+            <CheckBox name="must_read" checked={videoChecked} onClick={toggleCheck} type="danger">
+              Video Meeting
+            </CheckBox>
+            {videoChecked && (
+              <>
+                <div className="modal-label">Channels</div>
+                <SelectedUserContainer className="mb-2">
+                  <ChannelSelect
+                    defaultOptions={channelOptions}
+                    // options={channelOptions}
+                    value={selectedChannel}
+                    inputValue={channelInputValue}
+                    onChange={handleSelectChannel}
+                    onInputChange={handleChannelInputChange}
+                    isMulti={false}
+                    isClearable={true}
+                    isSearchable
+                    loadOptions={promiseOptions}
+                    searchable={true}
+                  />
+                </SelectedUserContainer>
+              </>
+            )}
+          </div>
+          <div className="col-6 float-left"></div>
+        </div>
+
         <RadioInputContainer className="column mt-2">
           <div className="col-12 col-lg-4 modal-label mb-1">{dictionary.remindMeOn}</div>
           <div className="col-12 mb-3">
@@ -1128,23 +1298,36 @@ const TodoReminderModal = (props) => {
                 </RadioInput>
               </RadioInputWrapper>
               {showDateTimePicker && (
-                <InputGroup>
-                  <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
+                <div>
+                  <DatePicker showMonthDropdown showYearDropdown dropdownMode="select" filterTime={filterPassedTime} showTimeSelect timeIntervals={15} dateFormat="MMMM d, yyyy h:mm aa" selected={customTimeValue} onChange={handlePickDate} />
                   <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
-                </InputGroup>
+                </div>
+                // <InputGroup>
+                //   <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
+                //   <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
+                // </InputGroup>
               )}
             </InputContainer>
           </div>
         </RadioInputContainer>
       </ModalBody>
       <ModalFooter>
-        <Button outline color="secondary" onClick={toggle}>
-          {dictionary.cancel}
-        </Button>
-        <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
-          {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-          {dictionary.snooze}
-        </Button>{" "}
+        <div>
+          {videoChecked && (
+            <CheckBox name="must_read" checked={calendarInvite} onClick={toggleCalendarInvite} type="danger">
+              Send calendar invite
+            </CheckBox>
+          )}
+        </div>
+        <div>
+          <Button className="mr-2" outline color="secondary" onClick={toggle}>
+            {dictionary.cancel}
+          </Button>
+          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+            {dictionary.snooze}
+          </Button>{" "}
+        </div>
       </ModalFooter>
     </Wrapper>
   );

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
-import { clearModal } from "../../redux/actions/globalActions";
+import { clearModal, addToModals, postToDo } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useToaster } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
 
 const ModalWrapper = styled(Modal)`
@@ -23,12 +23,22 @@ const ModalWrapper = styled(Modal)`
   .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
     border-color: ${({ theme }) => theme.colors.secondary};
   }
+  button.btn.btn-secondary {
+    background-color: ${(props) => props.theme.colors.third}!important;
+    background: ${(props) => props.theme.colors.third}!important;
+    color: ${(props) => props.theme.colors.primary};
+    border-color: ${(props) => props.theme.colors.primary} !important;
+  }
+  button.btn.btn-secondary:not(:disabled):not(.disabled):focus {
+    box-shadow: none !important;
+  }
 `;
 
 const JitsiConfirmationModal = (props) => {
-  const { type, size = "m" } = props.data;
+  const { type, size = "m", params = {} } = props.data;
 
   const dispatch = useDispatch();
+  const toaster = useToaster();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
@@ -93,6 +103,45 @@ const JitsiConfirmationModal = (props) => {
     dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
+  const handleScheduleCall = () => {
+    const create = (payload, callback) => {
+      dispatch(postToDo(payload, callback));
+    };
+    const createFromModal = (callback = () => {}) => {
+      const onConfirm = (payload, modalCallback = () => {}) => {
+        create(payload, (err, res) => {
+          if (err) {
+            toaster.error(dictionary.toasterGeneraError);
+          }
+          if (res) {
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+          }
+          // if (params.workspaceId) {
+          //   fetchWsCount({ topic_id: params.workspaceId });
+          // } else {
+          //   fetchDetail();
+          // }
+          modalCallback(err, res);
+          callback(err, res);
+        });
+      };
+
+      let payload = {
+        type: "todo_reminder",
+        actions: {
+          onSubmit: onConfirm,
+        },
+        videoMeeting: true,
+        channel: selectedChannel,
+        params: params,
+      };
+
+      dispatch(addToModals(payload));
+    };
+    createFromModal();
+    toggle();
+  };
+
   return (
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.jitsiMeet}</ModalHeaderSection>
@@ -103,8 +152,11 @@ const JitsiConfirmationModal = (props) => {
         <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle} disabled={startingMeet}>
           {dictionary.no}
         </Button>
+        <Button className="btn btn-secondary" onClick={handleScheduleCall}>
+          Schedule a call
+        </Button>
         <Button className="btn btn-primary" color="primary" onClick={handleConfirm} disabled={startingMeet}>
-          {dictionary.yes}
+          Start now
         </Button>{" "}
       </ModalFooter>
     </ModalWrapper>
