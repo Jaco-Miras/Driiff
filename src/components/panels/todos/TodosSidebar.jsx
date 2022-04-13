@@ -68,7 +68,7 @@ const TodosSidebar = (props) => {
             <Filter onClick={setFilter} data-filter="OVERDUE" active={filter === "OVERDUE"} className={"list-group-item d-flex align-items-center"}>
               <span className="text-danger fa fa-circle mr-2" />
               {dictionary.statusExpired}
-              {/* {count && count.overdue > 0 && <span className="small ml-auto">{count.overdue}</span>} */}
+              {count && count.overdue > 0 && <span className="small ml-auto">{count.overdue}</span>}
             </Filter>
             <Filter onClick={setFilter} data-filter="TODAY" active={filter === "TODAY"} className={"list-group-item d-flex align-items-center"}>
               <span data-filter="TODAY">
