@@ -122,7 +122,9 @@ const TodosBody = (props) => {
 
   const handleLinkClick = (e, todo) => {
     e.preventDefault();
-    if (todo.link_type === "CHAT") {
+    if (todo.link_type === "DRIFF_TALK") {
+      todoActions.updateFromModal(todo);
+    } else if (todo.link_type === "CHAT") {
       redirect.toChat(todo.data.channel, todo.data.chat_message);
     } else {
       let post = {

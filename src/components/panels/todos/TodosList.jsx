@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { Avatar, ToolTip } from "../../common";
+import { Avatar, ToolTip, SvgIconFeather } from "../../common";
 import { TodoCheckBox } from "../../forms";
 //import quillHelper from "../../../helpers/quillHelper";
 import { setViewFiles, incomingFileData } from "../../../redux/actions/fileActions";
 import { useDispatch, useSelector } from "react-redux";
-import { SvgIconFeather } from "../../common";
 import { sessionService } from "redux-react-session";
 
 const Icon = styled(SvgIconFeather)`
@@ -48,6 +47,18 @@ const ItemList = styled.li`
   .workspace-label {
     text-align: right;
     cursor: pointer;
+  }
+  .driff-talk-label {
+    text-align: left;
+    span {
+      display: inline-flex;
+      align-items: center;
+    }
+    svg {
+      margin-left: 5px;
+      width: 1rem;
+      height: 1rem;
+    }
   }
   .todo-title {
     text-decoration: ${(props) => (props.isDone ? "line-through" : "none")};
@@ -271,13 +282,21 @@ const TodosList = (props) => {
     (todo.workspace !== null && todo.assigned_to === null) ||
     (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user) ||
     (todo.assigned_to && todo.author && todo.assigned_to.id !== todo.author.id);
-
+  // console.log(todo);
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>
         {todo.workspace && showWsBadge && (
           <div className="text-truncate false mt-2 workspace-label" onClick={(e) => handleRedirectToWorkspace(e, todo)}>
             <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
+          </div>
+        )}
+        {todo.link_type && todo.link_type === "DRIFF_TALK" && (
+          <div className="text-truncate false mt-2 driff-talk-label">
+            <span className={"badge ml-4 badge-light border-0"}>
+              Driff Talk
+              <SvgIconFeather icon="video-driff" />
+            </span>
           </div>
         )}
         <div className="d-flex align-items-center reminder-content">
@@ -321,9 +340,7 @@ const TodosList = (props) => {
               )}
             </LabelWrapper>
             <div className="avatars-container">
-              {todo.author !== null && (
-                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />
-              )}
+              {todo.author !== null && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />}
               {showAssignedTo && (
                 <>
                   <Icon icon="chevron-right" />
