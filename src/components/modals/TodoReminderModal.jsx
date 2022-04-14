@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import DateTimePicker from "react-datetime-picker";
+//import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
@@ -21,6 +21,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { getChannels } from "../../redux/services";
 import { uniqBy } from "lodash";
+import { postCreateChannel, renameChannelKey, getChannelDetail } from "../../redux/actions/chatActions";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
@@ -520,6 +521,28 @@ const TodoReminderModal = (props) => {
       }));
     }
 
+    if (mode === "edit" && item.link_type === "DRIFF_TALK") {
+      //get the channel and set the selected channel
+      let channel;
+      if (channels[item.link_id]) {
+        channel = { ...channels[item.link_id], value: item.link_id, label: channels[item.link_id].title, name: channels[item.link_id].title };
+        setSelectedChannel(channel);
+      } else {
+        //get the channel
+        dispatch(
+          getChannelDetail({ id: item.link_id }, (err, res) => {
+            if (err) return;
+            setSelectedChannel({
+              ...res.data,
+              id: res.data.id,
+              value: res.data.id,
+              label: res.data.title,
+            });
+          })
+        );
+      }
+    }
+
     if (mode === "create") {
       setSelectedUser({
         ...user,
@@ -559,6 +582,7 @@ const TodoReminderModal = (props) => {
     fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
     uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
+    toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
   };
 
   if (mode === "edit") {
@@ -697,30 +721,86 @@ const TodoReminderModal = (props) => {
       }
       if (isNaN(selectedChannel.id)) {
         //create channel first
+        dispatch(
+          postCreateChannel(
+            {
+              title: "",
+              type: "person",
+              recipient_ids: selectedChannel.recipient_ids,
+            },
+            (err, res) => {
+              if (err) {
+                toaster.error(dictionary.toasterGeneralError);
+                toggle();
+              }
+              if (res) {
+                let timestamp = Math.round(+new Date() / 1000);
+                let newchannel = {
+                  ...res.data.channel,
+                  old_id: selectedChannel.id,
+                  code: res.data.code,
+                  selected: true,
+                  hasMore: false,
+                  isFetching: false,
+                  skip: 0,
+                  replies: [],
+                  created_at: {
+                    timestamp: timestamp,
+                  },
+                  last_reply: null,
+                  title: res.data.channel.profile.name,
+                };
+                dispatch(renameChannelKey(newchannel));
+                payload = {
+                  ...payload,
+                  link_type: "DRIFF_TALK",
+                  link_id: newchannel.id,
+                };
+
+                if (attachedFiles.length > 0) {
+                  uploadFiles(payload);
+                  toggle();
+                } else {
+                  actions.onSubmit(payload);
+                  setLoading(false);
+                  toggle();
+                }
+              }
+            }
+          )
+        );
       } else {
         payload = {
           ...payload,
           link_type: "DRIFF_TALK",
           link_id: selectedChannel.id,
         };
+        if (attachedFiles.length > 0) {
+          uploadFiles(payload);
+          toggle();
+        } else {
+          actions.onSubmit(payload);
+          setLoading(false);
+          toggle();
+        }
       }
-    }
-
-    if (attachedFiles.length > 0) {
-      uploadFiles(payload);
-      toggle();
     } else {
-      actions.onSubmit(payload, (err, res) => {
-        // if (res) {
-        //   toggle();
-        // }
-        // setLoading(false);
-      });
-      /**
-       * @todo need to recheck the submit callback
-       * **/
-      setLoading(false);
-      toggle();
+      if (attachedFiles.length > 0) {
+        uploadFiles(payload);
+        toggle();
+      } else {
+        actions.onSubmit(payload, (err, res) => {
+          // if (res) {
+          //   toggle();
+          // }
+          // setLoading(false);
+        });
+        /**
+         * @todo need to recheck the submit callback
+         * **/
+        setLoading(false);
+        toggle();
+      }
     }
   };
 
@@ -1001,7 +1081,6 @@ const TodoReminderModal = (props) => {
       .catch((error) => {
         //error
       });
-
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -1016,7 +1095,7 @@ const TodoReminderModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        {itemType === null && (
+        {(itemType === null || itemType === "DRIFF_TALK") && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
@@ -1024,8 +1103,6 @@ const TodoReminderModal = (props) => {
               <div className="col-12">
                 <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
               </div>
-              {/* <div className="col-12 modal-label">{dictionary.description}</div> */}
-              {/* <div className="col-12"><StyledQuillEditor defaultValue={form.description.value} onChange={handleQuillChange} name="description" /> </div>*/}
               <div className="col-12">
                 <StyledDescriptionInput
                   className="modal-description"
@@ -1085,13 +1162,6 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
-              {/* <div className="col-12 modal-label">{dictionary.title}</div>
-              <div className="col-12 mb-3">{form.title.value}</div> */}
-              {/* <div className="col-12 modal-label">{dictionary.description}</div> */}
-              {/* <div className="col-12 mb-3">
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
-                <FileAttachments attachedFiles={item.files} showDelete={false} />
-              </div> */}
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12">
                 <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
@@ -1156,13 +1226,6 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.user ? item.user.name : "System"}</div>
-              {/* <div className="col-12 modal-label">{dictionary.title}</div>
-              <div className="col-12 mb-3">{form.title.value}</div>
-              <div className="col-12 modal-label">{dictionary.message}</div> */}
-              {/* <div className="col-12 mb-3">
-                <MessageFiles isAuthor={item.user.id === user.id} files={item.files} reply={item} type="chat" />
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
-              </div> */}
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12">
                 <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
@@ -1227,13 +1290,6 @@ const TodoReminderModal = (props) => {
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
               <div className="col-12 modal-label">{dictionary.author}</div>
               <div className="col-12 mb-3">{item.author.name}</div>
-              {/* <div className="col-12 modal-label">{dictionary.title}</div>
-              <div className="col-12 mb-3">{form.title.value}</div>
-              <div className="col-12 modal-label">{dictionary.message}</div>
-              <div className="col-12 mb-3">
-                <span dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(form.description.value) }} />
-                <FileAttachments attachedFiles={item.files} showDelete={false} />
-              </div> */}
               <div className="col-12 modal-label">{dictionary.title}</div>
               <div className="col-12">
                 <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
