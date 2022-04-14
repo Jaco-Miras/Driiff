@@ -346,7 +346,6 @@ const WorspaceHeaderPanel = (props) => {
   const { _t } = useTranslationActions();
   const redirect = useRedirect();
 
-
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
     pageTitleWorkspaceReminders: _t("PAGE_TITLE.WORKSPACE_REMINDERS", "Reminders"),
@@ -516,12 +515,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-      .map((m) => {
-        if (m.member_ids) {
-          return m.member_ids;
-        } else return m.id;
-      })
-      .flat()
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -584,7 +583,7 @@ const WorspaceHeaderPanel = (props) => {
     );
   };
 
-  const handleRedirectToWorkspace = (activeTopic) => {
+  const handleRedirectToWorkspace = () => {
     redirect.toWorkspace(activeTopic, "dashboard");
   };
 
@@ -630,13 +629,14 @@ const WorspaceHeaderPanel = (props) => {
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
                           <Avatar
-                            onClick={() => handleRedirectToWorkspace(activeTopic)}
+                            onClick={handleRedirectToWorkspace}
                             forceThumbnail={false}
                             type={activeTopic.type}
                             imageLink={activeTopic.team_channel.icon_link}
                             id={`ws_${activeTopic.id}`}
                             name={activeTopic.name}
                             noDefaultClick={false}
+                            showSlider={false}
                           />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
@@ -686,7 +686,16 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.team_channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                            onClick={handleRedirectToWorkspace}
+                            showSlider={false}
+                          />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
