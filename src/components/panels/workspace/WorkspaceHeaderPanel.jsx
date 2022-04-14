@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, useRouteMatch } from "react-router-dom";
+import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation, MoreOptions } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember, useRedirect } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
@@ -344,6 +344,8 @@ const WorspaceHeaderPanel = (props) => {
 
   const isMobile = useMemo(() => winSize.width < 1440, [winSize]);
   const { _t } = useTranslationActions();
+  const redirect = useRedirect();
+
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -514,12 +516,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.member_ids;
-          } else return m.id;
-        })
-        .flat()
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -582,6 +584,10 @@ const WorspaceHeaderPanel = (props) => {
     );
   };
 
+  const handleRedirectToWorkspace = (activeTopic) => {
+    redirect.toWorkspace(activeTopic, "dashboard");
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -623,7 +629,15 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar
+                            onClick={() => handleRedirectToWorkspace(activeTopic)}
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.team_channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                          />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
