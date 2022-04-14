@@ -329,10 +329,23 @@ export function getWorkspaceFolder(payload) {
 }
 
 export function getAllWorkspace(payload) {
-  return apiCall({
-    method: "GET",
-    url: `/v2/search-workspace?${objToUrlParams(payload)}`,
-  });
+  if (payload.cancelToken) {
+    const cancelToken = payload.cancelToken;
+    const dataPayload = { ...payload };
+    delete dataPayload.cancelToken;
+    const url = `/v2/search-workspace?${objToUrlParams(dataPayload)}`;
+    return apiCall({
+      method: "GET",
+      url: url,
+      cancelToken: cancelToken,
+    });
+  } else {
+    const url = `/v2/search-workspace?${objToUrlParams(payload)}`;
+    return apiCall({
+      method: "GET",
+      url: url,
+    });
+  }
 }
 
 export function postResendInvite(payload) {

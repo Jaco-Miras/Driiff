@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+import { SvgIconFeather, Loader } from "../../common";
+import axios from "axios";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -39,93 +40,80 @@ const Wrapper = styled.div`
       color: #495057;
     }
   }
+  .loading {
+    width: 1rem;
+    height: 1rem;
+  }
 `;
 
 const AllWorkspaceSearch = (props) => {
   const { actions, dictionary, search } = props;
 
-  const { value, searching, filterBy } = search;
+  const { value, searching, filterBy, query } = search;
   const [inputValue, setInputValue] = useState("");
+  const cancelToken = useRef(null);
 
   const handleEnter = (e) => {
     if (e.key === "Enter" && !searching) {
-      handleSearch();
+      handleSearch(inputValue);
     }
   };
 
-  const handleSearch = () => {
-    actions.updateSearch({
-      ...search,
-      //results: [],
-      value: inputValue,
-      filterBy: filterBy,
-      searching: true,
-    });
-    // actions.search(
-    //   {
-    //     search: inputValue,
-    //     skip: 0,
-    //     limit: 25,
-    //     filter_by: filterBy,
-    //   },
-    //   (err, res) => {
-    //     if (err) {
-    //       actions.updateSearch({
-    //         ...search,
-    //         searching: false,
-    //       });
-    //     } else {
-    //       actions.updateSearch({
-    //         ...search,
-    //         value: inputValue,
-    //         filterBy: filterBy,
-    //         searching: false,
-    //         count: res.data.total_count,
-    //         results: res.data.workspaces,
-    //         maxPage: Math.ceil(res.data.total_count / 25),
-    //         page: 1,
-    //       });
-    //     }
-    //   }
-    // );
+  const handleSearch = (input) => {
+    if (input.trim() !== query.value.trim()) {
+      //Check if there are any previous pending requests
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Operation canceled due to new request.");
+        cancelToken.current = null;
+      }
+
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
+      const payload = {
+        value: input,
+        filterBy: filterBy,
+        searching: true,
+      };
+      actions.updateSearch(payload);
+      actions.search(
+        {
+          search: payload.value,
+          skip: 0,
+          limit: 25,
+          filter_by: payload.filterBy,
+          cancelToken: cancelToken.current.token,
+        },
+        (err, res) => {
+          if (err) {
+            actions.updateSearch({
+              searching: false,
+            });
+          }
+          actions.updateSearch({
+            searching: false,
+            query: {
+              ...query,
+              value: payload.value,
+              hasMore: res.data.has_more,
+              skip: query.skip + res.data.workspaces.length,
+            },
+          });
+        }
+      );
+    }
   };
 
   const handleClearSearch = () => {
     actions.updateSearch({
-      //results: [],
-      //searching: true,
       value: "",
-      //filterBy: "all",
-      // page: 1,
-      // maxPage: 1,
-      // count: 0,
+      query: {
+        hasMore: false,
+        limit: 25,
+        skip: 0,
+        filterBy: filterBy,
+        value: "",
+      },
     });
-    // actions.search(
-    //   {
-    //     search: "",
-    //     skip: 0,
-    //     limit: 25,
-    //     filter_by: "all",
-    //   },
-    //   (err, res) => {
-    //     if (err) {
-    //       actions.updateSearch({
-    //         searching: false,
-    //         value: "",
-    //         filterBy: "all",
-    //       });
-    //     } else {
-    //       actions.updateSearch({
-    //         value: "",
-    //         filterBy: "all",
-    //         searching: false,
-    //         count: res.data.total_count,
-    //         results: res.data.workspaces,
-    //         maxPage: Math.ceil(res.data.total_count / 25),
-    //       });
-    //     }
-    //   }
-    // );
     setInputValue("");
   };
 
@@ -139,11 +127,10 @@ const AllWorkspaceSearch = (props) => {
 
   useEffect(() => {
     let timeoutValue = setTimeout(() => {
-      actions.updateSearch({
-        value: inputValue,
-        //results: [],
-        hasMore: true,
-      });
+      handleSearch(inputValue);
+      // actions.updateSearch({
+      //   value: inputValue,
+      // });
     }, 500);
     return () => clearTimeout(timeoutValue);
   }, [inputValue]);
@@ -162,7 +149,12 @@ const AllWorkspaceSearch = (props) => {
       <div className="action-right">
         <div className="input-group">
           <input type="text" onChange={handleSearchChange} value={inputValue} onKeyDown={handleEnter} className="form-control" placeholder={dictionary.searchWorkspacePlaceholder} aria-describedby="button-addon1" />
-          {inputValue.trim() !== "" && (
+          {searching && (
+            <button className="btn-cross" type="button">
+              <Loader />
+            </button>
+          )}
+          {!searching && inputValue.trim() !== "" && (
             <button onClick={handleClearSearch} className="btn-cross" type="button">
               <SvgIconFeather icon="x" />
             </button>

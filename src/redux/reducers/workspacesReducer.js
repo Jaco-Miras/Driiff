@@ -2,6 +2,7 @@
 import _ from "lodash";
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { uniqBy } from "lodash";
 
 const INITIAL_STATE = {
   selectedWorkspaceId: null,
@@ -38,6 +39,15 @@ const INITIAL_STATE = {
     maxPage: 1,
     count: 0,
     hasMore: false,
+    limit: 25,
+    skip: 0,
+    query: {
+      hasMore: false,
+      limit: 25,
+      skip: 0,
+      filterBy: "all",
+      value: "",
+    },
     counters: {
       all: 0,
       new: 0,
@@ -428,6 +438,27 @@ export default (state = INITIAL_STATE, action) => {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];
         }
       }
+      const ws = {
+        channel: action.data.channel,
+        created_at: action.data.topic.created_at,
+        members: action.data.members,
+        search: action.data.topic.name,
+        timestamp: action.data.topic.created_at.timestamp,
+        workspace: action.data.workspace,
+        topic: {
+          description: action.data.topic.description,
+          icon_link: null,
+          id: action.data.topic.id,
+          is_active: true,
+          is_archive: false,
+          is_favourite: false,
+          is_locked: !!action.data.topic.private,
+          is_shared: !!action.data.topic.is_shared,
+          name: action.data.topic.name,
+          created_at: action.data.topic.created_at,
+        updated_at: action.data.topic.created_at,
+        }
+      }
       return {
         ...state,
         workspaces: updatedWorkspaces,
@@ -442,6 +473,10 @@ export default (state = INITIAL_STATE, action) => {
               return acc;
             }, {})
           : state.allFolders,
+        search: {
+          ...state.search,
+          results: state.search.results.some(r => r.topic.id === ws.id) ? state.search.results : [ws, ...state.search.results]
+        }
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
@@ -3253,6 +3288,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         search: {
           ...state.search,
+          results: uniqBy([...state.search.results, ...action.data.workspaces], "topic.id"),
           folders: action.data.workspaces
             .filter((ws) => ws.workspace !== null)
             .reduce((acc, ws) => {
