@@ -38,6 +38,7 @@ const ExternalRegisterPanel = (props) => {
     last_name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     company_name: "",
     responsible_user_id: null,
   });
@@ -67,7 +68,8 @@ const ExternalRegisterPanel = (props) => {
     updatePassword: _t("UPDATE_PASSWORD.UPDATE_PASSWORD", "Update password"),
     register: _t("REGISTER.REGISTER", "Register"),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
-    password: _t("REGISTER.PASSWORD", "Password"),
+    password: _t("REGISTER.PASSWORD", "Set Your Password"),
+    confirmPassword: _t("REGISTER.REPEAT_PASSWORD", "Repeat Your Password"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
     lastName: _t("REGISTER.LAST_NAME", "Last name"),
@@ -80,6 +82,7 @@ const ExternalRegisterPanel = (props) => {
     sendLink: _t("MAGIC_LINK.SEND_LINK", "Send link"),
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
     passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
+    confirmPasswordRequired: _t("FEEDBACK.CONFIRM_PASSWORD_REQUIRED", "Confirm Password must be the same with Password."),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     yourNameRequired: _t("FEEDBACK.YOUR_NAME_REQUIRED", "Your name is required."),
     firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
@@ -165,7 +168,13 @@ const ExternalRegisterPanel = (props) => {
     } else {
       valid.password = true;
     }
-
+    /* TODO: CONFIRMED PASSWORD */
+    if (form.confirmPassword !== form.password) {
+      valid.confirmPassword = false;
+      message.confirmPassword = dictionary.confirmPasswordRequired;
+    } else {
+      valid.confirmPassword = true;
+    }
     setFormResponse({
       valid: valid,
       message: message,
@@ -267,6 +276,17 @@ const ExternalRegisterPanel = (props) => {
       </FormGroup>
       <FormGroup className="form-group">
         <PasswordInput innerRef={refs.password} name="password" onChange={handleInputChange} placeholder={dictionary.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} required />
+      </FormGroup>
+      <FormGroup className="form-group">
+        <PasswordInput
+          innerRef={refs.confirmPassword}
+          name="confirmPassword"
+          onChange={handleInputChange}
+          placeholder={dictionary.confirmPassword}
+          isValid={formResponse.valid.confirmPassword}
+          feedback={formResponse.message.confirmPassword}
+          required
+        />
       </FormGroup>
       <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
         {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.accept}
