@@ -126,7 +126,7 @@ const MainLayout = (props) => {
 
   useEffect(() => {
     const modalTimer = setTimeout(() => {
-      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link) {
+      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
         uploadModal(() => {
           clearTimeout(modalTimer);
         });

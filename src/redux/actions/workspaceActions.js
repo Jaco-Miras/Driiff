@@ -334,3 +334,7 @@ export function addWorkspaceToFolder(payload, callback) {
 export function removeWorkspaceFromFolder(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_FROM_FOLDER", payload, callback);
 }
+
+export function updateWorkspaceMember(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_MEMBERS", payload, callback);
+}

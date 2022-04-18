@@ -456,9 +456,9 @@ export default (state = INITIAL_STATE, action) => {
           is_shared: !!action.data.topic.is_shared,
           name: action.data.topic.name,
           created_at: action.data.topic.created_at,
-        updated_at: action.data.topic.created_at,
-        }
-      }
+          updated_at: action.data.topic.created_at,
+        },
+      };
       return {
         ...state,
         workspaces: updatedWorkspaces,
@@ -475,8 +475,8 @@ export default (state = INITIAL_STATE, action) => {
           : state.allFolders,
         search: {
           ...state.search,
-          results: state.search.results.some(r => r.topic.id === ws.id) ? state.search.results : [ws, ...state.search.results]
-        }
+          results: state.search.results.some((r) => r.topic.id === ws.id) ? state.search.results : [ws, ...state.search.results],
+        },
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
@@ -4447,6 +4447,25 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         folders: _.omit(state.folders, action.data.id),
+      };
+    }
+    case "UPDATE_WORKSPACE_MEMBERS": {
+      const workspaceId = action.data.workspaceId;
+      return {
+        ...state,
+        activeTopic: {
+          ...state.activeTopic,
+          members: action.data.members,
+          member_ids: action.data.members.map((m) => m.id),
+        },
+        workspaces: {
+          ...state.workspaces,
+          [workspaceId]: {
+            ...state.workspaces[workspaceId],
+            members: action.data.members,
+            member_ids: action.data.members.map((m) => m.id),
+          },
+        },
       };
     }
     default:

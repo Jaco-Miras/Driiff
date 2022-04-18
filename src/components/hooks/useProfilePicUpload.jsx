@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useSettings from "./useSettings";
 import useToaster from "./useToaster";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,8 @@ import useTodoActions from "./useTodoActions";
 import moment from "moment";
 import { DropDocument } from "../dropzone/DropDocument";
 import useTranslationActions from "./useTranslationActions";
+import { batchUploadProfileImage, batchEditUploadProfileImage } from "../../redux/actions/userAction";
+import { updateWorkspaceMember } from "../../redux/actions/workspaceActions";
 
 const useProfilePicUpload = () => {
   const refs = {
@@ -24,6 +26,8 @@ const useProfilePicUpload = () => {
 
   const toaster = useToaster();
   const dispatch = useDispatch();
+
+  const [currentProfilePic, setCurrentProfilePic] = useState(null);
 
   const dictionary = {
     uploadModalHeaderText: _t("UPLOAD_MODAL.HEADER", "Upload profile picture?"),
@@ -54,6 +58,12 @@ const useProfilePicUpload = () => {
       cb();
     }
   };
+  const guestUploadModal = (cb) => {
+    uploadProfilePicHandler();
+    if (cb) {
+      cb();
+    }
+  };
 
   const dropAction = (uploadedFiles) => {
     if (uploadedFiles.length === 0) {
@@ -68,7 +78,7 @@ const useProfilePicUpload = () => {
       mode: "profile",
       handleSubmit: handleUseProfilePic,
     };
-
+    setCurrentProfilePic(uploadedFiles[0]);
     dispatch(addToModals(modal));
   };
 
@@ -79,6 +89,16 @@ const useProfilePicUpload = () => {
       }
       setGeneralSetting({ first_login: false });
     });
+  };
+
+  const batchUploadExternalUserProfilePic = (externalUsers) => {
+    dispatch(batchUploadProfileImage(externalUsers));
+  };
+  const batchEditUploadExternalUserProfilePic = (externalUsers) => {
+    dispatch(batchEditUploadProfileImage(externalUsers));
+  };
+  const updateMembers = (members, workspaceId) => {
+    dispatch(updateWorkspaceMember({ members, workspaceId }));
   };
 
   const uploadProfilePicHandler = () => {
@@ -113,9 +133,46 @@ const useProfilePicUpload = () => {
     );
   };
 
+  const guestDropAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toaster.error(dictionary.uploadModalErrorFileType);
+    } else if (uploadedFiles.length > 1) {
+      toaster.warning(dictionary.multipleFileDetected);
+    }
+
+    let modal = {
+      type: "file_crop_upload",
+      imageFile: uploadedFiles[0],
+      mode: "profile",
+      handleSubmit: (file) => {
+        setCurrentProfilePic(file);
+      },
+    };
+    dispatch(addToModals(modal));
+  };
+
+  const renderDropDocumentGuest = () => {
+    return (
+      <DropDocument
+        acceptType="imageOnly"
+        hide
+        ref={refs.dropZoneRef}
+        onDrop={({ acceptedFiles }) => {
+          guestDropAction(acceptedFiles);
+        }}
+      />
+    );
+  };
+
   return {
     renderDropDocument,
+    renderDropDocumentGuest,
     uploadModal,
+    guestUploadModal,
+    currentProfilePic,
+    batchUploadExternalUserProfilePic,
+    batchEditUploadExternalUserProfilePic,
+    updateMembers,
   };
 };
 

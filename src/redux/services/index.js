@@ -131,6 +131,7 @@ export {
   removeTeamMember,
   createTeamChannel,
   searchUsers,
+  batchUploadProfileImage,
 } from "./user";
 
 export {
