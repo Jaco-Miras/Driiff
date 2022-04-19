@@ -556,6 +556,23 @@ const TodoReminderModal = (props) => {
     setMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (selectedChannel && selectedWorkspace) {
+      let selectedWorkspaceChannels = [];
+      const teamChannel = selectedWorkspace.team_channel ? selectedWorkspace.team_channel.id : 0;
+      const guestChannel = selectedWorkspace.channel ? selectedWorkspace.channel.id : 0;
+      if (selectedWorkspace.is_shared) {
+        selectedWorkspaceChannels = [guestChannel, teamChannel];
+      } else {
+        selectedWorkspaceChannels = [teamChannel];
+      }
+      //check if selected channel is part of the selected workspace
+      if (!selectedWorkspaceChannels.some((id) => id === selectedChannel.id)) {
+        setSelectedChannel(null);
+      }
+    }
+  }, [selectedChannel, selectedWorkspace]);
+
   const refs = {
     title: useRef(null),
     dropzone: useRef(null),
@@ -987,6 +1004,7 @@ const TodoReminderModal = (props) => {
         handleNetWorkError(error);
       });
   }
+  const hasSelectedChannel = videoChecked && selectedChannel !== null;
   const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value;
   const userOnly = user.type === "external" && selectedWorkspace === null;
   const sortedUserOptions = userOptions.sort((a, b) => {
@@ -1355,7 +1373,7 @@ const TodoReminderModal = (props) => {
             </CheckBox>
             {videoChecked && (
               <>
-                <div className="modal-label">Channels</div>
+                <div className="modal-label">Channel</div>
                 <SelectedUserContainer className="mb-2">
                   <ChannelSelect
                     defaultOptions={channelOptions}
@@ -1451,7 +1469,7 @@ const TodoReminderModal = (props) => {
           <Button className="mr-2" outline color="secondary" onClick={toggle}>
             {dictionary.cancel}
           </Button>
-          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
+          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs || !hasSelectedChannel}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {dictionary.snooze}
           </Button>{" "}
