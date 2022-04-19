@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
+import Select from "react-select";
 import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
@@ -22,6 +23,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { getChannels } from "../../redux/services";
 import { uniqBy } from "lodash";
 import { postCreateChannel, renameChannelKey, getChannelDetail } from "../../redux/actions/chatActions";
+import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
@@ -124,6 +126,17 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
+const TimePickerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  .react-select-container {
+    width: 135px;
+  }
+  .react-datepicker-wrapper input {
+    padding: 6px;
+  }
+`;
+
 const TodoReminderModal = (props) => {
   /**
    * @todo refactor
@@ -131,7 +144,7 @@ const TodoReminderModal = (props) => {
   const { type, item, parentItem = null, itemType = null, actions, params, mode = "create", videoMeeting = false, channel = null } = props.data;
 
   const {
-    generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
+    generalSettings: { dark_mode },
   } = useSettings();
 
   const { _t } = useTranslationActions();
@@ -168,9 +181,11 @@ const TodoReminderModal = (props) => {
   const [selectedChannel, setSelectedChannel] = useState(channel ? { ...channel, label: channel.title, value: channel.id } : null);
   const [channelInputValue, setChannelInputValue] = useState("");
 
+  const minEndDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(7, "days").toDate();
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, "m").toDate());
+  const [customEndDateValue, setCustomEndDateValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : null);
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
   const [initFocused, setInitFocused] = useState(false);
@@ -187,6 +202,7 @@ const TodoReminderModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
+  const [recurring, setRecurring] = useState(null);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -577,9 +593,9 @@ const TodoReminderModal = (props) => {
     }
   };
 
-  const handlePickDateTime = (e) => {
-    setCustomTimeValue(e);
-  };
+  // const handlePickDateTime = (e) => {
+  //   setCustomTimeValue(e);
+  // };
 
   const handleSelectPickDateTime = () => {
     setTimeValue("pick_data");
@@ -601,6 +617,7 @@ const TodoReminderModal = (props) => {
     if (timeValue === "pick_data") {
       const currentDate = new Date();
       const reminderDate = new Date(customTimeValue);
+      // need to recheck validation
       if (reminderDate > currentDate) {
         let convertedTime = moment.utc(reminderDate).format("YYYY-MM-DD HH:mm:ss");
         newForm.set_time.value = convertedTime.slice(0, -2) + "00";
@@ -615,6 +632,8 @@ const TodoReminderModal = (props) => {
         newForm.set_time.valid = false;
         newForm.set_time.feedback = dictionary.feedbackReminderDateFuture;
       }
+      // newForm.set_time.valid = false;
+      // newForm.set_time.feedback = dictionary.feedbackReminderDateFuture;
     } else {
       newForm.set_time.value = timeValue;
       newForm.set_time.valid = true;
@@ -660,6 +679,13 @@ const TodoReminderModal = (props) => {
     //     payload = { ...payload, send_invite: true };
     //   }
     // }
+    if (recurring) {
+      payload = { ...payload, recurring: recurring.value };
+    }
+    if (customEndDateValue) {
+      let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
+      payload = { ...payload, end_at: convertedDate.slice(0, -2) + "00" };
+    }
     if (videoChecked && selectedChannel) {
       if (calendarInvite) {
         payload = { ...payload, send_invite: true };
@@ -950,6 +976,12 @@ const TodoReminderModal = (props) => {
     return currentDate.getTime() < selectedDate.getTime();
   };
 
+  const filterPassedDate = (date) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(date);
+    return currentDate.getDate() <= selectedDate.getDate() && currentDate.getMonth() <= selectedDate.getMonth() && currentDate.getFullYear() <= selectedDate.getFullYear();
+  };
+
   const handlePickDate = (date) => {
     setCustomTimeValue(date);
   };
@@ -964,6 +996,14 @@ const TodoReminderModal = (props) => {
 
   const handleChannelInputChange = (e) => {
     setChannelInputValue(e);
+  };
+
+  const handlePickEndDate = (date) => {
+    setCustomEndDateValue(date);
+  };
+
+  const handleSelectRecurring = (e) => {
+    setRecurring(e);
   };
 
   let selectedWorkspaceChannels = [];
@@ -1027,6 +1067,12 @@ const TodoReminderModal = (props) => {
       .catch((error) => {
         //error
       });
+
+  const recurringOptions = [
+    { value: "weekly", label: "Weekly" },
+    { value: "monthly", label: "Monthly" },
+    { value: "yearly", label: "Yearly" },
+  ];
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -1372,10 +1418,54 @@ const TodoReminderModal = (props) => {
                 </RadioInput>
               </RadioInputWrapper>
               {showDateTimePicker && (
-                <div>
-                  <DatePicker showMonthDropdown showYearDropdown dropdownMode="select" filterTime={filterPassedTime} showTimeSelect timeIntervals={15} dateFormat="MMMM d, yyyy h:mm aa" selected={customTimeValue} onChange={handlePickDate} />
-                  <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
-                </div>
+                <TimePickerContainer>
+                  <div className="mr-2">
+                    <DatePicker
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      minDate={minDate}
+                      filterTime={filterPassedTime}
+                      filterDate={filterPassedDate}
+                      showTimeSelect
+                      timeIntervals={15}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      selected={customTimeValue}
+                      onChange={handlePickDate}
+                    />
+                    {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
+                  </div>
+                  <div className="d-flex align-items-center mr-2">
+                    <div className="mr-2">Recurring</div>
+                    <Select
+                      className={"react-select-container"}
+                      classNamePrefix="react-select"
+                      styles={dark_mode === "0" ? lightTheme : darkTheme}
+                      options={recurringOptions}
+                      onChange={handleSelectRecurring}
+                      menuPlacement={"top"}
+                      isClearable={true}
+                      value={recurring}
+                    />
+                  </div>
+                  <div className="d-flex align-items-center mr-2">
+                    <div className="mr-2">End date</div>
+                    <DatePicker
+                      placeholderText="Click to select a date"
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
+                      minDate={minEndDate}
+                      filterTime={filterPassedTime}
+                      filterDate={filterPassedDate}
+                      showTimeSelect
+                      timeIntervals={15}
+                      dateFormat="MMMM d, yyyy h:mm aa"
+                      selected={customEndDateValue}
+                      onChange={handlePickEndDate}
+                    />
+                  </div>
+                </TimePickerContainer>
                 // <InputGroup>
                 //   <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
                 //   <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
