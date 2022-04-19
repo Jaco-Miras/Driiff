@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { SvgIconFeather, SvgIcon } from "../../common";
 import { setNavMode } from "../../../redux/actions/globalActions";
+import { useSettings } from "../../hooks";
 
 const LogoWrapper = styled.div`
   position: relative;
@@ -57,7 +58,7 @@ const SmallDriffLogo = styled(SvgIcon)`
   min-height: 2.5rem;
   min-width: 2.5rem;
   min-height: 2.5rem;
-  filter: brightness(0) saturate(100%) invert(1);
+  /* filter: brightness(0) saturate(100%) invert(1); */
   cursor: pointer;
 `;
 
@@ -72,6 +73,14 @@ const SmallDriffLogo = styled(SvgIcon)`
 const MainLogo = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [logoFill, setLogoFill] = useState("#FFFFFF");
+  const {
+    generalSettings: { dark_mode },
+  } = useSettings();
+
+  const {
+    colors: { fifth },
+  } = useSelector((state) => state.settings.driff.theme);
 
   const companyLogo = useSelector((state) => state.settings.driff.logo);
   const handleIconClick = (e) => {
@@ -83,21 +92,36 @@ const MainLogo = (props) => {
     }
     history.push("/dashboard");
   };
+  const checkBGColor = () => {
+    if (dark_mode === "1") {
+      setLogoFill("#FFFFFF");
+      return;
+    }
+    if (lightOrDark(fifth) === "light") {
+      setLogoFill("#000");
+      return;
+    }
+    setLogoFill("#FFFFFF");
+  };
+
+  useEffect(() => {
+    checkBGColor();
+  }, [fifth, dark_mode]);
 
   return (
     <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
       {companyLogo.trim() !== "" && (
         <CompanyLogoWrapper data-link="/dashboard" onClick={handleIconClick}>
           <img className="company-logo" src={companyLogo} alt="company logo" />
-          <SvgIconFeather icon="heart" />
+          <SvgIconFeather icon="heart" fill={logoFill} />
           <div style={{ position: "relative" }}>
-            <SmallDriffLogo icon="driff-logo2" />
+            <SmallDriffLogo icon="driff-logo2" fill={logoFill} />
           </div>
         </CompanyLogoWrapper>
       )}
       {companyLogo.trim() === "" && (
         <>
-          <DriffLogo icon="driff-logo2" data-link="/dashboard" onClick={handleIconClick} />
+          <DriffLogo icon="driff-logo2" data-link="/dashboard" onClick={handleIconClick} fill={logoFill} />
         </>
       )}
     </LogoWrapper>
@@ -105,3 +129,36 @@ const MainLogo = (props) => {
 };
 
 export default MainLogo;
+
+function lightOrDark(color) {
+  let r = null;
+  let g = null;
+  let b = null;
+  let hsp = null;
+  // Check the format of the color, HEX or RGB?
+  if (color.match(/^rgb/)) {
+    // If HEX --> store the red, green, blue values in separate variables
+    color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+
+    r = color[1];
+    g = color[2];
+    b = color[3];
+  } else {
+    // If RGB --> Convert it to HEX: http://gist.github.com/983661
+    color = +("0x" + color.slice(1).replace(color.length < 5 && /./g, "$&$&"));
+
+    r = color >> 16;
+    g = (color >> 8) & 255;
+    b = color & 255;
+  }
+
+  // HSP (Highly Sensitive Poo) equation from http://alienryderflex.com/hsp.html
+  hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+
+  // Using the HSP value, determine whether the color is light or dark
+  if (hsp > 127.5) {
+    return "light";
+  } else {
+    return "dark";
+  }
+}
