@@ -147,7 +147,7 @@ const TodosBody = (props) => {
     done: false,
   });
 
-  const [sortByDate, setSortByDate] = useState(true);
+  const [sortByDate, setSortByDate] = useState(false);
 
   const handleShowTodo = () => {
     // if (showList.todo) {
