@@ -274,6 +274,11 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const StyledInput = styled.input`
+  background-color: transparent;
+  padding: 7px 0;
+`;
+
 //onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
@@ -444,22 +449,22 @@ const PostModal = (props) => {
     const rawMentionIds =
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
-            .filter((id) => {
-              return id.insert.mention ? id : null;
-            })
-            .map((mid) => Number(mid.insert.mention.user_id))
+          .filter((id) => {
+            return id.insert.mention ? id : null;
+          })
+          .map((mid) => Number(mid.insert.mention.user_id))
         : [];
     const mentionedIds =
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
-            .filter((m) => {
-              if (form.shared_with_client && hasExternal) {
-                return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
-              } else {
-                return m.insert.mention && m.insert.mention.type === "internal";
-              }
-            })
-            .map((i) => parseInt(i.insert.mention.type_id))
+          .filter((m) => {
+            if (form.shared_with_client && hasExternal) {
+              return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+            } else {
+              return m.insert.mention && m.insert.mention.type === "internal";
+            }
+          })
+          .map((i) => parseInt(i.insert.mention.type_id))
         : [];
     let payload = {
       title: form.title,
@@ -843,60 +848,60 @@ const PostModal = (props) => {
         approvers:
           item.post.users_approval.length > 0
             ? item.post.users_approval.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name,
+                type: "USER",
+                ip_address: hasRequestedChange ? null : u.ip_address,
+                is_approved: hasRequestedChange ? false : u.is_approved,
+              };
+            })
+            : [],
+        mustReadUsers:
+          item.post.must_read_users.length > 0
+            ? isAllSelectedMustRead
+              ? [
+                {
+                  id: "all",
+                  value: "all",
+                  label: "All users",
+                  icon: "users",
+                  all_ids: allUserIds,
+                },
+              ]
+              : item.post.must_read_users.map((u) => {
                 return {
                   ...u,
                   icon: "user-avatar",
                   value: u.id,
                   label: u.name,
                   type: "USER",
-                  ip_address: hasRequestedChange ? null : u.ip_address,
-                  is_approved: hasRequestedChange ? false : u.is_approved,
                 };
               })
-            : [],
-        mustReadUsers:
-          item.post.must_read_users.length > 0
-            ? isAllSelectedMustRead
-              ? [
-                  {
-                    id: "all",
-                    value: "all",
-                    label: "All users",
-                    icon: "users",
-                    all_ids: allUserIds,
-                  },
-                ]
-              : item.post.must_read_users.map((u) => {
-                  return {
-                    ...u,
-                    icon: "user-avatar",
-                    value: u.id,
-                    label: u.name,
-                    type: "USER",
-                  };
-                })
             : [],
         mustReplyUsers:
           item.post.must_reply_users.length > 0
             ? isAllSelectedMustReply
               ? [
-                  {
-                    id: "all",
-                    value: "all",
-                    label: "All users",
-                    icon: "users",
-                    all_ids: allUserIds,
-                  },
-                ]
+                {
+                  id: "all",
+                  value: "all",
+                  label: "All users",
+                  icon: "users",
+                  all_ids: allUserIds,
+                },
+              ]
               : item.post.must_reply_users.map((u) => {
-                  return {
-                    ...u,
-                    icon: "user-avatar",
-                    value: u.id,
-                    label: u.name,
-                    type: "USER",
-                  };
-                })
+                return {
+                  ...u,
+                  icon: "user-avatar",
+                  value: u.id,
+                  label: u.name,
+                  type: "USER",
+                };
+              })
             : [],
         // requiredUsers:
         //   item.post.required_users.length > 0
@@ -968,7 +973,7 @@ const PostModal = (props) => {
   });
 
   return (
-    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
+    <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal" style={{ border: "3px solid green" }}>
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody onDragOver={onDragEnter}>
         {/* <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
@@ -1001,7 +1006,8 @@ const PostModal = (props) => {
             <Label className={"modal-label"} for="post-title">
               {dictionary.postTitle}
             </Label>
-            <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
+            <span>HIPO</span>
+            <StyledInput className="w-100" style={{ borderRadius: "5px", border: form.title === "" ? "1px solid #fa4a68" : "1px solid gray" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input addressed-to-container"}>
