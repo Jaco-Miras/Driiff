@@ -1006,7 +1006,6 @@ const PostModal = (props) => {
             <Label className={"modal-label"} for="post-title">
               {dictionary.postTitle}
             </Label>
-            <span>HIPO</span>
             <StyledInput className="w-100" style={{ borderRadius: "5px", border: form.title === "" ? "1px solid #fa4a68" : "1px solid gray" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
