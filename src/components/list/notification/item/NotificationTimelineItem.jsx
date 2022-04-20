@@ -202,7 +202,7 @@ export const NotificationTimelineItem = (props) => {
       case "NEW_TODO": {
         return (
           <>
-            <span style={{ border: "3px solid white" }}>{notification.data.title && _t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
+            <span>{notification.data.title && _t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
           </>
         );
       }
