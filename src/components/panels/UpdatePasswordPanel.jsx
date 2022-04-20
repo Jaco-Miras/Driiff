@@ -110,7 +110,7 @@ const UpdatePasswordPanel = (props) => {
   return (
     <Wrapper>
       <FormInput onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email} readOnly />
-      <PasswordInput placeholder="POGI AKO" ref={ref.password} onChange={handleInputChange} isValid={error.valid} feedback={error.password} />
+      <PasswordInput ref={ref.password} onChange={handleInputChange} isValid={error.valid} feedback={error.password} />
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
         {dictionary.updatePassword}
       </button>
