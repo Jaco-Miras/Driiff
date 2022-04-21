@@ -21,15 +21,18 @@ const UpdatePasswordPanel = (props) => {
 
   const ref = {
     password: useRef(),
+    confirmPassword: useRef(),
   };
 
   const [form, setForm] = useState({
     token: match.params.token,
     email: match.params.email,
     password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState({
+    confirmPassword: "",
     password: "",
     valid: null,
   });
@@ -50,7 +53,7 @@ const UpdatePasswordPanel = (props) => {
     setFormMessage({ error: "", success: "" });
 
     let valid = true;
-    let errorData = { password: "", form: "" };
+    let errorData = { password: "", form: "", confirmPassword: "" };
 
     if (form.password === "") {
       valid = false;
@@ -71,12 +74,24 @@ const UpdatePasswordPanel = (props) => {
         errorData = { ...errorData, password: dictionary.invalidPassword, valid: false };
       }
     }
+    console.log(form.confirmPassword !== form.password)
+    // PASSWORD CONFIRM VALIDATION
+    if (form.confirmPassword !== form.password) {
+      valid = false;
+      console.log("ERROR")
+      errorData = { ...errorData, confirmPassword: dictionary.confirmPassword, valid: false };
+    } else {
+      valid = true;
+    }
 
     setError(errorData);
 
     if (valid !== true) {
       if (errorData.password !== "") {
         ref.password.current.focus();
+      }
+      if (errorData.confirmPassword !== errorData.password) {
+        ref.confirmPassword.current.focus();
       }
     }
 
@@ -110,7 +125,9 @@ const UpdatePasswordPanel = (props) => {
   return (
     <Wrapper>
       <FormInput onChange={handleInputChange} name="email" type="email" placeholder="Email" value={form.email} readOnly />
-      <PasswordInput ref={ref.password} onChange={handleInputChange} isValid={error.valid} feedback={error.password} />
+      <PasswordInput name="password" placeholder="Set Password" ref={ref.password} onChange={handleInputChange} isValid={error.valid} feedback={error.password} />
+      <PasswordInput name="confirmPassword" placeholder="Repeat Password" ref={ref.confirmPassword} onChange={handleInputChange} isValid={error.valid} feedback={error.confirmPassword} />
+
       <button className="btn btn-primary btn-block" onClick={handleUpdatePassword}>
         {dictionary.updatePassword}
       </button>
