@@ -69,6 +69,7 @@ const ExternalRegisterPanel = (props) => {
     register: _t("REGISTER.REGISTER", "Register"),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
     password: _t("REGISTER.PASSWORD", "Set Your Password"),
+    invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     confirmPassword: _t("REGISTER.REPEAT_PASSWORD", "Repeat Your Password"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
