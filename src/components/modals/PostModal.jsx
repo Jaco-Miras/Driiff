@@ -293,6 +293,11 @@ const StyledModalFooter = styled(ModalFooter)`
   }
 `;
 
+const StyledInput = styled.input`
+  background-color: transparent;
+  padding: 7px 0;
+`;
+
 //onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
@@ -1070,7 +1075,7 @@ const PostModal = (props) => {
             <Label className={"modal-label"} for="post-title">
               {dictionary.postTitle}
             </Label>
-            <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
+            <StyledInput className="w-100" style={{ borderRadius: "5px", border: form.title === "" ? "1px solid #fa4a68" : "1px solid gray" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input addressed-to-container"}>
