@@ -109,6 +109,7 @@ const INITIAL_STATE = {
       },
       translated_channels: [],
       chat_language: "en",
+      first_login: true,
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {
