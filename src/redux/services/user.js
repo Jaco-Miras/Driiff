@@ -447,6 +447,28 @@ export function postUploadProfileImage(payload) {
     },
   });
 }
+export function batchUploadProfileImage(payload) {
+  const asyncPayload = payload.map((p) => {
+    let url = `/users/${p.id}/upload-profile-image`;
+    return apiCall({
+      method: "POST",
+      url: url,
+      hasFile: true,
+      data: {
+        file: p.profile_pic,
+      },
+    });
+  });
+
+  return new Promise(async (res, rej) => {
+    try {
+      const result = await Promise.all(asyncPayload);
+      res({ status: 200, data: result.map((res) => res.data) });
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
 
 export function postExternalUserData(payload = {}) {
   let url = "/v2/external-user-data";
