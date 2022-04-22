@@ -41,12 +41,14 @@ const WorkspaceIcon = (props) => {
         className={avatarClassName}
         forceThumbnail={false}
         type={"TOPIC"}
-        imageLink={workspace.team_channel ? workspace.team_channel.icon_link : null}
+        imageLink={workspace.team_channel.icon_link ? workspace.team_channel.icon_link : null}
         id={workspace.id}
         name={isCompanyWs && companyName ? companyName : workspace.name}
         onClick={onSelectWorkspace}
         noDefaultClick={onSelectWorkspace ? false : true}
         showSlider={false}
+        isCompany={workspace.team_channel.icon_link ? false : isCompanyWs}
+        icon={"home"}
       />
     </Wrapper>
   );
