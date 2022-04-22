@@ -1090,7 +1090,7 @@ const PostModal = (props) => {
         <StyledDescriptionInput
           className="modal-description"
           height={winSize.height - 660}
-          showFileButton={true}
+          // showFileButton={true}
           onChange={handleQuillChange}
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
