@@ -135,6 +135,7 @@ export const NotificationTimelineItem = (props) => {
   const handleAuthorNameClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
     if (notification.author) {
       history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
     }
@@ -179,6 +180,7 @@ export const NotificationTimelineItem = (props) => {
               {notification.author.name}{" "}
             </span>
             <span dangerouslySetInnerHTML={{ __html: dictionary.notificationComment }} />
+            <span> on {notification.data.title}</span>
           </>
         );
       }
@@ -200,7 +202,7 @@ export const NotificationTimelineItem = (props) => {
       case "NEW_TODO": {
         return (
           <>
-            <span>{_t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
+            <span>{notification.data.title && _t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
           </>
         );
       }
