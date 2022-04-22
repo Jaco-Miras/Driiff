@@ -3,7 +3,7 @@ import Select, { components } from "react-select";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../common";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
-import { useSettings } from "../hooks";
+import { useSettings, useTranslationActions } from "../hooks";
 import AsyncCreatableSelect from "react-select/async-creatable";
 
 const SelectOption = styled.div`
@@ -99,7 +99,30 @@ const MultiValueLabelWrapper = styled.div`
     `}
 `;
 
+const StyledBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 5px !important;
+  color: #363636;
+  font-size: 10px;
+  letter-spacing: 0;
+  line-height: 12px;
+  ${(props) => props.isTeam && "background:#D1EEFF !important;"}
+`;
+
+const EyeIcon = styled(SvgIconFeather)`
+  width: 0.7rem;
+  height: 0.7rem;
+`;
+
 const Option = (props) => {
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
+  };
   return (
     <SelectOption>
       <components.Option {...props}>
@@ -120,12 +143,49 @@ const Option = (props) => {
             ) : null}
             {props.children}
             {props.data.is_lock === 1 && <LockIcon className="ml-1" icon="lock" strokeWidth="2" width="12" />}
-            {props.data.is_shared && <LockIcon className="ml-1" icon="eye" strokeWidth="2" width="12" />}
+            {/* {props.data.is_shared && <LockIcon className="ml-1" icon="eye" strokeWidth="2" width="12" />} */}
+            {props.data.is_shared && props.data.isTeamChannel && (
+              <StyledBadge className={"badge badge-external ml-1"} isTeam={true}>
+                <EyeIcon icon={"eye-off"} className={"mr-1"} />
+                {dictionary.withTeam}
+              </StyledBadge>
+            )}
+            {props.data.is_shared && props.data.isGuestChannel && (
+              <StyledBadge className={"badge badge-external ml-1"} isTeam={false}>
+                <EyeIcon icon={"eye"} className={"mr-1"} />
+                {dictionary.withClient}
+              </StyledBadge>
+            )}
             {props.data.huddle && <LockIcon className="ml-1" icon="cpu" strokeWidth="2" width="12" />}
           </span>
         )}
       </components.Option>
     </SelectOption>
+  );
+};
+const SingleValue = ({ children, ...props }) => {
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
+    withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
+  };
+  return (
+    <components.SingleValue {...props}>
+      {children}
+      {props.data.is_shared && props.data.isTeamChannel && (
+        <StyledBadge className={"badge badge-external ml-1"} isTeam={true}>
+          <EyeIcon icon={"eye-off"} className={"mr-1"} />
+          {dictionary.withTeam}
+        </StyledBadge>
+      )}
+      {props.data.is_shared && props.data.isGuestChannel && (
+        <StyledBadge className={"badge badge-external ml-1"} isTeam={false}>
+          <EyeIcon icon={"eye"} className={"mr-1"} />
+          {dictionary.withClient}
+        </StyledBadge>
+      )}
+    </components.SingleValue>
   );
 };
 
@@ -155,7 +215,7 @@ const FolderSelect = forwardRef((props, ref) => {
     generalSettings: { dark_mode },
   } = useSettings();
 
-  let components = { Option };
+  let components = { Option, SingleValue };
 
   if (isMulti) {
     components = { Option, MultiValueContainer };

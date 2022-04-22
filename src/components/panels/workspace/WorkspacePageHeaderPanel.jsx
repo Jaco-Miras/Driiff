@@ -139,6 +139,7 @@ const WorkspacePageHeaderPanel = (props) => {
     pageTitleClientChat: _t("PAGE_TITLE.CLIENT_CHAT", "Client chat"),
     pageTitleTeamChat: _t("PAGE_TITLE.TEAM_CHAT", "Team chat"),
     pageTitleReminders: _t("PAGE_TITLE.REMINDERS", "Reminders"),
+    pageTitleMeetings: _t("PAGE_TITLE.MEETINGS", "Meetings"),
   };
 
   return (
@@ -174,6 +175,11 @@ const WorkspacePageHeaderPanel = (props) => {
             <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
               {isLoaded && workspaceReminders[params.workspaceId].count.todo_with_date > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.todo_with_date}</div>}
+            </MainNavLink>
+          </li>
+          <li className="nav-item">
+            <MainNavLink isSub={true} to={`/workspace/meetings${pathname}`}>
+              {dictionary.pageTitleMeetings}
             </MainNavLink>
           </li>
           <li className="nav-item">

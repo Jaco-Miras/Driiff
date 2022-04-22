@@ -8,21 +8,19 @@ import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-//import quillHelper from "../../helpers/quillHelper";
 import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
 import moment from "moment";
-// import MessageFiles from "../list/chat/Files/MessageFiles";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
 import { stripHtml } from "../../helpers/stringFormatter";
-import ChannelSelect from "../forms/ChannelSelect";
-import { CheckBox } from "../forms";
+//import ChannelSelect from "../forms/ChannelSelect";
+//import { CheckBox } from "../forms";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { getChannels } from "../../redux/services";
-import { uniqBy } from "lodash";
-import { postCreateChannel, renameChannelKey, getChannelDetail } from "../../redux/actions/chatActions";
+// import { getChannels } from "../../redux/services";
+//import { uniqBy } from "lodash";
+//import { postCreateChannel, renameChannelKey, getChannelDetail, getChannels, getChannel } from "../../redux/actions/chatActions";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 
 const Wrapper = styled(Modal)`
@@ -156,7 +154,7 @@ const TodoReminderModal = (props) => {
   const users = useSelector((state) => state.users.users);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
-  const channels = useSelector((state) => state.chat.channels);
+  //const channels = useSelector((state) => state.chat.channels);
   const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -176,10 +174,10 @@ const TodoReminderModal = (props) => {
       value: mode === "create" ? user.id : null,
     },
   });
-  const [videoChecked, setVideoChecked] = useState(videoMeeting);
-  const [calendarInvite, setCalendarInvite] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState(channel ? { ...channel, label: channel.title, value: channel.id } : null);
-  const [channelInputValue, setChannelInputValue] = useState("");
+  //const [videoChecked, setVideoChecked] = useState(videoMeeting);
+  // const [calendarInvite, setCalendarInvite] = useState(false);
+  // const [selectedChannel, setSelectedChannel] = useState(channel ? { ...channel, label: channel.title, value: channel.id } : null);
+  // const [channelInputValue, setChannelInputValue] = useState("");
 
   const minEndDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(7, "days").toDate();
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
@@ -347,14 +345,18 @@ const TodoReminderModal = (props) => {
       }
 
       setWorkspaceOptions(
-        Object.values(workspaces).map((ws) => {
-          return {
-            ...ws,
-            icon: "compass",
-            value: ws.id,
-            label: ws.name,
-          };
-        })
+        [
+          ...Object.values(workspaces).map((ws) => {
+            return {
+              ...ws,
+              icon: "compass",
+              value: ws.id,
+              label: ws.name,
+            };
+          }),
+        ]
+          .filter((ws) => ws.members.some((m) => m.id === user.id))
+          .sort((a, b) => b.id - a.id)
       );
     }
   }, [mounted, workspacesLoaded, params]);
@@ -537,27 +539,27 @@ const TodoReminderModal = (props) => {
       }));
     }
 
-    if (mode === "edit" && item.link_type === "DRIFF_TALK") {
-      //get the channel and set the selected channel
-      let channel;
-      if (channels[item.link_id]) {
-        channel = { ...channels[item.link_id], value: item.link_id, label: channels[item.link_id].title, name: channels[item.link_id].title };
-        setSelectedChannel(channel);
-      } else {
-        //get the channel
-        dispatch(
-          getChannelDetail({ id: item.link_id }, (err, res) => {
-            if (err) return;
-            setSelectedChannel({
-              ...res.data,
-              id: res.data.id,
-              value: res.data.id,
-              label: res.data.title,
-            });
-          })
-        );
-      }
-    }
+    // if (mode === "edit" && item.link_type === "DRIFF_TALK") {
+    //   //get the channel and set the selected channel
+    //   let channel;
+    //   if (channels[item.link_id]) {
+    //     channel = { ...channels[item.link_id], value: item.link_id, label: channels[item.link_id].title, name: channels[item.link_id].title };
+    //     setSelectedChannel(channel);
+    //   } else {
+    //     //get the channel
+    //     dispatch(
+    //       getChannelDetail({ id: item.link_id }, (err, res) => {
+    //         if (err) return;
+    //         setSelectedChannel({
+    //           ...res.data,
+    //           id: res.data.id,
+    //           value: res.data.id,
+    //           label: res.data.title,
+    //         });
+    //       })
+    //     );
+    //   }
+    // }
 
     if (mode === "create") {
       setSelectedUser({
@@ -572,22 +574,22 @@ const TodoReminderModal = (props) => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (selectedChannel && selectedWorkspace) {
-      let selectedWorkspaceChannels = [];
-      const teamChannel = selectedWorkspace.team_channel ? selectedWorkspace.team_channel.id : 0;
-      const guestChannel = selectedWorkspace.channel ? selectedWorkspace.channel.id : 0;
-      if (selectedWorkspace.is_shared) {
-        selectedWorkspaceChannels = [guestChannel, teamChannel];
-      } else {
-        selectedWorkspaceChannels = [teamChannel];
-      }
-      //check if selected channel is part of the selected workspace
-      if (!selectedWorkspaceChannels.some((id) => id === selectedChannel.id)) {
-        setSelectedChannel(null);
-      }
-    }
-  }, [selectedChannel, selectedWorkspace]);
+  // useEffect(() => {
+  //   if (selectedChannel && selectedWorkspace) {
+  //     let selectedWorkspaceChannels = [];
+  //     const teamChannel = selectedWorkspace.team_channel ? selectedWorkspace.team_channel.id : 0;
+  //     const guestChannel = selectedWorkspace.channel ? selectedWorkspace.channel.id : 0;
+  //     if (selectedWorkspace.is_shared) {
+  //       selectedWorkspaceChannels = [guestChannel, teamChannel];
+  //     } else {
+  //       selectedWorkspaceChannels = [teamChannel];
+  //     }
+  //     //check if selected channel is part of the selected workspace
+  //     if (!selectedWorkspaceChannels.some((id) => id === selectedChannel.id)) {
+  //       setSelectedChannel(null);
+  //     }
+  //   }
+  // }, [selectedChannel, selectedWorkspace]);
 
   const refs = {
     title: useRef(null),
@@ -758,95 +760,103 @@ const TodoReminderModal = (props) => {
       let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
       payload = { ...payload, end_at: convertedDate.slice(0, -2) + "00" };
     }
-    if (videoChecked && selectedChannel) {
-      if (calendarInvite) {
-        payload = { ...payload, send_invite: true };
-      }
-      if (isNaN(selectedChannel.id)) {
-        //create channel first
-        dispatch(
-          postCreateChannel(
-            {
-              title: "",
-              type: "person",
-              recipient_ids: selectedChannel.recipient_ids,
-            },
-            (err, res) => {
-              if (err) {
-                toaster.error(dictionary.toasterGeneralError);
-                toggle();
-              }
-              if (res) {
-                let timestamp = Math.round(+new Date() / 1000);
-                let newchannel = {
-                  ...res.data.channel,
-                  old_id: selectedChannel.id,
-                  code: res.data.code,
-                  selected: true,
-                  hasMore: false,
-                  isFetching: false,
-                  skip: 0,
-                  replies: [],
-                  created_at: {
-                    timestamp: timestamp,
-                  },
-                  last_reply: null,
-                  title: res.data.channel.profile.name,
-                };
-                dispatch(renameChannelKey(newchannel));
-                payload = {
-                  ...payload,
-                  link_type: "DRIFF_TALK",
-                  link_id: newchannel.id,
-                };
-
-                if (attachedFiles.length > 0) {
-                  uploadFiles(payload);
-                  toggle();
-                } else {
-                  actions.onSubmit(payload);
-                  setLoading(false);
-                  toggle();
-                }
-              }
-            }
-          )
-        );
-      } else {
-        payload = {
-          ...payload,
-          link_type: "DRIFF_TALK",
-          link_id: selectedChannel.id,
-        };
-        if (attachedFiles.length > 0) {
-          uploadFiles(payload);
-          toggle();
-        } else {
-          actions.onSubmit(payload);
-          setLoading(false);
-          toggle();
-        }
-      }
+    if (attachedFiles.length > 0) {
+      uploadFiles(payload);
+      toggle();
     } else {
-      if (attachedFiles.length > 0) {
-        uploadFiles(payload);
-        toggle();
-      } else {
-        actions.onSubmit(payload, (err, res) => {
-          // if (res) {
-          //   toggle();
-          // }
-          // setLoading(false);
-        });
-        /**
-         * @todo need to recheck the submit callback
-         * **/
-        setLoading(false);
-        toggle();
-      }
+      actions.onSubmit(payload);
+      setLoading(false);
+      toggle();
     }
-  };
+    //selected channel implementation
+    // if (videoChecked && selectedChannel) {
+    //   if (calendarInvite) {
+    //     payload = { ...payload, send_invite: true };
+    //   }
+    //   if (isNaN(selectedChannel.id)) {
+    //     //create channel first
+    //     dispatch(
+    //       postCreateChannel(
+    //         {
+    //           title: "",
+    //           type: "person",
+    //           recipient_ids: selectedChannel.recipient_ids,
+    //         },
+    //         (err, res) => {
+    //           if (err) {
+    //             toaster.error(dictionary.toasterGeneralError);
+    //             toggle();
+    //           }
+    //           if (res) {
+    //             let timestamp = Math.round(+new Date() / 1000);
+    //             let newchannel = {
+    //               ...res.data.channel,
+    //               old_id: selectedChannel.id,
+    //               code: res.data.code,
+    //               selected: true,
+    //               hasMore: false,
+    //               isFetching: false,
+    //               skip: 0,
+    //               replies: [],
+    //               created_at: {
+    //                 timestamp: timestamp,
+    //               },
+    //               last_reply: null,
+    //               title: res.data.channel.profile.name,
+    //             };
+    //             dispatch(renameChannelKey(newchannel));
+    //             payload = {
+    //               ...payload,
+    //               link_type: "DRIFF_TALK",
+    //               link_id: newchannel.id,
+    //             };
 
+    //             if (attachedFiles.length > 0) {
+    //               uploadFiles(payload);
+    //               toggle();
+    //             } else {
+    //               actions.onSubmit(payload);
+    //               setLoading(false);
+    //               toggle();
+    //             }
+    //           }
+    //         }
+    //       )
+    //     );
+    //   } else {
+    //     payload = {
+    //       ...payload,
+    //       link_type: "DRIFF_TALK",
+    //       link_id: selectedChannel.id,
+    //     };
+    //     if (attachedFiles.length > 0) {
+    //       uploadFiles(payload);
+    //       toggle();
+    //     } else {
+    //       actions.onSubmit(payload);
+    //       setLoading(false);
+    //       toggle();
+    //     }
+    //   }
+    // } else {
+    //   if (attachedFiles.length > 0) {
+    //     uploadFiles(payload);
+    //     toggle();
+    //   } else {
+    //     actions.onSubmit(payload, (err, res) => {
+    //       // if (res) {
+    //       //   toggle();
+    //       // }
+    //       // setLoading(false);
+    //     });
+    //     /**
+    //      * @todo need to recheck the submit callback
+    //      * **/
+    //     setLoading(false);
+    //     toggle();
+    //   }
+    // }
+  };
   const handleTitleRef = (e) => {
     if (e && !initFocused) {
       refs.title.current = e;
@@ -1030,7 +1040,7 @@ const TodoReminderModal = (props) => {
         handleNetWorkError(error);
       });
   }
-  const hasSelectedChannel = videoChecked && selectedChannel !== null;
+  //const hasSelectedChannel = videoChecked && selectedChannel !== null;
   const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value;
   const userOnly = user.type === "external" && selectedWorkspace === null;
   const sortedUserOptions = userOptions.sort((a, b) => {
@@ -1038,9 +1048,9 @@ const TodoReminderModal = (props) => {
     else return 0;
   });
 
-  const toggleCheck = () => {
-    setVideoChecked((prevState) => !prevState);
-  };
+  // const toggleCheck = () => {
+  //   setVideoChecked((prevState) => !prevState);
+  // };
 
   const filterPassedTime = (time) => {
     const currentDate = new Date();
@@ -1058,17 +1068,17 @@ const TodoReminderModal = (props) => {
     setCustomTimeValue(date);
   };
 
-  const toggleCalendarInvite = () => {
-    setCalendarInvite((prevState) => !prevState);
-  };
+  // const toggleCalendarInvite = () => {
+  //   setCalendarInvite((prevState) => !prevState);
+  // };
 
-  const handleSelectChannel = (value) => {
-    setSelectedChannel(value);
-  };
+  // const handleSelectChannel = (value) => {
+  //   setSelectedChannel(value);
+  // };
 
-  const handleChannelInputChange = (e) => {
-    setChannelInputValue(e);
-  };
+  // const handleChannelInputChange = (e) => {
+  //   setChannelInputValue(e);
+  // };
 
   const handlePickEndDate = (date) => {
     setCustomEndDateValue(date);
@@ -1078,67 +1088,66 @@ const TodoReminderModal = (props) => {
     setRecurring(e);
   };
 
-  let selectedWorkspaceChannels = [];
-  if (selectedWorkspace) {
-    const teamChannel =
-      selectedWorkspace.team_channel && selectedWorkspace.team_channel.id
-        ? {
-            ...selectedWorkspace.team_channel,
-            team: true,
-            title: selectedWorkspace.name,
-            id: selectedWorkspace.team_channel.id,
-            label: selectedWorkspace.name,
-            value: selectedWorkspace.team_channel.id,
-            entity_id: selectedWorkspace.id,
-            type: "TOPIC",
-          }
-        : null;
-    const guestChannel =
-      selectedWorkspace.channel && selectedWorkspace.channel.id
-        ? {
-            ...selectedWorkspace.channel,
-            team: false,
-            title: selectedWorkspace.name,
-            id: selectedWorkspace.channel.id,
-            label: selectedWorkspace.name,
-            value: selectedWorkspace.channel.id,
-            entity_id: selectedWorkspace.id,
-            type: "TOPIC",
-          }
-        : null;
-    if (selectedWorkspace.is_shared) {
-      selectedWorkspaceChannels = [guestChannel, teamChannel].filter((c) => c);
-    } else {
-      selectedWorkspaceChannels = [teamChannel].filter((c) => c);
-    }
-  }
-  //console.log(selectedWorkspace, selectedWorkspaceChannels);
-  const channelOptions = selectedWorkspace
-    ? selectedWorkspaceChannels
-    : Object.values(channels).map((channel) => {
-        return { ...channel, label: channel.title, value: channel.id };
-      });
+  // let selectedWorkspaceChannels = [];
+  // if (selectedWorkspace) {
+  //   const teamChannel =
+  //     selectedWorkspace.team_channel && selectedWorkspace.team_channel.id
+  //       ? {
+  //           ...selectedWorkspace.team_channel,
+  //           team: true,
+  //           title: selectedWorkspace.name,
+  //           id: selectedWorkspace.team_channel.id,
+  //           label: selectedWorkspace.name,
+  //           value: selectedWorkspace.team_channel.id,
+  //           entity_id: selectedWorkspace.id,
+  //           type: "TOPIC",
+  //         }
+  //       : null;
+  //   const guestChannel =
+  //     selectedWorkspace.channel && selectedWorkspace.channel.id
+  //       ? {
+  //           ...selectedWorkspace.channel,
+  //           team: false,
+  //           title: selectedWorkspace.name,
+  //           id: selectedWorkspace.channel.id,
+  //           label: selectedWorkspace.name,
+  //           value: selectedWorkspace.channel.id,
+  //           entity_id: selectedWorkspace.id,
+  //           type: "TOPIC",
+  //         }
+  //       : null;
+  //   if (selectedWorkspace.is_shared) {
+  //     selectedWorkspaceChannels = [guestChannel, teamChannel].filter((c) => c);
+  //   } else {
+  //     selectedWorkspaceChannels = [teamChannel].filter((c) => c);
+  //   }
+  // }
+  // const channelOptions = selectedWorkspace
+  //   ? selectedWorkspaceChannels
+  //   : Object.values(channels).map((channel) => {
+  //       return { ...channel, label: channel.title, value: channel.id };
+  //     });
 
-  const promiseOptions = (value) =>
-    new Promise((resolve) => {
-      resolve(getChannels({ search: channelInputValue, skip: 0, limit: 15 }));
-    })
-      .then((result) => {
-        if (result.data) {
-          const options = uniqBy(
-            [...channelOptions, ...result.data.results].map((o) => {
-              return { ...o, label: o.title, value: o.id };
-            }),
-            "id"
-          ).filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
-          return options;
-        } else {
-          return uniqBy(channelOptions, "id").filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
-        }
-      })
-      .catch((error) => {
-        //error
-      });
+  // const promiseOptions = (value) =>
+  //   new Promise((resolve) => {
+  //     resolve(getChannels({ search: channelInputValue, skip: 0, limit: 15 }));
+  //   })
+  //     .then((result) => {
+  //       if (result.data) {
+  //         const options = uniqBy(
+  //           [...channelOptions, ...result.data.results].map((o) => {
+  //             return { ...o, label: o.title, value: o.id };
+  //           }),
+  //           "id"
+  //         ).filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+  //         return options;
+  //       } else {
+  //         return uniqBy(channelOptions, "id").filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       //error
+  //     });
 
   const recurringOptions = [
     { value: "weekly", label: "Weekly" },
@@ -1159,7 +1168,7 @@ const TodoReminderModal = (props) => {
           onCancel={handleHideDropzone}
           attachedFiles={attachedFiles}
         />
-        {(itemType === null || itemType === "DRIFF_TALK") && (
+        {itemType === null && (
           <>
             <div className="column">
               <div className="col-12 modal-info">{dictionary.reminderInfo}</div>
@@ -1414,10 +1423,10 @@ const TodoReminderModal = (props) => {
         )}
         <div className="column mb-2 mt-2 clearfix">
           <div className="col-6 float-left">
-            <CheckBox name="must_read" checked={videoChecked} onClick={toggleCheck} type="danger">
+            {/* <CheckBox name="must_read" checked={videoChecked} onClick={toggleCheck} type="danger">
               Video Meeting
-            </CheckBox>
-            {videoChecked && (
+            </CheckBox> */}
+            {/* {videoChecked && (
               <>
                 <div className="modal-label">Channel</div>
                 <SelectedUserContainer className="mb-2">
@@ -1436,7 +1445,7 @@ const TodoReminderModal = (props) => {
                   />
                 </SelectedUserContainer>
               </>
-            )}
+            )} */}
           </div>
           <div className="col-6 float-left"></div>
         </div>
@@ -1538,28 +1547,18 @@ const TodoReminderModal = (props) => {
                     />
                   </div>
                 </TimePickerContainer>
-                // <InputGroup>
-                //   <DateTimePicker minDate={minDate} onChange={handlePickDateTime} value={customTimeValue} locale={language} format={`${date_format} ${time_format}`} disableClock={true} />
-                //   <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>
-                // </InputGroup>
               )}
             </InputContainer>
           </div>
         </RadioInputContainer>
       </ModalBody>
       <ModalFooter>
-        <div>
-          {videoChecked && (
-            <CheckBox name="must_read" checked={calendarInvite} onClick={toggleCalendarInvite} type="danger">
-              Send calendar invite
-            </CheckBox>
-          )}
-        </div>
+        <div></div>
         <div>
           <Button className="mr-2" outline color="secondary" onClick={toggle}>
             {dictionary.cancel}
           </Button>
-          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs || !hasSelectedChannel}>
+          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {dictionary.snooze}
           </Button>{" "}

@@ -43,6 +43,7 @@ const NewModalButtons = (props) => {
     btn2Ref: useRef(null),
     btn3Ref: useRef(null),
     btn4Ref: useRef(null),
+    btn5Ref: useRef(null),
   };
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -91,6 +92,29 @@ const NewModalButtons = (props) => {
     dispatch(addToModals(payload));
   };
 
+  const handleShowVideoReminderModal = () => {
+    const onConfirm = (payload) => {
+      dispatch(
+        postToDo(payload, (err, res) => {
+          if (err) {
+            toaster.error(dictionary.toasterGeneraError);
+          }
+          if (res) {
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+          }
+        })
+      );
+    };
+    let payload = {
+      type: "video_reminder",
+      actions: {
+        onSubmit: onConfirm,
+      },
+    };
+    onShowModalButtons();
+    dispatch(addToModals(payload));
+  };
+
   const handleShowChatModal = () => {
     let payload = {
       type: "chat_create_edit",
@@ -126,6 +150,12 @@ const NewModalButtons = (props) => {
           <span onClick={handleShowReminderModal} ref={refs.btn3Ref}>
             <Icon icon="calendar" />
             {dictionary.reminder}
+          </span>
+        </div>
+        <div>
+          <span onClick={handleShowVideoReminderModal} ref={refs.btn5Ref}>
+            <Icon icon="video-driff" />
+            Meeting
           </span>
         </div>
         {!isExternal && user.role && user.role.id <= securitySettings.add_workspace && (

@@ -105,6 +105,45 @@ const useTodos = (fetchTodosOnMount = false) => {
       .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
+  const getVideoReminders = ({ filter = "" }) => {
+    return Object.values(items)
+      .map((t) => {
+        if (t.author === null && t.link_type === null) {
+          const author = Object.values(users).find((u) => u.id === t.user);
+          return {
+            ...t,
+            author: author ? author : { ...loggedUser },
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
+          };
+        } else {
+          return {
+            ...t,
+            status: t.remind_at !== null && localizeDate(t.remind_at.timestamp, "YYYY-MM-DD") === moment().format("YYYY-MM-DD") && t.status === "NEW" ? "TODAY" : t.status,
+          };
+        }
+      })
+      .filter((t) => {
+        if (filter) {
+          if (filter.search !== "") {
+            if (!(t.title.toLowerCase().includes(filter.search.toLowerCase().trim()) || t.description.toLowerCase().includes(filter.search.toLowerCase().trim()))) {
+              return false;
+            }
+          }
+
+          if (filter.status !== "ALL") {
+            if (filter.status === "ASSIGNED_TO_OTHERS") return t.assigned_to && t.assigned_to.id !== loggedUser.id && t.user === loggedUser.id && t.link_type === "DRIFF_TALK";
+            if (filter.status === "ADDED_BY_OTHERS") return t.assigned_to && t.assigned_to.id === loggedUser.id && t.user !== loggedUser.id && t.link_type === "DRIFF_TALK";
+            if (t.status === filter.status) return !(t.workspace && !t.assigned_to) && t.link_type === "DRIFF_TALK";
+            return false;
+          } else {
+            return t.link_type === "DRIFF_TALK";
+          }
+        }
+        return t.link_type === "DRIFF_TALK";
+      })
+      .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+  };
+
   useEffect(() => {
     todoActions.fetchDetail({});
   }, []);
@@ -121,6 +160,7 @@ const useTodos = (fetchTodosOnMount = false) => {
     count,
     //getSortedItems,
     getReminders,
+    getVideoReminders,
     action: {
       ...todoActions,
       loadMore,

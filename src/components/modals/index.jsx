@@ -40,3 +40,4 @@ export { default as UploadProfilePicModal } from "./UploadProfilePicModal";
 export { default as GoogleMeetInviteModal } from "./GoogleMeetInviteModal";
 export { default as JitsiInviteModal } from "./JitsiInviteModal";
 export { default as JitsiConfirmationModal } from "./JitsiConfirmationModal";
+export { default as VideoMeetingModal } from "./VideoMeetingModal";

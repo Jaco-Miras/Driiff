@@ -156,6 +156,7 @@ const CompanyHeaderPanel = () => {
     pageTitleSearch: _t("PAGE_TITLE.SEARCH", "Search"),
     pageTitleSettings: _t("PAGE_TITLE.SETTINGS", "Settings"),
     pageTitleTodos: _t("PAGE_TITLE.TODOS", "Reminders"),
+    pageTitleMeetings: _t("PAGE_TITLE.MEETINGS", "Meetings"),
     pageTitleSystemPeople: _t("PAGE_TITLE.SYSTEM_PEOPLE", "All people"),
     generalSearch: _t("GENERAL.SEARCH", "Search"),
     generalNotifications: _t("GENERAL.NOTIFICATIONS", "Notifications"),
@@ -290,6 +291,10 @@ const CompanyHeaderPanel = () => {
       }
       case "todos": {
         setPageName(dictionary.pageTitleTodos);
+        break;
+      }
+      case "meetings": {
+        setPageName(dictionary.pageTitleMeetings);
         break;
       }
       default: {

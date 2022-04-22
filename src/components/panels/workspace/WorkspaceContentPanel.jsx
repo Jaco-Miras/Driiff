@@ -16,6 +16,7 @@ const WorkspaceRemindersPanel = lazy(() => import("../workspace/WorkspaceReminde
 const WorkspaceSettingsPanel = lazy(() => import("../workspace/WorkspaceSettingsPanel"));
 const WorkspaceWorkInProgressPanel = lazy(() => import("../workspace/WorkspaceWorkInProgressPanel"));
 const AllWorkspace = lazy(() => import("./AllWorkspace"));
+const MeetingPanel = lazy(() => import("../meeting/MeetingPanel"));
 
 const Wrapper = styled.div`
   position: relative;
@@ -172,6 +173,10 @@ const WorkspaceContentPanel = (props) => {
                       "/workspace/wip/:workspaceId/:workspaceName",
                       "/workspace/wip",
                     ]}
+                  />
+                  <Route
+                    render={() => <MeetingPanel {...props} isWorkspace={true} />}
+                    path={["/workspace/meetings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/meetings/:workspaceId/:workspaceName", "/workspace/meetings"]}
                   />
                   <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
                   <Redirect

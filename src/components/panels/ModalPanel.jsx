@@ -40,6 +40,7 @@ import {
   GoogleMeetInviteModal,
   JitsiInviteModal,
   JitsiConfirmationModal,
+  VideoMeetingModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -103,6 +104,8 @@ const ModalPanel = () => {
             return <CreatePersonalLinksModal key={modal.type} data={modal} />;
           case "todo_reminder":
             return <TodoReminderModal key={modal.type} data={modal} />;
+          case "video_reminder":
+            return <VideoMeetingModal key={modal.type} data={modal} />;
           // case "update_found":
           //   return <DriffUpdateModal key={modal.type} data={modal} />;
           case "release":
