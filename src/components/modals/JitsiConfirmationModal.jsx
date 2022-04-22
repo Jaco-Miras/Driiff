@@ -127,7 +127,7 @@ const JitsiConfirmationModal = (props) => {
       };
 
       let payload = {
-        type: "todo_reminder",
+        type: "video_reminder",
         actions: {
           onSubmit: onConfirm,
         },
@@ -152,9 +152,11 @@ const JitsiConfirmationModal = (props) => {
         <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle} disabled={startingMeet}>
           {dictionary.no}
         </Button>
-        <Button className="btn btn-secondary" onClick={handleScheduleCall}>
-          Schedule a call
-        </Button>
+        {(selectedChannel.type === "DIRECT" || selectedChannel.type === "TOPIC") && (
+          <Button className="btn btn-secondary" onClick={handleScheduleCall}>
+            Schedule a call
+          </Button>
+        )}
         <Button className="btn btn-primary" color="primary" onClick={handleConfirm} disabled={startingMeet}>
           Start now
         </Button>{" "}

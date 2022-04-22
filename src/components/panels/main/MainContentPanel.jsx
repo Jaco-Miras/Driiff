@@ -6,7 +6,7 @@ import RedirectPanel from "../redirect/RedirectPanel";
 //import MaintenancePanel from "./MaintenancePanel";
 import DashboardPanel from "../dashboard/DashboardPanel";
 const CompanyChatPanel = lazy(() => import("../company/CompanyChatPanel"));
-const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
+//const CompanyDashboardPanel = lazy(() => import("../company/CompanyDashboardPanel"));
 const CompanyFilesPanel = lazy(() => import("../company/CompanyFilesPanel"));
 const CompanyPeoplePanel = lazy(() => import("../company/CompanyPeoplePanel"));
 const CompanyPostsPanel = lazy(() => import("../company/CompanyPostsPanel"));
@@ -18,6 +18,7 @@ const UserNotificationPanel = lazy(() => import("../user/UserNotificationPanel")
 const UserProfilePanel = lazy(() => import("../user/UserProfilePanel"));
 const UserSearchPanel = lazy(() => import("../user/UserSearchPanel"));
 const AdminPanel = lazy(() => import("../../panels/admin/AdminPanel"));
+const MeetingPanel = lazy(() => import("../meeting/MeetingPanel"));
 
 const Wrapper = styled.div`
   padding-bottom: ${(props) => (props.isOnWorkspace ? "0 !important" : "calc(1.875rem * 2)")};
@@ -60,6 +61,7 @@ const MainContentPanel = (props) => {
           )}
           <Route {...props} component={CompanySettingsPanel} path={["/settings"]} />
           <Route {...props} component={TodosPanel} path={["/todos"]} />
+          <Route {...props} component={MeetingPanel} path={["/meetings"]} />
           {/* {isOwner && <Route {...props} component={HuddlePanel} path={["/bot"]} />} */}
           <Route {...props} component={RedirectPanel} path={["/magic-link/:token"]} />
           <Route {...props} component={ReleasesPanel} path={["/releases"]} />

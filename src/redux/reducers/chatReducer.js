@@ -129,10 +129,10 @@ export default function (state = INITIAL_STATE, action) {
       delete channels[action.data.old_id];
       delete action.data.old_id;
       let newChannel = { ...action.data, selected: true };
-      let previousSelectedChannel = { ...state.selectedChannel };
+      // let previousSelectedChannel = { ...state.selectedChannel };
       if (action.data.selected) {
-        if (previousSelectedChannel) {
-          channels[previousSelectedChannel.id].selected = false;
+        if (state.selectedChannel) {
+          channels[state.selectedChannel.id].selected = false;
         }
         ///selectedChannel = action.data;
       }

@@ -105,6 +105,9 @@ const CompanyPageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
+            <MainNavLink to="/meetings">{dictionary.pageTitleMeetings}</MainNavLink>
+          </li>
+          <li className="nav-item">
             <MainNavLink to="/files">{dictionary.pageTitleFiles}</MainNavLink>
           </li>
           <li className="nav-item">

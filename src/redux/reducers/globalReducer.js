@@ -66,6 +66,10 @@ const INITIAL_STATE = {
     doneRecently: [],
     is_snooze: false,
   },
+  meetings: {
+    filter: "ALL",
+    search: "",
+  },
   releases: {
     timestamp: null,
     items: [],
