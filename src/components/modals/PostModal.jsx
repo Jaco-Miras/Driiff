@@ -459,11 +459,11 @@ const PostModal = (props) => {
     } else {
       valid.title = true;
     }
-    if (form.addressedTo === "") {
-      valid.addressedTo = false;
-      message.addressedTo = dictionary.addressedToRequired;
+    if (form.selectedAddressTo.length === 0) {
+      valid.selectedAddressTo = false;
+      message.selectedAddressTo = dictionary.addressedToRequired;
     } else {
-      valid.addressedTo = true;
+      valid.selectedAddressTo = true;
     }
     setFormResponse({
       valid: valid,
@@ -1059,7 +1059,8 @@ const PostModal = (props) => {
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
-          <FolderSelect options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          <FolderSelect name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
         </WrapperDiv>
         <WrapperDiv className={"m-0"}>
           <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
