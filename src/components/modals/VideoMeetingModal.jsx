@@ -130,6 +130,24 @@ const TimePickerContainer = styled.div`
   }
 `;
 
+const NestedModalWrapper = styled.div`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary};
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary};
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary};
+  }
+`;
+
 const VideoMeetingModal = (props) => {
   /**
    * @todo refactor
@@ -166,13 +184,13 @@ const VideoMeetingModal = (props) => {
       value: null,
     },
     assigned_to: {
-      value: mode === "create" ? user.id : null,
+      value: null,
     },
   });
 
   const minEndDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(7, "days").toDate();
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
-  const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
+  const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "3h");
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, "m").toDate());
   const [customEndDateValue, setCustomEndDateValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : null);
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
@@ -192,6 +210,7 @@ const VideoMeetingModal = (props) => {
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
   const [recurring, setRecurring] = useState(null);
+  const [showNestedModal, setShowNestedModal] = useState(false);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -416,6 +435,7 @@ const VideoMeetingModal = (props) => {
     uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
     toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    save: _t("MODAL.SAVE", "Save"),
   };
 
   if (mode === "edit") {
@@ -876,10 +896,35 @@ const VideoMeetingModal = (props) => {
     { value: "monthly", label: "Monthly" },
     { value: "yearly", label: "Yearly" },
   ];
+
+  const toggleNested = () => {
+    setShowNestedModal((prevState) => !prevState);
+  };
+
+  const handleConfirm = () => {
+    handleRemind();
+  };
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>Video meeting</ModalHeaderSection>
       <ModalBody data-set-update={componentUpdate} onDragOver={onDragEnter}>
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
+          <ModalHeaderSection toggle={toggleNested}>Create meeting</ModalHeaderSection>
+          <ModalBody>
+            <div>Are you sure you want to create this meeting?</div>
+          </ModalBody>
+          <ModalFooter>
+            <NestedModalWrapper>
+              <Button className="btn-outline-secondary mr-2" onClick={toggleNested}>
+                {dictionary.cancel}
+              </Button>
+              <Button color="primary" onClick={handleConfirm}>
+                {dictionary.save}
+              </Button>
+            </NestedModalWrapper>
+          </ModalFooter>
+        </Modal>
         <DropDocument
           hide={!showDropzone}
           ref={refs.dropzone}
@@ -1056,7 +1101,7 @@ const VideoMeetingModal = (props) => {
           <Button className="mr-2" outline color="secondary" onClick={toggle}>
             {dictionary.cancel}
           </Button>
-          <Button color="primary" onClick={handleRemind} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
+          <Button color="primary" onClick={toggleNested} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             Set meeting
           </Button>{" "}

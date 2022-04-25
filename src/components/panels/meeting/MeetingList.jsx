@@ -164,11 +164,6 @@ const MeetingList = (props) => {
   const redirect = useRedirect();
   const params = useParams();
 
-  const handleLinkClick = (e, todo) => {
-    e.preventDefault();
-    todoActions.updateFromModal(todo);
-  };
-
   const [showList, setShowList] = useState({
     todo: true,
     done: false,
@@ -247,7 +242,6 @@ const MeetingList = (props) => {
                 todo={item}
                 todoActions={todoActions}
                 dictionary={dictionary}
-                handleLinkClick={handleLinkClick}
                 todoFormat={todoFormat}
                 todoFormatShortCode={todoFormatShortCode}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}
@@ -273,7 +267,6 @@ const MeetingList = (props) => {
                 todo={item}
                 todoActions={todoActions}
                 dictionary={dictionary}
-                handleLinkClick={handleLinkClick}
                 todoFormat={todoFormat}
                 todoFormatShortCode={todoFormatShortCode}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}

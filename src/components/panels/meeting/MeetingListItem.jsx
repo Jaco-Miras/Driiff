@@ -129,11 +129,11 @@ const RightSectionWrapper = styled.div`
 `;
 
 const MeetingListItem = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, showWsBadge, handleRedirectToWorkspace } = props;
+  const { todo, todoActions, dictionary, todoFormat, todoFormatShortCode, showWsBadge, handleRedirectToWorkspace } = props;
 
   const dispatch = useDispatch();
-  //const user = useSelector((state) => state.session.user);
 
+  const user = useSelector((state) => state.session.user);
   const fileBlobs = useSelector((state) => state.files.fileBlobs);
 
   const descriptionRef = useRef(null);
@@ -225,8 +225,8 @@ const MeetingListItem = (props) => {
 
   const handleTitleClick = (e) => {
     e.preventDefault();
-    if (todo.link_type) handleLinkClick(e, todo);
-    else todoActions.updateFromModal(todo);
+    if (todo.author && todo.author.id !== user.id) return;
+    todoActions.updateFromModal(todo);
   };
 
   const showAssignedTo =
@@ -234,7 +234,7 @@ const MeetingListItem = (props) => {
     (todo.workspace !== null && todo.assigned_to === null) ||
     (todo.workspace === null && todo.assigned_to !== null && todo.assigned_to.id !== todo.user) ||
     (todo.assigned_to && todo.author && todo.assigned_to.id !== todo.author.id);
-  // console.log(todo);
+
   return (
     <>
       <ItemList className="reminder-list">
@@ -249,10 +249,12 @@ const MeetingListItem = (props) => {
             {todo.description && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
           </span>
 
-          <HoverButtons className="hover-btns ml-1">
-            <Icon icon="pencil" onClick={handleEdit} />
-            <Icon icon="trash" onClick={handleRemove} />
-          </HoverButtons>
+          {todo.author && todo.author.id === user.id && (
+            <HoverButtons className="hover-btns ml-1">
+              <Icon icon="pencil" onClick={handleEdit} />
+              <Icon icon="trash" onClick={handleRemove} />
+            </HoverButtons>
+          )}
 
           <RightSectionWrapper className="d-flex align-items-center ml-auto">
             <DateWrapper>

@@ -299,3 +299,11 @@ export function incomingZoomEnded(payload, callback) {
 export function updateUnreadCounter(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_UNREAD_COUNTER", payload, callback);
 }
+
+export function setMeetingFilter(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_MEETING_FILTER", payload, callback);
+}
+
+export function setMeetingSearch(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_MEETING_SEARCH", payload, callback);
+}

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
+import { setMeetingSearch } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -40,7 +42,7 @@ const Wrapper = styled.div`
 
 const MeetingSearch = (props) => {
   const { className = "" } = props;
-
+  const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
@@ -48,7 +50,19 @@ const MeetingSearch = (props) => {
 
   const clearSearch = () => {
     setSearchInput("");
+    dispatch(setMeetingSearch(""));
   };
+
+  useEffect(() => {
+    const timeOutId = setTimeout(() => {
+      if (searchInput === "") return;
+      dispatch(setMeetingSearch(searchInput));
+    }, 1000);
+    return () => {
+      clearTimeout(timeOutId);
+      dispatch(setMeetingSearch(""));
+    };
+  }, [searchInput]);
 
   const openMobileModal = () => {
     document.body.classList.toggle("mobile-modal-open");

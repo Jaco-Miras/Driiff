@@ -924,6 +924,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "SET_MEETING_FILTER": {
+      return {
+        ...state,
+        meetings: {
+          ...state.meetings,
+          filter: action.data,
+        },
+      };
+    }
+    case "SET_MEETING_SEARCH": {
+      return {
+        ...state,
+        meetings: {
+          ...state.meetings,
+          search: action.data,
+        },
+      };
+    }
     default:
       return state;
   }

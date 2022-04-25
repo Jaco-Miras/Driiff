@@ -53,6 +53,7 @@ const useTodos = (fetchTodosOnMount = false) => {
 
   const getReminders = ({ filter = "" }) => {
     return Object.values(items)
+      .filter((t) => t.link_type !== "DRIFF_TALK")
       .map((t) => {
         if (t.author === null && t.link_type === null) {
           const author = Object.values(users).find((u) => u.id === t.user);
