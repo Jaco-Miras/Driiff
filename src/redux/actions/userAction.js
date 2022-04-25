@@ -20,6 +20,7 @@ import {
   postPasswordReset as postPasswordResetService,
   postRequest as postRequestService,
   postUploadProfileImage as postUploadProfileImageService,
+  batchUploadProfileImage as batchUploadProfileImageService,
   putExternalUserUpdate as putExternalUserUpdateService,
   putMagicLink as putMagicLinkService,
   putUser as putUserService,
@@ -96,6 +97,12 @@ export function putUser(payload, callback) {
 
 export function postUploadProfileImage(payload, callback) {
   return dispatchActionToReducer(postUploadProfileImageService(payload), "UPDATE_PROFILE_IMAGE_START", "UPDATE_PROFILE_IMAGE_SUCCESS", "UPDATE_PROFILE_IMAGE_FAILURE", callback);
+}
+export function batchUploadProfileImage(payload, callback) {
+  return dispatchActionToReducer(batchUploadProfileImageService(payload), "BATCH_UPDATE_PROFILE_IMAGE_START", "BATCH_UPDATE_PROFILE_IMAGE_SUCCESS", "BATCH_UPDATE_PROFILE_IMAGE_FAILURE", callback);
+}
+export function batchEditUploadProfileImage(payload, callback) {
+  return dispatchActionToReducer(batchUploadProfileImageService(payload), "BATCH_EDIT_UPDATE_PROFILE_IMAGE_START", "BATCH_EDIT_UPDATE_PROFILE_IMAGE_SUCCESS", "BATCH_EDIT_UPDATE_PROFILE_IMAGE_FAILURE", callback);
 }
 
 export function incomingUpdatedUser(payload, callback) {

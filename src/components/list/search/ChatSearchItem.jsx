@@ -21,7 +21,7 @@ const ChatSearchItem = (props) => {
   return (
     <Wrapper className="list-group-item p-l-0 p-r-0">
       <div>
-        <Avatar id={message.user.id} name={message.user.name} imageLink={message.user.profile_image_thumbnail_link ? message.user.profile_image_thumbnail_link : message.user.profile_image_link} showSlider={true} />
+        <Avatar id={message.user.id} name={message.user.name} imageLink={message.user.profile_image_link} showSlider={true} />
       </div>
       <div className="ml-2" onClick={handleRedirect}>
         <p>

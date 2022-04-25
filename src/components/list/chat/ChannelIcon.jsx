@@ -106,7 +106,6 @@ const ChannelIcon = (props) => {
       {channel && channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <Avatar
           imageLink={channel.profile.profile_image_link}
-          //imageLink={channel.profile.profile_image_thumbnail_link ? channel.profile.profile_image_thumbnail_link : channel.profile.profile_image_link}
           userId={channel.profile.id}
           id={channel.profile.id}
           name={channel.profile.name}

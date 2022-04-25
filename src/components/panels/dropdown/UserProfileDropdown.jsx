@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useTranslationActions, useUserActions, useOutsideClick } from "../../hooks";
+import { useTranslationActions, useUserActions, useOutsideClick, useSettings } from "../../hooks";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -32,7 +32,8 @@ const UserProfileDropdown = (props) => {
 
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
-
+  const { generalSettings } = useSettings;
+  const { setGeneralSetting } = useSettings();
   const refs = {
     container: useRef(null),
   };
@@ -47,6 +48,9 @@ const UserProfileDropdown = (props) => {
     refs.container.current.classList.remove("show");
     document.querySelector(".overlay").classList.remove("show");
     processBackendLogout();
+    if (generalSettings.first_login) {
+      setGeneralSetting({ first_login: false });
+    }
   };
 
   const handleProfile = () => {
@@ -67,6 +71,7 @@ const UserProfileDropdown = (props) => {
     profile: _t("PROFILE.PROFILE", "Profile"),
     settings: _t("PROFILE.SETTINGS", "Settings"),
     signOut: _t("PROFILE.SIGN_OUT", "Sign out!"),
+    guest: _t("BADGE.GUEST", "Guest"),
   };
 
   useOutsideClick(refs.container, closeDropdown, true);
@@ -74,7 +79,7 @@ const UserProfileDropdown = (props) => {
   return (
     <Wrapper ref={refs.container} className={`user-profile-dropdown dropdown-menu dropdown-menu-big show ${className}`} x-placement="bottom-end">
       <div className="p-3 text-center">
-        <Avatar name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} id={user.id} partialName={user.partial_name} showSlider={false} />
+        <Avatar name={user.name} imageLink={user.profile_image_link} id={user.id} partialName={user.partial_name} showSlider={false} />
         <h6 className="d-flex align-items-center justify-content-center">
           {user.name}
           <span className="btn btn-primary btn-sm ml-2" data-toggle="tooltip" title="" data-original-title="Edit profile" onClick={handleEditProfile}>
@@ -82,7 +87,7 @@ const UserProfileDropdown = (props) => {
           </span>
         </h6>
         <RoleName>
-          <span className="badge badge-primary">{user.role.display_name}</span>
+          <span className="badge badge-primary">{user.type === "external" ? dictionary.guest : user.role.display_name}</span>
         </RoleName>
       </div>
       <div className="dropdown-menu-body">

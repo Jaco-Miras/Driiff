@@ -135,6 +135,7 @@ export const NotificationTimelineItem = (props) => {
   const handleAuthorNameClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
+
     if (notification.author) {
       history.push(`/profile/${notification.author.id}/${replaceChar(notification.author.name)}`);
     }
@@ -179,6 +180,7 @@ export const NotificationTimelineItem = (props) => {
               {notification.author.name}{" "}
             </span>
             <span dangerouslySetInnerHTML={{ __html: dictionary.notificationComment }} />
+            <span> on {notification.data.title}</span>
           </>
         );
       }
@@ -200,7 +202,7 @@ export const NotificationTimelineItem = (props) => {
       case "NEW_TODO": {
         return (
           <>
-            <span>{_t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
+            <span>{notification.data.title && _t("NOTIFICATION.REMINDER", "You asked to be reminded about ::title::", { title: notification.data.title })}</span>
           </>
         );
       }
@@ -279,14 +281,9 @@ export const NotificationTimelineItem = (props) => {
     <Wrapper className="timeline-item timeline-item-no-line" isRead={notification.is_read} darkMode={darkMode}>
       <div>
         {notification.author ? (
-          <Avatar
-            id={notification.author.id}
-            name={notification.author.name}
-            imageLink={notification.author.profile_image_thumbnail_link ? notification.author.profile_image_thumbnail_link : notification.author.profile_image_link}
-            showSlider={true}
-          />
+          <Avatar id={notification.author.id} name={notification.author.name} imageLink={notification.author.profile_image_link} showSlider={true} />
         ) : (
-          <Avatar id={user.id} name={user.name} imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link} showSlider={true} />
+          <Avatar id={user.id} name={user.name} imageLink={user.profile_image_link} showSlider={true} />
         )}
       </div>
       <div>

@@ -14,10 +14,7 @@ import PostMentionCard from "./PostMentionCard";
 import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
-  overflow: auto;
-  @media (min-width: 768px) {
-    overflow: hidden;
-  }
+  overflow-x: auto;
   ${(props) =>
     props.bg &&
     `

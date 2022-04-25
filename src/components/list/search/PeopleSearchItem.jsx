@@ -12,7 +12,7 @@ const PeopleSearchItem = (props) => {
         <li className="list-group-item p-l-r-0">
             <div className="media" onClick={handleRedirect}>
                 <Avatar id={user.id} name={user.name}
-                        imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link}
+                        imageLink={user.profile_image_link}
                         className="mr-2"/>
                 <div className="media-body">
                     <h6 className="m-0">{user.name}</h6>

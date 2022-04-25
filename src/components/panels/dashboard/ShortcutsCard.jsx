@@ -169,8 +169,8 @@ const ShortcutsCard = (props) => {
               {generalSettings.personal_links.map((l, index) => {
                 const securedLink = !l.web_address.startsWith("http") ? "https://" + l.web_address : l.web_address;
                 return (
-                  <PersonalLinkList key={l.id}>
-                    <FancyLink link={securedLink} title={l.name} />
+                  <PersonalLinkList key={index}>
+                    <FancyLink link={securedLink} title={l.name} key={l.id} />
                     <SvgIconFeather className="cursor-pointer" data-index={index} icon="pencil" onClick={() => handleEditPersonalLink(index)} />
                   </PersonalLinkList>
                 );

@@ -124,7 +124,7 @@ const UserListPopUp = (props) => {
             <li key={u.id} onClick={(e) => handleUserClick(e, u)}>
               <Avatar
                 size={"xs"}
-                imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link}
+                imageLink={u.profile_image_link}
                 userId={u.id}
                 name={u.name ? u.name : u.email}
                 partialName={u.partial_name}

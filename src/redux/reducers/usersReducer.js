@@ -468,6 +468,19 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "BATCH_UPDATE_PROFILE_IMAGE_SUCCESS": {
+      const updatedUser = action.data.reduce((acc, user) => {
+        acc[user.id] = { ...user };
+        return acc;
+      }, {});
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          ...updatedUser,
+        },
+      };
+    }
     default:
       return state;
   }

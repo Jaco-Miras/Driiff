@@ -82,9 +82,9 @@ const CountCard = (props) => {
   let count = 0;
   if (isWorkspace) {
     if (type === "chat") {
-      count = workspace.unread_chats;
+      count = workspace ? workspace.unread_chats : 0;
     } else if (type === "posts") {
-      count = workspace.unread_posts;
+      count = workspace ? workspace.unread_posts : 0;
     } else {
       count = wsReminders && wsReminders.count.today ? wsReminders.count.today : 0;
     }

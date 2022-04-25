@@ -65,10 +65,10 @@ const PostVisibility = (props) => {
     <div className="post-visibility-container" ref={handlePostVisibilityRef}>
       <span className="user-list">
         {userOptions.map((u) => {
-          return (
+          return ( 
             <span key={u.id}>
               <span title={u.email} className="user-list-item d-flex justify-content-start align-items-center pt-2 pb-2">
-                <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} />
+                <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} />
                 <span className="item-user-name">{u.name}</span>
               </span>
             </span>
