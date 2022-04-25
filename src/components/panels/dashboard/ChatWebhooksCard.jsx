@@ -35,22 +35,24 @@ const ChatWebhooksCard = (props) => {
       <ul class="list-group list-group-flush">
         <li class="list-group-item px-1 d-flex justify-content-between align-items-center">
           <span>
-            {/* <Avatar imageLink={workspace.topic_detail.team_channel_bot.image_path} id={workspace.topic_detail.team_channel_bot.id} name={workspace.topic_detail.team_channel_bot.name} /> */}
             <span className="d-inline-block ml-3">{dictionary.chatWebhooksTeams}</span>
           </span>
-          <span role="button" onClick={handleTeamCopy}>
-            {dictionary.chatWebhooksCopy}
-          </span>
+          {
+            <span role="button" onClick={handleTeamCopy}>
+              {dictionary.chatWebhooksCopy}
+            </span>
+          }
         </li>
-        <li class="list-group-item px-1 d-flex justify-content-between align-items-center">
-          <span>
-            {/* <Avatar imageLink={workspace.topic_detail.channel_bot.image_path} id={workspace.topic_detail.channel_bot.id} name={workspace.topic_detail.channel_bot.name} /> */}
-            <span className="d-inline-block ml-3"> {dictionary.chatWebhooksGuest}</span>
-          </span>
-          <span role="button" onClick={handleGuestCopy}>
-            {dictionary.chatWebhooksCopy}
-          </span>
-        </li>
+        {workspace.is_shared && (
+          <li class="list-group-item px-1 d-flex justify-content-between align-items-center">
+            <span>
+              <span className="d-inline-block ml-3"> {dictionary.chatWebhooksGuest}</span>
+            </span>
+            <span role="button" onClick={handleGuestCopy}>
+              {dictionary.chatWebhooksCopy}
+            </span>
+          </li>
+        )}
       </ul>
     </Wrapper>
   );
