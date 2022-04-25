@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTranslationActions, useToaster } from "../../hooks";
 import { useParams } from "react-router-dom";
-import { postToDo, addToModals } from "../../../redux/actions/globalActions";
+import { postToDo, addToModals, setMeetingFilter } from "../../../redux/actions/globalActions";
 
 const Wrapper = styled.div``;
 
@@ -57,6 +57,7 @@ const MeetingSidebar = (props) => {
   const { _t } = useTranslationActions();
   const toaster = useToaster();
   const dispatch = useDispatch();
+  const filter = useSelector((state) => state.global.meetings.filter);
   const dictionary = {
     statusToday: _t("REMINDER.STATUS_TODAY", "Today"),
     statusAll: _t("REMINDER.STATUS_ALL", "ALL"),
@@ -65,12 +66,13 @@ const MeetingSidebar = (props) => {
     statusOverdue: _t("REMINDER.STATUS_OVERDUE", "Overdue"),
     addedByMe: _t("REMINDER.ADDED_BY_ME", "Added by me"),
     addedByOthers: _t("REMINDER.ADDED_BY_OTHERS", "Added by others"),
+    toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    toasterCreateMeeting: _t("TOASTER.MEETING_CREATE_SUCCESS", "You will be reminded about this comment under <b>Meetings</b>."),
   };
 
-  const filter = "";
   const handleSelectFilter = (e) => {
-    // handleSelectFilter(e.target.dataset.filter);
     document.body.classList.remove("mobile-modal-open");
+    dispatch(setMeetingFilter(e.target.dataset.filter));
   };
 
   const handleCreateMeeting = () => {
@@ -84,7 +86,7 @@ const MeetingSidebar = (props) => {
             toaster.error(dictionary.toasterGeneraError);
           }
           if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateMeeting }} />);
           }
           modalCallback(err, res);
           callback(err, res);
@@ -115,7 +117,7 @@ const MeetingSidebar = (props) => {
         </div>
         <div className="app-sidebar-menu" tabIndex="1">
           <div className="list-group list-group-flush">
-            <Filter onClick={handleSelectFilter} data-filter="" active={filter === "ALL"} className={"list-group-item d-flex align-items-center"}>
+            <Filter onClick={handleSelectFilter} data-filter="ALL" active={filter === "ALL"} className={"list-group-item d-flex align-items-center"}>
               <span className="text-primary fa fa-circle mr-2" />
               {dictionary.statusAll}
             </Filter>

@@ -30,6 +30,7 @@ const useTodoActions = () => {
     modalConfirmationTodoRemoveBody: _t("MODAL_CONFIRMATION.TODO_REMOVE_BODY", "Are you sure you want to remove this item?"),
     modalConfirmationTodoRemoveSubmit: _t("MODAL_CONFIRMATION.TODO_REMOVE_SUBMIT", "Remove"),
     modalConfirmationTodoRemoveCancel: _t("MODAL_CONFIRMATION.TODO_REMOVE_CANCEL", "Cancel"),
+    toasterCreateMeeting: _t("TOASTER.MEETING_CREATE_SUCCESS", "You will be reminded about this comment under <b>Meetings</b>."),
   };
 
   const fetch = (payload, callback) => {
@@ -231,7 +232,7 @@ const useTodoActions = () => {
             toaster.error(dictionary.toasterGeneraError);
           }
           if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUpdateTodo }} />);
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: todo.link_type === "DRIFF_TALK" ? dictionary.toasterCreateMeeting : dictionary.toasterUpdateTodo }} />);
             if (params.workspaceId) {
               fetchWsCount({ topic_id: params.workspaceId });
             } else {
@@ -246,7 +247,7 @@ const useTodoActions = () => {
     };
 
     let payload = {
-      type: "todo_reminder",
+      type: todo.link_type === "DRIFF_TALK" ? "video_reminder" : "todo_reminder",
       mode: "edit",
       item: {
         ...todo,
