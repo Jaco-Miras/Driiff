@@ -67,6 +67,8 @@ const usePostModalDictionary = (props) => {
     setToInternalPost: _t("LABEL.SET_TO_INTERNAL_POST", "Set to internal post"),
     setToInternalPostBody1: _t("SET_TO_INTERNAL_POST_BODY_1", "You have external users in one of your post settings (must read, must reply and post approver)."),
     setToInternalPostBody2: _t("SET_TO_INTERNAL_POST_BODY_2", "Click confirm to remove external users. Cancelling will set the post to internal and guest."),
+    titleRequired: _t("POST.TITLE_REQUIRED", "Title is required"),
+    addressedToRequired: _t("POST.ADDRESS_TO_REQUIRED", "Addressed To is required"),
   };
 
   return {
