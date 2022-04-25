@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
@@ -8,7 +8,7 @@ import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/ac
 import { updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { FileAttachments, PostVisibility } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
-import { DescriptionInput, FolderSelect } from "../forms";
+import { DescriptionInput, FolderSelect, FormInput } from "../forms";
 import { useToaster, useWindowSize, useWorkspaceAndUserOptions, usePostDraft, useEnlargeEmoticons } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadBulkDocument } from "../../redux/services/global";
@@ -274,11 +274,6 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
-const StyledInput = styled.input`
-  background-color: transparent;
-  padding: 7px 0;
-`;
-
 //onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
@@ -429,15 +424,57 @@ const PostModal = (props) => {
     }
   };
 
-  const handleNameChange = (e) => {
-    setForm({
-      ...form,
-      title: e.target.value,
+
+  const [formResponse, setFormResponse] = useState({
+    valid: {},
+    message: {},
+  });
+
+  const handleNameChange = useCallback((e) => {
+    e.persist();
+    setForm((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        [e.target.name]: undefined,
+      },
+      message: {
+        ...prevState.message,
+        [e.target.name]: undefined,
+      },
+    }));
+  }, []);
+  const _validateForm = () => {
+    let valid = {};
+    let message = {};
+
+    if (form.title === "") {
+      valid.title = false;
+      message.title = dictionary.titleRequired;
+    } else {
+      valid.title = true;
+    }
+    if (form.addressedTo === "") {
+      valid.addressedTo = false;
+      message.addressedTo = dictionary.addressedToRequired;
+    } else {
+      valid.addressedTo = true;
+    }
+    setFormResponse({
+      valid: valid,
+      message: message,
     });
+
+    return !Object.values(valid).some((v) => v === false);
   };
 
   const handleConfirm = () => {
-    if (loading || imageLoading) return;
+    if (loading || imageLoading || !_validateForm()) return;
     if (cancelToken.current) {
       cancelToken.current.cancel("Operation canceled due to new request.");
       cancelToken.current = null;
@@ -1006,7 +1043,16 @@ const PostModal = (props) => {
             <Label className={"modal-label"} for="post-title">
               {dictionary.postTitle}
             </Label>
-            <StyledInput className="w-100" style={{ borderRadius: "5px", border: form.title === "" ? "1px solid #fa4a68" : "1px solid gray" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
+
+            <FormInput
+              name="title"
+              isValid={formResponse.valid.title}
+              feedback={formResponse.message.title}
+              style={{ borderRadius: "5px", border: form.title !== "" ? "1px solid #fa4a68" : "1px solid gray" }}
+              value={form.title}
+              onChange={handleNameChange}
+              innerRef={inputRef}
+            />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input addressed-to-container"}>
@@ -1070,7 +1116,7 @@ const PostModal = (props) => {
           <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
+          <button className="btn btn-primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>

@@ -36,8 +36,8 @@ const usePostModalDictionary = (props) => {
           {addressIds.length === 1
             ? _t("POST.NUMBER_USER", "1 user")
             : _t("POST.NUMBER_USERS", "::count:: users", {
-                count: addressIds.length,
-              })}
+              count: addressIds.length,
+            })}
         </span>
       ),
       workspace_count: renderToString(
@@ -45,8 +45,8 @@ const usePostModalDictionary = (props) => {
           {workspace_ids.length === 1
             ? _t("POST.NUMBER_WORKSPACE", "1 workspace")
             : _t("POST.NUMBER_WORKSPACES", "::count:: workspaces", {
-                count: workspace_ids.length,
-              })}
+              count: workspace_ids.length,
+            })}
         </span>
       ),
     }),
@@ -62,6 +62,8 @@ const usePostModalDictionary = (props) => {
     updatingPost: _t("TOASTER.UPDATING_POST", "Updating post"),
     uploadingAndSending: _t("TOASTER.SENDING_POST_WITH_FILE", "Uploading file and sending post"),
     teamLabel: _t("LABEL_OPTIONS.TEAM", "Team"),
+    titleRequired: _t("POST.TITLE_REQUIRED", "Title is required"),
+    addressedToRequired: _t("POST.ADDRESS_TO_REQUIRED", "Addressed To is required"),
   };
 
   return {
