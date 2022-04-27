@@ -1117,15 +1117,7 @@ const PostModal = (props) => {
               {dictionary.postTitle}
             </Label>
 
-            <FormInput
-              name="title"
-              isValid={formResponse.valid.title}
-              feedback={formResponse.message.title}
-              style={{ borderRadius: "5px", border: form.title !== "" ? "1px solid #fa4a68" : "1px solid gray" }}
-              value={form.title}
-              onChange={handleNameChange}
-              innerRef={inputRef}
-            />
+            <FormInput name="title" isValid={formResponse.valid.title} feedback={formResponse.message.title} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input addressed-to-container"}>
