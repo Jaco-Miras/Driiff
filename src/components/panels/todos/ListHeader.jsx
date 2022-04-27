@@ -29,16 +29,16 @@ const ListHeader = (props) => {
         <div className="d-flex">
           <span className="badge badge-light mr-1 ws-name">{workspaceName}</span>
           <ToolTip content={sortByDate ? dictionary.sortDate : dictionary.sortAlpha}>
-          <span className={"badge badge-light"} onClick={handleSort}>
-            <SvgIconFeather icon={sortByDate ? "arrow-down" : "arrow-up"} width={16} height={16} />
-          </span>
+            <span className={"badge badge-light"} onClick={handleSort}>
+              <SvgIconFeather icon={sortByDate ? "arrow-down" : "arrow-up"} width={16} height={16} />
+            </span>
           </ToolTip>
         </div>
       ) : (
         <ToolTip content={sortByDate ? dictionary.sortDate : dictionary.sortAlpha}>
-        <span className={"badge badge-light"} onClick={handleSort}>
-          <SvgIconFeather icon={sortByDate ? "arrow-down" : "arrow-up"} width={16} height={16} />
-        </span>
+          <span className={"badge badge-light"} onClick={handleSort}>
+            <SvgIconFeather icon={sortByDate ? "arrow-down" : "arrow-up"} width={16} height={16} />
+          </span>
         </ToolTip>
       )}
     </Wrapper>

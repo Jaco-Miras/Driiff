@@ -68,6 +68,7 @@ const MeetingSidebar = (props) => {
     addedByOthers: _t("REMINDER.ADDED_BY_OTHERS", "Added by others"),
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     toasterCreateMeeting: _t("TOASTER.MEETING_CREATE_SUCCESS", "You will be reminded about this comment under <b>Meetings</b>."),
+    createMeeting: _t("BUTTON.CREATE_MEETING", "Create meeting"),
   };
 
   const handleSelectFilter = (e) => {
@@ -112,7 +113,7 @@ const MeetingSidebar = (props) => {
       <div className="card">
         <div className="card-body">
           <button className="btn btn-primary btn-block" onClick={handleCreateMeeting}>
-            Create meeting
+            {dictionary.createMeeting}
           </button>
         </div>
         <div className="app-sidebar-menu" tabIndex="1">
