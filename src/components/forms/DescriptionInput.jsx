@@ -219,6 +219,7 @@ const DescriptionInput = (props) => {
     setImageLoading = null,
     prioMentionIds = [],
     readOnly = false,
+    inlineImageType = "private",
     ...otherProps
   } = props;
 
@@ -280,6 +281,7 @@ const DescriptionInput = (props) => {
     setInlineImages,
     setImageLoading,
     prioMentionIds: [...new Set(prioMentionIds)],
+    inlineImageType,
   });
 
   useEffect(() => {

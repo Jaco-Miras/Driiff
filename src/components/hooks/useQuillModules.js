@@ -25,6 +25,7 @@ const useQuillModules = ({
   prioMentionIds = [],
   post = null,
   setImageLoading = null,
+  inlineImageType = "private",
 }) => {
   const dispatch = useDispatch();
   const [modules, setModules] = useState({});
@@ -331,7 +332,7 @@ const useQuillModules = ({
               uploadDocument({
                 user_id: user.id,
                 file: formData,
-                file_type: "private",
+                file_type: inlineImageType,
                 folder_id: null,
               })
                 .then((result) => {
