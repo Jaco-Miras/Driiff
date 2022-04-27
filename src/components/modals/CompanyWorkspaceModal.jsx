@@ -189,6 +189,7 @@ const CompanyWorkspaceModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           onOpenFileDialog={handleOpenFileDialog}
+          inlineImageType={"public"}
         />
 
         <WrapperDiv>
