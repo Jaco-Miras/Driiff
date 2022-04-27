@@ -785,6 +785,7 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
+                isPostAuthor={post.author.id === user.id}
               />
             </ChatInputContainer>
 
