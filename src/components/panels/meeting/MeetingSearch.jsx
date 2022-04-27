@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { setMeetingSearch } from "../../../redux/actions/globalActions";
+import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
   overflow: inherit !important;
@@ -44,6 +45,11 @@ const MeetingSearch = (props) => {
   const { className = "" } = props;
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState("");
+  const { _t } = useTranslationActions();
+  const dictionary = {
+    searchMeetingPlaceholder: _t("SEARCH_MEETING_PLACEHOLDER", "Seach meetings"),
+  };
+
   const handleSearchChange = (e) => {
     setSearchInput(e.target.value);
   };
@@ -77,7 +83,7 @@ const MeetingSearch = (props) => {
       </div>
       <div className="action-right">
         <div className="input-group">
-          <input type="text" onChange={handleSearchChange} value={searchInput} className="form-control" placeholder={"search meetings"} aria-describedby="button-addon1" />
+          <input type="text" onChange={handleSearchChange} value={searchInput} className="form-control" placeholder={dictionary.searchMeetingPlaceholder} aria-describedby="button-addon1" />
           {searchInput.trim() !== "" && (
             <button onClick={clearSearch} className="btn-cross" type="button">
               <SvgIconFeather icon="x" />

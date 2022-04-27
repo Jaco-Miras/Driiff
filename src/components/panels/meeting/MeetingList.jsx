@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -116,7 +116,17 @@ const MeetingList = (props) => {
   const { className = "", workspaceName = null } = props;
 
   const { _t } = useTranslationActions();
+  const meetings = useSelector((state) => state.global.meetings);
 
+  let newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_2", "WOO!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_4", "Queue’s empty, time to dance!"), _t("REMINDER.NO_ITEMS_FOUND_HEADER_5", "No reminders.")];
+
+  let newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_2", "Nothing here but me… 👻"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_4", "Job well done!💃🕺"), _t("REMINDER.NO_ITEMS_FOUND_TEXT_5", "You run a tight ship captain! 🚀")];
+
+  if (meetings.search !== "") {
+    newItemsFoundHeader = [_t("REMINDER.NO_ITEMS_FOUND_HEADER_1", "Couldn’t find what you’re looking for.")];
+    newItemsFoundText = [_t("REMINDER.NO_ITEMS_FOUND_TEXT_1", "Try something else, Sherlock. 🕵")];
+  }
+  const [inDexer, setInDexer] = useState(Math.floor(Math.random() * newItemsFoundHeader.length));
   const dictionary = {
     searchInputPlaceholder: _t("REMINDER.SEARCH_INPUT_PLACEHOLDER", "Search your reminders on title and description."),
     createNewTodoItem: _t("REMINDER.CREATE_NEW_TODO_ITEM", "Add new"),
@@ -132,8 +142,8 @@ const MeetingList = (props) => {
     statusDone: _t("REMINDER.STATUS_DONE", "Done"),
     emptyText: _t("REMINDER.EMPTY_STATE_TEXT", "Use your reminder list to keep track of all your tasks and activities."),
     emptyButtonText: _t("REMINDER.EMPTY_STATE_BUTTON_TEXT", "New reminder"),
-    // noItemsFoundHeader: newItemsFoundHeader[inDexer],
-    // noItemsFoundText: newItemsFoundText[inDexer],
+    noItemsFoundHeader: newItemsFoundHeader[inDexer],
+    noItemsFoundText: newItemsFoundText[inDexer],
     actionReschedule: _t("REMINDER.ACTION_RESCHEDULE", "Reschedule"),
     actionEdit: _t("REMINDER.ACTION_EDIT", "Edit"),
     actionMarkAsDone: _t("REMINDER.ACTION_MARK_AS_DONE", "Mark as done"),
@@ -154,8 +164,6 @@ const MeetingList = (props) => {
   const { getVideoReminders, action: todoActions, isLoaded } = useTodos(true); //pass true to fetch to do list on mount - default to false
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
 
-  const meetings = useSelector((state) => state.global.meetings);
-
   const videoReminders = getVideoReminders({ filter: { status: meetings.filter, search: meetings.search } });
 
   const todoItems = videoReminders.filter((i) => i.status !== "DONE");
@@ -170,6 +178,10 @@ const MeetingList = (props) => {
   });
 
   const [sortByDate, setSortByDate] = useState(true);
+
+  useEffect(() => {
+    setInDexer(Math.floor(Math.random() * newItemsFoundHeader.length));
+  }, [meetings.filter]);
 
   const handleShowTodo = () => {
     setShowList({
@@ -199,14 +211,7 @@ const MeetingList = (props) => {
     return Object.values(items).sort((a, b) => {
       if (sortByDate) {
         if (a.remind_at && b.remind_at) {
-          return a.remind_at.timestamp - b.remind_at.timestamp;
-        }
-        if (a.remind_at && b.remind_at === null) {
-          return -1;
-        }
-
-        if (a.remind_at === null && b.remind_at) {
-          return 1;
+          return b.remind_at.timestamp - a.remind_at.timestamp;
         }
         if (a.remind_at === null && b.remind_at === null) {
           return a.title.localeCompare(b.title);

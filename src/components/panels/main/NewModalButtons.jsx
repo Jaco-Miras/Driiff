@@ -155,7 +155,7 @@ const NewModalButtons = (props) => {
         <div>
           <span onClick={handleShowVideoReminderModal} ref={refs.btn5Ref}>
             <Icon icon="video-driff" />
-            Meeting
+            {dictionary.meeting}
           </span>
         </div>
         {!isExternal && user.role && user.role.id <= securitySettings.add_workspace && (

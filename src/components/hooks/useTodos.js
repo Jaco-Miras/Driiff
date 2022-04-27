@@ -141,8 +141,7 @@ const useTodos = (fetchTodosOnMount = false) => {
           }
         }
         return t.link_type === "DRIFF_TALK";
-      })
-      .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
+      });
   };
 
   useEffect(() => {

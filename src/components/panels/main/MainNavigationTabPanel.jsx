@@ -241,6 +241,7 @@ const MainNavigationTabPanel = (props) => {
     startBrowsing: _t("SIDEBAR.START_BROWSING", "Start browsing..."),
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
+    meeting: _t("SIDEBAR.MEETING", "Meeting"),
   };
 
   const handleShowModalButtons = () => {

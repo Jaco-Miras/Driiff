@@ -246,7 +246,6 @@ const VideoMeetingModal = (props) => {
        * **/
       if (!itemType && params && workspaces[params.workspaceId]) {
         const workspace = { ...workspaces[params.workspaceId] };
-        console.log(workspace);
         // set default selected workspace and set the user options using the workspace members
         if (workspace.is_shared) {
           //   const isGuestChannel = workspace.channel && workspace.channel.id === channel.id;
@@ -436,13 +435,13 @@ const VideoMeetingModal = (props) => {
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
     toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     save: _t("MODAL.SAVE", "Save"),
+    videoMeeting: _t("MODAL.VIDEO_MEETING_HEADER", "Video meeting"),
+    videoMeetingInfo: _t("MODAL.VIDEO_MEETING_INFO", "Video meeting information"),
+    setMeetingButton: _t("BUTTON.SET_MEETING", "Set meeting"),
+    setMeetingHeader: _t("CONFRIMATION.SET_MEETING", "Set meeting"),
+    createConfirmMeetingBody: _t("CONFRIMATION.BODY.SET_MEETING", "Are you sure you want to set this meeting?"),
+    updateConfirmMeetingBody: _t("CONFRIMATION.BODY.UPDATE_MEETING", "Are you sure you want to update this meeting?"),
   };
-
-  if (mode === "edit") {
-    dictionary.chatReminder = _t("TODO.EDIT", "Edit todo");
-  } else {
-    dictionary.chatReminder = _t("TODO.NEW", "New todo");
-  }
 
   const toggle = () => {
     setModal(!modal);
@@ -481,10 +480,6 @@ const VideoMeetingModal = (props) => {
       setTimeValue(setTime);
     }
   };
-
-  // const handlePickDateTime = (e) => {
-  //   setCustomTimeValue(e);
-  // };
 
   const handleSelectPickDateTime = () => {
     setTimeValue("pick_data");
@@ -907,12 +902,13 @@ const VideoMeetingModal = (props) => {
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
-      <ModalHeaderSection toggle={toggle}>Video meeting</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{dictionary.videoMeeting}</ModalHeaderSection>
       <ModalBody data-set-update={componentUpdate} onDragOver={onDragEnter}>
         <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
-          <ModalHeaderSection toggle={toggleNested}>Create meeting</ModalHeaderSection>
+          <ModalHeaderSection toggle={toggleNested}>{dictionary.setMeetingHeader}</ModalHeaderSection>
           <ModalBody>
-            <div>Are you sure you want to create this meeting?</div>
+            {mode === "create" && <div>{dictionary.createConfirmMeetingBody}</div>}
+            {mode === "edit" && <div>{dictionary.updateConfirmMeetingBody}</div>}
           </ModalBody>
           <ModalFooter>
             <NestedModalWrapper>
@@ -937,7 +933,7 @@ const VideoMeetingModal = (props) => {
         />
 
         <div className="column">
-          <div className="col-12 modal-info">Video meeting info</div>
+          <div className="col-12 modal-info">{dictionary.videoMeetingInfo}</div>
           <div className="col-12 modal-label">{dictionary.title}</div>
           <div className="col-12">
             <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
@@ -1103,7 +1099,7 @@ const VideoMeetingModal = (props) => {
           </Button>
           <Button color="primary" onClick={toggleNested} disabled={imageLoading || form.title.value === "" || timeValue === "" || !hasAssignedUserOrWs}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            Set meeting
+            {dictionary.setMeetingButton}
           </Button>{" "}
         </div>
       </ModalFooter>
