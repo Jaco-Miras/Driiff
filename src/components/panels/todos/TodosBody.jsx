@@ -232,14 +232,14 @@ const TodosBody = (props) => {
     return Object.values(items).sort((a, b) => {
       if (sortByDate) {
         if (a.remind_at && b.remind_at) {
-          return a.remind_at.timestamp - b.remind_at.timestamp;
+          return b.remind_at.timestamp - a.remind_at.timestamp;
         }
         if (a.remind_at && b.remind_at === null) {
-          return -1;
+          return 1;
         }
 
         if (a.remind_at === null && b.remind_at) {
-          return 1;
+          return -1;
         }
         if (a.remind_at === null && b.remind_at === null) {
           return a.title.localeCompare(b.title);
