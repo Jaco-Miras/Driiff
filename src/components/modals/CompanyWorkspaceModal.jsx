@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import React, { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Modal, ModalBody } from "reactstrap";
@@ -168,7 +169,7 @@ const CompanyWorkspaceModal = (props) => {
       refs.dropzone.current.open();
     }
   };
-
+  const disableButton = loading || form.description.includes(`class="image-uploading"`) || imageLoading;
   return (
     <Modal isOpen={true} toggle={toggle} centered size="lg" onOpened={onOpened}>
       <ModalHeaderSection toggle={toggle}>{dictionary.editCompanyDescription}</ModalHeaderSection>
@@ -196,7 +197,7 @@ const CompanyWorkspaceModal = (props) => {
           <button className="btn btn-outline-secondary mr-2" outline color="secondary" onClick={toggle}>
             {dictionary.cancel}
           </button>
-          <button className="btn btn-primary" onClick={handleSubmit} disabled={loading || imageLoading}>
+          <button className="btn btn-primary" onClick={handleSubmit} disabled={disableButton}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {dictionary.save}
           </button>
