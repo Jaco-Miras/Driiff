@@ -333,13 +333,16 @@ export default function (state = INITIAL_STATE, action) {
     case "GET_CHANNEL_SUCCESS": {
       let channel = state.channels[action.data.id];
 
-      if (typeof channel === "undefined")
+      if (typeof channel === "undefined") {
         channel = {
           ...action.data,
           hasMore: true,
+          replies: [],
+          selected: false,
           skip: 0,
           isFetching: false,
         };
+      }
 
       return {
         ...state,
