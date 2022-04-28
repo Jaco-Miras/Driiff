@@ -950,6 +950,29 @@ const PostModal = (props) => {
           };
         })
       );
+      if (item.post.shared_with_client) {
+        setShareOption({
+          id: "external",
+          value: "external",
+          label: dictionary.internalAndExternalTeamLabel,
+          icon: "eye",
+        });
+      } else {
+        setShareOption({
+          id: "internal",
+          value: "internal",
+          label: dictionary.internalTeamLabel,
+          icon: "eye-off",
+        });
+      }
+    }
+    if (isExternalUser) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
     }
     return () => {
       componentIsMounted.current = null;
