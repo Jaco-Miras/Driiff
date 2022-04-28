@@ -167,15 +167,16 @@ const TodoReminderModal = (props) => {
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
 
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const allUsers = Object.values(users).filter((u) => {
+    if (u.email && botCodes.includes(u.email)) {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
   const setAllUsersOptions = () => {
-    const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
-    const allUsers = Object.values(users).filter((u) => {
-      if (u.email && botCodes.includes(u.email)) {
-        return false;
-      } else {
-        return true;
-      }
-    });
     setUserOptions(
       allUsers.map((u) => {
         return {
@@ -427,6 +428,7 @@ const TodoReminderModal = (props) => {
     // set form for post reminders on mount
     if (mode === "create" && itemType && itemType === "POST") {
       const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
+      const companyRecipient = item.recipients.find((r) => r.type === "DEPARTMENT");
       if (workspaceRecipient && workspaces[workspaceRecipient.id]) {
         const ws = { ...workspaces[workspaceRecipient.id] };
         if (ws) {
@@ -454,15 +456,55 @@ const TodoReminderModal = (props) => {
           );
         }
       }
+      if (companyRecipient) {
+        setSelectedWorkspace({
+          icon: "compass",
+          value: companyRecipient.id,
+          label: companyRecipient.name,
+        });
+        setForm({
+          ...form,
+          topic_id: { value: companyRecipient.id },
+        });
+        setUserOptions(
+          allUsers
+            .filter((u) => u.type === "internal")
+            .map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+        );
+      }
+      let title = "";
+      if (item.author && item.author.name) {
+        title += `${item.author.name}`;
+      }
+      if (workspaceRecipient || companyRecipient) {
+        if (workspaceRecipient) {
+          title += ` | ${workspaceRecipient.name}`;
+        } else {
+          title += ` | ${companyRecipient.name}`;
+        }
+      }
+      title += " | Post";
+
       setForm((prevState) => ({
         ...prevState,
-        title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : null} | Post` },
+        title: { value: title },
+        //title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : companyRecipient ? companyRecipient.name : ""} | Post` },
         description: { value: item.title },
       }));
     }
 
     if (mode === "create" && parentItem && itemType && itemType === "POST_COMMENT") {
       const workspaceRecipient = parentItem.recipients.find((r) => r.type === "TOPIC");
+      const companyRecipient = parentItem.recipients.find((r) => r.type === "DEPARTMENT");
       if (workspaceRecipient && workspaces[workspaceRecipient.id]) {
         const ws = { ...workspaces[workspaceRecipient.id] };
         if (ws) {
@@ -490,9 +532,48 @@ const TodoReminderModal = (props) => {
           );
         }
       }
+      if (companyRecipient) {
+        setSelectedWorkspace({
+          icon: "compass",
+          value: companyRecipient.id,
+          label: companyRecipient.name,
+        });
+        setForm({
+          ...form,
+          topic_id: { value: companyRecipient.id },
+        });
+        setUserOptions(
+          allUsers
+            .filter((u) => u.type === "internal")
+            .map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+        );
+      }
+      let title = "";
+      if (item.author && item.author.name) {
+        title += `${item.author.name}`;
+      }
+      if (workspaceRecipient || companyRecipient) {
+        if (workspaceRecipient) {
+          title += ` | ${workspaceRecipient.name}`;
+        } else {
+          title += ` | ${companyRecipient.name}`;
+        }
+      }
+      title += " | Post comment";
+
       setForm((prevState) => ({
         ...prevState,
-        title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : null} | Post comment` },
+        title: { value: title },
+        //title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : null} | Post comment` },
         description: { value: item.body },
       }));
     }
