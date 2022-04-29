@@ -56,7 +56,7 @@ const ApproveCheckBox = styled(CheckBox)`
 `;
 
 const PostInputButtons = (props) => {
-  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, isPostAuthor } = props;
+  const { parentId, showEmojiPicker, handleShowEmojiPicker, onShowFileDialog, editPostComment, handleQuillImage, showApprover, toggleApprover, mainInput, hasPostAccess } = props;
   const dispatch = useDispatch();
   const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
@@ -83,7 +83,7 @@ const PostInputButtons = (props) => {
           </Tooltip>
         </IconWrapper>
       )}
-      {isPostAuthor && (
+      {hasPostAccess && (
         <IconWrapper className="btn-approver">
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Select approver">
             <ApproveCheckBox name="approve" checked={showApprover} onClick={toggleApprover}></ApproveCheckBox>
