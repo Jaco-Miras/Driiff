@@ -441,6 +441,11 @@ const VideoMeetingModal = (props) => {
     setMeetingHeader: _t("CONFRIMATION.SET_MEETING", "Set meeting"),
     createConfirmMeetingBody: _t("CONFRIMATION.BODY.SET_MEETING", "Are you sure you want to set this meeting?"),
     updateConfirmMeetingBody: _t("CONFRIMATION.BODY.UPDATE_MEETING", "Are you sure you want to update this meeting?"),
+    endDate: _t("LABEL.END_DATE", "End date"),
+    recurring: _t("LABEL.RECURRING", "Recurring"),
+    weekly: _t("LABEL.WEEKLY", "Weekly"),
+    monthly: _t("LABEL.MONTHLY", "Monthly"),
+    yearly: _t("LABEL.YEARLY", "Yearly"),
   };
 
   const toggle = () => {
@@ -887,9 +892,9 @@ const VideoMeetingModal = (props) => {
   };
 
   const recurringOptions = [
-    { value: "weekly", label: "Weekly" },
-    { value: "monthly", label: "Monthly" },
-    { value: "yearly", label: "Yearly" },
+    { value: "weekly", label: dictionary.weekly },
+    { value: "monthly", label: dictionary.monthly },
+    { value: "yearly", label: dictionary.yearly },
   ];
 
   const toggleNested = () => {
@@ -1057,7 +1062,7 @@ const VideoMeetingModal = (props) => {
                     {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
                   </div>
                   <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">Recurring</div>
+                    <div className="mr-2">{dictionary.recurring}</div>
                     <Select
                       className={"react-select-container"}
                       classNamePrefix="react-select"
@@ -1070,7 +1075,7 @@ const VideoMeetingModal = (props) => {
                     />
                   </div>
                   <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">End date</div>
+                    <div className="mr-2">{dictionary.endDate}</div>
                     <DatePicker
                       placeholderText="Click to select a date"
                       showMonthDropdown

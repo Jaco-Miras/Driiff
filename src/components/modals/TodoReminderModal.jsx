@@ -546,6 +546,11 @@ const TodoReminderModal = (props) => {
     uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
     toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    endDate: _t("LABEL.END_DATE", "End date"),
+    recurring: _t("LABEL.RECURRING", "Recurring"),
+    weekly: _t("LABEL.WEEKLY", "Weekly"),
+    monthly: _t("LABEL.MONTHLY", "Monthly"),
+    yearly: _t("LABEL.YEARLY", "Yearly"),
   };
 
   if (mode === "edit") {
@@ -1078,10 +1083,11 @@ const TodoReminderModal = (props) => {
   //     });
 
   const recurringOptions = [
-    { value: "weekly", label: "Weekly" },
-    { value: "monthly", label: "Monthly" },
-    { value: "yearly", label: "Yearly" },
+    { value: "weekly", label: dictionary.weekly },
+    { value: "monthly", label: dictionary.monthly },
+    { value: "yearly", label: dictionary.yearly },
   ];
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatReminder}</ModalHeaderSection>
@@ -1445,7 +1451,7 @@ const TodoReminderModal = (props) => {
                     {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
                   </div>
                   <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">Recurring</div>
+                    <div className="mr-2">{dictionary.recurring}</div>
                     <Select
                       className={"react-select-container"}
                       classNamePrefix="react-select"
@@ -1458,7 +1464,7 @@ const TodoReminderModal = (props) => {
                     />
                   </div>
                   <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">End date</div>
+                    <div className="mr-2">{dictionary.endDate}</div>
                     <DatePicker
                       placeholderText="Click to select a date"
                       showMonthDropdown
