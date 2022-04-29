@@ -21,7 +21,6 @@ const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin: 20px 0;
-
   label {
     margin: 0 20px 0 0;
     min-width: 109px;
@@ -1147,7 +1146,7 @@ const PostModal = (props) => {
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
-          <FolderSelect name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
           {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
         </WrapperDiv>
         <WrapperDiv className={"m-0"}>
