@@ -415,6 +415,9 @@ const ChatHeaderPanel = (props) => {
           </>
         );
       }
+      case "PERSONAL_BOT": {
+        return dictionary.personalNotes;
+      }
       default: {
         return chatChannel.title;
       }
