@@ -378,10 +378,18 @@ const VideoMeetingModal = (props) => {
           type: "USER",
           useLabel: true,
         });
+        setForm({
+          ...form,
+          assigned_to: { value: channel.profile.id },
+        });
       } else {
         //get the workspace
         let workspace = workspaces[channel.entity_id];
         if (workspace) {
+          setForm({
+            ...form,
+            topic_id: { value: channel.entity_id },
+          });
           if (workspace.is_shared) {
             const isGuestChannel = workspace.channel && workspace.channel.id === channel.id;
             setSelectedWorkspace({
@@ -1025,7 +1033,7 @@ const VideoMeetingModal = (props) => {
                   {dictionary.threeHours}
                 </RadioInput>
               </RadioInputWrapper>
-              <RadioInputWrapper>
+              {/* <RadioInputWrapper>
                 <RadioInput
                   readOnly
                   onClick={(e) => {
@@ -1037,7 +1045,7 @@ const VideoMeetingModal = (props) => {
                 >
                   {dictionary.tomorrow}
                 </RadioInput>
-              </RadioInputWrapper>
+              </RadioInputWrapper> */}
               <RadioInputWrapper>
                 <RadioInput readOnly onClick={handleSelectPickDateTime} checked={timeValue === "pick_data"} value={"pick_data"} name={"role"}>
                   {dictionary.pickDateTime}

@@ -242,6 +242,7 @@ const MainNavigationTabPanel = (props) => {
     addYourFavWs: _t("SIDEBAR.ADD_YOUR_FAVORITE_WORKSPACE", "Add your favorite <br/>workspaces here, ::name::!", { name: user.first_name }),
     newFolder: _t("TOOLTIP.NEW_FOLDER", "New folder"),
     meeting: _t("SIDEBAR.MEETING", "Meeting"),
+    toasterMeetingTodo: _t("TOASTER.VIDEO_MEETING_CREATE_SUCCESS", "You will be reminded about this meeting under <b>Meetings</b>."),
   };
 
   const handleShowModalButtons = () => {
