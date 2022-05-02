@@ -17,17 +17,18 @@ const Wrapper = styled.a`
   line-height: 21px !important;
   margin-right: 1pt;
   margin-left: 1pt;
-  img {
-    width: 1rem;
-    height: 1rem;
+  ::before {
+    content: url(${(props) => props.favlink});
+    display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    padding-right: 0.3em;
   }
 `;
 const FancyLink = (props) => {
   const { link, title } = props;
-  const favLink = link.replace("https://", "");
   return (
-    <Wrapper href={`${link}`} target="_blank">
-      <img src={"https://api.faviconkit.com/" + favLink} alt="link icon" className="mr-2"></img>
+    <Wrapper href={`${link}`} target="_blank" favlink={"https://www.google.com/s2/favicons?domain=" + link}>
       {title}
     </Wrapper>
   );
