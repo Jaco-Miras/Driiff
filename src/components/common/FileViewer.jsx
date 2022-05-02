@@ -300,9 +300,9 @@ const FileRender = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    let handle = window.open(file.download_link, "_self");
-    handle.blur();
-    window.focus();
+    window.open(file.download_link, "_self");
+    // handle.blur();
+    // window.focus();
   };
 
   useEffect(() => {
@@ -505,9 +505,9 @@ const FileViewer = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    let handle = window.open(file.download_link, "_self");
-    handle.blur();
-    window.focus();
+    window.open(file.download_link, "_self");
+    // handle.blur();
+    // window.focus();
   };
 
   useEffect(() => {
