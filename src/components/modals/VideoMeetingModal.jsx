@@ -60,10 +60,16 @@ const Wrapper = styled(Modal)`
   }
   .react-datepicker-wrapper {
     min-width: 180px;
-    max-width: 210px;
+    max-width: 200px;
     input {
-      width: 210px;
+      width: 200px;
     }
+  }
+  .react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle::before,
+  .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::before,
+  .react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle::after,
+  .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle::after {
+    left: -47px;
   }
   .modal-footer {
     justify-content: space-between;
@@ -121,12 +127,16 @@ const RadioInputWrapper = styled.div`
 
 const TimePickerContainer = styled.div`
   display: flex;
-  align-items: center;
+  // align-items: center;
+  flex-flow: column;
   .react-select-container {
-    width: 135px;
+    width: 200px;
   }
   .react-datepicker-wrapper input {
     padding: 6px;
+  }
+  .flex-flow-column {
+    flex-flow: column;
   }
 `;
 
@@ -1053,51 +1063,77 @@ const VideoMeetingModal = (props) => {
               </RadioInputWrapper>
               {showDateTimePicker && (
                 <TimePickerContainer>
-                  <div className="mr-2">
-                    <DatePicker
-                      showMonthDropdown
-                      showYearDropdown
-                      dropdownMode="select"
-                      minDate={minDate}
-                      filterTime={filterPassedTime}
-                      filterDate={filterPassedDate}
-                      showTimeSelect
-                      timeIntervals={15}
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                      selected={customTimeValue}
-                      onChange={handlePickDate}
-                    />
+                  <div className="d-flex align-items-center mr-2 mb-2">
+                    <div className="d-flex flex-flow-column mr-2">
+                      <div className="mr-2">Date</div>
+                      <DatePicker
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        minDate={minDate}
+                        //filterTime={filterPassedTime}
+                        filterDate={filterPassedDate}
+                        //showTimeSelect
+                        //timeIntervals={15}
+                        dateFormat="EEEE, MMMM d, yyyy"
+                        selected={customTimeValue}
+                        onChange={handlePickDate}
+                      />
+                    </div>
+                    <div className="d-flex flex-flow-column">
+                      <div className="ml-2 mr-2">Time</div>
+                      <DatePicker minDate={minDate} filterTime={filterPassedTime} selected={customTimeValue} onChange={handlePickDate} showTimeSelect showTimeSelectOnly timeIntervals={15} timeCaption="Time" dateFormat="h:mm aa" />
+                    </div>
                     {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
                   </div>
-                  <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">{dictionary.recurring}</div>
-                    <Select
-                      className={"react-select-container"}
-                      classNamePrefix="react-select"
-                      styles={dark_mode === "0" ? lightTheme : darkTheme}
-                      options={recurringOptions}
-                      onChange={handleSelectRecurring}
-                      menuPlacement={"top"}
-                      isClearable={true}
-                      value={recurring}
-                    />
+                  <div className="d-flex align-items-center mr-2 mb-2">
+                    <div className="d-flex flex-flow-column mr-2">
+                      <div className="mr-2">{dictionary.recurring}</div>
+                      <Select
+                        className={"react-select-container"}
+                        classNamePrefix="react-select"
+                        styles={dark_mode === "0" ? lightTheme : darkTheme}
+                        options={recurringOptions}
+                        onChange={handleSelectRecurring}
+                        menuPlacement={"top"}
+                        isClearable={true}
+                        value={recurring}
+                      />
+                    </div>
                   </div>
                   <div className="d-flex align-items-center mr-2">
-                    <div className="mr-2">{dictionary.endDate}</div>
-                    <DatePicker
-                      placeholderText="Click to select a date"
-                      showMonthDropdown
-                      showYearDropdown
-                      dropdownMode="select"
-                      minDate={minEndDate}
-                      filterTime={filterPassedTime}
-                      filterDate={filterPassedDate}
-                      showTimeSelect
-                      timeIntervals={15}
-                      dateFormat="MMMM d, yyyy h:mm aa"
-                      selected={customEndDateValue}
-                      onChange={handlePickEndDate}
-                    />
+                    <div className="d-flex flex-flow-column mr-2">
+                      <div className="mr-2">{dictionary.endDate}</div>
+                      <DatePicker
+                        placeholderText="Click to select a date"
+                        showMonthDropdown
+                        showYearDropdown
+                        dropdownMode="select"
+                        minDate={minEndDate}
+                        //filterTime={filterPassedTime}
+                        filterDate={filterPassedDate}
+                        //showTimeSelect
+                        //timeIntervals={15}
+                        dateFormat="EEEE, MMMM d, yyyy"
+                        selected={customEndDateValue}
+                        onChange={handlePickEndDate}
+                      />
+                    </div>
+                    <div className="d-flex flex-flow-column mr-2">
+                      <div className="ml-2 mr-2">Time</div>
+                      <DatePicker
+                        filterTime={filterPassedTime}
+                        filterDate={filterPassedDate}
+                        minDate={minEndDate}
+                        selected={customEndDateValue}
+                        onChange={handlePickEndDate}
+                        showTimeSelect
+                        showTimeSelectOnly
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="h:mm aa"
+                      />
+                    </div>
                   </div>
                 </TimePickerContainer>
               )}
