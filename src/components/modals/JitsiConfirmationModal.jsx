@@ -67,6 +67,7 @@ const JitsiConfirmationModal = (props) => {
     startingMeeting: _t("CONFIRMATION.ZOOM_STARTING_MEETING", "Starting meeting, please hold"),
     jitsiMeet: _t("CONFIRMATION.JITSI_MEET", "Driff talk"),
     jitsiMeetConfirmation: _t("CONFIRMATION.JITSI_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
+    toasterCreateTodo: _t("TOASTER.VIDEO_MEETING_CREATE_SUCCESS", "You will be reminded about this meeting under <b>Meetings</b>."),
   };
 
   const [modal, setModal] = useState(true);

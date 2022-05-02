@@ -100,7 +100,7 @@ const NewModalButtons = (props) => {
             toaster.error(dictionary.toasterGeneraError);
           }
           if (res) {
-            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
+            toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterMeetingTodo }} />);
           }
         })
       );
