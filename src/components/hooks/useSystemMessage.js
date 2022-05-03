@@ -111,6 +111,17 @@ const useSystemMessage = ({ dictionary, reply, selectedChannel, user }) => {
       const data = JSON.parse(reply.body.replace("RECORDING_UPLOADED::", ""));
       const translatedText = _t("SYSTEM.JITSI_RECORD", "The meeting is ended, you can watch the recording:");
       parseBody = `<div>${translatedText} <a href=${data.recording_details.recording_link}>${data.recording_details.recording_link}</a></div>`;
+    } else if (reply.body.startsWith("DUE_REMINDER::")) {
+      const data = JSON.parse(reply.body.replace("DUE_REMINDER::", ""));
+      if (data.length) {
+        if (data.length > 1) {
+          let titles = data.map((d) => d.title).join(", ");
+          parseBody = `<div>Reminders: <b>${titles}</b></div>`;
+        } else {
+          const reminder = data[0];
+          parseBody = `<div>Reminder: <b>${reminder.title}</b></div>`;
+        }
+      }
     }
     return parseBody;
   };
