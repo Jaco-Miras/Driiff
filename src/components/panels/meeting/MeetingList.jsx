@@ -113,7 +113,7 @@ const StyledListContainer = styled(ListContainer)`
 `;
 
 const MeetingList = (props) => {
-  const { className = "", workspaceName = null } = props;
+  const { className = "", workspaceName = null, isWorkspace } = props;
 
   const { _t } = useTranslationActions();
   const meetings = useSelector((state) => state.global.meetings);
@@ -164,7 +164,7 @@ const MeetingList = (props) => {
   const { getVideoReminders, action: todoActions, isLoaded } = useTodos(true); //pass true to fetch to do list on mount - default to false
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
 
-  const videoReminders = getVideoReminders({ filter: { status: meetings.filter, search: meetings.search } });
+  const videoReminders = getVideoReminders({ filter: { status: meetings.filter, search: meetings.search, isWorkspace: isWorkspace } });
 
   const todoItems = videoReminders.filter((i) => i.status !== "DONE");
   const doneTodoItems = videoReminders.filter((i) => i.status === "DONE");

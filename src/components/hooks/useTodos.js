@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import moment from "moment-timezone";
 import { useTimeFormat, useTodoActions } from "./index";
 
@@ -9,6 +10,7 @@ const useTodos = (fetchTodosOnMount = false) => {
 
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
+  const params = useParams();
 
   const todoActions = useTodoActions();
   const { localizeDate } = useTimeFormat();
@@ -108,6 +110,13 @@ const useTodos = (fetchTodosOnMount = false) => {
 
   const getVideoReminders = ({ filter = "" }) => {
     return Object.values(items)
+      .filter((t) => {
+        if (filter.isWorkspace) {
+          return t.workspace && params.workspaceId && t.workspace.id === parseInt(params.workspaceId);
+        } else {
+          return t.link_type === "DRIFF_TALK";
+        }
+      })
       .map((t) => {
         if (t.author === null && t.link_type === null) {
           const author = Object.values(users).find((u) => u.id === t.user);
