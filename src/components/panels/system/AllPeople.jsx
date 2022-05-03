@@ -104,7 +104,7 @@ const AllPeople = (props) => {
     setSearch("");
   };
 
-  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot", "driff_channel_bot"];
   const allUsers = [...Object.values(users), ...inactiveUsers].filter((u) => {
     if (u.email && botCodes.includes(u.email)) {
       return false;
@@ -121,7 +121,7 @@ const AllPeople = (props) => {
       } else return true;
     })
     .filter((user) => {
-      if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot"].includes(user.email)) return false;
+      if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_webhook_bot", "driff_channel_bot"].includes(user.email)) return false;
       if (match.path === "/system/people/all/online") {
         return onlineUsers.some((ou) => ou.user_id === user.id);
       } else if (showInactive) {

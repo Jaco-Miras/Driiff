@@ -24,7 +24,7 @@ const useUsers = () => {
 
   useEffect(() => {
     if (Object.keys(users).length > 0) {
-      const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
+      const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot", "driff_channel_bot"];
       const _activeUsers = _.pickBy(users, (user) => user.active === 1 && !botCodes.includes(user.email));
       const _guestUsers = _.pickBy(users, (user) => user.type === "external" && !botCodes.includes(user.email));
 

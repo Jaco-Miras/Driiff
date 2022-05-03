@@ -44,8 +44,9 @@ const AllUsersStructure = (props) => {
   const { dictionary } = props;
   const theme = useTheme();
   const users = useSelector((state) => state.users.users);
-  const internalUsers = Object.values(users).filter((u) => u.type === "internal");
-  const externalUsers = Object.values(users).filter((u) => u.type === "external");
+  const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot", "driff_channel_bot"];
+  const internalUsers = Object.values(users).filter((u) => u.type === "internal" && !botCodes.includes(u.email));
+  const externalUsers = Object.values(users).filter((u) => u.type === "external" && !botCodes.includes(u.email));
 
   const teams = useSelector((state) => state.users.teams);
   const teamsLoaded = useSelector((state) => state.users.teamsLoaded);
@@ -74,7 +75,7 @@ const AllUsersStructure = (props) => {
       parent_team: 0,
     },
   ];
-
+  const allUsers = Object.values(users).filter((u) => u.active === 1 && !botCodes.includes(u.email));
   const allTeams = [...internalAndExternalTeam, ...Object.values(teams)];
 
   const history = useHistory();
@@ -86,11 +87,11 @@ const AllUsersStructure = (props) => {
   const companyAvatar = {
     id: null,
     name: companyName,
-    members: Object.values(users),
+    members: allUsers,
     icon_link: null,
     icon: "home",
   };
-  const AllUsersWithCompany = [companyAvatar, ...Object.values(users)];
+  const AllUsersWithCompany = [companyAvatar, ...allUsers];
 
   return (
     <Wrapper>
@@ -105,7 +106,7 @@ const AllUsersStructure = (props) => {
                 <SvgIconFeather className="mr-2" icon="home" />
                 {companyName}
               </div>
-              <div className="mb-2">{Object.values(users).length} accounts</div>
+              <div className="mb-2">{allUsers.length} accounts</div>
               <MemberLists members={AllUsersWithCompany} />
             </StyledNode>
           }
