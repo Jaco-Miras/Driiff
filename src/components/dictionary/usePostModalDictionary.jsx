@@ -69,6 +69,8 @@ const usePostModalDictionary = (props) => {
     setToInternalPostBody2: _t("SET_TO_INTERNAL_POST_BODY_2", "Click confirm to remove external users. Cancelling will set the post to internal and guest."),
     titleRequired: _t("POST.TITLE_REQUIRED", "Title is required"),
     addressedToRequired: _t("POST.ADDRESS_TO_REQUIRED", "Addressed To is required"),
+    sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
+    notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
   };
 
   return {

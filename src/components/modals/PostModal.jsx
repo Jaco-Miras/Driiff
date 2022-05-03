@@ -375,7 +375,7 @@ const PostModal = (props) => {
     showApprover: false,
     mention_ids: [],
     requiredUsers: [],
-    shared_with_client: false,
+    shared_with_client: null,
     mustReadUsers: [],
     mustReplyUsers: [],
   });
