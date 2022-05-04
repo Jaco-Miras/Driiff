@@ -165,9 +165,15 @@ const MeetingList = (props) => {
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
 
   const videoReminders = getVideoReminders({ filter: { status: meetings.filter, search: meetings.search, isWorkspace: isWorkspace } });
-
-  const todoItems = videoReminders.filter((i) => i.status !== "DONE");
-  const doneTodoItems = videoReminders.filter((i) => i.status === "DONE");
+  let timestamp = Math.floor(Date.now() / 1000);
+  const meetingItems = videoReminders.filter((t) => {
+    const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
+    return notExpired;
+  });
+  const pastMeetingItems = videoReminders.filter((t) => {
+    const notExpired = t.remind_at === null || (t.remind_at && t.remind_at.timestamp > timestamp);
+    return !notExpired;
+  });
 
   const redirect = useRedirect();
   const params = useParams();
@@ -223,7 +229,7 @@ const MeetingList = (props) => {
   };
 
   return (
-    <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={todoItems.length ? false : true}>
+    <Wrapper className={`todos-body card app-content-body mb-4 ${className}`} active={meetingItems.length ? false : true}>
       {!isLoaded && (
         <div className="card-body d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />
@@ -236,7 +242,7 @@ const MeetingList = (props) => {
             dictionary={dictionary}
             handleHeaderClick={handleShowTodo}
             headerText={"Meetings"}
-            items={sortItems(todoItems)}
+            items={sortItems(meetingItems)}
             params={params}
             workspaceName={workspaceName}
             sortByDate={sortByDate}
@@ -261,7 +267,7 @@ const MeetingList = (props) => {
             listGroupClassname={"list-group-done"}
             handleHeaderClick={handleShowDone}
             headerText={"Past meetings"}
-            items={sortItems(doneTodoItems)}
+            items={sortItems(pastMeetingItems)}
             params={params}
             workspaceName={null}
             sortByDate={sortByDate}

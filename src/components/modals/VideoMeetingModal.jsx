@@ -8,7 +8,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
+import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput, CheckBox } from "../forms";
 import moment from "moment";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
@@ -198,11 +198,55 @@ const VideoMeetingModal = (props) => {
     },
   });
 
+  let dictionary = {
+    author: _t("REMINDER.AUTHOR", "Author"),
+    title: _t("REMINDER.TITLE", "Title"),
+    description: _t("REMINDER.DESCRIPTION", "Description"),
+    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
+    message: _t("REMINDER.MESSAGE", "Message"),
+    oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
+    threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
+    tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
+    pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
+    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
+    cancel: _t("REMINDER.CANCEL", "Cancel"),
+    feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
+    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
+    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
+    snooze: _t("REMINDER.REMIND", "Remind"),
+    workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
+    assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
+    fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
+    uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
+    toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    save: _t("MODAL.SAVE", "Save"),
+    videoMeeting: _t("MODAL.VIDEO_MEETING_HEADER", "Video meeting"),
+    videoMeetingInfo: _t("MODAL.VIDEO_MEETING_INFO", "Video meeting information"),
+    setMeetingButton: _t("BUTTON.SET_MEETING", "Set meeting"),
+    setMeetingHeader: _t("CONFRIMATION.SET_MEETING", "Set meeting"),
+    createConfirmMeetingBody: _t("CONFRIMATION.BODY.SET_MEETING", "Are you sure you want to set this meeting?"),
+    updateConfirmMeetingBody: _t("CONFRIMATION.BODY.UPDATE_MEETING", "Are you sure you want to update this meeting?"),
+    endDate: _t("LABEL.END_DATE", "End date"),
+    recurring: _t("LABEL.RECURRING", "Recurring"),
+    weekly: _t("LABEL.WEEKLY", "Weekly"),
+    monthly: _t("LABEL.MONTHLY", "Monthly"),
+    yearly: _t("LABEL.YEARLY", "Yearly"),
+    makeThisMeetingRecurring: _t("LABEL.MAKE_THIS_MEETING_RECURRING", "Make this meeting recurring"),
+  };
+
+  const recurringOptions = [
+    { value: "daily", label: "Daily" },
+    { value: "weekly", label: dictionary.weekly },
+    { value: "monthly", label: dictionary.monthly },
+    { value: "yearly", label: dictionary.yearly },
+  ];
+
   const minEndDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(7, "days").toDate();
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "3h");
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, "m").toDate());
-  const [customEndDateValue, setCustomEndDateValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : null);
+  const [customEndDateValue, setCustomEndDateValue] = useState(item && item.end_date && item.end_date.timestamp ? moment.unix(item.end_date.timestamp).toDate() : null);
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
   const [initFocused, setInitFocused] = useState(false);
@@ -219,8 +263,9 @@ const VideoMeetingModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
-  const [recurring, setRecurring] = useState(null);
+  const [recurring, setRecurring] = useState(item && item.recurring ? recurringOptions.find((o) => o.value === item.recurring) : null);
   const [showNestedModal, setShowNestedModal] = useState(false);
+  const [showRecurringOptions, setShowRecurringOptions] = useState(item && item.recurring !== null);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -430,42 +475,6 @@ const VideoMeetingModal = (props) => {
     dropzone: useRef(null),
   };
 
-  let dictionary = {
-    author: _t("REMINDER.AUTHOR", "Author"),
-    title: _t("REMINDER.TITLE", "Title"),
-    description: _t("REMINDER.DESCRIPTION", "Description"),
-    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
-    message: _t("REMINDER.MESSAGE", "Message"),
-    oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
-    threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
-    tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
-    pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
-    cancel: _t("REMINDER.CANCEL", "Cancel"),
-    feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
-    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
-    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
-    snooze: _t("REMINDER.REMIND", "Remind"),
-    workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
-    assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
-    fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
-    uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
-    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
-    toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
-    save: _t("MODAL.SAVE", "Save"),
-    videoMeeting: _t("MODAL.VIDEO_MEETING_HEADER", "Video meeting"),
-    videoMeetingInfo: _t("MODAL.VIDEO_MEETING_INFO", "Video meeting information"),
-    setMeetingButton: _t("BUTTON.SET_MEETING", "Set meeting"),
-    setMeetingHeader: _t("CONFRIMATION.SET_MEETING", "Set meeting"),
-    createConfirmMeetingBody: _t("CONFRIMATION.BODY.SET_MEETING", "Are you sure you want to set this meeting?"),
-    updateConfirmMeetingBody: _t("CONFRIMATION.BODY.UPDATE_MEETING", "Are you sure you want to update this meeting?"),
-    endDate: _t("LABEL.END_DATE", "End date"),
-    recurring: _t("LABEL.RECURRING", "Recurring"),
-    weekly: _t("LABEL.WEEKLY", "Weekly"),
-    monthly: _t("LABEL.MONTHLY", "Monthly"),
-    yearly: _t("LABEL.YEARLY", "Yearly"),
-  };
-
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
@@ -572,12 +581,14 @@ const VideoMeetingModal = (props) => {
       remove_file_ids: removedFiles.map((f) => f.id),
     };
 
-    if (recurring) {
-      payload = { ...payload, recurring: recurring.value };
-    }
-    if (customEndDateValue) {
-      let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
-      payload = { ...payload, end_at: convertedDate.slice(0, -2) + "00" };
+    if (showRecurringOptions) {
+      if (recurring) {
+        payload = { ...payload, recurring: recurring.value };
+      }
+      if (customEndDateValue) {
+        let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
+        payload = { ...payload, end_date: convertedDate.slice(0, -2) + "00" };
+      }
     }
 
     payload = { ...payload, send_invite: true, link_type: "DRIFF_TALK" };
@@ -909,18 +920,16 @@ const VideoMeetingModal = (props) => {
     setRecurring(e);
   };
 
-  const recurringOptions = [
-    { value: "weekly", label: dictionary.weekly },
-    { value: "monthly", label: dictionary.monthly },
-    { value: "yearly", label: dictionary.yearly },
-  ];
-
   const toggleNested = () => {
     setShowNestedModal((prevState) => !prevState);
   };
 
   const handleConfirm = () => {
     handleRemind();
+  };
+
+  const handleShowRecurringOptions = () => {
+    setShowRecurringOptions((prevState) => !prevState);
   };
 
   return (
@@ -1086,55 +1095,62 @@ const VideoMeetingModal = (props) => {
                     </div>
                     {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
                   </div>
-                  <div className="d-flex align-items-center mr-2 mb-2">
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="mr-2">{dictionary.recurring}</div>
-                      <Select
-                        className={"react-select-container"}
-                        classNamePrefix="react-select"
-                        styles={dark_mode === "0" ? lightTheme : darkTheme}
-                        options={recurringOptions}
-                        onChange={handleSelectRecurring}
-                        menuPlacement={"top"}
-                        isClearable={true}
-                        value={recurring}
-                      />
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center mr-2">
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="mr-2">{dictionary.endDate}</div>
-                      <DatePicker
-                        placeholderText="Click to select a date"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        minDate={minEndDate}
-                        //filterTime={filterPassedTime}
-                        filterDate={filterPassedDate}
-                        //showTimeSelect
-                        //timeIntervals={15}
-                        dateFormat="EEEE, MMMM d, yyyy"
-                        selected={customEndDateValue}
-                        onChange={handlePickEndDate}
-                      />
-                    </div>
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="ml-2 mr-2">Time</div>
-                      <DatePicker
-                        filterTime={filterPassedTime}
-                        filterDate={filterPassedDate}
-                        minDate={minEndDate}
-                        selected={customEndDateValue}
-                        onChange={handlePickEndDate}
-                        showTimeSelect
-                        showTimeSelectOnly
-                        timeIntervals={15}
-                        timeCaption="Time"
-                        dateFormat="h:mm aa"
-                      />
-                    </div>
-                  </div>
+                  <CheckBox name="recurring" checked={showRecurringOptions} onClick={handleShowRecurringOptions} type="danger">
+                    {dictionary.makeThisMeetingRecurring}
+                  </CheckBox>
+                  {showRecurringOptions && (
+                    <>
+                      <div className="d-flex align-items-center mr-2 mb-2">
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="mr-2">{dictionary.recurring}</div>
+                          <Select
+                            className={"react-select-container"}
+                            classNamePrefix="react-select"
+                            styles={dark_mode === "0" ? lightTheme : darkTheme}
+                            options={recurringOptions}
+                            onChange={handleSelectRecurring}
+                            menuPlacement={"top"}
+                            isClearable={true}
+                            value={recurring}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center mr-2">
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="mr-2">{dictionary.endDate}</div>
+                          <DatePicker
+                            placeholderText="Click to select a date"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                            minDate={minEndDate}
+                            //filterTime={filterPassedTime}
+                            filterDate={filterPassedDate}
+                            //showTimeSelect
+                            //timeIntervals={15}
+                            dateFormat="EEEE, MMMM d, yyyy"
+                            selected={customEndDateValue}
+                            onChange={handlePickEndDate}
+                          />
+                        </div>
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="ml-2 mr-2">Time</div>
+                          <DatePicker
+                            filterTime={filterPassedTime}
+                            filterDate={filterPassedDate}
+                            minDate={minEndDate}
+                            selected={customEndDateValue}
+                            onChange={handlePickEndDate}
+                            showTimeSelect
+                            showTimeSelectOnly
+                            timeIntervals={15}
+                            timeCaption="Time"
+                            dateFormat="h:mm aa"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </TimePickerContainer>
               )}
             </InputContainer>
