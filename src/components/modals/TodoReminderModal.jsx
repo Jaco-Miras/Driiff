@@ -8,7 +8,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput } from "../forms";
+import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput, CheckBox } from "../forms";
 import moment from "moment";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
@@ -156,6 +156,43 @@ const TodoReminderModal = (props) => {
   } = useSettings();
 
   const { _t } = useTranslationActions();
+
+  let dictionary = {
+    author: _t("REMINDER.AUTHOR", "Author"),
+    title: _t("REMINDER.TITLE", "Title"),
+    description: _t("REMINDER.DESCRIPTION", "Description"),
+    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
+    message: _t("REMINDER.MESSAGE", "Message"),
+    oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
+    threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
+    tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
+    pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
+    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
+    cancel: _t("REMINDER.CANCEL", "Cancel"),
+    feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
+    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
+    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
+    snooze: _t("REMINDER.REMIND", "Remind"),
+    workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
+    assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
+    fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
+    uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
+    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
+    toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
+    endDate: _t("LABEL.END_DATE", "End date"),
+    recurring: _t("LABEL.RECURRING", "Recurring"),
+    weekly: _t("LABEL.WEEKLY", "Weekly"),
+    monthly: _t("LABEL.MONTHLY", "Monthly"),
+    yearly: _t("LABEL.YEARLY", "Yearly"),
+    makeThisMeetingRecurring: _t("LABEL.MAKE_THIS_MEETING_RECURRING", "Make this meeting recurring"),
+  };
+
+  const recurringOptions = [
+    { value: "weekly", label: dictionary.weekly },
+    { value: "monthly", label: dictionary.monthly },
+    { value: "yearly", label: dictionary.yearly },
+  ];
+
   const dispatch = useDispatch();
   const toaster = useToaster();
   const winSize = useWindowSize();
@@ -193,7 +230,7 @@ const TodoReminderModal = (props) => {
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "");
   const [customTimeValue, setCustomTimeValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(20, "m").toDate());
-  const [customEndDateValue, setCustomEndDateValue] = useState(item && item.remind_at ? moment.unix(item.remind_at.timestamp).toDate() : null);
+  const [customEndDateValue, setCustomEndDateValue] = useState(item && item.end_date && item.end_date.timestamp ? moment.unix(item.end_date.timestamp).toDate() : null);
   const [showDateTimePicker, setShowDateTimePicker] = useState(item && item.remind_at ? true : null);
   const [modal, setModal] = useState(true);
   const [initFocused, setInitFocused] = useState(false);
@@ -210,7 +247,8 @@ const TodoReminderModal = (props) => {
   const [showDropzone, setShowDropzone] = useState(false);
   const [inlineImages, setInlineImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(null);
-  const [recurring, setRecurring] = useState(null);
+  const [recurring, setRecurring] = useState(item && item.recurring ? recurringOptions.find((o) => o.value === item.recurring) : null);
+  const [showRecurringOptions, setShowRecurringOptions] = useState(item && item.recurring !== null);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -687,35 +725,6 @@ const TodoReminderModal = (props) => {
     dropzone: useRef(null),
   };
 
-  let dictionary = {
-    author: _t("REMINDER.AUTHOR", "Author"),
-    title: _t("REMINDER.TITLE", "Title"),
-    description: _t("REMINDER.DESCRIPTION", "Description"),
-    remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
-    message: _t("REMINDER.MESSAGE", "Message"),
-    oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
-    threeHours: _t("REMINDER.THREE_HOURS", "3 hours"),
-    tomorrow: _t("REMINDER.TOMORROW", "Tomorrow"),
-    pickDateTime: _t("REMINDER.PICK_DATE_TIME", "Pick date and time"),
-    //snooze: _t("REMINDER.SNOOZE", "Remind me"),
-    cancel: _t("REMINDER.CANCEL", "Cancel"),
-    feedbackReminderDateFuture: _t("FEEDBACK.REMINDER_DATE_MUST_BE_FUTURE", "Reminder date must be in the future."),
-    feedbackReminderDateOverdue: _t("FEEDBACK.REMINDER_DATE_OVERDUE", "Note: Reminder date is overdue."),
-    reminderInfo: _t("REMINDER.INFO", "Reminders help to organize your thoughts and guide you through your day."),
-    snooze: _t("REMINDER.REMIND", "Remind"),
-    workspaceLabel: _t("LABEL.WORKSPACE", "Workspace"),
-    assignedToLabel: _t("LABEL.ASSIGN_TO", "Assign to"),
-    fileAttachments: _t("POST.FILE_ATTACHMENTS", "File attachments"),
-    uploadingAndSending: _t("TOASTER.CREATING_TODO_WITH_FILE", "Uploading file and creating reminder"),
-    unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
-    toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
-    endDate: _t("LABEL.END_DATE", "End date"),
-    recurring: _t("LABEL.RECURRING", "Recurring"),
-    weekly: _t("LABEL.WEEKLY", "Weekly"),
-    monthly: _t("LABEL.MONTHLY", "Monthly"),
-    yearly: _t("LABEL.YEARLY", "Yearly"),
-  };
-
   if (mode === "edit") {
     dictionary.chatReminder = _t("TODO.EDIT", "Edit todo");
   } else {
@@ -849,13 +858,16 @@ const TodoReminderModal = (props) => {
     //     payload = { ...payload, send_invite: true };
     //   }
     // }
-    if (recurring) {
-      payload = { ...payload, recurring: recurring.value };
+    if (showRecurringOptions) {
+      if (recurring) {
+        payload = { ...payload, recurring: recurring.value };
+      }
+      if (customEndDateValue) {
+        let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
+        payload = { ...payload, end_date: convertedDate.slice(0, -2) + "00" };
+      }
     }
-    if (customEndDateValue) {
-      let convertedDate = moment.utc(customEndDateValue).format("YYYY-MM-DD HH:mm:ss");
-      payload = { ...payload, end_at: convertedDate.slice(0, -2) + "00" };
-    }
+
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
       toggle();
@@ -1245,11 +1257,9 @@ const TodoReminderModal = (props) => {
   //       //error
   //     });
 
-  const recurringOptions = [
-    { value: "weekly", label: dictionary.weekly },
-    { value: "monthly", label: dictionary.monthly },
-    { value: "yearly", label: dictionary.yearly },
-  ];
+  const handleShowRecurringOptions = () => {
+    setShowRecurringOptions((prevState) => !prevState);
+  };
 
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
@@ -1620,55 +1630,62 @@ const TodoReminderModal = (props) => {
                     </div>
                     {form.set_time.valid === false && <StyleInputFeedback valid={form.set_time.valid}>{form.set_time.feedback}</StyleInputFeedback>}
                   </div>
-                  <div className="d-flex align-items-center mr-2 mb-2">
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="mr-2">{dictionary.recurring}</div>
-                      <Select
-                        className={"react-select-container"}
-                        classNamePrefix="react-select"
-                        styles={dark_mode === "0" ? lightTheme : darkTheme}
-                        options={recurringOptions}
-                        onChange={handleSelectRecurring}
-                        menuPlacement={"top"}
-                        isClearable={true}
-                        value={recurring}
-                      />
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-center mr-2">
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="mr-2">{dictionary.endDate}</div>
-                      <DatePicker
-                        placeholderText="Click to select a date"
-                        showMonthDropdown
-                        showYearDropdown
-                        dropdownMode="select"
-                        minDate={minEndDate}
-                        //filterTime={filterPassedTime}
-                        filterDate={filterPassedDate}
-                        //showTimeSelect
-                        //timeIntervals={15}
-                        dateFormat="EEEE, MMMM d, yyyy"
-                        selected={customEndDateValue}
-                        onChange={handlePickEndDate}
-                      />
-                    </div>
-                    <div className="d-flex flex-flow-column mr-2">
-                      <div className="ml-2 mr-2">Time</div>
-                      <DatePicker
-                        filterTime={filterPassedTime}
-                        filterDate={filterPassedDate}
-                        minDate={minEndDate}
-                        selected={customEndDateValue}
-                        onChange={handlePickEndDate}
-                        showTimeSelect
-                        showTimeSelectOnly
-                        timeIntervals={15}
-                        timeCaption="Time"
-                        dateFormat="h:mm aa"
-                      />
-                    </div>
-                  </div>
+                  <CheckBox name="recurring" checked={showRecurringOptions} onClick={handleShowRecurringOptions} type="danger">
+                    {dictionary.makeThisMeetingRecurring}
+                  </CheckBox>
+                  {showRecurringOptions && (
+                    <>
+                      <div className="d-flex align-items-center mr-2 mb-2">
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="mr-2">{dictionary.recurring}</div>
+                          <Select
+                            className={"react-select-container"}
+                            classNamePrefix="react-select"
+                            styles={dark_mode === "0" ? lightTheme : darkTheme}
+                            options={recurringOptions}
+                            onChange={handleSelectRecurring}
+                            menuPlacement={"top"}
+                            isClearable={true}
+                            value={recurring}
+                          />
+                        </div>
+                      </div>
+                      <div className="d-flex align-items-center mr-2">
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="mr-2">{dictionary.endDate}</div>
+                          <DatePicker
+                            placeholderText="Click to select a date"
+                            showMonthDropdown
+                            showYearDropdown
+                            dropdownMode="select"
+                            minDate={minEndDate}
+                            //filterTime={filterPassedTime}
+                            filterDate={filterPassedDate}
+                            //showTimeSelect
+                            //timeIntervals={15}
+                            dateFormat="EEEE, MMMM d, yyyy"
+                            selected={customEndDateValue}
+                            onChange={handlePickEndDate}
+                          />
+                        </div>
+                        <div className="d-flex flex-flow-column mr-2">
+                          <div className="ml-2 mr-2">Time</div>
+                          <DatePicker
+                            filterTime={filterPassedTime}
+                            filterDate={filterPassedDate}
+                            minDate={minEndDate}
+                            selected={customEndDateValue}
+                            onChange={handlePickEndDate}
+                            showTimeSelect
+                            showTimeSelectOnly
+                            timeIntervals={15}
+                            timeCaption="Time"
+                            dateFormat="h:mm aa"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </TimePickerContainer>
               )}
             </InputContainer>
