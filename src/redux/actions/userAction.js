@@ -41,6 +41,8 @@ import {
   removeTeamMember as removeTeamMemberService,
   createTeamChannel as createTeamChannelService,
   searchUsers as searchUsersService,
+  impersonationLogin as impersonationLoginService,
+  getCurrentUserImpersonation as getCurrentUserImpersonationService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -271,4 +273,11 @@ export function incomingRemovedTeamMember(payload, callback) {
 
 export function searchUsers(payload, callback) {
   return dispatchActionToReducer(searchUsersService(payload), "SEARCH_USERS_START", "SEARCH_USERS_SUCCESS", "SEARCH_USERS_FAILURE", callback);
+}
+
+export function impersonationLogin(payload, callback) {
+  return dispatchActionToReducer(impersonationLoginService(payload), "IMPERSONATION_LOGIN_START", "IMPERSONATION_LOGIN_SUCCESS", "IMPERSONATION_LOGIN_FAILURE", callback);
+}
+export function getCurrentUserImpersonation(payload, callback) {
+  return dispatchActionToReducer(getCurrentUserImpersonationService(payload), "GET_CURRENT_IMPERSONATION_USER_START", "GET_CURRENT_IMPERSONATION_USER_SUCCESS", "GET_CURRENT_IMPERSONATION_USER_FAILURE", callback);
 }

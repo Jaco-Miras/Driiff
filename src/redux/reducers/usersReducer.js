@@ -19,6 +19,9 @@ const INITIAL_STATE = {
   teams: {},
   teamsLoaded: false,
   archivedUsersLoaded: false,
+  impersonation: {
+    loading: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -478,6 +481,44 @@ export default (state = INITIAL_STATE, action) => {
         users: {
           ...state.users,
           ...updatedUser,
+        },
+      };
+    }
+
+    case "IMPERSONATION_LOGIN_START": {
+      debugger;
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: true,
+        },
+      };
+    }
+    case "IMPERSONATION_LOGIN_FAILURE": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+        },
+      };
+    }
+    case "GET_CURRENT_IMPERSONATION_USER_SUCCESS": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+        },
+      };
+    }
+    case "GET_CURRENT_IMPERSONATION_USER_FAILURE": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
         },
       };
     }

@@ -700,3 +700,19 @@ export function searchUsers(payload) {
     cancelToken: payload.cancelToken,
   });
 }
+
+export function impersonationLogin(payload) {
+  debugger;
+  return apiCall({
+    method: "POST",
+    url: "/impersonation/login",
+    data: payload,
+  });
+}
+export function getCurrentUserImpersonation(payload) {
+  debugger;
+  return apiCall({
+    method: "GET",
+    url: "/impersonation",
+  });
+}

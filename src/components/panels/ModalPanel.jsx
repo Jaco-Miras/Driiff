@@ -38,6 +38,7 @@ import {
   GoogleMeetInviteModal,
   JitsiInviteModal,
   JitsiConfirmationModal,
+  ImpersonationLoginModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -145,6 +146,8 @@ const ModalPanel = () => {
             return <JitsiInviteModal key={modal.type} data={modal} />;
           case "jitsi_confirmation":
             return <JitsiConfirmationModal key={modal.type} data={modal} />;
+          case "impersonation_login":
+            return <ImpersonationLoginModal key={modal.type} data={modal} />;
           default:
             return null;
         }
