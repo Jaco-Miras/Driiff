@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { getCurrentUserImpersonation, impersonationLogin } from "../../../../redux/actions/userAction";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useTranslationActions } from "../../../hooks";
+import { usePageLoader, useSettings, useTranslationActions, useUserActions } from "../../../hooks";
 import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.a`
@@ -38,6 +38,9 @@ const Wrapper = styled.a`
 const UserListItem = (props) => {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
+  const { setGeneralSetting } = useSettings();
+  const userActions = useUserActions();
+  const { show, hide } = usePageLoader();
 
   const dictionary = {
     guestBadge: _t("IMPERSONATION_BADGE.GUEST", "Guest"),
@@ -48,12 +51,36 @@ const UserListItem = (props) => {
     let modalPayload = {
       type: "impersonation_login",
       actions: {
-        onSubmit: (credentials) => {
+        user: props.user,
+        onSubmit: (credentials, cb) => {
+          show();
           dispatch(
-            impersonationLogin({ ...credentials, user_id: props.user.id }, (err, res) => {
+            impersonationLogin(credentials, (err, res) => {
               if (err) return;
-              // sessionService.saveUser({ ...res.data.user_auth });
-              dispatch(getCurrentUserImpersonation(), () => {});
+              userActions.storeLoginToken(res.data);
+              let dataSet = res.data;
+              sessionService
+                .saveSession({
+                  token: `${dataSet.token_type} ${dataSet.access_token}`,
+                  xsrf_token: `XSRF-TOKEN=${dataSet.access_token}`,
+                  access_broadcast_token: `${dataSet.access_broadcast_token}`,
+                  download_token: `${dataSet.download_token}`,
+                })
+                .then(() => {
+                  dispatch(getCurrentUserImpersonation());
+                  sessionService
+                    .saveUser({
+                      ...dataSet.user_auth,
+                    })
+                    .then(() => {
+                      cb();
+
+                      setGeneralSetting({ impersonationMode: true }, () => {
+                        userActions.processBackendLogin(res.data, "/dashboard");
+                        hide();
+                      });
+                    });
+                });
             })
           );
         },

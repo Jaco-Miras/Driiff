@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { getCurrentUserImpersonation } from "../../../../redux/actions/userAction";
 import { SearchForm } from "../../../forms";
 import { useTranslationActions } from "../../../hooks";
 import UserListItem from "./UserListItem";
