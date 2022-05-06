@@ -27,6 +27,7 @@ import { setIdleStatus } from "../redux/actions/globalActions";
 import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import JitsiContainer from "../components/panels/chat/JitsiContainer";
 import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
+import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -80,6 +81,8 @@ const MainLayout = (props) => {
     chatSettings: { sound_enabled },
     generalSettings: { notifications_on, notification_sound, first_login, userCanceledProfileUpload },
   } = useSettings();
+
+  const { generalSettings } = useSettings();
 
   const history = useHistory();
 
@@ -178,7 +181,8 @@ const MainLayout = (props) => {
         Your browser does not support the audio element.
       </AudioStyle>
       {showNotificationBar && mounted && <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater} />}
-      <NotificationTopBar />
+
+      {generalSettings.impersonationMode ? <ImpersonationTopBar /> : <NotificationTopBar />}
       {mounted && <MainHeaderPanel isExternal={isExternal} />}
       {mounted && (
         <MainContent id="main">
