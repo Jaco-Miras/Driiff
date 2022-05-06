@@ -71,6 +71,7 @@ const usePostModalDictionary = (props) => {
     addressedToRequired: _t("POST.ADDRESS_TO_REQUIRED", "Addressed To is required"),
     sharedClientBadge: _t("POST.BADGE_SHARED_CLIENT", "The client can see this post"),
     notSharedClientBadge: _t("POST.BADGE_NOT_SHARED_CLIENT", "This post is private to our team"),
+    radioRequired: _t("POST.RADIO_BUTTON_REQUIRED", "Please select an option"),
   };
 
   return {
