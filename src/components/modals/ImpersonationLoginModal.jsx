@@ -5,6 +5,7 @@ import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { SvgIconFeather } from "../common";
+import { useTranslationActions } from "../hooks";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {
@@ -24,53 +25,45 @@ const ModalWrapper = styled(Modal)`
   }
 `;
 const ImpersonationLoginModal = (props) => {
-  const { submitText, cancelText, headerText, bodyText, type, size = "m" } = props.data;
-  const { onSubmit } = props.data.actions;
+  const { type, size = "m" } = props.data;
+  const { onSubmit, user } = props.data.actions;
   const { loading } = useSelector((state) => state.users.impersonation);
-
-  const [loginForm, setLoginForm] = useState({
-    email: "",
-    password: "",
-  });
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
 
+  const { _t } = useTranslationActions();
+
+  const dictionary = {
+    title: _t("IMPERSONATION_MODAL.Title", "Warning"),
+    body: _t("IMPERSONATION_MODAL.BODY", "Are you sure you want to login as ::username::? Your login is saved in a log and is not deletable.", { username: user.name }),
+    confirmationText: _t("IMPERSONATION_MODAL.CONFIRMATION_TEXT", "Yes"),
+    cancelText: _t("IMPERSONATION_MODAL.CANCEL_TEXT", "No"),
+  };
+
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
-    // onCancel();
   };
 
   const handleConfirm = () => {
-    onSubmit(loginForm);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginForm((prev) => ({ ...prev, [name]: value }));
+    onSubmit({ email: user.email, user_id: user.id }, toggle);
   };
 
   return (
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <form>
-        <ModalHeaderSection toggle={toggle}>{headerText}</ModalHeaderSection>
+        <ModalHeaderSection toggle={toggle}>{dictionary.title}</ModalHeaderSection>
         <ModalBody>
-          <div className="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" className="form-control" name="email" value={loginForm.email} onChange={handleChange} />
-          </div>
-          <div className="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" className="form-control" name="password" value={loginForm.password} onChange={handleChange} />
-          </div>
+          <p>{dictionary.body}</p>
         </ModalBody>
         <ModalFooter>
-          <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
-            Cancel
+          <Button disabled={loading} className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
+            {dictionary.cancelText}
           </Button>
           <Button disabled={loading} className="btn btn-primary" color="primary" onClick={handleConfirm}>
-            Login
+            {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+            {dictionary.confirmationText}
           </Button>
         </ModalFooter>
       </form>
