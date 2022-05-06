@@ -34,8 +34,9 @@ import {
   setSearchArchivedChannels,
 } from "../../redux/actions/chatActions";
 import { useToaster, useTranslationActions } from "./index";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
+import { $_GET } from "../../helpers/commonFunctions";
 
 const useChannelActions = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const useChannelActions = () => {
   const { _t } = useTranslationActions();
   const toaster = useToaster();
   const history = useHistory();
+  const params = useParams();
 
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
@@ -594,7 +596,11 @@ const useChannelActions = () => {
         if (err) return;
         if (callback) callback();
         if (history.location.pathname.startsWith("/chat")) {
-          history.push(`/chat/${res.data.code}`);
+          if ($_GET("meeting")) {
+            history.push(`/chat/${res.data.code}?meeting=${$_GET("meeting")}`);
+          } else {
+            history.push(`/chat/${res.data.code}`);
+          }
         }
       })
     );
@@ -612,7 +618,11 @@ const useChannelActions = () => {
           return;
         }
         if (res && res.data) {
-          history.push(`/chat/${res.data.code}`);
+          if ($_GET("meeting")) {
+            history.push(`/chat/${res.data.code}?meeting=${$_GET("meeting")}`);
+          } else {
+            history.push(`/chat/${res.data.code}`);
+          }
           if (callback) callback();
         }
       })
