@@ -702,7 +702,6 @@ export function searchUsers(payload) {
 }
 
 export function impersonationLogin(payload) {
-  debugger;
   return apiCall({
     method: "POST",
     url: "/impersonation/login",
@@ -710,9 +709,14 @@ export function impersonationLogin(payload) {
   });
 }
 export function getCurrentUserImpersonation(payload) {
-  debugger;
   return apiCall({
     method: "GET",
     url: "/impersonation",
+  });
+}
+export function impersonationLogout(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/impersonation/logout",
   });
 }

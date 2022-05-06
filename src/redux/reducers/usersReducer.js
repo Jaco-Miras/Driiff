@@ -486,7 +486,6 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case "IMPERSONATION_LOGIN_START": {
-      debugger;
       return {
         ...state,
         impersonation: {

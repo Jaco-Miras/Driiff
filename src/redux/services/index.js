@@ -131,6 +131,7 @@ export {
   batchUploadProfileImage,
   impersonationLogin,
   getCurrentUserImpersonation,
+  impersonationLogout,
 } from "./user";
 
 export {

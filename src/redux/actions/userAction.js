@@ -43,6 +43,7 @@ import {
   searchUsers as searchUsersService,
   impersonationLogin as impersonationLoginService,
   getCurrentUserImpersonation as getCurrentUserImpersonationService,
+  impersonationLogout as impersonationLogoutService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -280,4 +281,7 @@ export function impersonationLogin(payload, callback) {
 }
 export function getCurrentUserImpersonation(payload, callback) {
   return dispatchActionToReducer(getCurrentUserImpersonationService(payload), "GET_CURRENT_IMPERSONATION_USER_START", "GET_CURRENT_IMPERSONATION_USER_SUCCESS", "GET_CURRENT_IMPERSONATION_USER_FAILURE", callback);
+}
+export function impersonationLogout(payload, callback) {
+  return dispatchActionToReducer(impersonationLogoutService(payload), "IMPERSONATION_LOGOUT_START", "IMPERSONATION_LOGOUT_SUCCESS", "IMPERSONATION_LOGOUT_FAILURE", callback);
 }
