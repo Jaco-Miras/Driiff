@@ -484,6 +484,12 @@ const PostModal = (props) => {
     } else {
       valid.selectedAddressTo = true;
     }
+    if (hasExternalWs && !shareOption) {
+      valid.radio = false;
+      message.radio = dictionary.radioRequired;
+    } else {
+      valid.radio = true;
+    }
     setFormResponse({
       valid: valid,
       message: message,
@@ -1207,6 +1213,7 @@ const PostModal = (props) => {
             user={user}
             setShowNestedModal={setShowNestedModal}
           />
+          {!formResponse.valid.radio && <p style={{ color: "red" }}>{formResponse.message.radio}</p>}
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
           <button className="btn btn-primary" onClick={handleConfirm}>
