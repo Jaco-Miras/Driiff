@@ -7,6 +7,7 @@ import { useCountUnreadReplies, useTimeFormat, useTranslationActions } from "../
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatFooterPanel, ChatHeaderPanel, ChatSearchPanel } from "./index";
 import { useIdleTimer } from "react-idle-timer";
+import { $_GET } from "../../../helpers/commonFunctions";
 
 const ChatMessages = lazy(() => import("../../list/chat/ChatMessages"));
 const VirtuosoContainer = lazy(() => import("../../list/chat/VirtuosoContainer"));
@@ -41,6 +42,7 @@ const ChatContentPanel = (props) => {
 
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const teamChannelId = useSelector((state) => state.workspaces.isOnClientChat);
+  const jitsi = useSelector((state) => state.chat.jitsi);
   //const bottomRef = useRef();
   const [showDropZone, setshowDropZone] = useState(false);
   //const [bottomRefVisible, setBottomRefVisible] = useState(false);
@@ -218,6 +220,16 @@ const ChatContentPanel = (props) => {
       setShowSearchPanel(false);
     }
   }, [pP, selectedChannel]);
+
+  useEffect(() => {
+    if (selectedChannel && $_GET("meeting") && !jitsi) {
+      let modalPayload = {
+        type: "jitsi_schedule_meeting",
+      };
+
+      dispatch(addToModals(modalPayload));
+    }
+  }, [selectedChannel, jitsi]);
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
