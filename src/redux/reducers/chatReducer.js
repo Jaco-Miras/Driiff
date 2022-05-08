@@ -275,6 +275,7 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
+          slug: action.slug,
         };
 
       return {

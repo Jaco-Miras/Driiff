@@ -18,9 +18,15 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
     service
       .then((result) => {
         if (result.status === 200 || result.status === 201 || result.status === 204) {
+          let host = result.config.url.split(".");
+          let slug = null;
+          if (host.length === 3) {
+            slug = host[0].split("https://")[1];
+          }
           dispatch({
             type: actionTypeSuccess,
             data: result.data,
+            slug: slug,
           });
           if (callback) callback(null, result);
         } else {

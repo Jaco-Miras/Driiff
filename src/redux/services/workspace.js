@@ -8,6 +8,12 @@ import { objToUrlParams } from "../../helpers/commonFunctions";
  * @returns {Promise<*>}
  */
 export function getWorkspaces(payload) {
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   if (payload.order_by === "channel_date_updated") {
     payload = {
       ...payload,
@@ -15,11 +21,12 @@ export function getWorkspaces(payload) {
     };
   }
 
-  let url = `/v2/workspace?${objToUrlParams(payload)}`;
+  url = `/v2/workspace?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -493,6 +500,15 @@ export function putWorkspaceQuickLinks(payload) {
 
 export function getRelatedWorkspace(payload) {
   let url = `/v2/workspace-shared/${payload.userId}?skip=${payload.skip}&limit=${payload.limit}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    // data: payload,
+  });
+}
+
+export function getSharedWorkspaces(payload) {
+  let url = "/shared-auth";
   return apiCall({
     method: "GET",
     url: url,

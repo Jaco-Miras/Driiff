@@ -8,9 +8,10 @@ const useSocketConnection = (props) => {
       let myToken = current.token;
       let accessBroadcastToken = current.access_broadcast_token;
       let host = process.env.REACT_APP_socketAddress;
+      const slug = localStorage.getItem("slug");
       if (!window.io) window.io = require("socket.io-client");
-      if (!window.Echo) {
-        window.Echo = new Echo({
+      if (!window[slug]) {
+        window[slug] = new Echo({
           broadcaster: "socket.io",
           host: host,
           auth: {

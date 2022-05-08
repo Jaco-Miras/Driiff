@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getBaseUrl } from "../../helpers/slugHelper";
 import {
@@ -34,6 +34,7 @@ const useChatMessageActions = () => {
   const toaster = useToaster();
   const todoActions = useTodoActions();
   const { _t } = useTranslationActions();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const dictionary = {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
@@ -43,6 +44,11 @@ const useChatMessageActions = () => {
 
   const refs = {
     fetch: useRef(false),
+  };
+
+  const getSharedPayload = (slug) => {
+    const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+    return sharedPayload;
   };
 
   const viewFiles = (files) => {
@@ -69,6 +75,12 @@ const useChatMessageActions = () => {
       limit: limit,
       //...getSharedPayload(channel),
     };
+    if (channel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: channel.slug, token: sharedWs[channel.slug].access_token, is_shared: true },
+      };
+    }
 
     dispatch(
       getChatMessages(payload, (err, res) => {
