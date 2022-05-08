@@ -77,6 +77,7 @@ const MainLayout = (props) => {
     audio: useRef(null),
     dropZoneRef: useRef(null),
   };
+  const slug = uDriff.actions.getName();
 
   const dispatch = useDispatch();
 
@@ -211,7 +212,7 @@ const MainLayout = (props) => {
       )}
       <JitsiContainer />
       <MobileOverlay />
-      {user.id !== undefined && window.Echo !== undefined && (
+      {user.id !== undefined && window[slug] !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
       )}
       {sharedWsLoaded &&

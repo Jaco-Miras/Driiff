@@ -47,11 +47,6 @@ const useChatMessageActions = () => {
     fetch: useRef(false),
   };
 
-  const getSharedPayload = (slug) => {
-    const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
-    return sharedPayload;
-  };
-
   const viewFiles = (files) => {
     const payload = {
       files: files,
