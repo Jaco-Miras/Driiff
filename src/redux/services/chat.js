@@ -59,6 +59,7 @@ export function getChannel(payload) {
   return apiCall({
     method: "GET",
     url: url,
+    sharedPayload: payload.sharedPayload,
   });
 }
 
@@ -72,19 +73,19 @@ export function getLastVisitedChannel(payload) {
 }
 
 export function getChatMessages(payload) {
-  //const { channel_id, skip, limit, topic_id, ...rest } = payload;
-
-  // let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
-  // if (payload.is_shared_topic) {
-  //   url += `&topic_id=${topic_id}`;
-  // }
-  let url = `/v2/post-channel-messages?${objToUrlParams(payload)}`;
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
+  url = `/v2/post-channel-messages?${objToUrlParams(payload)}`;
 
   return apiCall({
     method: "GET",
     url: url,
     //is_shared: !!payload.topic_id,
-    //data: rest,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -98,22 +99,32 @@ export function postChatMessageTranslate(payload) {
 }
 
 export function postChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-channel-messages";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: !!payload.topic_id,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channel-messages/${payload.message_id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
-    is_shared: !!payload.topic_id,
+    sharedPayload: sharedPayload,
   });
 }
 

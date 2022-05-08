@@ -95,6 +95,8 @@ const INITIAL_STATE = {
     data: [],
     hasMore: false,
   },
+  sharedWorkspaces: {},
+  sharedWorkspacesLoaded: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -4466,6 +4468,13 @@ export default (state = INITIAL_STATE, action) => {
             member_ids: action.data.members.map((m) => m.id),
           },
         },
+      };
+    }
+    case "GET_SHARED_WORKSPACES_SUCCESS": {
+      return {
+        ...state,
+        sharedWorkspaces: action.data,
+        sharedWorkspacesLoaded: true,
       };
     }
     default:

@@ -16,6 +16,7 @@ import {
   useVisibilityChange,
   useWorkspaceActions,
   useProfilePicUpload,
+  useLoadSharedDriff,
 } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel, TrialEndedPanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
@@ -47,6 +48,7 @@ const MainLayout = (props) => {
   useVisibilityChange();
   useSocketConnection();
   useInitialLoad();
+  useLoadSharedDriff();
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
 
   const { path } = useRouteMatch();
@@ -64,6 +66,9 @@ const MainLayout = (props) => {
   };
 
   const subscriptions = useSelector((state) => state.admin.subscriptions);
+  //const subscriptions = useSelector((state) => state.admin.subscriptions);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
@@ -209,6 +214,27 @@ const MainLayout = (props) => {
       {user.id !== undefined && window.Echo !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
       )}
+      {sharedWsLoaded &&
+        Object.keys(sharedWs).length > 0 &&
+        Object.keys(sharedWs).map((ws) => {
+          if (window[ws]) {
+            return (
+              <SocketListeners
+                slug={ws}
+                userId={sharedWs[ws].user_auth.id}
+                dictionary={dictionary}
+                useDriff={uDriff}
+                localizeDate={localizeDate}
+                toaster={toaster}
+                soundPlay={handleSoundPlay}
+                workspaceActions={workspaceActions}
+                notificationsOn={notifications_on}
+              />
+            );
+          } else {
+            return null;
+          }
+        })}
     </>
   );
 };

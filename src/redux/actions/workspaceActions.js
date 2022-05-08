@@ -37,6 +37,7 @@ import {
   getWorkspaceQuickLinks as getWorkspaceQuickLinksService,
   putWorkspaceQuickLinks as putWorkspaceQuickLinksService,
   getRelatedWorkspace as getRelatedWorkspaceService,
+  getSharedWorkspaces as getSharedWorkspacesService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -337,4 +338,8 @@ export function removeWorkspaceFromFolder(payload, callback) {
 
 export function updateWorkspaceMember(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_MEMBERS", payload, callback);
+}
+
+export function getSharedWorkspaces(payload, callback) {
+  return dispatchActionToReducer(getSharedWorkspacesService(payload), "GET_SHARED_WORKSPACES_START", "GET_SHARED_WORKSPACES_SUCCESS", "GET_SHARED_WORKSPACES_FAIL", callback);
 }

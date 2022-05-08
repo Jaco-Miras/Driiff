@@ -161,6 +161,7 @@ const ChatInput = (props) => {
   const skipIds = useSelector((state) => state.chat.skipIds);
   const users = useSelector((state) => state.users.users);
   const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
@@ -344,6 +345,12 @@ const ChatInput = (props) => {
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       code_data: { mention_ids: mention_ids },
     };
+    if (selectedChannel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
+      };
+    }
 
     if (quote) {
       if (quote.user) {
@@ -502,7 +509,7 @@ const ChatInput = (props) => {
     }
 
     if (slug) {
-      window.Echo.private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
+      window[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
         user: {
           id: user.id,
           name: user.name,
