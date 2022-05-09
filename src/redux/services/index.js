@@ -132,6 +132,7 @@ export {
   impersonationLogin,
   getCurrentUserImpersonation,
   impersonationLogout,
+  impersonationLists,
 } from "./user";
 
 export {

@@ -21,6 +21,10 @@ const INITIAL_STATE = {
   archivedUsersLoaded: false,
   impersonation: {
     loading: false,
+    logs: {
+      data: [],
+      hasNext: true,
+    },
   },
 };
 
@@ -518,6 +522,29 @@ export default (state = INITIAL_STATE, action) => {
         impersonation: {
           ...state.impersonation,
           loading: false,
+        },
+      };
+    }
+    case "IMPERSONATION_LIST_START": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: true,
+        },
+      };
+    }
+    case "IMPERSONATION_LIST_SUCCESS": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+          logs: {
+            ...state.impersonation.logs,
+            data: [...state.impersonation.logs.data, ...action.data.data],
+            hasNext: !!action.data.next_page_url,
+          },
         },
       };
     }

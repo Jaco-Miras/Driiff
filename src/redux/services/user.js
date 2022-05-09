@@ -720,3 +720,9 @@ export function impersonationLogout(payload) {
     url: "/impersonation/logout",
   });
 }
+export function impersonationLists(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/impersonation/lists?page=${payload.page}&limit=${payload.limit}`,
+  });
+}
