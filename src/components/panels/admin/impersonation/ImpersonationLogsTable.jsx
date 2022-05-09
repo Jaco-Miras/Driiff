@@ -28,6 +28,7 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
     tableColumnDate: _t("ADMIN.TABLE_COLUMN_DATE", "Date"),
     tableColumnIP: _t("ADMIN.TABLE_COLUMN_IP", "IP"),
     tableColumnImpersonatedAs: _t("ADMIN.TABLE_COLUMN_IMPERSONATED_AS", "Impersonated As"),
+    tableColumnImpersonator: _t("ADMIN.TABLE_COLUMN_IMPERSONATOR_AS", "Impersonated By"),
     tableColumnDuration: _t("ADMIN.TABLE_COLUMN_DURATION", "Duration"),
     tablePaginationNextLabel: _t("ADMIN.TABLE_PAGINATION_NEXT_LABEL", "Next"),
     tablePaginationPrevLabel: _t("ADMIN.TABLE_PAGINATION_PREV_LABEL", "Previous"),
@@ -67,6 +68,7 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
             <tr>
               <th>{dictionary.tableColumnDate}</th>
               <th>{dictionary.tableColumnIP}</th>
+              <th>{dictionary.tableColumnImpersonator}</th>
               <th>{dictionary.tableColumnImpersonatedAs}</th>
               <th>{dictionary.tableColumnDuration}</th>
             </tr>
@@ -77,6 +79,7 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
                 <tr>
                   <th scope="row">{localizeDate(log.login_at ? log.login_at.timestamp : 0)}</th>
                   <td>{log.ip_address}</td>
+                  <td>{log.userAs && log.userAs.name}</td>
                   <td>{log.user && log.user.name}</td>
                   <td>{conputeDuration(log)}</td>
                 </tr>
