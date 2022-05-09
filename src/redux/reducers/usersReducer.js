@@ -23,7 +23,7 @@ const INITIAL_STATE = {
     loading: false,
     logs: {
       data: [],
-      hasNext: true,
+      lastPage: 0,
     },
   },
 };
@@ -542,8 +542,8 @@ export default (state = INITIAL_STATE, action) => {
           loading: false,
           logs: {
             ...state.impersonation.logs,
-            data: [...state.impersonation.logs.data, ...action.data.data],
-            hasNext: !!action.data.next_page_url,
+            data: action.data.data,
+            lastPage: action.data.last_page,
           },
         },
       };

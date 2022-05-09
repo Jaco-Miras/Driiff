@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { useTranslationActions } from "../../hooks";
-import LogList from "./impersonation/LogList";
+import ImpersonationLogsTable from "./impersonation/ImpersonationLogsTable";
 import UserList from "./impersonation/UserList";
 
 const Wrapper = styled.div`
@@ -12,7 +12,6 @@ const Wrapper = styled.div`
 `;
 
 const ImpersonationSettingsBody = () => {
-  const dispatch = useDispatch();
   const { _t } = useTranslationActions();
   const { usersLoaded } = useSelector((state) => state.users);
   const [showLogs, setShowLogs] = useState(false);
@@ -32,7 +31,7 @@ const ImpersonationSettingsBody = () => {
         </button>
       </div>
       {showLogs ? (
-        <LogList />
+        <ImpersonationLogsTable itemsPerPage={10} />
       ) : (
         <div>
           <UserList />
