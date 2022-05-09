@@ -558,10 +558,17 @@ export function createGoogleMeet(payload) {
 }
 
 export function createJitsiMeet(payload) {
-  let url = `/meet/signature?${objToUrlParams(payload)}`;
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
+  url = `/meet/signature?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
