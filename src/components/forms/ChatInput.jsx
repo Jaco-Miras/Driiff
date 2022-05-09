@@ -167,7 +167,7 @@ const ChatInput = (props) => {
   // const [text, setText] = useState("");
   // const [textOnly, setTextOnly] = useState("");
   // const [quillContents, setQuillContents] = useState([]);
-  const [slug] = useState(getSlug());
+  // const [slug] = useState(getSlug());
   const [quillData, setQuillData] = useState({
     text: "",
     textOnly: "",
@@ -496,15 +496,24 @@ const ChatInput = (props) => {
           .map((i) => i.insert.mention.type_id)
       );
     }
-
+    const slug = selectedChannel.slug ? selectedChannel.slug : getSlug();
     if (slug) {
+      let currentUser = {
+        id: user.id,
+        name: user.name,
+        profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        email: user.email,
+      };
+      if (selectedChannel.slug && sharedWs[slug]) {
+        currentUser = {
+          id: sharedWs[slug].user_auth.id,
+          name: sharedWs[slug].user_auth.name,
+          profile_image_link: sharedWs[slug].user_auth.profile_image_link,
+          email: sharedWs[slug].user_auth.email,
+        };
+      }
       window[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
-        user: {
-          id: user.id,
-          name: user.name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          email: user.email,
-        },
+        user: currentUser,
         typing: true,
         channel_id: selectedChannel.id,
       });

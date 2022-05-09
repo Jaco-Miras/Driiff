@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
@@ -50,11 +50,13 @@ const getSlug = () => {
 };
 
 const DriffTalkMessage = (props) => {
-  const { reply, timeFormat, channelId, channelTitle, type } = props;
+  const { reply, timeFormat, channelId, channelTitle, type, selectedChannel } = props;
   const dispatch = useDispatch();
   const [startingMeet, setStartingMeet] = useState(false);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   let author;
   const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
+  let slug = selectedChannel.slug ? selectedChannel.slug : getSlug();
   if (isCreateMessage) {
     const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
     author = data.author;
@@ -68,11 +70,18 @@ const DriffTalkMessage = (props) => {
     setStartingMeet(true);
     let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
     let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
-    const payload = {
+    let payload = {
       channel_id: channelId,
       host: false,
-      room_name: getSlug() + "-" + parseChannel + "-" + channelId,
+      room_name: slug + "-" + parseChannel + "-" + channelId,
     };
+    if (selectedChannel.slug && sharedWs[slug]) {
+      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     if (deviceType === "mobile" && browserName === "WebKit") {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {

@@ -31,6 +31,7 @@ const JitsiConfirmationModal = (props) => {
   const dispatch = useDispatch();
   const onlineUsers = useSelector((state) => state.users.onlineUsers);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const user = useSelector((state) => state.session.user);
 
   const [startingMeet, setStartingMeet] = useState(false);
@@ -85,11 +86,19 @@ const JitsiConfirmationModal = (props) => {
     let stripTitle = selectedChannel.title.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
     let parseChannel = selectedChannel.type === "DIRECT" ? "Meeting_Room" : stripTitle;
     setStartingMeet(true);
-    const payload = {
+    let slug = selectedChannel.slug ? selectedChannel.slug : getSlug();
+    let payload = {
       channel_id: selectedChannel.id,
       host: true,
-      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
+      room_name: slug + "-" + parseChannel + "-" + selectedChannel.id,
     };
+    if (selectedChannel.slug && sharedWs[slug]) {
+      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
