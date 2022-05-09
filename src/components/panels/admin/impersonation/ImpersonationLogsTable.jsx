@@ -22,7 +22,7 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
   const { _t } = useTranslationActions();
   const { loading, logs } = useSelector((state) => state.users.impersonation);
   const [page, setPage] = useState(1);
-  const { localizeDate } = useTimeFormat();
+  const { localizeDate, localizeTime } = useTimeFormat();
 
   const dictionary = {
     tableColumnDate: _t("ADMIN.TABLE_COLUMN_DATE", "Date"),
@@ -47,7 +47,7 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
       diff = log.logout_at.timestamp - log.login_at.timestamp;
     }
 
-    return localizeDate(diff);
+    return localizeTime(diff);
   };
 
   return (
