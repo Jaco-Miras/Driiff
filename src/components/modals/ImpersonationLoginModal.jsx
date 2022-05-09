@@ -53,7 +53,10 @@ const ImpersonationLoginModal = (props) => {
   return (
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <form>
-        <ModalHeaderSection toggle={toggle}>{dictionary.title}</ModalHeaderSection>
+        <ModalHeaderSection className="bg-danger" toggle={toggle}>
+          <SvgIconFeather icon="warning" />
+          {dictionary.title}
+        </ModalHeaderSection>
         <ModalBody>
           <p>{dictionary.body}</p>
         </ModalBody>
