@@ -42,9 +42,11 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
   };
 
   const conputeDuration = (log) => {
-    let diff = log.login_at ? log.login_at.timestamp : 0;
+    let diff = 0;
     if (log.logout_at && log.logout_at.timestamp) {
       diff = log.logout_at.timestamp - log.login_at.timestamp;
+    } else {
+      return 0;
     }
 
     return localizeTime(diff);

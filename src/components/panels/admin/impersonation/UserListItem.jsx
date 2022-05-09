@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { addToModals } from "../../../../redux/actions/globalActions";
 import { getCurrentUserImpersonation, impersonationLogin } from "../../../../redux/actions/userAction";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { usePageLoader, useSettings, useTranslationActions, useUserActions } from "../../../hooks";
+import { usePageLoader, useSettings, useToaster, useTranslationActions, useUserActions } from "../../../hooks";
 import { sessionService } from "redux-react-session";
 
 const Wrapper = styled.a`
@@ -41,6 +41,7 @@ const UserListItem = (props) => {
   const { setGeneralSetting } = useSettings();
   const userActions = useUserActions();
   const { show, hide } = usePageLoader();
+  const toaster = useToaster();
 
   const dictionary = {
     guestBadge: _t("IMPERSONATION_BADGE.GUEST", "Guest"),
@@ -56,7 +57,12 @@ const UserListItem = (props) => {
           show();
           dispatch(
             impersonationLogin(credentials, (err, res) => {
-              if (err) return;
+              if (err) {
+                toaster.error("Something went wrong Server Error");
+                cb();
+                hide();
+                return;
+              }
               userActions.storeLoginToken(res.data);
               let dataSet = res.data;
               sessionService
@@ -80,6 +86,11 @@ const UserListItem = (props) => {
                         hide();
                       });
                     });
+                })
+                .catch((err) => {
+                  toaster.error("Something went wrong Server Error");
+                  cb();
+                  hide();
                 });
             })
           );
