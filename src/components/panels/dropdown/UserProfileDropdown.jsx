@@ -1,7 +1,9 @@
 import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { replaceChar } from "../../../helpers/stringFormatter";
+import { impersonationLogout } from "../../../redux/actions/userAction";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useTranslationActions, useUserActions, useOutsideClick, useSettings } from "../../hooks";
 
@@ -33,6 +35,7 @@ const UserProfileDropdown = (props) => {
   const history = useHistory();
   const { processBackendLogout } = useUserActions();
   const { setGeneralSetting, generalSettings } = useSettings();
+  const dispatch = useDispatch();
   const refs = {
     container: useRef(null),
   };
@@ -49,6 +52,10 @@ const UserProfileDropdown = (props) => {
     processBackendLogout();
     if (generalSettings.first_login) {
       setGeneralSetting({ first_login: false });
+    }
+    if (generalSettings.impersonationMode) {
+      setGeneralSetting({ impersonationMode: false });
+      dispatch(impersonationLogout());
     }
   };
 
