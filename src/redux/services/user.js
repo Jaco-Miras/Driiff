@@ -716,7 +716,7 @@ export function getCurrentUserImpersonation(payload) {
 }
 export function impersonationLogout(payload) {
   return apiCall({
-    method: "GET",
+    method: "POST",
     url: "/impersonation/logout",
   });
 }
