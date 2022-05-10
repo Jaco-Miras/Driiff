@@ -73,7 +73,7 @@ const DriffTalkMessage = (props) => {
     let payload = {
       channel_id: channelId,
       host: false,
-      room_name: slug + "::" + parseChannel + "::" + channelId,
+      room_name: slug + "~" + parseChannel + "~" + channelId,
     };
     if (selectedChannel.slug && sharedWs[slug]) {
       const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
