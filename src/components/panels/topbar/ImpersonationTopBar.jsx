@@ -28,7 +28,7 @@ const Wrapper = styled.div`
 
 const ImpersonationTopBar = (props) => {
   const { _t } = useTranslationActions();
-  const { processBackendLogout } = useUserActions();
+  const { logout, processBackendLogout } = useUserActions();
   const { generalSettings, setGeneralSetting } = useSettings();
   const { user } = useSelector((state) => state.session);
   const dispatch = useDispatch();
@@ -44,8 +44,11 @@ const ImpersonationTopBar = (props) => {
       setGeneralSetting({ impersonationMode: false }, () => {
         dispatch(
           impersonationLogout(null, (err, res) => {
-            hide();
-            processBackendLogout();
+            if (res) {
+              logout(() => {
+                hide();
+              });
+            }
           })
         );
       });

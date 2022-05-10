@@ -28,6 +28,7 @@ const ImpersonationLoginModal = (props) => {
   const { type, size = "m" } = props.data;
   const { onSubmit, user } = props.data.actions;
   const { loading } = useSelector((state) => state.users.impersonation);
+  const { user: loggedUser } = useSelector((state) => state.session);
 
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
@@ -47,7 +48,7 @@ const ImpersonationLoginModal = (props) => {
   };
 
   const handleConfirm = () => {
-    onSubmit({ email: user.email, user_id: user.id }, toggle);
+    onSubmit({ email: user.email, user_id: loggedUser.id }, toggle);
   };
 
   return (

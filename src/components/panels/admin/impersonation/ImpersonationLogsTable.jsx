@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { impersonationLists } from "../../../../redux/actions/userAction";
 import { useTimeFormat, useTranslationActions } from "../../../hooks";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import { replaceChar } from "../../../../helpers/stringFormatter";
 
 const LoadingContainer = styled.div`
   position: absolute;
@@ -17,12 +19,19 @@ const LoadingContainer = styled.div`
   background: rgba(0, 0, 0, 0.1);
 `;
 
+const UserLink = styled.span`
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
+
 const ImpersonationLogsTable = ({ itemsPerPage }) => {
   const dispatch = useDispatch();
   const { _t } = useTranslationActions();
   const { loading, logs } = useSelector((state) => state.users.impersonation);
   const [page, setPage] = useState(1);
-  const { localizeDate, localizeTime } = useTimeFormat();
+  const { localizeDate, localizeTime, timeDiff } = useTimeFormat();
+  const history = useHistory();
 
   const dictionary = {
     tableColumnDate: _t("ADMIN.TABLE_COLUMN_DATE", "Date"),
@@ -45,12 +54,17 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
   const conputeDuration = (log) => {
     let diff = 0;
     if (log.logout_at && log.logout_at.timestamp) {
-      diff = log.logout_at.timestamp - log.login_at.timestamp;
+      diff = timeDiff(log.logout_at.timestamp, log.login_at.timestamp);
     } else {
       return 0;
     }
 
-    return localizeTime(diff);
+    return diff;
+  };
+
+  const handleUserCLick = (user) => {
+    const url = `${window.location.origin}/profile/${user.id}/${replaceChar(user.name)}`;
+    window.open(url);
   };
 
   return (
@@ -79,8 +93,16 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
                 <tr>
                   <th scope="row">{localizeDate(log.login_at ? log.login_at.timestamp : 0)}</th>
                   <td>{log.ip_address}</td>
-                  <td>{log.userAs && log.userAs.name}</td>
-                  <td>{log.user && log.user.name}</td>
+                  <td>
+                    <UserLink role="button" onClick={() => handleUserCLick(log.userAs)}>
+                      {log.user.name}
+                    </UserLink>
+                  </td>
+                  <td>
+                    <UserLink role="button" onClick={() => handleUserCLick(log.user)}>
+                      {log.userAs.name}
+                    </UserLink>
+                  </td>
                   <td>{conputeDuration(log)}</td>
                 </tr>
               );
