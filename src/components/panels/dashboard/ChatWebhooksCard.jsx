@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useToaster, useWorkspace } from "../../hooks";
+import { useSelector } from "react-redux";
+import { useToaster } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div``;
@@ -10,7 +11,8 @@ const ChatWebhooksCard = (props) => {
 
   const toast = useToaster();
 
-  const { workspace } = useWorkspace();
+  //const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
   const handleTeamCopy = () => {
     navigator.clipboard.writeText(workspace.topic_detail.team_channel_bot.url_webhook).then(() => {
