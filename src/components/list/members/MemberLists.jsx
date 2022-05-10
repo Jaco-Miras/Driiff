@@ -16,7 +16,7 @@ const StyledAvatar = styled(Avatar)`
 `;
 
 const MembersLists = (props) => {
-  const { members, classNames = "", size } = props;
+  const { members, classNames = "", size, sharedUsers = false } = props;
 
   const winSize = useWindowSize();
 
@@ -50,10 +50,11 @@ const MembersLists = (props) => {
             showSlider={m.hasOwnProperty("members") ? false : true}
             icon={m.icon ? m.icon : null}
             className={m.icon ? "chat-members company" : "chat-members"}
+            sharedUser={sharedUsers ? m : null}
           />
         );
       })}
-      {afterMembers.length > 0 && <PlusRecipients recipients={afterMembers}></PlusRecipients>}
+      {afterMembers.length > 0 && <PlusRecipients recipients={afterMembers} sharedUsers={sharedUsers}></PlusRecipients>}
     </MembersListContainer>
   );
 };

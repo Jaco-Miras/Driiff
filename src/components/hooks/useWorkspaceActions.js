@@ -21,7 +21,7 @@ import {
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { addToChannels, clearSelectedChannel, getChannel, getWorkspaceChannels, setSelectedChannel, putChannel } from "../../redux/actions/chatActions";
-import { useSettings, useToaster, useTranslationActions } from "./index";
+import { useSettings, useToaster, useTranslationActions, useGetSlug } from "./index";
 
 const useWorkspaceActions = () => {
   const dispatch = useDispatch();
@@ -33,6 +33,7 @@ const useWorkspaceActions = () => {
     notificationError: _t("NOTIFICATION.ERROR", "An error has occurred try again!"),
     errorFetchingChannel: _t("ERROR.CHANNEL_FETCH", "Fetching channel failed"),
   };
+  const { slug } = useGetSlug();
 
   const fetchWorkspace = (id, callback) => {
     dispatch(getWorkspace({ topic_id: id }, callback));
@@ -111,25 +112,29 @@ const useWorkspaceActions = () => {
   };
 
   const selectWorkspace = (workspace, callback = () => {}) => {
-    let members = [];
-    if (workspace.members) {
-      members = workspace.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.members;
-          } else return m;
+    if (slug && workspace.slug && workspace.slug === slug) {
+      let members = [];
+      if (workspace.members) {
+        members = workspace.members
+          .map((m) => {
+            if (m.member_ids) {
+              return m.members;
+            } else return m;
+          })
+          .flat();
+      }
+      if (workspace.members && workspace.is_lock === 1 && !members.some((m) => m.id === loggedUser.id)) return;
+      dispatch(
+        setActiveTopic(workspace, (err, res) => {
+          setGeneralSetting({
+            active_topic: workspace,
+          });
+          callback(err, res);
         })
-        .flat();
+      );
+    } else if (slug && workspace.slug && workspace.slug !== slug) {
+      dispatch(setActiveTopic(workspace));
     }
-    if (workspace.members && workspace.is_lock === 1 && !members.some((m) => m.id === loggedUser.id)) return;
-    dispatch(
-      setActiveTopic(workspace, (err, res) => {
-        setGeneralSetting({
-          active_topic: workspace,
-        });
-        callback(err, res);
-      })
-    );
   };
 
   const selectChannel = (channel, callback) => {

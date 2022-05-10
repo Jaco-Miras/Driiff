@@ -22,23 +22,31 @@ export function getChannels(payload) {
 }
 
 export function putChannel(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channels/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putMarkReadChannel(payload) {
-  const { channel_id, ...rest } = payload;
-
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
-    url: `/v2/read-notification-counter/all-chat?channel_id=${channel_id}`,
-    is_shared: !!payload.is_shared,
-    data: rest,
+    url: `/v2/read-notification-counter/all-chat?channel_id=${payload.channel_id}`,
+    data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -532,7 +540,7 @@ export function createJitsiMeet(payload) {
     sharedPayload = payload.sharedPayload;
     delete payload.sharedPayload;
   }
-  url = `/meet/signature?${objToUrlParams(payload)}`;
+  url = `/meet/signature?channel_id=${payload.channel_id}&host=${payload.host}&room_name=${payload.room_name}`;
   return apiCall({
     method: "GET",
     url: url,

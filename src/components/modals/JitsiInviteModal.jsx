@@ -75,7 +75,7 @@ const JitsiInviteModal = (props) => {
   const payload = {
     channel_id: channel_id,
     host: false,
-    room_name: getSlug() + "-" + parseChannel + "-" + channel_id,
+    room_name: getSlug() + "::" + parseChannel + "::" + channel_id,
   };
 
   const handleJoin = () => {

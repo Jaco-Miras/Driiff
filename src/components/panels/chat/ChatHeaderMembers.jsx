@@ -35,7 +35,7 @@ const ChatHeaderMembers = (props) => {
       <ul className="nav align-items-center justify-content-end">
         {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
           <li>
-            <MemberLists members={members} />
+            <MemberLists members={members} sharedUsers={channel.slug !== undefined} />
           </li>
         )}
       </ul>
