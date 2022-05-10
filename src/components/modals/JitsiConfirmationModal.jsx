@@ -101,7 +101,7 @@ const JitsiConfirmationModal = (props) => {
     let payload = {
       channel_id: selectedChannel.id,
       host: true,
-      room_name: slug + "::" + parseChannel + "::" + selectedChannel.id,
+      room_name: slug + "~" + parseChannel + "~" + selectedChannel.id,
     };
     if (selectedChannel.slug && sharedWs[slug]) {
       const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
