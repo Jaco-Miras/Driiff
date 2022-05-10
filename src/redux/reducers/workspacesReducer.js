@@ -213,6 +213,7 @@ export default (state = INITIAL_STATE, action) => {
                 is_favourite: t.is_favourite,
                 is_active: t.is_active,
                 type: "WORKSPACE",
+                slug: action.slug,
               };
             }
           });
@@ -237,6 +238,7 @@ export default (state = INITIAL_STATE, action) => {
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             show_about: ws.topic_detail.show_about,
+            slug: action.slug,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }

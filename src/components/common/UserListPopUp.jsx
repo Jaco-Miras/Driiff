@@ -92,7 +92,7 @@ const UserListPopUpContainer = styled.div`
 `;
 
 const UserListPopUp = (props) => {
-  const { users, className, onShowList } = props;
+  const { users, className, onShowList, sharedUsers = false } = props;
   const listRef = useRef();
   //const history = useHistory();
   const [showSlider, setShowSlider] = useState(false);
@@ -143,7 +143,7 @@ const UserListPopUp = (props) => {
       </ul>
       {showSlider && (
         <CSSTransition appear in={showSlider} timeout={300} classNames="slide">
-          <ProfileSlider id={user ? user.id : null} onShowPopup={() => setShowSlider((prevState) => !prevState)} showPopup={showSlider} orientation={orientation} />
+          <ProfileSlider sharedUser={sharedUsers ? user : null} id={user ? user.id : null} onShowPopup={() => setShowSlider((prevState) => !prevState)} showPopup={showSlider} orientation={orientation} />
         </CSSTransition>
       )}
     </UserListPopUpContainer>

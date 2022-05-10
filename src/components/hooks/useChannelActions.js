@@ -38,12 +38,28 @@ import { useHistory, useParams } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { $_GET } from "../../helpers/commonFunctions";
 
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 const useChannelActions = () => {
   const dispatch = useDispatch();
 
   const creatingChannel = useRef(null);
 
   const chatSettings = useSelector((state) => state.settings.user.CHAT_SETTINGS);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const { _t } = useTranslationActions();
   const toaster = useToaster();
   const history = useHistory();
@@ -153,6 +169,14 @@ const useChannelActions = () => {
       ...channelUpdate,
       //...getSharedPayload(channel),
     };
+    let slug = channel.slug ? channel.slug : getSlug();
+    if (channel.slug && sharedWs[slug]) {
+      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
 
     dispatch(
       putChannel(payload, (err) => {
@@ -422,15 +446,18 @@ const useChannelActions = () => {
         dispatch(readChannelReducer({ id: channel.entity_id, channel_id: channel.id, count: channel.replies.filter((r) => !r.is_read).length }));
       }
     };
-    dispatch(
-      putMarkReadChannel(
-        {
-          channel_id: channel.id,
-          //...getSharedPayload(channel),
-        },
-        cb
-      )
-    );
+    let slug = channel.slug ? channel.slug : getSlug();
+    let payload = {
+      channel_id: channel.id,
+    };
+    if (channel.slug && sharedWs[slug]) {
+      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    dispatch(putMarkReadChannel(payload, cb));
   };
 
   /**
@@ -438,15 +465,18 @@ const useChannelActions = () => {
    * @param {function} [callback]
    */
   const markAsUnRead = (channel, callback = () => {}) => {
-    dispatch(
-      putMarkUnreadChannel(
-        {
-          channel_id: channel.id,
-          //...getSharedPayload(channel),
-        },
-        callback
-      )
-    );
+    let slug = channel.slug ? channel.slug : getSlug();
+    let payload = {
+      channel_id: channel.id,
+    };
+    if (channel.slug && sharedWs[slug]) {
+      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    dispatch(putMarkUnreadChannel(payload, callback));
   };
 
   /**

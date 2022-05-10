@@ -42,7 +42,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
     //   }
     // })
     .filter((channel) => {
-      let isMember = channel.members.some((m) => m.id === user.id);
+      let isMember = channel.members.some((m) => m.id === user.id) || channel.slug !== undefined;
 
       if (channel.type === "DIRECT" && channel.members.length === 2) {
         const id = channel.members.find((m) => m.id !== user.id);

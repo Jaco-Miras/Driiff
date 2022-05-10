@@ -18,7 +18,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const ProfileSlider = (props) => {
-  const { id, onShowPopup, orientation, profile, classNames = "" } = props;
+  const { id, onShowPopup, orientation, profile, classNames = "", sharedUser = null } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const [loading, setLoading] = useState(false);
 
@@ -57,11 +57,16 @@ const ProfileSlider = (props) => {
   };
 
   let user = null;
-  if (profile) {
-    user = { ...profile };
+  if (sharedUser) {
+    user = sharedUser;
   } else {
-    user = allUsers.find((u) => u.id === id);
+    if (profile) {
+      user = { ...profile };
+    } else {
+      user = allUsers.find((u) => u.id === id);
+    }
   }
+
   const handleUserChat = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -93,13 +98,13 @@ const ProfileSlider = (props) => {
         <h5>{user?.name}</h5>
         <span className="text-muted small">{user?.designation}</span>
         <div style={{ display: "flex", gap: 8 }}>
-          {user.has_accepted && (
+          {!sharedUser && user.has_accepted && (
             <button className="ml-1 btn btn-outline-light" onClick={handleWorkspaceClick}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
               <Icon icon="compass" loading={loading} />
             </button>
           )}
-          {user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
+          {!sharedUser && user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
             <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
               <Icon icon="message-circle" loading={loading} />
@@ -117,13 +122,13 @@ const ProfileSlider = (props) => {
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
             <label>{dictionary.position}</label>
-            {loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
+            {!sharedUser && loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
           <div className="info-details">
-            <span>{user?.first_name}</span>
-            <span>{user?.last_name}</span>
-            <span>{user?.role && user?.role.display_name}</span>
-            {loggedUser.type === "internal" && <span>{user?.email}</span>}
+            <span>{sharedUser ? sharedUser.first_name : user?.first_name}</span>
+            <span>{sharedUser ? sharedUser.last_name : user?.last_name}</span>
+            <span>{sharedUser ? null : user?.role && user?.role.display_name}</span>
+            {!sharedUser && loggedUser.type === "internal" && <span>{user?.email}</span>}
           </div>
         </div>
       </div>

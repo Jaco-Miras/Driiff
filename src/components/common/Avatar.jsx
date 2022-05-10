@@ -152,6 +152,7 @@ const Avatar = (props) => {
     tooltipName = null,
     icon = null,
     isCompany = false,
+    sharedUser = null,
     ...rest
   } = props;
 
@@ -310,7 +311,7 @@ const Avatar = (props) => {
       </Tooltip>
       {showPopup && (
         <CSSTransition appear in={showPopup} timeout={300} classNames="slide">
-          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} />
+          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} sharedUser={sharedUser} />
         </CSSTransition>
       )}
       {children}

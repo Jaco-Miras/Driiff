@@ -3,6 +3,21 @@ import { getCurrentTimestamp, convertUTCDateToLocalDate } from "../../helpers/da
 //import { uniqByProp } from "../../helpers/arrayHelper";
 
 /** Initial State  */
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 const INITIAL_STATE = {
   user: null,
   companyChannel: null,
@@ -341,7 +356,7 @@ export default function (state = INITIAL_STATE, action) {
           selected: false,
           skip: 0,
           isFetching: false,
-          slug: action.slug,
+          slug: action.slug !== getSlug() ? action.slug : undefined,
         };
       }
 
