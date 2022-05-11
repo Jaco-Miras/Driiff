@@ -22,6 +22,7 @@ const LoadingContainer = styled.div`
 const UserLink = styled.span`
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+    cursor: pointer;
   }
 `;
 
@@ -94,12 +95,12 @@ const ImpersonationLogsTable = ({ itemsPerPage }) => {
                   <th scope="row">{localizeDate(log.login_at ? log.login_at.timestamp : 0)}</th>
                   <td>{log.ip_address}</td>
                   <td>
-                    <UserLink role="button" onClick={() => handleUserCLick(log.userAs)}>
+                    <UserLink role="button" onClick={() => handleUserCLick(log.user)}>
                       {log.user.name}
                     </UserLink>
                   </td>
                   <td>
-                    <UserLink role="button" onClick={() => handleUserCLick(log.user)}>
+                    <UserLink role="button" onClick={() => handleUserCLick(log.userAs)}>
                       {log.userAs.name}
                     </UserLink>
                   </td>
