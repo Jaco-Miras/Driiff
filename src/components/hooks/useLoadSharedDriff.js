@@ -9,14 +9,21 @@ import { useSelector, useDispatch } from "react-redux";
 import { getChannel } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import Echo from "laravel-echo";
+import { sessionService } from "redux-react-session";
 
 const useLoadSharedDriff = () => {
   const dispatch = useDispatch();
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
-
   useEffect(() => {
-    dispatch(getSharedWorkspaces());
+    dispatch(
+      getSharedWorkspaces({}, (err, res) => {
+        if (err) return;
+        sessionService.loadSession().then((current) => {
+          sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
+        });
+      })
+    );
   }, []);
 
   useEffect(() => {

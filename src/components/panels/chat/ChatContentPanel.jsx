@@ -119,6 +119,7 @@ const ChatContentPanel = (props) => {
       droppedFiles: attachedFiles,
       mode: "chat",
       members: selectedChannel ? selectedChannel.members : [],
+      sharedSlug: selectedChannel && selectedChannel.slug ? selectedChannel.slug : null,
     };
 
     dispatch(addToModals(modal));

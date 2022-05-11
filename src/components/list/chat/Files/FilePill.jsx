@@ -88,7 +88,7 @@ const DocFile = styled.div`
 `;
 
 const FilePill = (props) => {
-  let { className = "", file, cbFilePreview = () => {}, dictionary, ...otherProps } = props;
+  let { className = "", file, cbFilePreview = () => {}, dictionary, sharedSlug = null, ...otherProps } = props;
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
   }
@@ -171,6 +171,11 @@ const FilePill = (props) => {
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
         let link = file.thumbnail_link ? file.thumbnail_link : file.view_link;
+        if (sharedSlug && current.sharedWorkspaces) {
+          if (current.sharedWorkspaces[sharedSlug]) {
+            myToken = `Bearer ${current.sharedWorkspaces[sharedSlug].access_token}`;
+          }
+        }
         fetch(link, {
           method: "GET",
           keepalive: true,

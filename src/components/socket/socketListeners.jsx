@@ -2273,7 +2273,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedChannelDetail(data);
       })
       .listen(".member-update-timestamp", (e) => {
-        this.props.setMemberTimestamp(e);
+        this.props.setMemberTimestamp({ ...e, userId: this.state.userId });
       })
       .listen(".new-added-member-chat", (e) => {
         if (e.id) {

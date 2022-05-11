@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import TeamListItem from "../../list/people/item/TeamListItem";
-import { useWorkspaceActions, useToaster, useTranslationActions } from "../../hooks";
+import { useWorkspaceActions, useToaster, useTranslationActions, useGetSlug } from "../../hooks";
 import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
@@ -58,6 +58,7 @@ const Wrapper = styled.div`
 const MembersCard = (props) => {
   const { workspace } = props;
   const { _t } = useTranslationActions();
+  const slug = useGetSlug();
   const dictionary = {
     team: _t("TEAM", "Team"),
     timeline: _t("TIMELINE", "Timeline"),
@@ -144,6 +145,7 @@ const MembersCard = (props) => {
   };
 
   if (!workspace) return null;
+  const sharedWorkspace = workspace && workspace.slug ? workspace.slug !== slug : false;
   return (
     <Wrapper>
       <span>
@@ -165,6 +167,7 @@ const MembersCard = (props) => {
               showLessButton={false}
               loggedUser={loggedUser}
               workspace={workspace}
+              isSharedWorkspace={sharedWorkspace}
             />
           );
         })}

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from "react";
 //import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { SvgIconFeather } from "../../common";
+//import { SvgIconFeather } from "../../common";
 //import SearchForm from "../../forms/SearchForm";
 import { useTimeFormat, useTranslationActions, useRedirect } from "../../hooks";
 //import { getChatMsgsSearch } from "../../../redux/services/chat";
@@ -198,9 +198,9 @@ const ChatSearchPanel = (props) => {
 
   const redirect = useRedirect();
 
-  const handleRedirect = (topic) => {
+  const handleRedirect = (message) => {
     handleSearchChatPanel();
-    redirect.toChat(selectedChannel, topic);
+    redirect.toChat(selectedChannel, message);
   };
 
   const handleResultKeydown = (e, k, item) => {
