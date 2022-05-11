@@ -715,7 +715,10 @@ class ChatMessages extends React.PureComponent {
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm[1].map((reply, k, e) => {
-                        const isAuthor = reply.user && reply.user.id === this.props.user.id;
+                        let isAuthor = reply.user && reply.user.id === this.props.user.id;
+                        if (this.props.selectedChannel.slug && this.props.sharedWorkspaces[this.props.selectedChannel.slug]) {
+                          isAuthor = reply.user && reply.user.id === this.props.sharedWorkspaces[this.props.selectedChannel.slug].user_auth.id;
+                        }
 
                         let showAvatar = false;
                         let showTimestamp = false;
@@ -934,6 +937,7 @@ function mapStateToProps(state) {
     session: { user },
     chat: { historicalPositions, isLastChatVisible, selectedChannel },
     users: { users },
+    workspaces: { sharedWorkspaces },
   } = state;
 
   return {
@@ -945,6 +949,7 @@ function mapStateToProps(state) {
     isIdle,
     isBrowserActive,
     selectedChannel,
+    sharedWorkspaces,
   };
 }
 
