@@ -10,7 +10,6 @@ import ShortcutsCard from "./ShortcutsCard";
 import PostMentionCard from "./PostMentionCard";
 import MembersCard from "./MembersCard";
 import { useTranslationActions } from "../../hooks";
-import ChatWebhooksCard from "./ChatWebhooksCard";
 //import FilesFolderCard from "./FilesFolderCard";
 
 const Wrapper = styled.div`
@@ -129,6 +128,7 @@ const WsDashboardPanel = (props) => {
     chatWebhooksGuest: _t("CHAT_WEBHOOKS.GUEST", "Guest"),
     chatWebhooksCopy: _t("CHAT_WEBHOOKS.COPY", "copy"),
     chatWebhooksClipboardCopy: _t("CHAT_WEBHOOKS.CLIPBOARD_COPY", "Copied to clipboard"),
+    webhookTooltip: _t("CHAT_WEBHOOKS.TOOLTIP_TITLE", "Chat Webhooks"),
   };
 
   return (
@@ -171,11 +171,6 @@ const WsDashboardPanel = (props) => {
               <Card className="mb-2">
                 <PostMentionCard dictionary={dictionary} isWorkspace={true} />
               </Card>
-              {user.type === "internal" && (
-                <Card className="mb-2">
-                  <ChatWebhooksCard dictionary={dictionary} />
-                </Card>
-              )}
             </QuicklinksMentionColumn>
           </div>
         </div>
