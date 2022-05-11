@@ -11,7 +11,7 @@ const QuillEditor = forwardRef((props, ref) => {
   const { className = "", theme = "snow", placeholder = "", ...otherProps } = props;
   const { _t } = useTranslationActions();
 
-  const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "sad great things here...");
+  const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...");
 
   return <ReactQuill className={`quill-editor ${className}`} theme={theme} {...otherProps} bounds={".quill-editor"} ref={ref} placeholder={appliedPlaceholder} />;
 });
