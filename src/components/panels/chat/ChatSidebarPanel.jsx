@@ -169,6 +169,9 @@ const ChatSidebarPanel = (props) => {
         searching: query.trim() !== "",
       });
 
+      setChatSetting({
+        filter_channel: false,
+      });
       // const firstChannel = document.querySelector(".first-channel");
       // if (firstChannel) {
       //   firstChannel.focus();
@@ -234,6 +237,7 @@ const ChatSidebarPanel = (props) => {
     withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
     withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
     team: _t("TEAM", "Team"),
+    personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
   };
 
   const handleOpenGroupChatModal = () => {

@@ -950,6 +950,29 @@ const PostModal = (props) => {
           };
         })
       );
+      if (item.post.shared_with_client) {
+        setShareOption({
+          id: "external",
+          value: "external",
+          label: dictionary.internalAndExternalTeamLabel,
+          icon: "eye",
+        });
+      } else {
+        setShareOption({
+          id: "internal",
+          value: "internal",
+          label: dictionary.internalTeamLabel,
+          icon: "eye-off",
+        });
+      }
+    }
+    if (isExternalUser) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
     }
     return () => {
       componentIsMounted.current = null;
@@ -1085,7 +1108,7 @@ const PostModal = (props) => {
         <StyledDescriptionInput
           className="modal-description"
           height={winSize.height - 660}
-          showFileButton={true}
+          // showFileButton={true}
           onChange={handleQuillChange}
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
