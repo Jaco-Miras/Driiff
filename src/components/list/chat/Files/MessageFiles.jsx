@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { setViewFiles } from "../../../../redux/actions/fileActions";
 import FilePill from "./FilePill";
@@ -51,6 +51,7 @@ const MessageFiles = (props) => {
   const { className = "", files, type = "chat", topic_id = null, dictionary } = props;
 
   const dispatch = useDispatch();
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
   const handlePreviewFile = (e, file) => {
     e.stopPropagation();
@@ -71,11 +72,11 @@ const MessageFiles = (props) => {
       <FilesContainer>
         {files.map((file, key) => {
           if (files.length === 1 && type === "chat") {
-            return <FilePill key={key} cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} />;
+            return <FilePill key={key} cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} sharedSlug={selectedChannel ? selectedChannel.slug : null} />;
           } else {
             return (
               <FilesLink key={file.id}>
-                <FilePill cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} />
+                <FilePill cbFilePreview={handlePreviewFile} file={file} data-file-type={file.type} dictionary={dictionary} sharedSlug={selectedChannel ? selectedChannel.slug : null} />
               </FilesLink>
             );
           }

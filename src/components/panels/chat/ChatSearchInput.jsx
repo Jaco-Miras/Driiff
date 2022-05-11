@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather, Loader } from "../../common";
 import { getChatMsgsSearch } from "../../../redux/services/chat";
@@ -28,6 +29,7 @@ const Wrapper = styled.div`
 const limit = 20;
 const ChatSearchInput = (props) => {
   const { placeholder, setResults, selectedChannel, results, triggerLoadMore, setTriggerLoadMore } = props;
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [skip, setSkip] = useState(0);
   const [searchValue, setSearchValue] = useState("");
   const [searching, setSearching] = useState(false);
@@ -52,7 +54,21 @@ const ChatSearchInput = (props) => {
 
   const loadMore = () => {
     setSearching(true);
-    getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: submittedValue, skip: skip, limit: limit })
+    let payload = {
+      channel_id: selectedChannel.id,
+      is_translate: selectedChannel.is_translate,
+      search: submittedValue,
+      skip: skip,
+      limit: limit,
+    };
+    if (selectedChannel.slug && sharedWs[selectedChannel.slug]) {
+      const sharedPayload = { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    getChatMsgsSearch(payload)
       .then((res) => {
         return res;
       })
@@ -70,7 +86,21 @@ const ChatSearchInput = (props) => {
       setSubmittedValue(searchValue);
       setSearching(true);
       setResults([]);
-      getChatMsgsSearch({ channel_id: selectedChannel.id, is_translate: selectedChannel.is_translate, search: searchValue, skip: skip, limit: limit })
+      let payload = {
+        channel_id: selectedChannel.id,
+        is_translate: selectedChannel.is_translate,
+        search: searchValue,
+        skip: skip,
+        limit: limit,
+      };
+      if (selectedChannel.slug && sharedWs[selectedChannel.slug]) {
+        const sharedPayload = { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+      getChatMsgsSearch(payload)
         .then((res) => {
           return res;
         })

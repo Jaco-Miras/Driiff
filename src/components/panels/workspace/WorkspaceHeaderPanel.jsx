@@ -321,6 +321,21 @@ const toggleTooltip = () => {
   });
 };
 
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 const WorspaceHeaderPanel = (props) => {
   const { isExternal } = props;
   const toaster = useToaster();
@@ -338,6 +353,7 @@ const WorspaceHeaderPanel = (props) => {
     },
   } = useSelector((state) => state.settings);
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [bellClicked, setBellClicked] = useState(false);
   const winSize = useWindowSize();
@@ -502,6 +518,15 @@ const WorspaceHeaderPanel = (props) => {
       workspace_id: activeTopic.folder_id ? activeTopic.folder_id : 0,
       is_pinned: activeTopic.is_favourite ? 0 : 1,
     };
+    const currentSlug = getSlug();
+    let sharedPayload;
+    if (activeTopic.slug && activeTopic.slug !== currentSlug) {
+      sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
 
     dispatch(
       favouriteWorkspace(payload, (err, res) => {
@@ -579,7 +604,7 @@ const WorspaceHeaderPanel = (props) => {
   };
 
   const renderPrivateLabel = () => {
-    if (user.type === "external") return null;
+    if (user.type === "external" || (activeTopic && activeTopic.slug && activeTopic.slug !== getSlug())) return null;
     return (
       <li className="nav-item">
         <Icon icon="lock" className="mobile-private ml-1" />
@@ -591,6 +616,8 @@ const WorspaceHeaderPanel = (props) => {
   const handleRedirectToWorkspace = () => {
     redirect.toWorkspace(activeTopic, "dashboard");
   };
+
+  const sharedWorkspace = activeTopic && activeTopic.slug ? activeTopic.slug !== getSlug() : false;
 
   return (
     <>
@@ -652,7 +679,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      {activeTopic.is_shared && !isExternal && (
+                      {((activeTopic.is_shared && !isExternal) || sharedWorkspace) && (
                         <li className="nav-item is-external">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
                             <Icon icon="eye" /> {dictionary.withClient}
@@ -710,7 +737,7 @@ const WorspaceHeaderPanel = (props) => {
                           <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>
                         </li>
                       )}
-                      {activeTopic.is_shared && !isExternal && (
+                      {((activeTopic.is_shared && !isExternal) || sharedWorkspace) && (
                         <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
                             <Icon icon="eye" /> {dictionary.withClient}
@@ -735,7 +762,7 @@ const WorspaceHeaderPanel = (props) => {
                   <li className="nav-item more-options">
                     {isMobile && (
                       <MoreOptions disableHoverEffect>
-                        <MemberLists members={activeTopic.members} size={3} />
+                        <MemberLists members={activeTopic.members} size={3} sharedUsers={sharedWorkspace} />
                         <StyledDivider />
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>
                           {isMember && !isExternal ? (
@@ -750,10 +777,12 @@ const WorspaceHeaderPanel = (props) => {
                             </>
                           ) : !isExternal ? (
                             <>
-                              <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                                <SvgIconFeather icon="user-plus" />
-                                {dictionary.actionWorkspaceJoin}
-                              </button>
+                              {!sharedWorkspace && (
+                                <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                                  <SvgIconFeather icon="user-plus" />
+                                  {dictionary.actionWorkspaceJoin}
+                                </button>
+                              )}
                             </>
                           ) : null}
                         </div>
@@ -787,7 +816,7 @@ const WorspaceHeaderPanel = (props) => {
               {!isMobile && (
                 <>
                   <div className="nav-item-avatars-wrap">
-                    <MemberLists members={activeTopic.members} />
+                    <MemberLists members={activeTopic.members} sharedUsers={sharedWorkspace} />
                   </div>
                   {isMember && !isExternal ? (
                     <>
@@ -800,10 +829,12 @@ const WorspaceHeaderPanel = (props) => {
                       </button>
                     </>
                   ) : !isExternal ? (
-                    <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                      <SvgIconFeather icon="user-plus" />
-                      {dictionary.actionWorkspaceJoin}
-                    </button>
+                    !sharedWorkspace && (
+                      <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                        <SvgIconFeather icon="user-plus" />
+                        {dictionary.actionWorkspaceJoin}
+                      </button>
+                    )
                   ) : null}
                 </>
               )}

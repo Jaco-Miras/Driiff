@@ -184,7 +184,23 @@ const StyledBadge = styled(Badge)`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
+  const {
+    className = "",
+    member,
+    hideOptions,
+    actions,
+    workspace_id,
+    dictionary,
+    showMoreButton,
+    showLessButton,
+    toggleShow,
+    loggedUser,
+    onLeaveWorkspace = null,
+    workspace = null,
+    scrollRef,
+    onAddRole = null,
+    isSharedWorkspace = false,
+  } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -195,7 +211,7 @@ const TeamListItem = (props) => {
   const { _t } = useTranslationActions();
 
   const handleClickName = () => {
-    if (member.has_accepted) {
+    if (member.has_accepted && !isSharedWorkspace) {
       history.push(`/profile/${member.id}/${replaceChar(member.name)}`);
     }
   };
@@ -294,7 +310,7 @@ const TeamListItem = (props) => {
             name={member.name}
             imageLink={!isUser ? member.icon_link : member.profile_image_link}
             partialName={member.partial_name}
-            noDefaultClick={!member.has_accepted}
+            noDefaultClick={!member.has_accepted || isSharedWorkspace}
             hasAccepted={member.has_accepted}
             showSlider={false}
             scrollRef={scrollRef}
@@ -353,7 +369,7 @@ const TeamListItem = (props) => {
           </button>
         </ShowMoreBtn>
       )}
-      {!hideOptions && isUser && (
+      {!hideOptions && isUser && !isSharedWorkspace && (
         <MoreOptions moreButton="more-horizontal" width={250} className="ml-auto">
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}

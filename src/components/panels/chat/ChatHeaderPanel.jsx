@@ -280,6 +280,7 @@ const ChatHeaderPanel = (props) => {
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const { translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const chatMessageActions = useChatMessageActions();
@@ -493,10 +494,17 @@ const ChatHeaderPanel = (props) => {
 
   const handleWorkspaceNotification = () => {
     if (bellClicked) return;
-    const payload = {
+    let payload = {
       id: channel.entity_id,
       is_active: !channel.is_active,
     };
+    if (channel.slug && sharedWs[channel.slug]) {
+      const sharedPayload = { slug: channel.slug, token: sharedWs[channel.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
       putWorkspaceNotification(payload, (err, res) => {
         setBellClicked(false);

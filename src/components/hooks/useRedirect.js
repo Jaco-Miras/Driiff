@@ -11,6 +11,7 @@ const useRedirect = () => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const toaster = useToaster();
 
   const fetchSelectChannel = (code, callback) => {
@@ -57,6 +58,13 @@ const useRedirect = () => {
           before_chat_id: message.id,
           limit: 10,
         };
+        if (cnl.slug && sharedWs[cnl.slug]) {
+          const sharedPayload = { slug: cnl.slug, token: sharedWs[cnl.slug].access_token, is_shared: true };
+          payload = {
+            ...payload,
+            sharedPayload: sharedPayload,
+          };
+        }
         dispatch(getChatMessages(payload));
         dispatch(setLastVisitedChannel(channel, cb));
       }

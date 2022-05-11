@@ -123,6 +123,7 @@ const ChatContentPanel = (props) => {
       mode: "chat",
       members: selectedChannel ? selectedChannel.members : [],
       team_channel: selectedChannel.team && selectedChannel.type === "TOPIC" ? selectedChannel.id : null,
+      sharedSlug: selectedChannel && selectedChannel.slug ? selectedChannel.slug : null,
     };
 
     dispatch(addToModals(modal));

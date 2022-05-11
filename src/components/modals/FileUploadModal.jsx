@@ -268,10 +268,9 @@ const fileOptions = [
 ];
 
 const FileUploadModal = (props) => {
-  const { type, mode, droppedFiles, post = null, wip = null, members = [] } = props.data;
+  const { type, mode, droppedFiles, post = null, wip = null, members = [], sharedSlug = null } = props.data;
 
   const { enlargeEmoji } = useEnlargeEmoticons();
-
   const progressBar = useRef(0);
   const toaster = useToaster();
   const pickerRef = useRef();
@@ -290,6 +289,7 @@ const FileUploadModal = (props) => {
   const parentId = useSelector((state) => state.posts.parentId);
   const editWIPComment = useSelector((state) => state.wip.editWIPComment);
   const wipParentId = useSelector((state) => state.wip.parentId);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -415,6 +415,17 @@ const FileUploadModal = (props) => {
           },
         },
       };
+      if (mode === "chat" && sharedSlug) {
+        let slug = selectedChannel.slug ? selectedChannel.slug : null;
+        if (selectedChannel.slug && sharedWs[slug]) {
+          const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+          payload = {
+            ...payload,
+            sharedPayload: sharedPayload,
+          };
+        }
+      }
+
       files
         .filter((f) => {
           return typeof f.id === "string";
@@ -566,6 +577,16 @@ const FileUploadModal = (props) => {
         reference_id: require("shortid").generate(),
         reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       };
+      if (sharedSlug) {
+        let slug = selectedChannel.slug ? selectedChannel.slug : null;
+        if (selectedChannel.slug && sharedWs[slug]) {
+          const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+          msgpayload = {
+            ...msgpayload,
+            sharedPayload: sharedPayload,
+          };
+        }
+      }
       if (textOnly.trim() !== "" || mention_ids.length) dispatch(postChatMessage(msgpayload));
       setTimeout(() => {
         uFiles.forEach((file, k) => {
@@ -578,6 +599,16 @@ const FileUploadModal = (props) => {
             reference_id: require("shortid").generate(),
             reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
+          if (sharedSlug) {
+            let slug = selectedChannel.slug ? selectedChannel.slug : null;
+            if (selectedChannel.slug && sharedWs[slug]) {
+              const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+              payload = {
+                ...payload,
+                sharedPayload: sharedPayload,
+              };
+            }
+          }
           if (k === uFiles.length - 1) {
             setTimeout(() => {
               toaster.dismiss(toasterRef.current);
@@ -831,7 +862,7 @@ const FileUploadModal = (props) => {
 const FilesPreview = (props) => {
   const { files, onRemoveFile, onAddFile, dictionary } = props;
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const refs = {
     dropZoneRef: useRef(null),

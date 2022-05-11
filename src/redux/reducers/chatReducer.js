@@ -427,7 +427,7 @@ export default function (state = INITIAL_STATE, action) {
         channel = {
           ...channel,
           is_read: true,
-          total_unread: state.user && state.user.id === action.data.member_id ? 0 : channel.total_unread,
+          total_unread: action.data.userId === action.data.member_id ? 0 : channel.total_unread,
           members: channel.members.map((m) => {
             if (m.id === action.data.member_id) {
               return {
@@ -439,7 +439,7 @@ export default function (state = INITIAL_STATE, action) {
             } else return m;
           }),
           replies:
-            action.data.member_id === state.user.id && channel.replies
+            action.data.member_id === action.data.userId && channel.replies
               ? channel.replies.map((r) => {
                   return {
                     ...r,
