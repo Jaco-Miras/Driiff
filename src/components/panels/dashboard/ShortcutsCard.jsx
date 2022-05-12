@@ -77,12 +77,13 @@ const PersonalLinkList = styled.li`
 `;
 
 const ShortcutsCard = (props) => {
-  const { dictionary, isWorkspace = false } = props;
+  const { dictionary, isWorkspace = false, workspace = null } = props;
   const params = useParams();
   const dispatch = useDispatch();
   const companyLinks = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
   const wsQuickLinks = useSelector((state) => state.workspaces.workspaceQuickLinks[params.workspaceId]);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [fetchingWsQuicklinks, setFetchingWsQuicklins] = useState(false);
   const { generalSettings, showModal } = useSettings();
 
@@ -109,15 +110,33 @@ const ShortcutsCard = (props) => {
   useEffect(() => {
     if (!linksFetched && !isWorkspace) dispatch(getQuickLinks());
     if (isWorkspace && !wsQuickLinks) {
-      dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }));
+      let payload = {
+        workspace_id: params.workspaceId,
+      };
+      if (workspace && workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
+      dispatch(getWorkspaceQuickLinks(payload));
     }
   }, []);
 
   useEffect(() => {
     if (fetchingWsQuicklinks) return;
     if (isWorkspace && !wsQuickLinks) {
+      let payload = {
+        workspace_id: params.workspaceId,
+      };
+      if (workspace && workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
       setFetchingWsQuicklins(true);
-      dispatch(getWorkspaceQuickLinks({ workspace_id: params.workspaceId }, () => setFetchingWsQuicklins(false)));
+      dispatch(getWorkspaceQuickLinks(payload, () => setFetchingWsQuicklins(false)));
     }
   }, [params.workspaceId, wsQuickLinks]);
 

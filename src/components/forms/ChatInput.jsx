@@ -843,18 +843,19 @@ const ChatInput = (props) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members:
-      user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id)
-        : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
-              return true;
-            } else {
-              return false;
-            }
-          }),
+    members: selectedChannel.slug
+      ? selectedChannel.members
+      : user.type === "external"
+      ? selectedChannel.members.filter((m) => m.id !== user.id)
+      : Object.values(users).filter((u) => {
+          if (u.id === user.id) {
+            return false;
+          } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            return true;
+          } else {
+            return false;
+          }
+        }),
     prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
   });
 

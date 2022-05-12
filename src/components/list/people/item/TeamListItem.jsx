@@ -341,6 +341,7 @@ const TeamListItem = (props) => {
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
           <div className="badge-container">
+            {isSharedWorkspace && member.is_creator && <StyledBadge role={member.workspace_role} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
             {member.workspace_role && member.workspace_role !== "" && (
               <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
             )}
