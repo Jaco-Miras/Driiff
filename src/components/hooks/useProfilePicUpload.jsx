@@ -11,7 +11,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import useTranslationActions from "./useTranslationActions";
 import { batchUploadProfileImage, batchEditUploadProfileImage } from "../../redux/actions/userAction";
 import { updateWorkspaceMember } from "../../redux/actions/workspaceActions";
-
+import avatarSvg from "../../assets/img/icons_svg/avatar.svg";
 const useProfilePicUpload = () => {
   const refs = {
     dropZoneRef: useRef(null),
@@ -28,6 +28,7 @@ const useProfilePicUpload = () => {
   const dispatch = useDispatch();
 
   const [currentProfilePic, setCurrentProfilePic] = useState(null);
+  const [previewImage, setPreviewImage] = useState(avatarSvg);
 
   const dictionary = {
     uploadModalHeaderText: _t("UPLOAD_MODAL.HEADER", "Upload profile picture?"),
@@ -146,6 +147,7 @@ const useProfilePicUpload = () => {
       mode: "profile",
       handleSubmit: (file) => {
         setCurrentProfilePic(file);
+        setPreviewImage(URL.createObjectURL(file));
       },
     };
     dispatch(addToModals(modal));
@@ -173,6 +175,7 @@ const useProfilePicUpload = () => {
     batchUploadExternalUserProfilePic,
     batchEditUploadExternalUserProfilePic,
     updateMembers,
+    previewImage,
   };
 };
 
