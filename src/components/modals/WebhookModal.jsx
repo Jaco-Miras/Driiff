@@ -7,6 +7,10 @@ import { useToaster, useWorkspace } from "../hooks";
 import { ModalHeaderSection } from "./index";
 
 const ModalWrapper = styled(Modal)`
+  .explainer-text {
+    font-size: 0.8rem;
+    display: block;
+  }
   .link {
     transition: 0.3s ease;
     &:hover {
@@ -62,7 +66,8 @@ const WebhookModal = (props) => {
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatWebhooksTitle}</ModalHeaderSection>
       <div className="p-3 rounded-bottom">
-        <p className="text-center text-muted">{dictionary.webhookExplainerText}</p>
+        <span className="explainer-text text-center text-muted">{dictionary.webhookExplainerText1}</span>
+        <span className="explainer-text text-center text-muted">{dictionary.webhookExplainerText2}</span>
         <hr />
         <ul className="list-group list-group-flush">
           <li className="list-group-item px-1 d-flex justify-content-between align-items-center">
