@@ -62,6 +62,8 @@ const WebhookModal = (props) => {
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.chatWebhooksTitle}</ModalHeaderSection>
       <div className="p-3 rounded-bottom">
+        <p className="text-center text-muted">{dictionary.webhookExplainerText}</p>
+        <hr />
         <ul className="list-group list-group-flush">
           <li className="list-group-item px-1 d-flex justify-content-between align-items-center">
             <span>

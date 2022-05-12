@@ -129,6 +129,7 @@ const WsDashboardPanel = (props) => {
     chatWebhooksCopy: _t("CHAT_WEBHOOKS.COPY", "copy"),
     chatWebhooksClipboardCopy: _t("CHAT_WEBHOOKS.CLIPBOARD_COPY", "Copied to clipboard"),
     webhookTooltip: _t("CHAT_WEBHOOKS.TOOLTIP_TITLE", "Chat Webhooks"),
+    webhookExplainerText: _t("CHAT_WEBHOOKS.EXPLAINER_TEXT", "Sample Explainer Text  Lorem ipsum dolor sit amet consectetur adipisicing elit."),
   };
 
   return (
