@@ -129,6 +129,10 @@ export {
   createTeamChannel,
   searchUsers,
   batchUploadProfileImage,
+  impersonationLogin,
+  getCurrentUserImpersonation,
+  impersonationLogout,
+  impersonationLists,
 } from "./user";
 
 export {
