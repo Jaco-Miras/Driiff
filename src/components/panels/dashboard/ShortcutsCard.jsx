@@ -96,6 +96,7 @@ const ShortcutsCard = (props) => {
       type: "workspace-quicklinks",
       links: wsQuickLinks,
       workspaceId: params.workspaceId,
+      sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
     };
     dispatch(addToModals(payload));
   };

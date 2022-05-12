@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -72,8 +72,9 @@ const MoreButton = styled.span`
 `;
 
 const WorkspaceQuickLinksModal = (props) => {
-  const { className = "", type, links, workspaceId } = props.data;
+  const { className = "", type, links, workspaceId, sharedSlug = null } = props.data;
 
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { _t } = useTranslationActions();
@@ -190,10 +191,16 @@ const WorkspaceQuickLinksModal = (props) => {
   const handleConfirm = () => {
     if (!validateForm()) return;
 
-    const payload = {
+    let payload = {
       workspace_id: workspaceId,
       quick_links: inputs,
     };
+    if (sharedSlug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true },
+      };
+    }
     dispatch(
       putWorkspaceQuickLinks(payload, (err, res) => {
         if (err) return;

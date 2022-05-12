@@ -62,6 +62,8 @@ const MessageFiles = (props) => {
         file_id: file.file_id,
         files: [file],
         topic_id: topic_id,
+        sharedSlug: selectedChannel && selectedChannel.slug ? true : false,
+        slug: selectedChannel.slug,
       };
       dispatch(setViewFiles(payload));
     }

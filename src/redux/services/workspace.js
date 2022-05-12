@@ -514,11 +514,17 @@ export function getWorkspaceQuickLinks(payload) {
 }
 
 export function putWorkspaceQuickLinks(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

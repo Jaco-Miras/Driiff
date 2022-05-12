@@ -123,6 +123,7 @@ const PeopleListItem = (props) => {
     usersWithoutActivity = [],
     onAddUserToTeam = null,
     onDeleteTeamMember = null,
+    sharedUser = false,
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -282,6 +283,7 @@ const PeopleListItem = (props) => {
                   imageLink={user.profile_image_link}
                   //imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}
                   showSlider={true}
+                  sharedUser={sharedUser ? user : null}
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
@@ -326,7 +328,7 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  {user.has_accepted && (
+                  {user.has_accepted && !sharedUser && (
                     <ToolTip content={dictionary.connectedWorkspaceIcon}>
                       <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
                     </ToolTip>
@@ -338,7 +340,7 @@ const PeopleListItem = (props) => {
                       </a>
                     </ToolTip>
                   )}
-                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && (
+                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && !sharedUser && (
                     <ToolTip content={dictionary.messageIcon}>
                       <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                     </ToolTip>

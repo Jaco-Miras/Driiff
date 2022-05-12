@@ -139,7 +139,7 @@ const WorkspacePeoplePanel = (props) => {
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} showWorkspaceRole={true} />;
+              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} showWorkspaceRole={true} sharedUser={workspace.sharedSlug} />;
             })}
           </div>
         </div>
