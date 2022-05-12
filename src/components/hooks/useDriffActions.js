@@ -127,7 +127,8 @@ const useDriffActions = () => {
     dispatch(
       postRegisterDriff(payload, (err, res) => {
         if (err) {
-          toaster.error("Something went wrong!");
+          console.log(err.response.data.errors);
+          toaster.error(err.response.data.errors.company_name);
         }
 
         if (res) {

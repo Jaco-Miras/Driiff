@@ -20,12 +20,13 @@ import { objToUrlParams } from "../../helpers/commonFunctions";
  * @param {number} data.invited_by_id
  * @returns {Promise<*>}
  */
-export function postRegisterDriff(data) {
+export function postRegisterDriff(data, error) {
   return apiNoTokenCall({
     method: "POST",
     url: "/register",
     register: true,
     data: data,
+    error,
   });
 }
 
