@@ -121,7 +121,7 @@ const ProfileSlider = (props) => {
           <div className="labels-wrapper">
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
-            <label>{dictionary.position}</label>
+            {!sharedUser && <label>{dictionary.position}</label>}
             {!sharedUser && loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
           <div className="info-details">

@@ -310,6 +310,11 @@ const FileRender = (props) => {
       setIsLoaded(false);
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
+        if (viewFiles && viewFiles.sharedSlug) {
+          if (current.sharedWorkspaces[viewFiles.slug]) {
+            myToken = `Bearer ${current.sharedWorkspaces[viewFiles.slug].access_token}`;
+          }
+        }
         fetch(file.view_link, {
           method: "GET",
           keepalive: true,

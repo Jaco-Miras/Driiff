@@ -47,7 +47,7 @@ const AboutCard = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
-  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  //const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const recipients = useSelector((state) => state.global.recipients);
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
@@ -73,9 +73,9 @@ const AboutCard = (props) => {
   let workspaceMember = false;
   if (isWorkspace && workspace) {
     workspaceMember = workspace.members.some((m) => m.id === user.id);
-    if (workspace.sharedSlug && sharedWs[workspace.slug]) {
-      workspaceMember = workspace.members.some((m) => m.id === sharedWs[workspace.slug].user_auth.id);
-    }
+    // if (workspace.sharedSlug && sharedWs[workspace.slug]) {
+    //   workspaceMember = workspace.members.some((m) => m.id === sharedWs[workspace.slug].user_auth.id);
+    // }
   }
 
   return (
