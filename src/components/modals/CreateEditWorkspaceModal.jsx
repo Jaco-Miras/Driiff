@@ -301,6 +301,7 @@ const CreateEditWorkspaceModal = (props) => {
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const folders = useSelector((state) => state.workspaces.allFolders);
   const securitySettings = useSelector((state) => state.admin.security);
   const allFoldersLoaded = useSelector((state) => state.workspaces.allFoldersLoaded);
@@ -975,6 +976,12 @@ const CreateEditWorkspaceModal = (props) => {
         remove_team_member_ids: removed_teams.map((t) => t.id),
         team_member_ids: activeTeams.map((t) => t.id),
       };
+      if (item && item.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true },
+        };
+      }
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
         payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
@@ -1538,8 +1545,8 @@ const CreateEditWorkspaceModal = (props) => {
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
-              middle_name: users[m.id] ? users[m.id].middle_name : "",
-              last_name: users[m.id] ? users[m.id].last_name : "",
+              middle_name: item.sharedSlug ? "" : users[m.id] ? users[m.id].middle_name : "",
+              last_name: item.sharedSlug ? m.last_name : users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               has_accepted: m.has_accepted,
@@ -1555,8 +1562,8 @@ const CreateEditWorkspaceModal = (props) => {
               name: m.name,
               id: m.id,
               first_name: m.first_name === "" ? m.email : m.first_name,
-              middle_name: users[m.id] ? users[m.id].middle_name : "",
-              last_name: users[m.id] ? users[m.id].last_name : "",
+              middle_name: item.sharedSlug ? "" : users[m.id] ? users[m.id].middle_name : "",
+              last_name: item.sharedSlug ? m.last_name : users[m.id] ? users[m.id].last_name : "",
               profile_image_link: m.profile_image_link,
               profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
               email: m.email,
@@ -1651,6 +1658,8 @@ const CreateEditWorkspaceModal = (props) => {
     });
     setUserOptions([...teamOptions, ...userOptions]);
   }, [Object.values(users).length, Object.values(teams).length]);
+
+  console.log(item, userOptions, form.selectedUsers);
 
   useEffect(() => {
     if (externalUsers.length) {

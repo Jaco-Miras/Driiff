@@ -47,6 +47,7 @@ const AboutCard = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const recipients = useSelector((state) => state.global.recipients);
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
@@ -69,12 +70,20 @@ const AboutCard = (props) => {
     }
   };
 
+  let workspaceMember = false;
+  if (isWorkspace && workspace) {
+    workspaceMember = workspace.members.some((m) => m.id === user.id);
+    if (workspace.sharedSlug && sharedWs[workspace.slug]) {
+      workspaceMember = workspace.members.some((m) => m.id === sharedWs[workspace.slug].user_auth.id);
+    }
+  }
+
   return (
     <Wrapper>
       <div className="card-title">
         <h5 className="card-title mb-0">{isWorkspace ? dictionary.aboutThisWorkspace : dictionary.aboutThisCompany}</h5>
 
-        {companyWs && user.role.id <= 2 && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
+        {((!isWorkspace && companyWs && user.role.id <= 2) || workspaceMember) && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
       </div>
       <DashboardDescriptionContainer>
         {!isWorkspace && companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}

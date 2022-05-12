@@ -4,6 +4,21 @@ import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 import { uniqBy } from "lodash";
 
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 const INITIAL_STATE = {
   selectedWorkspaceId: null,
   showAboutModal: false,
@@ -214,6 +229,7 @@ export default (state = INITIAL_STATE, action) => {
                 is_active: t.is_active,
                 type: "WORKSPACE",
                 slug: action.slug,
+                sharedSlug: action.slug !== getSlug(),
               };
             }
           });
@@ -239,6 +255,7 @@ export default (state = INITIAL_STATE, action) => {
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             show_about: ws.topic_detail.show_about,
             slug: action.slug,
+            sharedSlug: action.slug !== getSlug(),
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }

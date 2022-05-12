@@ -75,6 +75,9 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
         }
         if (data.added_members.length) {
           let am = Object.values(allUsers).filter((u) => data.added_members.includes(u.id));
+          if (selectedChannel.slug) {
+            am = data.added_members;
+          }
           newBody = (
             <>
               {newBody} {dictionary.andAdded}{" "}
@@ -134,7 +137,10 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
         } else if (data.added_members.length || data.removed_members.length || (data.added_teams && data.added_teams.length) || (data.removed_teams && data.removed_teams.length)) {
           //has change on members
           if (data.added_members.length === 1 && data.removed_members.length === 0 && data.added_teams.length === 0 && data.removed_teams.length === 0) {
-            const joinedUser = Object.values(allUsers).find((u) => u.id === data.added_members[0]);
+            let joinedUser = Object.values(allUsers).find((u) => u.id === data.added_members[0]);
+            if (selectedChannel.slug) {
+              joinedUser = data.added_members[0];
+            }
             if (joinedUser && author.id === joinedUser.id) {
               newBody = (
                 <>
@@ -182,6 +188,9 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
             }
             if (data.added_members.length) {
               let am = Object.values(allUsers).filter((u) => data.added_members.includes(u.id));
+              if (selectedChannel.slug) {
+                am = data.added_members;
+              }
               newBody = (
                 <>
                   {newBody} {data.added_teams && data.added_teams.length ? dictionary.andAdded : dictionary.added}{" "}
@@ -245,6 +254,9 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
           //has change on members
           if (data.added_members.length) {
             let am = Object.values(allUsers).filter((u) => data.added_members.includes(u.id));
+            if (selectedChannel.slug) {
+              am = data.added_members;
+            }
             newBody = (
               <>
                 {newBody} {dictionary.andAdded}{" "}
@@ -290,7 +302,10 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
         } else if (data.added_members.length || data.removed_members.length) {
           //has change on members
           if (data.added_members.length === 1 && data.removed_members.length === 0) {
-            const joinedUser = Object.values(allUsers).find((u) => u.id === data.added_members[0]);
+            let joinedUser = Object.values(allUsers).find((u) => u.id === data.added_members[0]);
+            if (selectedChannel.slug) {
+              joinedUser = data.added_members[0];
+            }
             if (joinedUser && author.id === joinedUser.id) {
               newBody = (
                 <>

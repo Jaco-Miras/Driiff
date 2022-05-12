@@ -829,7 +829,13 @@ class ChatMessages extends React.PureComponent {
 
                                   {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
                                   {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
-                                    <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
+                                    <SeenIndicator
+                                      isAuthor={isAuthor}
+                                      onClick={this.handleShowSeenUsers}
+                                      seenMembers={this.filterSeenMembers()}
+                                      isPersonal={this.props.selectedChannel.members.length === 2}
+                                      channel={this.props.selectedChannel}
+                                    />
                                   )}
                                 </ChatBubbleQuoteDiv>
 
@@ -844,6 +850,7 @@ class ChatMessages extends React.PureComponent {
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
                                     showSlider={true}
+                                    sharedUser={this.props.selectedChannel.slug ? reply.user : null}
                                   />
                                 )}
                               </ChatBubbleContainer>
