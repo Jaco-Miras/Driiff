@@ -43,6 +43,7 @@ import {
   VideoMeetingModal,
   JitsiScheduleModal,
   ImpersonationLoginModal,
+  WebhookModal,
 } from "../modals";
 
 const ModalPanelContainer = styled.div`
@@ -160,6 +161,8 @@ const ModalPanel = () => {
             return <JitsiScheduleModal key={modal.type} data={modal} />;
           case "impersonation_login":
             return <ImpersonationLoginModal key={modal.type} data={modal} />;
+          case "chat_webhook":
+            return <WebhookModal key={modal.type} data={modal} />;
           default:
             return null;
         }

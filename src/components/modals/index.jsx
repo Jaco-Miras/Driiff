@@ -43,3 +43,4 @@ export { default as JitsiConfirmationModal } from "./JitsiConfirmationModal";
 export { default as VideoMeetingModal } from "./VideoMeetingModal";
 export { default as JitsiScheduleModal } from "./JitsiScheduleModal";
 export { default as ImpersonationLoginModal } from "./ImpersonationLoginModal";
+export { default as WebhookModal } from "./WebhookModal";
