@@ -53,6 +53,10 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             // toastr.warning(errorStringTitle, {
             //   component: () => <div dangerouslySetInnerHTML={{ __html: errorString }} />,
             // });
+            dispatch({
+              type: actionTypeFailure,
+              error,
+            });
           }
           // not authenticated user.
           if (error.response.status === 401) {

@@ -137,7 +137,6 @@ export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = nul
         },
       };
     }
-
     return axios(axiosParam);
   }
 
