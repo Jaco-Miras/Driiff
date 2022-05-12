@@ -14,6 +14,7 @@ import { useToaster, useTranslationActions, useUserActions, useUserChannels, use
 import { FormInput, EmailPhoneInput } from "../../forms";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import UserOptions from "./UserOptions";
+import moment from "moment";
 
 const Wrapper = styled.div`
   overflow: auto;
@@ -224,6 +225,8 @@ const UserProfilePanel = (props) => {
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
     accountType: _t("PROFILE.ACCOUNT_TYPE", "Account type"),
+    lastLoggedIn: _t("PROFILE.LAST_LOGGED_IN", "Last Logged in"),
+    invitedBy: _t("PROFILE.INVITED_BY", "Invited by"),
   };
 
   const isEditable = (loggedUser && loggedUser.type === "internal" && user && user.type === "external" && user.active === 1) || (loggedUser && loggedUser.role && loggedUser.role.id <= 2);
@@ -713,7 +716,6 @@ const UserProfilePanel = (props) => {
       setAccountType(users[props.match.params.id].role.name);
     }
   }, [accountType, users]);
-
   if (!users[props.match.params.id]) {
     return <></>;
   }
@@ -725,9 +727,12 @@ const UserProfilePanel = (props) => {
     emailDefaultValue = isPhoneNumber && registerMode === "email" ? "" : user.email;
   }
 
+
+
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`} registerMode={registerMode}>
       <div className="row row-user-profile-panel">
+
         <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
             {loggedUser.role.id <= 2 && loggedUser.id !== user.id && <UserOptions user={user} />}
@@ -752,6 +757,7 @@ const UserProfilePanel = (props) => {
                   </span>
                 )}
               </div>
+
               {editInformation ? (
                 <h5 className="mb-1 mt-2">
                   {form.first_name} {form.middle_name} {form.last_name}
@@ -777,6 +783,8 @@ const UserProfilePanel = (props) => {
               ) : (
                 <p className="text-muted small">{user.designation}</p>
               )}
+              <div className="col col-form my-lg-n3">{user.type === "external" && dictionary.external}</div>
+
               {loggedUser.id !== user.id && (
                 <div className="d-flex justify-content-center">
                   {user.contact !== "" && loggedUser.type === "internal" && (
@@ -895,6 +903,18 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.display_name}</div>
                   </div>
                 )}
+                {user.type === "external" &&
+                  <>
+                    <div className="row mb-2">
+                      <div className="col col-label text-muted">{dictionary.lastLoggedIn}</div>
+                      <div className="col col-form">{moment.unix(user?.last_login?.timestamp).format("MMMM DD YYYY hh:mm A").toString()}</div>
+                    </div>
+                    <div className="row mb-2">
+                      <div className="col col-label text-muted">{dictionary.invitedBy}</div>
+                      <div className="col col-form">{user?.invited_by?.invitedBy}</div>
+                    </div>
+                  </>
+                }
               </div>
             ) : (
               <div className="card-body">
