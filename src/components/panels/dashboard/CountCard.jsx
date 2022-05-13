@@ -33,12 +33,22 @@ const CountCard = (props) => {
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const todosCount = useSelector((state) => state.global.todos.count);
   const wsReminders = useSelector((state) => state.workspaces.workspaceReminders[params.workspaceId]);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   useEffect(() => {
     if (params.workspaceId && !wsReminders) {
       //fetch the workspace reminders count
+      let payload = {
+        topic_id: params.workspaceId,
+      };
+      if (workspace && workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
       dispatch(
-        getWorkspaceRemindersCount({ topic_id: params.workspaceId }, (err, res) => {
+        getWorkspaceRemindersCount(payload, (err, res) => {
           if (err) return;
           dispatch(updateWorkspaceRemindersCount({ count: res.data, id: parseInt(params.workspaceId) }));
         })

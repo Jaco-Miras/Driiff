@@ -113,7 +113,7 @@ const WorkspacePostsPanel = (props) => {
 
   useFetchWsCount();
 
-  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag, showLoader, showUnread } = usePosts();
+  const { actions, posts, filter, tag, sort, post, user, search, postLists, counters, filters, postListTag, showLoader, showUnread, sharedWs } = usePosts();
   const { loadMoreWorkspaceCategory, count } = usePostCategory();
   const [loading, setLoading] = useState(false);
 
@@ -121,6 +121,8 @@ const WorkspacePostsPanel = (props) => {
   const [activePostListName, setActivePostListName] = useState({});
 
   const componentIsMounted = useRef(true);
+  const workspaceRef = useRef(null);
+  const sharedWsRef = useRef(null);
 
   const isExternalUser = user.type === "external";
 
@@ -130,6 +132,11 @@ const WorkspacePostsPanel = (props) => {
       history.push(pathname);
     }
   };
+
+  useEffect(() => {
+    if (workspace) workspaceRef.current = workspace;
+    if (sharedWs) sharedWsRef.current = sharedWs;
+  }, [workspace, sharedWs]);
 
   useEffect(() => {
     return () => {
@@ -278,14 +285,17 @@ const WorkspacePostsPanel = (props) => {
           })
         );
       };
-
-      actions.getPosts(
-        {
-          filters: ["post", "favourites"],
-          topic_id: parseInt(params.workspaceId),
-        },
-        filterCb
-      );
+      let payload = {
+        filters: ["post", "favourites"],
+        topic_id: parseInt(params.workspaceId),
+      };
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getPosts(payload, filterCb);
     } else if (filter === "my_posts") {
       let filterCb = (err, res) => {
         setLoading(false);
@@ -310,14 +320,17 @@ const WorkspacePostsPanel = (props) => {
           })
         );
       };
-
-      actions.getPosts(
-        {
-          filters: ["post", "created_by_me"],
-          topic_id: parseInt(params.workspaceId),
-        },
-        filterCb
-      );
+      let payload = {
+        filters: ["post", "created_by_me"],
+        topic_id: parseInt(params.workspaceId),
+      };
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getPosts(payload, filterCb);
     } else if (filter === "archived") {
       let filterCb = (err, res) => {
         setLoading(false);
@@ -342,14 +355,17 @@ const WorkspacePostsPanel = (props) => {
           })
         );
       };
-
-      actions.getPosts(
-        {
-          filters: ["post", "archive"],
-          topic_id: parseInt(params.workspaceId),
-        },
-        filterCb
-      );
+      let payload = {
+        filters: ["post", "archive"],
+        topic_id: parseInt(params.workspaceId),
+      };
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getPosts(payload, filterCb);
     }
   }, [filter]);
 
@@ -362,6 +378,10 @@ const WorkspacePostsPanel = (props) => {
           setLoadPosts(false);
         }
       };
+      let sharedPayload = null;
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+        sharedPayload = { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true };
+      }
       loadMoreWorkspaceCategory(callback);
       //loadMoreUnreadPosts(callback);
       let payload = {
@@ -369,6 +389,13 @@ const WorkspacePostsPanel = (props) => {
         topic_id: workspace.id,
         skip: filter === "inbox" && showUnread ? filters?.unreadPosts.skip : filter === "archive" ? filters?.archived.skip : filter === "star" ? filters?.favourites.skip : filter === "my_posts" ? filters?.myPosts.skip : filters.all.skip,
       };
+
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
 
       if (filter === "all") {
         if (filters.all && !filters.all.hasMore) {
@@ -544,84 +571,6 @@ const WorkspacePostsPanel = (props) => {
 
   return (
     <Wrapper className={`container-fluid h-100 fadeIn ${className}`} onScroll={handleScroll}>
-      {/* {postAccess.post === true && postAccess.loaded && (postAccess.post_user_ids.some((pid) => pid === user.id) || postAccess.post_user_ids.some((pid) => pid === 0)) ? (
-        <div className="row app-block">
-          <PostSidebar
-            disableOptions={disableOptions}
-            isMember={isMember}
-            workspace={workspace}
-            filter={filter}
-            filters={filters}
-            tag={tag}
-            postListTag={postListTag}
-            postActions={actions}
-            count={count}
-            postLists={postLists}
-            counters={counters}
-            onGoBack={handleGoback}
-            dictionary={dictionary}
-          />
-          <div className="col-md-9 app-content">
-            <div className="app-content-overlay" />
-            {!post && <PostFilterSearchPanel activeSort={sort} workspace={workspace} search={search} dictionary={dictionary} className={"mb-3"} />}
-            {!!postListTag && (
-              <PostsBtnWrapper>
-                <span>Filter:</span>
-                <PostListWrapper className="ml-2 recipients">
-                  <span className="receiver">
-                    <span onClick={handleEditArchivePostList}>
-                      <StyledIcon icon="x" className="mr-1" />
-                    </span>
-                    {activePostListName.name}
-                  </span>
-                </PostListWrapper>
-              </PostsBtnWrapper>
-            )}
-            {posts.length === 0 && search === "" && !params.hasOwnProperty("postId") ? (
-              <PostsEmptyState actions={actions} dictionary={dictionary} disableOptions={disableOptions} isMember={isMember} />
-            ) : (
-              <>
-                {post !== null ? (
-                  <div className="card card-body app-content-body mb-4">
-                    <PostDetailWrapper className="fadeBottom">
-                      <PostDetail
-                        post={post}
-                        posts={posts}
-                        filter={filter}
-                        postActions={actions}
-                        user={user}
-                        history={history}
-                        onGoBack={handleGoback}
-                        dictionary={dictionary}
-                        workspace={workspace}
-                        isMember={isMember}
-                        disableOptions={disableOptions}
-                        isExternalUser={isExternalUser}
-                      />
-                    </PostDetailWrapper>
-                  </div>
-                ) : !post && params.hasOwnProperty("postId") ? (
-                  <LoaderContainer className={"card initial-load"}>
-                    <Loader />
-                  </LoaderContainer>
-                ) : (
-                  <Posts actions={actions} dictionary={dictionary} filter={filter} isExternalUser={isExternalUser} loading={loading} posts={posts} search={search} workspace={workspace} />
-                )}
-              </>
-            )}
-            <div className="mt-3 post-btm">&nbsp;</div>
-          </div>
-        </div>
-      ) : postAccess.loaded ? (
-        <MaintenanceWrapper>
-          <div>
-            <h4 className="title">{dictionary.featureNotAvailable}</h4>
-          </div>
-          <div>
-            <h5>{dictionary.contactAdministrator}</h5>
-          </div>
-        </MaintenanceWrapper>
-      ) : null} */}
       <div className="row app-block">
         <PostSidebar
           disableOptions={disableOptions}

@@ -13,14 +13,26 @@ const usePosts = () => {
   const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
   const postsLists = useSelector((state) => state.posts.postsLists);
-  const [fetchingPost, setFetchingPost] = useState(false);
   const showUnread = useSelector((state) => state.posts.showUnread);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const [fetchingPost, setFetchingPost] = useState(false);
 
   const componentIsMounted = useRef(true);
+  const workspaceRef = useRef(null);
 
   useEffect(() => {
     if (params.hasOwnProperty("workspaceId")) {
-      actions.getUnreadWsPostsCount({ topic_id: params.workspaceId }, (err, res) => {
+      let payload = {
+        topic_id: params.workspaceId,
+      };
+      if (workspace && workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getUnreadWsPostsCount(payload, (err, res) => {
         if (err) return;
         if (res.data && res.data.result > 0) {
           //fetch the unread post
@@ -36,22 +48,27 @@ const usePosts = () => {
             dispatch(
               addToWorkspacePosts({
                 topic_id: parseInt(params.workspaceId),
-                posts: res.data.posts,
+                posts: res.data.posts.map((p) => {
+                  return { ...p, slug: workspace.slug };
+                }),
                 filter: res.data.posts,
                 files,
               })
             );
           };
-
-          actions.getPosts(
-            {
-              filters: ["green_dot"],
-              topic_id: parseInt(params.workspaceId),
-              skip: 0,
-              limit: res.data.result,
-            },
-            unreadCb
-          );
+          let fetchPayload = {
+            filters: ["green_dot"],
+            topic_id: parseInt(params.workspaceId),
+            skip: 0,
+            limit: res.data.result,
+          };
+          if (workspace && workspace.sharedSlug) {
+            fetchPayload = {
+              ...fetchPayload,
+              sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+            };
+          }
+          actions.getPosts(fetchPayload, unreadCb);
         }
       });
     }
@@ -61,11 +78,14 @@ const usePosts = () => {
     };
   }, []);
 
+  // useEffect(() => {
+  //   if (params.hasOwnProperty("workspaceId")) {
+  //     actions.getRecentPosts(params.workspaceId);
+  //   }
+  // }, [params.workspaceId]);
   useEffect(() => {
-    if (params.hasOwnProperty("workspaceId")) {
-      actions.getRecentPosts(params.workspaceId);
-    }
-  }, [params.workspaceId]);
+    workspaceRef.current = workspace;
+  }, [workspace]);
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
@@ -85,7 +105,9 @@ const usePosts = () => {
           dispatch(
             addToWorkspacePosts({
               topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts,
+              posts: res.data.posts.map((p) => {
+                return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
+              }),
               files,
               filters: {
                 all: {
@@ -101,6 +123,12 @@ const usePosts = () => {
         let payload = {
           topic_id: parseInt(params.workspaceId),
         };
+        if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+          };
+        }
         actions.getPosts(payload, cb);
         actions.fetchPostList();
 
@@ -117,7 +145,9 @@ const usePosts = () => {
           dispatch(
             addToWorkspacePosts({
               topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts,
+              posts: res.data.posts.map((p) => {
+                return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
+              }),
               filter: res.data.posts,
               files,
               filters: {
@@ -130,18 +160,22 @@ const usePosts = () => {
           );
         };
 
-        actions.getPosts(
-          {
-            filters: ["green_dot"],
-            topic_id: parseInt(params.workspaceId),
-            skip: 0,
-            limit: 15,
-          },
-          unreadCb
-        );
+        let unreadPayload = {
+          filters: ["green_dot"],
+          topic_id: parseInt(params.workspaceId),
+          skip: 0,
+          limit: 15,
+        };
+        if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+          unreadPayload = {
+            ...unreadPayload,
+            sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+          };
+        }
+        actions.getPosts(unreadPayload, unreadCb);
       }
     }
-  }, [params]);
+  }, [params, sharedWs]);
 
   let rPosts = null;
   let filteredPosts = [];
@@ -254,21 +288,22 @@ const usePosts = () => {
   return {
     flipper,
     actions,
-    posts: filteredPosts.filter((p) => {
-      const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
-      if (hasCompanyAsRecipient) {
-        return true;
-      } else {
-        const allParticipantIds = p.recipients
-          .map((r) => {
-            if (r.type === "USER") {
-              return [r.type_id];
-            } else return r.participant_ids;
-          })
-          .flat();
-        return allParticipantIds.some((id) => id === user.id) || p.author.id === user.id;
-      }
-    }),
+    posts: filteredPosts,
+    // posts: filteredPosts.filter((p) => {
+    //   const hasCompanyAsRecipient = p.recipients.find((r) => r.main_department === true);
+    //   if (hasCompanyAsRecipient) {
+    //     return true;
+    //   } else {
+    //     const allParticipantIds = p.recipients
+    //       .map((r) => {
+    //         if (r.type === "USER") {
+    //           return [r.type_id];
+    //         } else return r.participant_ids;
+    //       })
+    //       .flat();
+    //     return allParticipantIds.some((id) => id === user.id) || p.author.id === user.id;
+    //   }
+    // }),
     filter: activeFilter,
     tag: activeTag,
     postListTag: activePostListTag,
@@ -283,6 +318,7 @@ const usePosts = () => {
     postLists: postsLists,
     showLoader: !wsPosts.hasOwnProperty(params.workspaceId),
     showUnread: showUnread,
+    sharedWs: sharedWs,
   };
 };
 

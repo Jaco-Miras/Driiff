@@ -277,7 +277,7 @@ const CompanyPostDetail = (props) => {
 
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
 
-  const handleClosePost = () => {
+  const handleGoBack = () => {
     onGoBack();
   };
 
@@ -425,6 +425,14 @@ const CompanyPostDetail = (props) => {
     };
   }, []);
 
+  const handleClosePost = () => {
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+    };
+    close(payload);
+  };
+
   return (
     <>
       {post.todo_reminder !== null && <ReminderNote todoReminder={post.todo_reminder} type="POST" />}
@@ -432,7 +440,7 @@ const CompanyPostDetail = (props) => {
         <div className="d-flex flex-column align-items-start">
           <div className="d-flex">
             <div className="align-self-start">
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleGoBack} />
             </div>
             <div>
               <h5 ref={refs.title} className="post-title mb-0">
@@ -475,7 +483,7 @@ const CompanyPostDetail = (props) => {
               {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableMarkAsRead() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
               {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-              <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+              <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
               {/* <div onClick={handleSnooze}>Snooze this post</div> */}
             </StyledMoreOptions>
           </div>

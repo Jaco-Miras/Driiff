@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PostInputMention from "../common/PostInputMention";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons } from "../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons, useGetSlug } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -119,12 +119,14 @@ const PostInput = forwardRef((props, ref) => {
     prioMentionIds,
     approvers,
     onClearApprovers,
-    onSubmitCallback = () => { },
+    onSubmitCallback = () => {},
     mainInput,
     imageLoading = null,
     setImageLoading = null,
     isApprover = false,
   } = props;
+
+  const { slug } = useGetSlug();
 
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -133,6 +135,7 @@ const PostInput = forwardRef((props, ref) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -236,6 +239,12 @@ const PostInput = forwardRef((props, ref) => {
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
+    if (post.slug !== slug && workspace.sharedSlug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      };
+    }
     if (quote) {
       payload.quote = {
         id: quote.id,
@@ -411,12 +420,12 @@ const PostInput = forwardRef((props, ref) => {
 
   const workspaceMembers = workspace
     ? workspace.members
-      .map((m) => {
-        if (m.member_ids) {
-          return m.member_ids;
-        } else return m.id;
-      })
-      .flat()
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
     : [];
 
   const handleSetEditMessageStates = (reply) => {
@@ -568,14 +577,14 @@ const PostInput = forwardRef((props, ref) => {
       user.type === "external"
         ? members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
-          if (u.id === user.id) {
-            return false;
-          } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-            return true;
-          } else {
-            return false;
-          }
-        }),
+            if (u.id === user.id) {
+              return false;
+            } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+              return true;
+            } else {
+              return false;
+            }
+          }),
     workspaces: workspaces ? workspaces : [],
     disableMention: false,
     setInlineImages,

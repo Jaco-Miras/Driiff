@@ -5,7 +5,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import { setParentIdForUpload, incomingLastVisitPost } from "../../../redux/actions/postActions";
 import { FileAttachments, ReminderNote, SvgIconFeather } from "../../common";
 import { DropDocument } from "../../dropzone/DropDocument";
-import { useCommentActions, useComments } from "../../hooks";
+import { useCommentActions, useComments, useGetSlug } from "../../hooks";
 import { PostBody, PostComments, PostDetailFooter, PostUnfollowLabel } from "./index";
 import { MoreOptions } from "../../panels/common";
 import { PostCounters } from "../../list/post/item";
@@ -262,10 +262,12 @@ const PostDetail = (props) => {
   const { post, posts, filter, postActions, user, onGoBack, workspace, dictionary, disableOptions, isMember } = props;
   const { markAsRead, markAsUnread, sharePost, followPost, remind, close, readPostNotification } = postActions;
 
+  const { slug } = useGetSlug();
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
@@ -274,7 +276,7 @@ const PostDetail = (props) => {
 
   const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
 
-  const handleClosePost = () => {
+  const handleGoBack = () => {
     onGoBack();
   };
 
@@ -358,7 +360,11 @@ const PostDetail = (props) => {
       }
     }
     if (triggerRead && !hasPendingApproval) {
-      postActions.markAsRead(post);
+      let sharedPayload = null;
+      if (slug !== post.slug && workspace && workspace.sharedSlug) {
+        sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      }
+      postActions.markAsRead(post, false, sharedPayload);
     }
   };
 
@@ -369,6 +375,12 @@ const PostDetail = (props) => {
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
     };
+    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      };
+    }
     postActions.clap(payload, (err, res) => {
       if (err) {
         if (payload.clap === 1) postActions.unlike(payload);
@@ -401,34 +413,57 @@ const PostDetail = (props) => {
   };
 
   useEffect(() => {
-    readPostNotification({ post_id: post.id });
+    let sharedPayload = null;
+    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    }
+    readPostNotification({ post_id: post.id, sharedPayload });
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed && !disableMarkAsRead()) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
+        sharedPayload: sharedPayload,
       });
     }
 
     if (post.is_unread === 1 || post.unread_count > 0) {
-      if (!disableMarkAsRead()) postActions.markAsRead(post);
+      if (!disableMarkAsRead()) {
+        postActions.markAsRead(post, false, sharedPayload);
+      }
     }
 
-    postActions.fetchPostReadAndClap({ post_id: post.id });
-    if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+    postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload });
+    if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id, sharedPayload });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
 
-      if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id });
+      if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id, sharedPayload });
     };
   }, []);
 
   const privateWsOnly = post.recipients.filter((r) => {
     return r.type === "TOPIC" && r.private === 1;
   });
+
+  const handleClosePost = () => {
+    let sharedPayload = null;
+    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    }
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
+    };
+
+    close(payload);
+  };
+
+  const isSharedUser = post.slug !== slug;
 
   return (
     <>
@@ -437,7 +472,7 @@ const PostDetail = (props) => {
         <div className="d-flex flex-column align-items-start">
           <div className="d-flex">
             <div className="align-self-start">
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleGoBack} />
             </div>
             <div>
               <h5 ref={refs.title} className="post-title mb-0">
@@ -478,7 +513,7 @@ const PostDetail = (props) => {
                   {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                   <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                   {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-                  <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                  <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                   {/* <div onClick={handleSnooze}>Snooze this post</div> */}
                 </StyledMoreOptions>
               </li>
@@ -492,7 +527,7 @@ const PostDetail = (props) => {
                 <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div>
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-                <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 {/* <div onClick={handleSnooze}>Snooze this post</div> */}
               </StyledMoreOptions>
             </div>
@@ -560,7 +595,7 @@ const PostDetail = (props) => {
               onShowFileDialog={handleOpenFileDialog}
               dropAction={dropAction}
               workspace={workspace}
-              isMember={isMember}
+              isMember={isMember || isSharedUser}
               dictionary={dictionary}
               disableOptions={disableOptions}
               postActions={postActions}
@@ -577,7 +612,7 @@ const PostDetail = (props) => {
           onShowFileDialog={handleOpenFileDialog}
           dropAction={dropAction}
           workspace={workspace}
-          isMember={isMember}
+          isMember={isMember || isSharedUser}
           disableOptions={disableOptions}
           mainInput={true}
         />

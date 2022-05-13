@@ -7,7 +7,7 @@ import { joinWorkspace, updateWorkspacePostFilterSort } from "../../../redux/act
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslationActions, usePostActions } from "../../hooks";
+import { useToaster, useTranslationActions, usePostActions, useGetSlug } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
@@ -252,6 +252,7 @@ const PostDetailFooter = (props) => {
     disableOptions,
     mainInput,
   } = props;
+  const { slug } = useGetSlug();
   const history = useHistory();
   const postActions = usePostActions();
   const dispatch = useDispatch();
@@ -278,6 +279,7 @@ const PostDetailFooter = (props) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const handleSend = () => {
     setSent(true);
@@ -686,7 +688,16 @@ const PostDetailFooter = (props) => {
   });
 
   const handleReopen = () => {
-    postActions.close(post);
+    let sharedPayload = null;
+    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    }
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
+    };
+    postActions.close(payload);
   };
 
   return (

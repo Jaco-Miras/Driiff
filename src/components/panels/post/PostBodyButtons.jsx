@@ -59,7 +59,8 @@ const PostBodyButtons = (props) => {
   };
 
   const handleClosePost = () => {
-    postActions.close(post);
+    let payload = { post_id: post.id, is_close: post.is_close ? 0 : 1 };
+    postActions.close(payload);
   };
 
   return (

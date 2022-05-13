@@ -56,13 +56,17 @@ export function postArchive(payload) {
  * @returns {Promise<*>}
  */
 export function postToggleRead(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-toggle-unread";
-
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -187,18 +191,30 @@ export function putCompanyPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/messages";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function fetchComments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: payload.url,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -214,11 +230,17 @@ export function fetchComments(payload) {
  * @returns {Promise<*>}
  */
 export function putComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/messages/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -261,11 +283,17 @@ export function putPost(payload) {
  * @returns {Promise<*>}
  */
 export function postClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/post-clap";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -386,6 +414,11 @@ export function fetchTagCounter(payload) {
  */
 export function fetchPosts(payload) {
   const { skip = 0, limit = 15 } = payload;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${skip}&limit=${limit}`;
   if (payload.search !== undefined) {
     url += `&search=${payload.search}`;
@@ -401,12 +434,14 @@ export function fetchPosts(payload) {
       url: url,
       data: payload,
       cancelToken: payload.cancelToken,
+      sharedPayload: sharedPayload,
     });
   } else {
     return apiCall({
       method: "GET",
       url: url,
       data: payload,
+      sharedPayload: sharedPayload,
     });
   }
 }
@@ -418,11 +453,17 @@ export function fetchPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postVisit(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/post-viewed";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -590,9 +631,15 @@ export function putCommentImportant(payload) {
 }
 
 export function getUnreadWorkspacePostEntries(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/post-unread-entries?topic_id=${payload.topic_id}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -631,10 +678,16 @@ export function getPostRead(payload) {
  * @returns {Promise<*>}
  */
 export function postClose(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-close",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -728,10 +781,16 @@ export function postRequired(payload) {
 }
 
 export function readNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/toggle-notification-unread",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -744,10 +803,16 @@ export function checkPostAccess(payload) {
 }
 
 export function getPostReadAndClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/get-post-read-and-clap/?post_id=${payload.post_id} `,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -775,14 +840,25 @@ export function getCompanyPostsByCategory(payload) {
 }
 
 export function getWorkspacePostCategoryCounter(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/post-category-entries?topic_id=${payload.topic_id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspacePostsByCategory(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${payload.skip}&limit=${payload.limit}`;
   if (payload.filters !== undefined) {
     for (var i = 0; i < payload.filters.length; i++) {
@@ -793,5 +869,6 @@ export function getWorkspacePostsByCategory(payload) {
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
