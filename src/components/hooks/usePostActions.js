@@ -324,11 +324,12 @@ const usePostActions = () => {
     }
   };
 
-  const markAsRead = (post, showToaster = false) => {
+  const markAsRead = (post, showToaster = false, sharedPayload = null) => {
     let payload = {
       post_id: post.id,
       unread: 0,
       topic_id: parseInt(params.workspaceId),
+      sharedPayload: sharedPayload,
     };
     let count = post.unread_count;
     let cb = (err, res) => {
@@ -973,8 +974,8 @@ const usePostActions = () => {
     dispatch(commentApprove(payload, callback));
   };
 
-  const close = (post, callback) => {
-    dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
+  const close = (payload, callback) => {
+    dispatch(postClose(payload, callback));
   };
 
   const generateSystemMessage = (post, accepted_ids, rejected_ids) => {

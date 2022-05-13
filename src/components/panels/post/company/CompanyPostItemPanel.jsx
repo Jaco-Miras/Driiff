@@ -274,6 +274,14 @@ const CompanyPostItemPanel = (props) => {
     toggleCheckbox(post);
   };
 
+  const handleClosePost = () => {
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+    };
+    close(payload);
+  };
+
   // const toggleTooltip = () => {
   //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   //   tooltips.forEach((tooltip) => {
@@ -299,13 +307,7 @@ const CompanyPostItemPanel = (props) => {
         </CheckBoxContainer>
         <PostContent onClick={() => openPost(post, "/posts")}>
           <Author className="d-flex ml-2 mr-2">
-            <Avatar
-              title={`FROM: ${post.author.name}`}
-              className="author-avatar mr-2"
-              id={post.author.id}
-              name={post.author.name}
-              imageLink={post.author.profile_image_link}
-            />
+            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
           </Author>
           <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
             <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
@@ -348,7 +350,7 @@ const CompanyPostItemPanel = (props) => {
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
                 <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-                <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
               </MoreOptions>
             )}
