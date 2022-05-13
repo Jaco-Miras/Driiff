@@ -200,6 +200,7 @@ const ChatContentPanel = (props) => {
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
     toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
     toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

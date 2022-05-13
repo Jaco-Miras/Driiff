@@ -588,7 +588,7 @@ const ChatBubble = (props) => {
           {reply.is_transferred && (
             <ForwardedSpan className="small" isAuthor={isAuthor}>
               <SvgIconFeather icon="corner-up-right" />
-              {dictionary.forwardedMessage}
+              {dictionary.repliedViaEmail}
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
