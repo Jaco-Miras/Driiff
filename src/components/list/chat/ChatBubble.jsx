@@ -266,8 +266,8 @@ const ChatContent = styled.div`
         left: -15px;
         z-index: 1;
         ${(props) =>
-      props.isAuthor === true &&
-      `
+          props.isAuthor === true &&
+          `
             left: auto;
             right: -15px;
             border-left-color: red;

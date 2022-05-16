@@ -536,9 +536,10 @@ const Comment = (props) => {
                   <span className="text-muted ml-1">{dictionary.repliedViaEmail}</span>
                   <SvgIconFeather height={16} width={16} icon="send_post_comment" />
                   <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
-                </>)
-                :
-                <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>}
+                </>
+              ) : (
+                <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
+              )}
               {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (
