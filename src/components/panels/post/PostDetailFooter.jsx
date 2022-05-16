@@ -464,7 +464,6 @@ const PostDetailFooter = (props) => {
   }
 
   const handleSelectApprover = (e) => {
-    console.log("HERE AKO")
     if (e === null || !e.length) {
       if (changeRequestedComment) {
         commentActions.clearApprovingStatus(changeRequestedComment.id);
@@ -525,7 +524,6 @@ const PostDetailFooter = (props) => {
   };
 
   const handleRequestChange = () => {
-    console.log("HERE")
     if (post.users_approval.length === 1) {
       setApproving({
         ...approving,
@@ -633,7 +631,6 @@ const PostDetailFooter = (props) => {
       if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
-
       if (hasPendingAproval && isApprover && showApprover) {
         postActions.approve(
           {

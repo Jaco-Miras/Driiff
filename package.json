@@ -31,7 +31,6 @@
     "moment-timezone": "^0.5.31",
     "newrelic": "^8.5.2",
     "node-sass": "^4.14.1",
-    "prettier": "^2.0.5",
     "push.js": "^1.0.12",
     "quill-image-uploader": "^1.2.2",
     "quill-magic-url": "^2.0.2",
@@ -103,7 +102,8 @@
     "eslint-fix": "eslint --fix src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "prettier": "prettier --check src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
-    "startforever": "forever start -o serverlog/out.log -e serverlog/err.log server.js"
+    "startforever": "forever start -o serverlog/out.log -e serverlog/err.log server.js",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -119,5 +119,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
