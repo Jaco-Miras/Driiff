@@ -2,11 +2,11 @@ export const selectTheme = {
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected && "#000000",
-    backgroundColor: state.isSelected ? "#7a1b8b" : "#000000",
+    backgroundColor: state.isSelected ? "gray" : "#000000",
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#7a1b8b" : "#000000",
+      backgroundColor: state.isSelected ? "gray" : "#000000",
       color: "#ffffff",
     },
   }),
@@ -27,22 +27,22 @@ export const lightTheme = {
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected && "#ffffff",
-    backgroundColor: state.isSelected ? "#7a1b8b" : "#ffffff",
+    backgroundColor: state.isSelected ? "gray" : "#ffffff",
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#7a1b8b" : "#8C3B9B",
+      backgroundColor: state.isSelected ? "gray" : "#8C3B9B",
       color: "#ffffff",
     },
   }),
   control: (provided, state) => ({
     ...provided,
-    borderColor: state.isFocused ? "#7a1b8b" : "#cccccc",
+    borderColor: state.isFocused ? "gray" : "#cccccc",
     boxShadow: state.isFocused ? 0 : 0,
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      borderColor: state.isFocused ? "#7a1b8b" : "#cccccc",
+      borderColor: state.isFocused ? "gray" : "#cccccc",
     },
   }),
   menu: (provided) => ({ ...provided, zIndex: 9999 }),
@@ -52,23 +52,23 @@ export const darkTheme = {
   option: (provided, state) => ({
     ...provided,
     color: state.isSelected && "#000000",
-    backgroundColor: state.isSelected ? "#7a1b8b" : "#000000",
+    backgroundColor: state.isSelected ? "gray" : "#000000",
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      backgroundColor: state.isSelected ? "#7a1b8b" : "#000000",
+      backgroundColor: state.isSelected ? "gray" : "#000000",
       color: "#ffffff",
     },
   }),
   control: (provided, state) => ({
     ...provided,
-    borderColor: state.isFocused ? "#7a1b8b" : "#ffffff",
+    borderColor: state.isFocused ? "gray" : "#ffffff",
     boxShadow: state.isFocused ? 0 : 0,
     backgroundColor: "#111417",
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      borderColor: state.isFocused ? "#7a1b8b" : "#ffffff",
+      borderColor: state.isFocused ? "gray" : "#ffffff",
     },
   }),
   singleValue: (provided) => ({

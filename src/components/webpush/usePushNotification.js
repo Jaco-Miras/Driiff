@@ -130,7 +130,7 @@ export default function usePushNotification() {
           getPushNotification({ endpoint: `${existingSubscription.endpoint}` }, (err, res) => {
             setFetchingSubscription(false);
             if (err) setError(err);
-            if (res.data.data) {
+            if (res && res.data.data) {
               setUserSubscription(existingSubscription);
               dispatch(setPushNotification(true));
             } else {
