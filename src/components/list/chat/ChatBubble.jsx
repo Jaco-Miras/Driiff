@@ -266,8 +266,8 @@ const ChatContent = styled.div`
         left: -15px;
         z-index: 1;
         ${(props) =>
-          props.isAuthor === true &&
-          `
+      props.isAuthor === true &&
+      `
             left: auto;
             right: -15px;
             border-left-color: red;
@@ -588,7 +588,7 @@ const ChatBubble = (props) => {
           {reply.is_transferred && (
             <ForwardedSpan className="small" isAuthor={isAuthor}>
               <SvgIconFeather icon="corner-up-right" />
-              {dictionary.repliedViaEmail}
+              {reply.is_from_email ? <>{dictionary.repliedViaEmail}</> : <> {dictionary.forwardedMessage}</>}
             </ForwardedSpan>
           )}
           <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
