@@ -250,6 +250,7 @@ const ChatContentPanel = (props) => {
               language={language}
               translated_channels={translated_channels}
               chat_language={chat_language}
+              selectedChannel={selectedChannel}
             />
           </Suspense>
         )
