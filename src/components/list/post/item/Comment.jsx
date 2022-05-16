@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, lazy, Suspense } from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
-import { Avatar, FileAttachments, ReminderNote } from "../../../common";
+import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
@@ -531,7 +531,14 @@ const Comment = (props) => {
                 showSlider={true}
               />
               <span>{comment.author.first_name}</span>
-              <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
+              {comment.is_from_email ? (
+                <>
+                  <span className="text-muted ml-1">{dictionary.repliedViaEmail}</span>
+                  <SvgIconFeather icon="mail" />
+                  <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
+                </>)
+                :
+                <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>}
               {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (

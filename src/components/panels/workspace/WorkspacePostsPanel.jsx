@@ -251,6 +251,7 @@ const WorkspacePostsPanel = (props) => {
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
     loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
+    repliedViaEmail: _t("COMMENT.REPLIED_VIA_EMAIL", "replied via email"),
   };
 
   useEffect(() => {
