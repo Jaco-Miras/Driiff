@@ -4,7 +4,7 @@ import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
+import { Avatar, Loader, SvgEmptyState, SvgIconFeather } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -17,6 +17,7 @@ import memoizeOne from "memoize-one";
 import FailChatOptions from "./FailChatOptions";
 import GoogleMeetMessage from "./GoogleMeetMessage";
 import DriffTalkMessage from "./DriffTalkMessage";
+//import { useUsers } from "../../hooks";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -330,6 +331,7 @@ const StyledAvatar = styled(Avatar)`
 
 const EmptyState = styled.div`
   display: flex;
+  flex-direction: column;
   -webkit-box-align: center;
   align-items: center;
   position: absolute;
@@ -345,6 +347,11 @@ const EmptyState = styled.div`
   }
 `;
 
+const PersonalNoteContainer = styled.div`
+  display: flex;
+  align-self: flex-start;
+  margin-left: 3rem;
+`;
 class ChatMessages extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -693,7 +700,6 @@ class ChatMessages extends React.PureComponent {
     //console.log(this.renderCount.current++);
 
     const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
-
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
@@ -927,9 +933,22 @@ class ChatMessages extends React.PureComponent {
                 })
               : null}
             {!this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
-              <EmptyState className="no-reply-container">
-                <SvgEmptyState icon={3} />
-              </EmptyState>
+              <>
+                <EmptyState className="no-reply-container">
+                  <SvgEmptyState icon={3} />
+                  {this.props.selectedChannel.type === "PERSONAL_BOT" && (
+                    <PersonalNoteContainer>
+                      <div>
+                        <SvgIconFeather icon="message_slack_alike" />
+                      </div>
+                      <div>
+                        <h5>{this.props.dictionary.personalNoteHeaderText}</h5>
+                        <p>{this.props.dictionary.personalNoteDescription}</p>
+                      </div>
+                    </PersonalNoteContainer>
+                  )}
+                </EmptyState>
+              </>
             )}
           </ul>
         </InfiniteScroll>
