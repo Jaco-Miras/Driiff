@@ -397,7 +397,7 @@ const CompanyPostsPanel = (props) => {
           ) : (
             <>
               {post && params.hasOwnProperty("postId") ? (
-                <div className="card">
+                <div className="card card-body app-content-body">
                   <PostDetailWrapper className="fadeBottom">
                     <CompanyPostDetail post={post} posts={posts} filter={filter} postActions={actions} user={user} onGoBack={handleGoback} dictionary={dictionary} isExternalUser={isExternalUser} />
                   </PostDetailWrapper>
