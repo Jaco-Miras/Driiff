@@ -153,7 +153,7 @@ const JitsiConfirmationModal = (props) => {
         <Button className="btn btn-outline-secondary" outline color="secondary" onClick={toggle} disabled={startingMeet}>
           {dictionary.no}
         </Button>
-        {(selectedChannel.type === "DIRECT" || selectedChannel.type === "TOPIC") && (
+        {(selectedChannel.type === "DIRECT" || selectedChannel.type === "TOPIC" || selectedChannel.type === "GROUP") && (
           <Button className="btn btn-secondary" onClick={handleScheduleCall}>
             Schedule a call
           </Button>

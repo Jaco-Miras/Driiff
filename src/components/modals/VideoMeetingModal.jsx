@@ -8,15 +8,17 @@ import { clearModal } from "../../redux/actions/globalActions";
 import RadioInput from "../forms/RadioInput";
 import { useSettings, useTranslationActions, useToaster, useWindowSize } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput, CheckBox } from "../forms";
+import { FormInput, InputFeedback, FolderSelect, PeopleSelect, DescriptionInput, CheckBox, ChannelSelect } from "../forms";
 import moment from "moment";
 import { FileAttachments } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { postCreateChannel, renameChannelKey, getChannels } from "../../redux/actions/chatActions";
+import { postCreateChannel, renameChannelKey } from "../../redux/actions/chatActions";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
+import { uniqBy } from "lodash";
+import { getChannels } from "../../redux/services";
 
 const Wrapper = styled(Modal)`
   .invalid-feedback {
@@ -175,6 +177,7 @@ const VideoMeetingModal = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
   const channels = useSelector((state) => state.chat.channels);
@@ -242,6 +245,12 @@ const VideoMeetingModal = (props) => {
     { value: "yearly", label: dictionary.yearly },
   ];
 
+  const meetingTypeOptions = [
+    { value: "workspace", label: "Workspace" },
+    { value: "user", label: "Chat channel" },
+    { value: "group", label: "Group chat" },
+  ];
+
   const minEndDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(7, "days").toDate();
   const minDate = item && item.remind_at && Math.round(+new Date() / 1000) > item.remind_at.timestamp ? moment.unix(item.remind_at.timestamp).toDate() : moment().add(1, "m").toDate();
   const [timeValue, setTimeValue] = useState(item && item.remind_at ? "pick_data" : "3h");
@@ -266,6 +275,9 @@ const VideoMeetingModal = (props) => {
   const [recurring, setRecurring] = useState(item && item.recurring ? recurringOptions.find((o) => o.value === item.recurring) : null);
   const [showNestedModal, setShowNestedModal] = useState(false);
   const [showRecurringOptions, setShowRecurringOptions] = useState(item && item.recurring !== null);
+  const [meetingType, setMeetingType] = useState(null);
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [channelInputValue, setChannelInputValue] = useState("");
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -367,7 +379,9 @@ const VideoMeetingModal = (props) => {
   }, [mounted, workspacesLoaded, params]);
 
   useEffect(() => {
+    setAllUsersOptions();
     if (mode === "edit" && item && item.workspace && workspaces[item.workspace.id]) {
+      setMeetingType(meetingTypeOptions.find((o) => o.value === "workspace"));
       const ws = { ...workspaces[item.workspace.id] };
       setSelectedWorkspace({
         ...ws,
@@ -375,38 +389,39 @@ const VideoMeetingModal = (props) => {
         value: ws.id,
         label: ws.name,
       });
-      setUserOptions(
-        ws.members.map((u) => {
-          return {
-            ...u,
-            icon: "user-avatar",
-            value: u.id,
-            label: u.name && u.name.trim() !== "" ? u.name : u.email,
-            type: "USER",
-            useLabel: true,
-          };
-        })
-      );
+      // setUserOptions(
+      //   ws.members.map((u) => {
+      //     return {
+      //       ...u,
+      //       icon: "user-avatar",
+      //       value: u.id,
+      //       label: u.name && u.name.trim() !== "" ? u.name : u.email,
+      //       type: "USER",
+      //       useLabel: true,
+      //     };
+      //   })
+      // );
       setForm({
         ...form,
         topic_id: { value: ws.id },
         assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
       });
-      if (item.assigned_to) {
-        setSelectedUser({
-          ...item.assigned_to,
-          icon: "user-avatar",
-          value: item.assigned_to.id,
-          label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
-          type: "USER",
-          useLabel: true,
-        });
-      }
-    } else if (mode === "edit" && item && !item.workspace) {
+      // if (item.assigned_to) {
+      //   setSelectedUser({
+      //     ...item.assigned_to,
+      //     icon: "user-avatar",
+      //     value: item.assigned_to.id,
+      //     label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+      //     type: "USER",
+      //     useLabel: true,
+      //   });
+      // }
+    } else if (mode === "edit" && item && !item.workspace && item.assigned_to) {
+      setMeetingType(meetingTypeOptions.find((o) => o.value === "user"));
       setForm({
         ...form,
         topic_id: { value: null },
-        assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
+        assigned_to: { value: item.assigned_to.id },
       });
       if (item.assigned_to) {
         setSelectedUser({
@@ -418,26 +433,13 @@ const VideoMeetingModal = (props) => {
           useLabel: true,
         });
       }
-      setAllUsersOptions();
-    } else {
-      setAllUsersOptions();
+    } else if (mode === "edit" && item && !item.workspace && !item.assigned_to) {
+      setMeetingType(meetingTypeOptions.find((o) => o.value === "channel"));
     }
 
     if (channel) {
-      if (channel.type === "DIRECT") {
-        setSelectedUser({
-          ...channel.profile,
-          value: channel.profile.id,
-          icon: "user-avatar",
-          label: channel.profile.name,
-          type: "USER",
-          useLabel: true,
-        });
-        setForm({
-          ...form,
-          assigned_to: { value: channel.profile.id },
-        });
-      } else {
+      if (channel.type === "TOPIC") {
+        setMeetingType(meetingTypeOptions.find((o) => o.value === "workspace"));
         //get the workspace
         let workspace = workspaces[channel.entity_id];
         if (workspace) {
@@ -464,7 +466,58 @@ const VideoMeetingModal = (props) => {
               isTeamChannel: true,
             });
           }
+        } else {
+          setForm({
+            ...form,
+            topic_id: { value: channel.entity_id },
+          });
+          setSelectedWorkspace({
+            id: channel.entity_id,
+            icon: "compass",
+            value: channel.id,
+            label: channel.title,
+            isGuestChannel: channel.is_shared,
+            isTeamChannel: !channel.is_shared,
+          });
         }
+      } else if (channel.type === "DIRECT") {
+        setMeetingType(meetingTypeOptions.find((o) => o.value === "user"));
+        setSelectedUser({
+          ...channel.profile,
+          value: channel.profile.id,
+          icon: "user-avatar",
+          label: channel.profile.name,
+          type: "USER",
+          useLabel: true,
+        });
+        setForm({
+          ...form,
+          assigned_to: { value: channel.profile.id },
+        });
+      } else if (channel.type === "GROUP") {
+        // for group chat
+        setMeetingType(meetingTypeOptions.find((o) => o.value === "group"));
+        setSelectedGroup({
+          value: channel.id,
+          label: channel.title,
+          useLabel: true,
+        });
+      }
+    }
+    if (params && params.workspaceId) {
+      setMeetingType(meetingTypeOptions.find((o) => o.value === "workspace"));
+      setForm({
+        ...form,
+        topic_id: { value: parseInt(params.workspaceId) },
+      });
+      if (activeTopic) {
+        setSelectedWorkspace({
+          id: activeTopic.id,
+          icon: "compass",
+          value: activeTopic.team_channel.id,
+          label: activeTopic.name,
+          isTeamChannel: true,
+        });
       }
     }
     setMounted(true);
@@ -932,6 +985,45 @@ const VideoMeetingModal = (props) => {
     setShowRecurringOptions((prevState) => !prevState);
   };
 
+  const handleSelectMeetingType = (e) => {
+    setMeetingType(e);
+  };
+
+  const channelOptions = Object.values(channels)
+    .filter((channel) => channel.type === "GROUP")
+    .map((channel) => {
+      return { ...channel, label: channel.title, value: channel.id };
+    });
+
+  const handleSelectGroupChannel = (value) => {
+    setSelectedGroup(value);
+  };
+
+  const handleChannelInputChange = (e) => {
+    setChannelInputValue(e);
+  };
+
+  const promiseOptions = (value) =>
+    new Promise((resolve) => {
+      resolve(getChannels({ search: channelInputValue, skip: 0, limit: 15 }));
+    })
+      .then((result) => {
+        if (result.data) {
+          const options = uniqBy(
+            [...channelOptions, ...result.data.results].map((o) => {
+              return { ...o, label: o.title, value: o.id };
+            }),
+            "id"
+          ).filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+          return options;
+        } else {
+          return uniqBy(channelOptions, "id").filter((c) => c.title.toLowerCase().includes(channelInputValue.toLowerCase()));
+        }
+      })
+      .catch((error) => {
+        //error
+      });
+
   return (
     <Wrapper isOpen={modal} toggle={toggle} size={"lg"} className="todo-reminder-modal" centered>
       <ModalHeaderSection toggle={toggle}>{dictionary.videoMeeting}</ModalHeaderSection>
@@ -999,7 +1091,7 @@ const VideoMeetingModal = (props) => {
           )}
         </div>
         <div className="column clearfix">
-          <div className="col-lg-6 float-left">
+          {/* <div className="col-lg-6 float-left">
             <div className="modal-label">{dictionary.workspaceLabel}</div>
             <WorkspacesContainer className="mb-2">
               <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
@@ -1018,6 +1110,58 @@ const VideoMeetingModal = (props) => {
                 isClearable={true}
                 isSearchable
               />
+            </SelectedUserContainer>
+          </div> */}
+          <div className="col-lg-6 float-left">
+            <div className="modal-label">Plan meeting with</div>
+            <WorkspacesContainer className="mb-2">
+              <Select
+                className={"react-select-container"}
+                classNamePrefix="react-select"
+                styles={dark_mode === "0" ? lightTheme : darkTheme}
+                options={meetingTypeOptions}
+                onChange={handleSelectMeetingType}
+                menuPlacement={"bottom"}
+                isClearable={true}
+                value={meetingType}
+              />
+            </WorkspacesContainer>
+          </div>
+          <div className="col-lg-6 float-left">
+            <div className="modal-label">
+              {meetingType && meetingType.value === "workspace" ? "Select workspace" : meetingType && meetingType.value === "user" ? "Select chat channel" : meetingType && meetingType.value === "group" ? "Select group chat" : null}
+            </div>
+            <SelectedUserContainer className="mb-2">
+              {meetingType && meetingType.value === "workspace" && (
+                <FolderSelect options={workspaceOptions} value={selectedWorkspace} onChange={handleSelectWorkspace} isMulti={false} isClearable={true} isDisabled={user.type === "external"} />
+              )}
+              {meetingType && meetingType.value === "user" && (
+                <PeopleSelect
+                  options={sortedUserOptions.filter((o) => (userOnly ? o.value === user.id : true))}
+                  value={selectedUser}
+                  inputValue={userInputValue}
+                  onChange={handleSelectUser}
+                  onInputChange={handleUserInputChange}
+                  isMulti={false}
+                  isClearable={true}
+                  isSearchable
+                />
+              )}
+              {meetingType && meetingType.value === "group" && (
+                <ChannelSelect
+                  defaultOptions={channelOptions}
+                  // options={channelOptions}
+                  value={selectedGroup}
+                  inputValue={channelInputValue}
+                  onChange={handleSelectGroupChannel}
+                  onInputChange={handleChannelInputChange}
+                  isMulti={false}
+                  isClearable={true}
+                  isSearchable
+                  loadOptions={promiseOptions}
+                  searchable={true}
+                />
+              )}
             </SelectedUserContainer>
           </div>
         </div>
