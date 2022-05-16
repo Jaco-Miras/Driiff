@@ -334,6 +334,11 @@ const EmptyState = styled.div`
   }
 `;
 
+const PersonalNoteContainer = styled.div`
+  display: flex;
+  align-self: flex-start;
+  margin-left: 3rem;
+`;
 class ChatMessages extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -871,15 +876,15 @@ class ChatMessages extends React.PureComponent {
                 <EmptyState className="no-reply-container">
                   <SvgEmptyState icon={3} />
                   {this.props.selectedChannel.type === "PERSONAL_BOT" &&
-                    <div style={{ display: "flex", alignSelf: 'flex-start', marginLeft: '3rem' }}>
+                    <PersonalNoteContainer>
                       <div>
                         <SvgIconFeather icon="message_slack_alike" />
                       </div>
                       <div>
-                        <h5 onClick={() => console.log(this.props)}>This space is just for you</h5>
-                        <p>Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list.</p>
+                        <h5>{this.props.dictionary.personalNoteHeaderText}</h5>
+                        <p>{this.props.dictionary.personalNoteDescription}</p>
                       </div>
-                    </div>
+                    </PersonalNoteContainer>
                   }
                 </EmptyState>
 

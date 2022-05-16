@@ -200,6 +200,8 @@ const ChatContentPanel = (props) => {
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
     toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
     toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
+    personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list.")
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -250,7 +252,6 @@ const ChatContentPanel = (props) => {
               language={language}
               translated_channels={translated_channels}
               chat_language={chat_language}
-              selectedChannel={selectedChannel}
             />
           </Suspense>
         )
