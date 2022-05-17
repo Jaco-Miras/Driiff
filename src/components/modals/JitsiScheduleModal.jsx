@@ -107,7 +107,7 @@ const JitsiScheduleModal = (props) => {
     const payload = {
       channel_id: selectedChannel.id,
       host: true,
-      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id + "-" + parseInt($_GET("meeting")),
+      room_name: getSlug() + "~" + parseChannel + "~" + selectedChannel.id + "~" + parseInt($_GET("meeting")),
     };
     dispatch(createJitsiMeet(payload, handleNo()));
   };
