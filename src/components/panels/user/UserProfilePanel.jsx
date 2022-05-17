@@ -905,13 +905,15 @@ const UserProfilePanel = (props) => {
                 )}
                 {user.type === "external" &&
                   <>
-                    <div className="row mb-2">
-                      <div className="col col-label text-muted">{dictionary.lastLoggedIn}</div>
-                      <div className="col col-form">{moment.unix(user?.last_login?.timestamp).format("MMMM DD YYYY hh:mm A").toString()}</div>
-                    </div>
+                    {user.last_login?.timestamp &&
+                      <div className="row mb-2">
+                        <div className="col col-label text-muted">{dictionary.lastLoggedIn}</div>
+                        <div className="col col-form">{moment.unix(user?.last_login?.timestamp).format("MMMM DD YYYY hh:mm A").toString()}</div>
+                      </div>
+                    }
                     <div className="row mb-2">
                       <div className="col col-label text-muted">{dictionary.invitedBy}</div>
-                      <div className="col col-form">{user?.invited_by?.invitedBy}</div>
+                      <div className="col col-form">{user?.invited_by?.first_name} {user?.invited_by?.last_name}</div>
                     </div>
                   </>
                 }
