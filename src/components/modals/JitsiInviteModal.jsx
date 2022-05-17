@@ -35,7 +35,7 @@ const ButtonsContainer = styled.div`
 // `;
 
 const JitsiInviteModal = (props) => {
-  const { type, title, host, hideJoin, channel_id, channelType } = props.data;
+  const { type, title, host, hideJoin, channel_id, channelType, room_name = null } = props.data;
   const dispatch = useDispatch();
   //   const isIdle = useSelector((state) => state.global.isIdle);
   //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
@@ -74,7 +74,7 @@ const JitsiInviteModal = (props) => {
   const payload = {
     channel_id: channel_id,
     host: false,
-    room_name: getSlug() + "-" + parseChannel + "-" + channel_id,
+    room_name: room_name ? room_name : getSlug() + "~" + parseChannel + "~" + channel_id,
   };
 
   const handleJoin = () => {

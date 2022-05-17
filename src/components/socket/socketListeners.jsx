@@ -337,6 +337,12 @@ class SocketListeners extends Component {
           g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
         };
         if (e.host.id !== this.props.user.id) {
+          let room_name = null;
+          if (e.system_message.startsWith("DRIFF_TALK::")) {
+            const data = JSON.parse(e.system_message.replace("DRIFF_TALK::", ""));
+            room_name = data.meet_event.room_name;
+          }
+
           this.props.addToModals({
             type: "jitsi_invite",
             channelType: e.type,
@@ -344,6 +350,7 @@ class SocketListeners extends Component {
             title: e.title,
             channel_id: e.channel_id,
             hideJoin: this.props.jitsi !== null,
+            room_name: room_name,
           });
         }
 
