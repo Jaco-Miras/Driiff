@@ -15,7 +15,7 @@ import { DropDocument } from "../dropzone/DropDocument";
 import { uploadBulkDocument } from "../../redux/services/global";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { postCreateChannel, renameChannelKey } from "../../redux/actions/chatActions";
+import { postCreateChannel, renameChannelKey, getChannel } from "../../redux/actions/chatActions";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { uniqBy } from "lodash";
 import { getChannels } from "../../redux/services";
@@ -165,7 +165,6 @@ const VideoMeetingModal = (props) => {
    * @todo refactor
    */
   const { type, item, parentItem = null, itemType = null, actions, params, mode = "create", channel = null } = props.data;
-
   const {
     generalSettings: { dark_mode },
   } = useSettings();
@@ -204,7 +203,8 @@ const VideoMeetingModal = (props) => {
   let dictionary = {
     author: _t("REMINDER.AUTHOR", "Author"),
     title: _t("REMINDER.TITLE", "Title"),
-    description: _t("REMINDER.DESCRIPTION", "Description"),
+    titlePlaceholder: _t("VIDEO_REMINDER.TITLE_PLACEHOLDER", "Meeting subject"),
+    description: _t("VIDEO_REMINDER.DESCRIPTION", "Meeting details or agenda"),
     remindMeOn: _t("REMINDER.REMIND_ME_ON", "Remind me in"),
     message: _t("REMINDER.MESSAGE", "Message"),
     oneHour: _t("REMINDER.ONE_HOUR", "1 hour"),
@@ -224,7 +224,7 @@ const VideoMeetingModal = (props) => {
     unsuccessful: _t("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
     toasterGeneralError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
     save: _t("MODAL.SAVE", "Save"),
-    videoMeeting: _t("MODAL.VIDEO_MEETING_HEADER", "Video meeting"),
+    videoMeeting: _t("MODAL.VIDEO_MEETING_HEADER", "Plan a Driff video meeting"),
     videoMeetingInfo: _t("MODAL.VIDEO_MEETING_INFO", "Video meeting information"),
     setMeetingButton: _t("BUTTON.SET_MEETING", "Set meeting"),
     setMeetingHeader: _t("CONFRIMATION.SET_MEETING", "Set meeting"),
@@ -288,7 +288,7 @@ const VideoMeetingModal = (props) => {
       if (u.email && botCodes.includes(u.email)) {
         return false;
       } else {
-        return true;
+        return u.type === "internal";
       }
     });
     setUserOptions(
@@ -325,30 +325,30 @@ const VideoMeetingModal = (props) => {
           //     isTeamChannel: !isGuestChannel,
           //   });
         } else {
-          setSelectedWorkspace({
-            ...workspace,
-            icon: "compass",
-            value: workspace.id,
-            label: workspace.name,
-            isTeamChannel: true,
-          });
+          // setSelectedWorkspace({
+          //   ...workspace,
+          //   icon: "compass",
+          //   value: workspace.id,
+          //   label: workspace.name,
+          //   isTeamChannel: true,
+          // });
         }
-        setForm({
-          ...form,
-          topic_id: { value: workspace.id },
-        });
-        setUserOptions(
-          workspace.members.map((u) => {
-            return {
-              ...u,
-              icon: "user-avatar",
-              value: u.id,
-              label: u.name && u.name.trim() !== "" ? u.name : u.email,
-              type: "USER",
-              useLabel: true,
-            };
-          })
-        );
+        // setForm({
+        //   ...form,
+        //   topic_id: { value: workspace.id },
+        // });
+        // setUserOptions(
+        //   workspace.members.map((u) => {
+        //     return {
+        //       ...u,
+        //       icon: "user-avatar",
+        //       value: u.id,
+        //       label: u.name && u.name.trim() !== "" ? u.name : u.email,
+        //       type: "USER",
+        //       useLabel: true,
+        //     };
+        //   })
+        // );
       }
 
       const externalWorkspacesWithTeamChannel = Object.values(workspaces)
@@ -417,13 +417,13 @@ const VideoMeetingModal = (props) => {
       //   });
       // }
     } else if (mode === "edit" && item && !item.workspace && item.assigned_to) {
-      setMeetingType(meetingTypeOptions.find((o) => o.value === "user"));
       setForm({
         ...form,
         topic_id: { value: null },
         assigned_to: { value: item.assigned_to.id },
       });
-      if (item.assigned_to) {
+      if (item.assigned_to && item.assigned_to.id !== user.id) {
+        setMeetingType(meetingTypeOptions.find((o) => o.value === "user"));
         setSelectedUser({
           ...item.assigned_to,
           icon: "user-avatar",
@@ -432,9 +432,23 @@ const VideoMeetingModal = (props) => {
           type: "USER",
           useLabel: true,
         });
+      } else {
+        dispatch(
+          getChannel({ code: item.link_id }, (err, res) => {
+            if (err) return;
+            setSelectedGroup({ ...res.data, label: res.data.title, value: res.data.id });
+          })
+        );
+        setMeetingType(meetingTypeOptions.find((o) => o.value === "group"));
       }
     } else if (mode === "edit" && item && !item.workspace && !item.assigned_to) {
-      setMeetingType(meetingTypeOptions.find((o) => o.value === "channel"));
+      dispatch(
+        getChannel({ code: item.link_id }, (err, res) => {
+          if (err) return;
+          setSelectedGroup({ ...res.data, label: res.data.title, value: res.data.id });
+        })
+      );
+      setMeetingType(meetingTypeOptions.find((o) => o.value === "group"));
     }
 
     if (channel) {
@@ -757,6 +771,19 @@ const VideoMeetingModal = (props) => {
           );
         }
       }
+    } else if (selectedGroup) {
+      payload = {
+        ...payload,
+        link_id: selectedGroup.id,
+      };
+      if (attachedFiles.length > 0) {
+        uploadFiles(payload);
+        toggle();
+      } else {
+        actions.onSubmit(payload);
+        setLoading(false);
+        toggle();
+      }
     }
   };
   const handleTitleRef = (e) => {
@@ -942,7 +969,7 @@ const VideoMeetingModal = (props) => {
         handleNetWorkError(error);
       });
   }
-  const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value;
+  const hasAssignedUserOrWs = form.assigned_to.value || form.topic_id.value || selectedGroup;
   const userOnly = user.type === "external" && selectedWorkspace === null;
   const sortedUserOptions = userOptions.sort((a, b) => {
     if (a.name === user.name) return -1;
@@ -1060,7 +1087,7 @@ const VideoMeetingModal = (props) => {
           <div className="col-12 modal-info">{dictionary.videoMeetingInfo}</div>
           <div className="col-12 modal-label">{dictionary.title}</div>
           <div className="col-12">
-            <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.title} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
+            <FormInput innerRef={handleTitleRef} name="title" defaultValue={form.title.value} placeholder={dictionary.titlePlaceholder} onChange={handleInputChange} isValid={form.title.valid} feedback={form.title.feedback} autoFocus />
           </div>
           <div className="col-12">
             <StyledDescriptionInput
@@ -1075,6 +1102,7 @@ const VideoMeetingModal = (props) => {
               mentionedUserIds={[]}
               setInlineImages={setInlineImages}
               setImageLoading={setImageLoading}
+              placeholder={dictionary.description}
             />
           </div>
           {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
