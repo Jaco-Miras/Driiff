@@ -55581,7 +55581,8 @@
             ne = {
               author: y("REMINDER.AUTHOR", "Author"),
               title: y("REMINDER.TITLE", "Title"),
-              description: y("REMINDER.DESCRIPTION", "Description"),
+              titlePlaceholder: y("VIDEO_REMINDER.TITLE_PLACEHOLDER", "Meeting subject"),
+              description: y("VIDEO_REMINDER.DESCRIPTION", "Meeting details or agenda"),
               remindMeOn: y("REMINDER.REMIND_ME_ON", "Remind me in"),
               message: y("REMINDER.MESSAGE", "Message"),
               oneHour: y("REMINDER.ONE_HOUR", "1 hour"),
@@ -55600,7 +55601,7 @@
               unsuccessful: y("FILE_UNSUCCESSFULL", "Upload File Unsuccessful"),
               toasterGeneralError: y("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
               save: y("MODAL.SAVE", "Save"),
-              videoMeeting: y("MODAL.VIDEO_MEETING_HEADER", "Video meeting"),
+              videoMeeting: y("MODAL.VIDEO_MEETING_HEADER", "Plan a Driff video meeting"),
               videoMeetingInfo: y("MODAL.VIDEO_MEETING_INFO", "Video meeting information"),
               setMeetingButton: y("BUTTON.SET_MEETING", "Set meeting"),
               setMeetingHeader: y("CONFRIMATION.SET_MEETING", "Set meeting"),
@@ -55733,7 +55734,7 @@
             cn = function () {
               var e = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"],
                 t = Object.values(w).filter(function (t) {
-                  return !t.email || !e.includes(t.email);
+                  return (!t.email || !e.includes(t.email)) && "internal" === t.type;
                 });
               Ye(
                 t.map(function (e) {
@@ -55744,17 +55745,8 @@
           Object(c.useEffect)(
             function () {
               if (L && at) {
-                if (!_ && j && D[j.workspaceId]) {
-                  var e = Object(V.a)({}, D[j.workspaceId]);
-                  e.is_shared || Ge(Object(V.a)(Object(V.a)({}, e), {}, { icon: "compass", value: e.id, label: e.name, isTeamChannel: !0 })),
-                    $(Object(V.a)(Object(V.a)({}, X), {}, { topic_id: { value: e.id } })),
-                    Ye(
-                      e.members.map(function (e) {
-                        return Object(V.a)(Object(V.a)({}, e), {}, { icon: "user-avatar", value: e.id, label: e.name && "" !== e.name.trim() ? e.name : e.email, type: "USER", useLabel: !0 });
-                      })
-                    );
-                }
-                var t = Object.values(D)
+                if (!_ && j && D[j.workspaceId]) Object(V.a)({}, D[j.workspaceId]).is_shared;
+                var e = Object.values(D)
                   .filter(function (e) {
                     return !!(e.is_shared && e.channel && e.channel.id);
                   })
@@ -55769,7 +55761,7 @@
                           return Object(V.a)(Object(V.a)({}, e), {}, { icon: "compass", value: e.team_channel.id, label: e.name, isTeamChannel: !0 });
                         })
                       ),
-                      Object(K.a)(t)
+                      Object(K.a)(e)
                     )
                     .filter(function (e) {
                       return e.members.some(function (e) {
@@ -55796,22 +55788,38 @@
                   $(Object(V.a)(Object(V.a)({}, X), {}, { topic_id: { value: e.id }, assigned_to: { value: r.assigned_to ? r.assigned_to.id : null } }));
               } else
                 "edit" === v && r && !r.workspace && r.assigned_to
-                  ? (zt(
-                      re.find(function (e) {
-                        return "user" === e.value;
-                      })
-                    ),
-                    $(Object(V.a)(Object(V.a)({}, X), {}, { topic_id: { value: null }, assigned_to: { value: r.assigned_to.id } })),
-                    r.assigned_to && Ze(Object(V.a)(Object(V.a)({}, r.assigned_to), {}, { icon: "user-avatar", value: r.assigned_to.id, label: r.assigned_to.name ? r.assigned_to.name : r.assigned_to.email, type: "USER", useLabel: !0 })))
+                  ? ($(Object(V.a)(Object(V.a)({}, X), {}, { topic_id: { value: null }, assigned_to: { value: r.assigned_to.id } })),
+                    r.assigned_to && r.assigned_to.id !== R.id
+                      ? (zt(
+                          re.find(function (e) {
+                            return "user" === e.value;
+                          })
+                        ),
+                        Ze(Object(V.a)(Object(V.a)({}, r.assigned_to), {}, { icon: "user-avatar", value: r.assigned_to.id, label: r.assigned_to.name ? r.assigned_to.name : r.assigned_to.email, type: "USER", useLabel: !0 })))
+                      : (k(
+                          Object(h.B)({ code: r.link_id }, function (e, t) {
+                            e || qt(Object(V.a)(Object(V.a)({}, t.data), {}, { label: t.data.title, value: t.data.id }));
+                          })
+                        ),
+                        zt(
+                          re.find(function (e) {
+                            return "group" === e.value;
+                          })
+                        )))
                   : "edit" !== v ||
                     !r ||
                     r.workspace ||
                     r.assigned_to ||
+                    (k(
+                      Object(h.B)({ code: r.link_id }, function (e, t) {
+                        e || qt(Object(V.a)(Object(V.a)({}, t.data), {}, { label: t.data.title, value: t.data.id }));
+                      })
+                    ),
                     zt(
                       re.find(function (e) {
-                        return "channel" === e.value;
+                        return "group" === e.value;
                       })
-                    );
+                    ));
               if (C)
                 if ("TOPIC" === C.type) {
                   zt(
@@ -55959,6 +55967,7 @@
                           })
                         );
                   }
+                else Kt && ((e = Object(V.a)(Object(V.a)({}, e), {}, { link_id: Kt.id })), ot.length > 0 ? (bn(e), sn()) : (E.onSubmit(e), Q(!1), sn()));
               }
             },
             un = function () {
@@ -56030,7 +56039,7 @@
               })
             )).apply(this, arguments);
           }
-          var _n = X.assigned_to.value || X.topic_id.value,
+          var _n = X.assigned_to.value || X.topic_id.value || Kt,
             En = "external" === R.type && null === Ue,
             hn = We.sort(function (e, t) {
               return e.name === R.name ? -1 : 0;
@@ -56145,7 +56154,7 @@
                     },
                     name: "title",
                     defaultValue: X.title.value,
-                    placeholder: ne.title,
+                    placeholder: ne.titlePlaceholder,
                     onChange: function (e) {
                       var t = e.currentTarget,
                         n = t.name,
@@ -56181,6 +56190,7 @@
                     mentionedUserIds: [],
                     setInlineImages: Ct,
                     setImageLoading: It,
+                    placeholder: ne.description,
                   })
                 ),
                 (ot.length > 0 || ut.length > 0) &&
@@ -67664,6 +67674,14 @@
                 );
                 break;
               case "send_post_comment":
+                (m = "0 0 24 24"),
+                  (f = "none"),
+                  (O = "currentColor"),
+                  (E = "2"),
+                  (j = "round"),
+                  (g = "round"),
+                  (C = i.a.createElement(i.a.Fragment, null, i.a.createElement("line", { x1: "22", y1: "2", x2: "11", y2: "13" }), i.a.createElement("polygon", { points: "22 2 15 22 11 13 2 9 22 2" })));
+                break;
               case "message_slack_alike":
                 (m = "0 0 24 24"),
                   (f = "none"),
