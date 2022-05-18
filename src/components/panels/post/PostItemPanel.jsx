@@ -199,15 +199,16 @@ const PostItemPanel = (props) => {
     disableOptions,
     toggleCheckbox,
     checked,
-    workspace,
     postActions: { starPost, openPost, archivePost, markAsRead, markAsUnread, sharePost, followPost, remind, showModal, close, disconnectPostList, updatePostListConnect },
   } = props;
 
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const { fromNow } = useTimeFormat();
   const { slug } = useGetSlug();
+  const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
 
   const [postBadgeWidth, setPostBadgeWidth] = useState(0);
 
@@ -262,13 +263,13 @@ const PostItemPanel = (props) => {
   };
 
   const disableCheckbox = () => {
-    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
-    if (post.is_must_read && post.author.id !== user.id) {
-      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === userId);
+    if (post.is_must_read && post.author.id !== userId) {
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read)) {
         return true;
       }
-    } else if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+    } else if (post.is_must_reply && post.author.id !== userId) {
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply)) {
         return true;
       }
     } else if (hasPendingApproval) {
@@ -327,11 +328,11 @@ const PostItemPanel = (props) => {
             <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
               <div className="text-truncate d-flex">
                 <span className="text-truncate">
-                  {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+                  {post.author.id !== userId && !post.is_followed && <Icon icon="eye-off" />}
                   {post.title}
                 </span>
                 <HoverButtons className="hover-btns ml-1">
-                  {post.type !== "draft_post" && !disableOptions && post.author.id === user.id && (
+                  {post.type !== "draft_post" && !disableOptions && post.author.id === userId && (
                     // <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={dictionary.editPost}>
                     <Icon icon="pencil" onClick={handleEditPost} />
                     // </Tooltip>
@@ -344,7 +345,7 @@ const PostItemPanel = (props) => {
                 </HoverButtons>
               </div>
               <PostReplyCounter>
-                {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+                {post.author.id !== userId && post.unread_count === 0 && !post.view_user_ids.some((id) => id === userId) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
                 {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
                 <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
                 <span className="time-stamp text-muted">
@@ -353,16 +354,16 @@ const PostItemPanel = (props) => {
               </PostReplyCounter>
             </div>
           </div>
-          {post.users_approval.length > 0 && post.author.id === user.id && <PostApprovalLabels post={post} />}
+          {post.users_approval.length > 0 && post.author.id === userId && <PostApprovalLabels post={post} />}
           <PostBadge post={post} dictionary={dictionary} user={user} cbGetWidth={setPostBadgeWidth} />
           <div className="d-flex">
             {post.type !== "draft_post" && !disableOptions && (
               <MoreOptions className={"d-flex ml-2"} item={post} width={220} moreButton={"more-horizontal"}>
                 {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
-                {post.author && post.author.id === user.id && <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>}
+                {post.author && post.author.id === userId && <div onClick={() => showModal("edit", post)}>{dictionary.editPost}</div>}
                 {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableCheckbox() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-                {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+                {post.author && post.author.id !== userId && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
                 <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
                 <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}

@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePostActions } from "./index";
+import { usePostActions, useGetSlug } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -17,6 +17,8 @@ const useCompanyPosts = () => {
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
   const showUnread = useSelector((state) => state.posts.showUnread);
+  const { slug } = useGetSlug();
+
   const fetchMore = (callback = () => {}) => {
     if (filter === "inbox") {
       if (unreadPosts.has_more && showUnread) {
@@ -142,6 +144,13 @@ const useCompanyPosts = () => {
   }
 
   filteredPosts = filteredPosts
+    .filter((p) => {
+      if (p.slug) {
+        return p.slug === slug;
+      } else {
+        return true;
+      }
+    })
     .filter((p) => {
       if (filter) {
         if (filter === "all") {

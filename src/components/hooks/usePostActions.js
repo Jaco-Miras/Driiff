@@ -498,28 +498,33 @@ const usePostActions = () => {
 
   const trash = (post) => {
     const onConfirm = () => {
+      let payload = {
+        id: post.id,
+      };
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
-        deletePost(
-          {
-            id: post.id,
-          },
-          (err, res) => {
-            if (err) return;
-            toaster.success(
-              <>
-                {dictionary.toasterDeletedPost} - {post.title}
-              </>
-            );
-            dispatch(
-              removePost({
-                post_id: post.id,
-                topic_id: parseInt(params.workspaceId),
-                recipients: post.recipients,
-                id: post.id,
-              })
-            );
-          }
-        )
+        deletePost(payload, (err, res) => {
+          if (err) return;
+          toaster.success(
+            <>
+              {dictionary.toasterDeletedPost} - {post.title}
+            </>
+          );
+          dispatch(
+            removePost({
+              post_id: post.id,
+              topic_id: parseInt(params.workspaceId),
+              recipients: post.recipients,
+              id: post.id,
+            })
+          );
+        })
       );
       if (params.workspaceId) {
         let payload = {

@@ -325,6 +325,9 @@ const PostModal = (props) => {
   const recipients = useSelector((state) => state.global.recipients);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
+  const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
 
   const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
@@ -375,7 +378,18 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -562,6 +576,14 @@ const PostModal = (props) => {
         form.reply_required && form.mustReplyUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.reply_required ? form.mustReplyUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
     };
 
+    if (isSharedWorkspace) {
+      const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        recipient_ids: [activeTopic.id],
+        sharedPayload: sharedPayload,
+      };
+    }
     if (mode === "edit") {
       payload = {
         ...payload,
@@ -1143,16 +1165,21 @@ const PostModal = (props) => {
             <FormInput name="title" isValid={formResponse.valid.title} feedback={formResponse.message.title} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
-        <WrapperDiv className={"modal-input addressed-to-container"}>
-          <Label className={"modal-label"} for="workspace">
-            {dictionary.addressedTo}
-          </Label>
-          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
-          {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
-        </WrapperDiv>
-        <WrapperDiv className={"m-0"}>
-          <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
-        </WrapperDiv>
+        {!isSharedWorkspace && (
+          <WrapperDiv className={"modal-input addressed-to-container"}>
+            <Label className={"modal-label"} for="workspace">
+              {dictionary.addressedTo}
+            </Label>
+            <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+            {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
+          </WrapperDiv>
+        )}
+        {!isSharedWorkspace && (
+          <WrapperDiv className={"m-0"}>
+            <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
+          </WrapperDiv>
+        )}
+
         <StyledDescriptionInput
           className="modal-description"
           height={winSize.height - 660}

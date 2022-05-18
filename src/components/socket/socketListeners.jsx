@@ -516,7 +516,7 @@ class SocketListeners extends Component {
               claps: [],
               is_unread: 1,
             };
-            this.props.incomingPost(post);
+            this.props.incomingPost({ ...post, slug: this.state.slug });
           });
         });
       })
@@ -893,13 +893,14 @@ class SocketListeners extends Component {
               let post = {
                 ...res.data,
                 claps: [],
+                slug: this.state.slug,
               };
               this.props.incomingPost(post);
             });
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [] };
+            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [], slug: this.state.slug };
             const isApprover = post.users_approval.some((ua) => ua.id === this.state.userId);
             const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
             const hasMentioned = post.mention_ids.some((id) => this.state.userId === id);
@@ -950,7 +951,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_UPDATE": {
-            this.props.incomingUpdatedPost(e);
+            this.props.incomingUpdatedPost({ ...e, slug: this.state.slug });
             if (e.channel_messages && e.post_participant_data) {
               if (!e.post_participant_data.from_company && !e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 //user is not participant of post
@@ -959,7 +960,7 @@ class SocketListeners extends Component {
               } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 // from private to public post
                 e.claps = [];
-                this.props.incomingPost(e);
+                this.props.incomingPost({ ...e, slug: this.state.slug });
                 e.channel_messages &&
                   e.channel_messages.forEach((m) => {
                     m.system_message.files = [];
@@ -1060,6 +1061,7 @@ class SocketListeners extends Component {
                   let post = {
                     ...res.data,
                     claps: [],
+                    slug: this.state.slug,
                     //is_unread: 1,
                   };
                   if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
