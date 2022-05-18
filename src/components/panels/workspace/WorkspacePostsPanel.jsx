@@ -105,6 +105,8 @@ const LoaderContainer = styled.div`
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
+  const isWorkspaceMember = isMember || workspace.sharedSlug;
+
   const params = useParams();
   const history = useHistory();
   const toaster = useToaster();
@@ -574,7 +576,7 @@ const WorkspacePostsPanel = (props) => {
       <div className="row app-block">
         <PostSidebar
           disableOptions={disableOptions}
-          isMember={isMember}
+          isMember={isWorkspaceMember}
           workspace={workspace}
           filter={filter}
           filters={filters}
@@ -622,7 +624,7 @@ const WorkspacePostsPanel = (props) => {
                       onGoBack={handleGoback}
                       dictionary={dictionary}
                       workspace={workspace}
-                      isMember={isMember}
+                      isMember={isWorkspaceMember}
                       disableOptions={disableOptions}
                       isExternalUser={isExternalUser}
                     />

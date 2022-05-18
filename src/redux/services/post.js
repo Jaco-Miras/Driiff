@@ -8,11 +8,17 @@ import { objToUrlParams } from "../../helpers/commonFunctions";
  * @returns {Promise<*>}
  */
 export function postFavorite(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/favourites";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -39,13 +45,18 @@ export function postMarkDone(payload) {
  * @returns {Promise<*>}
  */
 export function postArchive(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-toggle-archived";
 
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -76,11 +87,16 @@ export function postToggleRead(payload) {
  * @returns {Promise<*>}
  */
 export function postFollow(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PATCH",
     url: `/v1/follows?post_id=${payload.post_id}`,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -90,11 +106,16 @@ export function postFollow(payload) {
  * @returns {Promise<*>}
  */
 export function postUnfollow(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v1/follows?post_id=${payload.post_id}`,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
