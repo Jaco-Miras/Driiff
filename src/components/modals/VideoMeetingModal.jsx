@@ -174,6 +174,8 @@ const VideoMeetingModal = (props) => {
   const toaster = useToaster();
   const winSize = useWindowSize();
 
+  const companyChannel = useSelector((state) => state.chat.companyChannel);
+  const recipients = useSelector((state) => state.global.recipients);
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
@@ -281,6 +283,9 @@ const VideoMeetingModal = (props) => {
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
+
+  const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
+  //const companyWS = useSelector((state) => Object.values(state.workspaces.workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id));
 
   const setAllUsersOptions = () => {
     const botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
@@ -516,6 +521,21 @@ const VideoMeetingModal = (props) => {
           label: channel.title,
           useLabel: true,
         });
+      } else if (channel.type === "COMPANY") {
+        if (companyRecipient) {
+          setForm({
+            ...form,
+            topic_id: { value: companyRecipient.id },
+          });
+          setMeetingType(meetingTypeOptions.find((o) => o.value === "workspace"));
+          setSelectedWorkspace({
+            id: companyRecipient.id,
+            icon: "compass",
+            value: channel.id,
+            label: channel.title,
+            isTeamChannel: true,
+          });
+        }
       }
     }
     if (params && params.workspaceId) {
@@ -663,14 +683,24 @@ const VideoMeetingModal = (props) => {
       if (selectedWorkspace.isGuestChannel) {
         payload = {
           ...payload,
-          link_id: selectedWorkspace.channel.id,
+          link_id: selectedWorkspace.value,
         };
       } else {
-        payload = {
-          ...payload,
-          link_id: selectedWorkspace.team_channel.id,
-        };
+        if (companyRecipient && selectedWorkspace.id === companyRecipient.id) {
+          if (companyChannel) {
+            payload = {
+              ...payload,
+              link_id: companyChannel.id,
+            };
+          }
+        } else {
+          payload = {
+            ...payload,
+            link_id: selectedWorkspace.value,
+          };
+        }
       }
+
       if (attachedFiles.length > 0) {
         uploadFiles(payload);
         toggle();
