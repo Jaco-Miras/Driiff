@@ -111,7 +111,6 @@ const useWorkspace = () => {
       } else {
         //fetch last visited workspace - from login or loaded in non workspace page
         if (["search", "all"].includes(params.page)) return;
-
         if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
           actions.selectWorkspace(workspaces[activeTopicSettings.id]);
           if (url.startsWith("/workspace")) {
@@ -121,6 +120,9 @@ const useWorkspace = () => {
           actions.selectWorkspace(Object.values(workspaces)[0]);
           actions.redirectTo(Object.values(workspaces)[0]);
           localStorage.removeItem("fromRegister");
+        } else if (user.type === "external" && url.startsWith("/workspace/chat")) {
+          actions.selectWorkspace(Object.values(workspaces)[0]);
+          actions.redirectTo(Object.values(workspaces)[0]);
         }
       }
     }
