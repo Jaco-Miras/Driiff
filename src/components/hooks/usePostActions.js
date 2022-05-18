@@ -73,7 +73,7 @@ import {
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useGetSlug } from "../hooks";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -85,6 +85,8 @@ const usePostActions = () => {
   const { _t } = useTranslationActions();
 
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const { slug } = useGetSlug();
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
@@ -168,9 +170,20 @@ const usePostActions = () => {
 
   const starPost = (post, callback = () => {}) => {
     if (post.type === "draft_post") return;
+    let payload = {
+      type: "post",
+      type_id: post.id,
+    };
     let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
+    if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
-      postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+      postFavorite(payload, (err, res) => {
         callback(err, res);
         //@todo reverse the action/data in the reducer
         if (err) {
@@ -187,12 +200,8 @@ const usePostActions = () => {
         }
       })
     );
-    dispatch(
-      starPostReducer({
-        post_id: post.id,
-        topic_id,
-      })
-    );
+
+    dispatch(starPostReducer({ post_id: post.id, topic_id }));
   };
 
   const markPost = (post) => {
@@ -280,46 +289,52 @@ const usePostActions = () => {
         )
       );
     } else {
+      let payload = {
+        post_id: post.id,
+        is_archived: post.is_archived === 1 ? 0 : 1,
+      };
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+
       dispatch(
-        postArchive(
-          {
-            post_id: post.id,
-            is_archived: post.is_archived === 1 ? 0 : 1,
-          },
-          (err, res) => {
-            callback(err, res);
+        postArchive(payload, (err, res) => {
+          callback(err, res);
 
-            if (err) {
-              toaster.error(<>Action failed.</>);
-              return;
-            }
+          if (err) {
+            toaster.error(<>Action failed.</>);
+            return;
+          }
 
-            if (res) {
-              getUnreadNotificationEntries();
-              if (!post.is_archived) {
-                toaster.success(
-                  <>
-                    <b>{post.title}</b> {dictionary.postArchivedMuted}
-                  </>
-                );
-              } else {
-                toaster.success(
-                  <>
-                    <b>{post.title}</b> is unarchived.
-                  </>
-                );
-              }
-
-              dispatch(
-                archiveReducer({
-                  post_id: post.id,
-                  //topic_id: parseInt(params.workspaceId),
-                  is_archived: post.is_archived === 1 ? 0 : 1,
-                })
+          if (res) {
+            getUnreadNotificationEntries();
+            if (!post.is_archived) {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> {dictionary.postArchivedMuted}
+                </>
+              );
+            } else {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> is unarchived.
+                </>
               );
             }
+
+            dispatch(
+              archiveReducer({
+                post_id: post.id,
+                //topic_id: parseInt(params.workspaceId),
+                is_archived: post.is_archived === 1 ? 0 : 1,
+              })
+            );
           }
-        )
+        })
       );
     }
   };
@@ -402,6 +417,15 @@ const usePostActions = () => {
         );
       }
     };
+    if (params.workspaceId) {
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    }
     dispatch(postToggleRead(payload, cb));
   };
 
@@ -428,10 +452,22 @@ const usePostActions = () => {
   };
 
   const followPost = (post) => {
+    let payload = {
+      post_id: post.id,
+    };
+    if (params.workspaceId) {
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    }
     if (post.is_followed) {
       //When: The user is following/recipient of the post - and not the creator.
       dispatch(
-        postUnfollow({ post_id: post.id }, (err, res) => {
+        postUnfollow(payload, (err, res) => {
           if (err) return;
           let notification = `${dictionary.notificationStopFollow} ${post.title}`;
           toaster.info(notification);
@@ -447,7 +483,7 @@ const usePostActions = () => {
     } else {
       //When: The user not following the post and the post is in an open topic.
       dispatch(
-        postFollow({ post_id: post.id }, (err, res) => {
+        postFollow(payload, (err, res) => {
           if (err) return;
           let notification = `${dictionary.notificationStartFollow} ${post.title}`;
           toaster.info(notification);
@@ -464,28 +500,33 @@ const usePostActions = () => {
 
   const trash = (post) => {
     const onConfirm = () => {
+      let payload = {
+        id: post.id,
+      };
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
-        deletePost(
-          {
-            id: post.id,
-          },
-          (err, res) => {
-            if (err) return;
-            toaster.success(
-              <>
-                {dictionary.toasterDeletedPost} - {post.title}
-              </>
-            );
-            dispatch(
-              removePost({
-                post_id: post.id,
-                topic_id: parseInt(params.workspaceId),
-                recipients: post.recipients,
-                id: post.id,
-              })
-            );
-          }
-        )
+        deletePost(payload, (err, res) => {
+          if (err) return;
+          toaster.success(
+            <>
+              {dictionary.toasterDeletedPost} - {post.title}
+            </>
+          );
+          dispatch(
+            removePost({
+              post_id: post.id,
+              topic_id: parseInt(params.workspaceId),
+              recipients: post.recipients,
+              id: post.id,
+            })
+          );
+        })
       );
       if (params.workspaceId) {
         let payload = {

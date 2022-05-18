@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import Tooltip from "react-tooltip-lite";
 import { SvgIconFeather } from "../../common";
-import { useTimeFormat, usePostActions } from "../../hooks";
+import { useTimeFormat, usePostActions, useGetSlug } from "../../hooks";
+import { useSelector } from "react-redux";
 
 const toggleTooltip = () => {
   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
@@ -30,6 +31,8 @@ const PostBodyButtons = (props) => {
   const { fromNow, localizeDate } = useTimeFormat();
 
   const postActions = usePostActions();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const { slug } = useGetSlug();
 
   const [star, setStar] = useState(post.is_favourite);
   const [archivedClicked, setArchivedClicked] = useState(false);
@@ -60,6 +63,14 @@ const PostBodyButtons = (props) => {
 
   const handleClosePost = () => {
     let payload = { post_id: post.id, is_close: post.is_close ? 0 : 1 };
+    let sharedPayload = null;
+    if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     postActions.close(payload);
   };
 

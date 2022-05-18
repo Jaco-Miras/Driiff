@@ -18,7 +18,7 @@ import {
   useProfilePicUpload,
   useLoadSharedDriff,
 } from "../components/hooks";
-import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel, TrialEndedPanel } from "../components/panels/main";
+import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
@@ -66,7 +66,6 @@ const MainLayout = (props) => {
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
   };
 
-  const subscriptions = useSelector((state) => state.admin.subscriptions);
   //const subscriptions = useSelector((state) => state.admin.subscriptions);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
@@ -190,7 +189,7 @@ const MainLayout = (props) => {
 
       {generalSettings.impersonationMode ? <ImpersonationTopBar /> : <NotificationTopBar />}
       {mounted && <MainHeaderPanel isExternal={isExternal} />}
-      {/* {mounted && (
+      {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
@@ -200,8 +199,9 @@ const MainLayout = (props) => {
           <MainSnoozePanel />
         </MainContent>
       )}
+      <JitsiContainer />
       {/* stripe code*/}
-      {mounted && (
+      {/* {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
@@ -213,8 +213,7 @@ const MainLayout = (props) => {
           {subscriptions && subscriptions.status === "canceled" && path !== "/admin-settings" && <TrialEndedPanel />}
           {subscriptions && subscriptions.status === "active" && <MainSnoozePanel />}
         </MainContent>
-      )}
-      <JitsiContainer />
+      )} */}
       <MobileOverlay />
       {user.id !== undefined && window[slug] !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />

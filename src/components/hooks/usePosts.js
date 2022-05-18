@@ -18,6 +18,8 @@ const usePosts = () => {
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const [fetchingPost, setFetchingPost] = useState(false);
 
+  const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
+
   const componentIsMounted = useRef(true);
   const workspaceRef = useRef(null);
 
@@ -236,7 +238,7 @@ const usePosts = () => {
           } else if (activeFilter === "inbox") {
             return !p.hasOwnProperty("draft_type") && !p.is_close;
           } else if (activeFilter === "my_posts") {
-            if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === user.id;
+            if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === userId;
             else return false;
           } else if (activeFilter === "draft") {
             return p.hasOwnProperty("draft_type");
@@ -247,10 +249,10 @@ const usePosts = () => {
           }
         } else if (activeTag) {
           if (activeTag === "is_must_reply") {
-            return !p.is_close && p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply);
+            return !p.is_close && p.must_reply_users && p.must_reply_users.some((u) => u.id === userId && !u.must_reply);
             // return (p.author.id === user.id && p.is_must_reply) || (p.must_reply_users && p.must_reply_users.some((u) => u.id === user.id && !u.must_reply));
           } else if (activeTag === "is_must_read") {
-            return !p.is_close && p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read);
+            return !p.is_close && p.must_read_users && p.must_read_users.some((u) => u.id === userId && !u.must_read);
             // return (p.author.id === user.id && p.is_must_read) || (p.must_read_users && p.must_read_users.some((u) => u.id === user.id && !u.must_read));
           } else if (activeTag === "is_read_only") {
             return p.is_read_only && !p.hasOwnProperty("draft_type");
