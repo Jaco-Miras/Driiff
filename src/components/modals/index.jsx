@@ -39,3 +39,4 @@ export { default as GoogleMeetInviteModal } from "./GoogleMeetInviteModal";
 export { default as JitsiInviteModal } from "./JitsiInviteModal";
 export { default as JitsiConfirmationModal } from "./JitsiConfirmationModal";
 export { default as ImpersonationLoginModal } from "./ImpersonationLoginModal";
+export { default as WebhookModal } from "./WebhookModal";
