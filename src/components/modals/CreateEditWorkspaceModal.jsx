@@ -255,6 +255,37 @@ const NestedModalWrapper = styled.div`
   input.form-control:focus {
     border-color: ${({ theme }) => theme.colors.primary};
   }
+  .image-container {
+    border-radius: 50%;
+    background: #c3c3c3;
+    position: relative;
+
+    .image-edit-icon {
+      position: absolute;
+      bottom: 8px;
+      left: 48px;
+      background: #fff;
+      padding: 2px;
+      border-radius: 50%;
+
+      :hover {
+        svg {
+          color: ${({ theme }) => theme.colors.primary};
+        }
+      }
+      .dark & {
+        svg {
+          color: #fff;
+        }
+      }
+    }
+
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
   .react-select__control,
   .react-select__control:hover,
   .react-select__control:active,
@@ -394,7 +425,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const [inactiveMembers, setInactiveMembers] = useState([]);
 
-  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers } = useProfilePicUpload();
+  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage } = useProfilePicUpload();
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -464,9 +495,12 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
     emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
     invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
-    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (#::email::#). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
+    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (::email::). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
       email: invitedExternal.email,
     }),
+    newExternalInfo1: _t("WORKSPACE.NEW_EXTERNAL_INFO_1", "You are adding a new external user"),
+    newExternalInfo2: _t("WORKSPACE.NEW_EXTERNAL_INFO_2", "You can add extra information to this account if you like. The account can verify or change this info during his first login."),
+
     newExternalUser: _t("WORKSPACE.NEW_EXTERNAL_USER", "New external user"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
@@ -1798,8 +1832,20 @@ const CreateEditWorkspaceModal = (props) => {
           <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
             <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
             <ModalBody>
+              <NestedModalWrapper className="mt-2">
+                <span className="modal-info">{dictionary.newExternalInfo1}</span>
+                <strong>({invitedExternal.email}).</strong>
+                <span className={"modal-info"}>{dictionary.newExternalInfo2}</span>
+                <div className="d-flex justify-content-center mt-2 mb-2">
+                  <div className="image-container">
+                    <img src={previewImage} height={64} width={64} />
+                    <span className="btn image-edit-icon" onClick={() => guestUploadModal()}>
+                      <SvgIconFeather icon="pencil" />
+                    </span>
+                  </div>
+                </div>
+              </NestedModalWrapper>
               <NestedModalWrapper>
-                <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
                 <Label className={"modal-label"}>{dictionary.firstName}</Label>
                 <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
                 <Label className={"modal-label"}>{dictionary.middleName}</Label>
@@ -1841,18 +1887,13 @@ const CreateEditWorkspaceModal = (props) => {
                     {dictionary.sendTruDriff}
                   </RadioInput>
                 </RadioInputWrapper>
-                <NestedModalWrapper className="mt-2">
-                  <Button className="btn btn-primary" onClick={() => guestUploadModal()}>
-                    {dictionary.uploadProfilePic}
-                  </Button>
-                </NestedModalWrapper>
               </NestedModalWrapper>
             </ModalBody>
             <ModalFooter>
               <NestedModalWrapper>
-                <Button className="btn-outline-secondary" onClick={toggleNested}>
+                <button className="btn btn-link text-dark" onClick={toggleNested}>
                   {dictionary.cancel}
-                </Button>
+                </button>
                 <Button color="primary" onClick={handleSaveExternalFields}>
                   {dictionary.save}
                 </Button>
