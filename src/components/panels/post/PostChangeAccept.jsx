@@ -86,10 +86,10 @@ const PostChangeAccept = (props) => {
     <Wrapper>
       {!postBody && !hasAnswered && isApprover && (
         <div className="d-flex align-items-center mt-3">
-          <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
+          <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange} disabled={approving.approve}>
             {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
           </button>
-          <button className="btn btn-primary" onClick={handleApprove}>
+          <button className="btn btn-primary" onClick={handleApprove} disabled={approving.approve}>
             {dictionary.agree} {approving.approve && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
           </button>
         </div>

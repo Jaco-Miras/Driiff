@@ -518,7 +518,7 @@ const usePostActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const showModal = (mode = "create", post = null, comment = null, rewardRef = null) => {
+  const showModal = (mode = "create", post = null, comment = null, rewardRef = null, cb = () => {}) => {
     let payload = {};
 
     switch (mode) {
@@ -614,13 +614,16 @@ const usePostActions = () => {
                       approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
                         if (err) return;
                         dispatch(
-                          addCommentReact({
-                            counter: 1,
-                            id: comment.id,
-                            parent_id: comment.parent_id,
-                            post_id: post.id,
-                            reaction: "clap",
-                          })
+                          addCommentReact(
+                            {
+                              counter: 1,
+                              id: comment.id,
+                              parent_id: comment.parent_id,
+                              post_id: post.id,
+                              reaction: "clap",
+                            },
+                            cb
+                          )
                         );
                       });
                     })
@@ -629,13 +632,16 @@ const usePostActions = () => {
                   approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
                     if (err) return;
                     dispatch(
-                      addCommentReact({
-                        counter: 1,
-                        id: comment.id,
-                        parent_id: comment.parent_id,
-                        post_id: post.id,
-                        reaction: "clap",
-                      })
+                      addCommentReact(
+                        {
+                          counter: 1,
+                          id: comment.id,
+                          parent_id: comment.parent_id,
+                          post_id: post.id,
+                          reaction: "clap",
+                        },
+                        cb
+                      )
                     );
                     const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
                     const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
@@ -678,7 +684,7 @@ const usePostActions = () => {
                           post_title: post.title,
                         },
                       };
-                      dispatch(postComment(cpayload));
+                      dispatch(postComment(cpayload, cb));
                     }
                   });
                 }, 1000);
