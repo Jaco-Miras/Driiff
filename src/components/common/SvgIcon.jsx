@@ -1066,6 +1066,15 @@ export const SvgIconFeather = React.memo(
           </>
         );
         break;
+      case "log-in":
+        content = (
+          <>
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </>
+        );
+        break;
       case "more-horizontal":
         content = (
           <>
@@ -1195,6 +1204,14 @@ export const SvgIconFeather = React.memo(
         break;
       case "maximize":
         content = <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>;
+        break;
+      case "clipboard":
+        content = (
+          <>
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </>
+        );
         break;
       default:
         console.log(`${icon} not found`);

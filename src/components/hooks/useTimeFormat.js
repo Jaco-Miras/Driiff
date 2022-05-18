@@ -141,6 +141,14 @@ const useTimeFormat = () => {
     return utc.locale(language).fromNow();
   };
 
+  const timeDiff = (start, end) => {
+    const _start = moment(start, "X");
+    const _end = moment(end, "X");
+    const duration = moment.duration(_start.diff(_end));
+    return `${duration.hours() < 10 ? "0" : ""}${duration.hours()}:${duration.minutes() < 10 ? "0" : ""}${duration.minutes()}:${duration.seconds() < 10 ? "0" : ""}${duration.seconds()}`;
+    // return moment(duration).format("HH:mm:ss");
+  };
+
   return {
     fromNow,
     localizeDate,
@@ -150,6 +158,7 @@ const useTimeFormat = () => {
     todoFormat,
     todoFormatShortCode,
     channelPreviewDate,
+    timeDiff,
   };
 };
 

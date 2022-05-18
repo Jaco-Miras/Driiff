@@ -123,6 +123,14 @@ const WsDashboardPanel = (props) => {
     openAllSharedFiles: _t("LABEL.OPEN_ALL_SHARED_FILES", "Open all shared files and folders"),
     noWsQuickLinks: _t("LABEL.NO_WORKSPACE_QUICK_LINKS", "This WorkSpace has no quicklinks yet. Click on the + icon to add quicklinks for all workspace members."),
     nothingToDoHere: _t("LABEL.NOTHING_TO_DO_HERE", "Nothing to do here!"),
+    chatWebhooksTitle: _t("CHAT_WEBHOOKS.TITLE", "Chat Webhooks"),
+    chatWebhooksTeams: _t("CHAT_WEBHOOKS.TEAMS", "Teams"),
+    chatWebhooksGuest: _t("CHAT_WEBHOOKS.GUEST", "Guest"),
+    chatWebhooksCopy: _t("CHAT_WEBHOOKS.COPY", "copy"),
+    chatWebhooksClipboardCopy: _t("CHAT_WEBHOOKS.CLIPBOARD_COPY", "Copied to clipboard"),
+    webhookTooltip: _t("CHAT_WEBHOOKS.TOOLTIP_TITLE", "Chat Webhooks"),
+    webhookExplainerText1: _t("CHAT_WEBHOOKS.EXPLAINER_TEXT_1", "Driff webhook is used to get external notifications inside your Driff. Connections can be made with Jira, Gripp, etc"),
+    webhookExplainerText2: _t("CHAT_WEBHOOKS.EXPLAINER_TEXT_2", "Checkout our support http://support.getdriff.com/ to read more about integrations."),
   };
 
   return (

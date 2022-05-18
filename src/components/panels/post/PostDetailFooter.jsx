@@ -422,6 +422,10 @@ const PostDetailFooter = (props) => {
 
   const toggleApprover = () => {
     setShowApprover((prevState) => !prevState);
+    setApproving({
+      ...approving,
+      change: false,
+    });
   };
 
   // const privateWsOnly = post.recipients.filter((r) => {

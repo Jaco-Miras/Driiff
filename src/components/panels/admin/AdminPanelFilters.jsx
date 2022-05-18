@@ -33,6 +33,7 @@ const AdminPanelFilters = (props) => {
     company: _t("ADMIN.FILTER_COMPANYSETTINGS", "Company"),
     securitySettings: _t("ADMIN.SECURITY_SETTINGS", "Security"),
     allWorkspaces: _t("ADMIN.ALL_WORKSPACES", "All workspaces"),
+    impersonation: _t("ADMIN.IMPERSONATION", "Impersonation"),
     driff: _t("ADMIN.DRIFF", "Driff"),
   };
   const { setAdminFilter } = useAdminActions();
@@ -79,6 +80,9 @@ const AdminPanelFilters = (props) => {
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["subscription"] ? "active" : ""}`} data-value="subscription" onClick={handleClickFilter}>
         {dictionary.subscription}
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filters["impersonation"] ? "active" : ""}`} data-value="impersonation" onClick={handleClickFilter}>
+        {dictionary.impersonation}
       </li>
       <li className={`list-group-item d-flex align-items-center ${filters["support"] ? "active" : ""}`} data-value="support" onClick={handleRedirectToSupport}>
         {dictionary.support}
