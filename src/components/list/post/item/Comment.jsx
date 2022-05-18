@@ -500,7 +500,16 @@ const Comment = (props) => {
   };
 
   const handleApprove = () => {
-    postActions.showModal("confirmation", post, comment, rewardRef);
+    setApproving({
+      ...approving,
+      approve: true,
+    });
+    postActions.showModal("confirmation", post, comment, rewardRef, () => {
+      setApproving({
+        ...approving,
+        approve: false,
+      });
+    });
   };
 
   useEffect(() => {
