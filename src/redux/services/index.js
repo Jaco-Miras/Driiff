@@ -35,6 +35,7 @@ export {
   getAllWorkspaces,
   getMeetingSettings,
   putMeetingSettings,
+  uploadFavicon,
 } from "./admin";
 export {
   getGlobalRecipients,

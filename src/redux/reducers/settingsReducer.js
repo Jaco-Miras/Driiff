@@ -521,6 +521,15 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_FAVICON_IMAGE": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          favicon: action.data,
+        },
+      };
+    }
     default:
       return state;
   }

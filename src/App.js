@@ -19,6 +19,7 @@ import { sessionService } from "redux-react-session";
 import { DriffUpdateModal } from "./components/modals";
 import { ThemeProvider } from "styled-components";
 import AppWrapper from "./AppWrapper";
+import Favicon from "react-favicon";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
@@ -37,6 +38,7 @@ function App() {
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
   const theme = useSelector((state) => state.settings.driff.theme);
+  const faviconImg = useSelector((state) => state.settings.driff.favicon);
 
   // const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
   // const secondarycolor = "#4E5D72";
@@ -80,6 +82,13 @@ function App() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (faviconImg) {
+      const favicon = document.getElementById("favicon");
+      favicon.href = faviconImg;
+    }
+  }, [faviconImg]);
 
   const handleShowSlider = () => {
     dispatch(setProfileSlider({ id: null }));

@@ -186,7 +186,7 @@ import {
   incomingWorkpaceNotificationStatus,
   incomingUpdatedWorkspaceQuickLinks,
 } from "../../redux/actions/workspaceActions";
-import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
+import { incomingUpdateCompanyName, updateCompanyPostAnnouncement, incomingFaviconImage } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
@@ -1935,6 +1935,9 @@ class SocketListeners extends Component {
             }
           }
         }
+      })
+      .listen(".upload-favicon-event", (e) => {
+        this.props.incomingFaviconImage(e.files.image_link);
       });
     // old / legacy channel
     window[this.state.slug]
@@ -2789,6 +2792,7 @@ function mapDispatchToProps(dispatch) {
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
     incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
     incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
+    incomingFaviconImage: bindActionCreators(incomingFaviconImage, dispatch),
   };
 }
 

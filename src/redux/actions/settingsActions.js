@@ -67,3 +67,6 @@ export function updateCustomTranslationSettings(payload, callback) {
 export function updateThemeColors(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_THEME_COLORS", payload, callback);
 }
+export function incomingFaviconImage(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_FAVICON_IMAGE", payload, callback);
+}

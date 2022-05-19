@@ -23,6 +23,7 @@ import {
   cancelStripeSubscription,
   resetCompanyLogo,
   uploadDashboardBg,
+  uploadFavicon,
 } from "../../redux/actions/adminActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { uploadDriffLogo } from "../../redux/actions/settingsActions";
@@ -275,6 +276,13 @@ const useAdminActions = () => {
       })
     );
   };
+  const uploadFaviconImage = (payload, callback) => {
+    dispatch(
+      uploadFavicon(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    );
+  };
 
   return {
     fetchLoginSettings,
@@ -301,6 +309,7 @@ const useAdminActions = () => {
     uploadLogo,
     resetLogo,
     uploadDashboardBackground,
+    uploadFaviconImage,
   };
 };
 
