@@ -5,7 +5,7 @@ import { Avatar, FileAttachments, ReminderNote } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
-import { useGoogleApis, useTimeFormat, useFiles } from "../../../hooks";
+import { useGoogleApis, useTimeFormat, useFiles, useGetSlug } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
@@ -228,8 +228,10 @@ const Comment = (props) => {
   } = useFiles();
   const history = useHistory();
   const googleApis = useGoogleApis();
+  const { slug } = useGetSlug();
 
   const clearApprovingState = useSelector((state) => state.posts.clearApprovingState);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
@@ -295,6 +297,13 @@ const Comment = (props) => {
       post_id: post.id,
       parent_id: type === "main" ? null : parentId,
     };
+    if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     commentActions.clap(payload, (err, res) => {
       if (err) {
         if (payload.counter === 1) commentActions.unlike(payload);

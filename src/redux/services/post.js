@@ -381,11 +381,17 @@ export function getCompanyPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postCommentClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/messages/${payload.id}/reactions`;
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -588,10 +594,16 @@ export function getUnreadPostEntries(payload) {
  * @returns {Promise<*>}
  */
 export function markAllPostAsRead(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/marked-post-read/all",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -601,10 +613,16 @@ export function markAllPostAsRead(payload) {
  * @returns {Promise<*>}
  */
 export function archiveAllPosts(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/archived-post/all",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
