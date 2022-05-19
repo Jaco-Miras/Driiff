@@ -19,7 +19,6 @@ import { sessionService } from "redux-react-session";
 import { DriffUpdateModal } from "./components/modals";
 import { ThemeProvider } from "styled-components";
 import AppWrapper from "./AppWrapper";
-import Favicon from "react-favicon";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
