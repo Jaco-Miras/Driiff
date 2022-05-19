@@ -536,8 +536,8 @@ const Comment = (props) => {
               <span>{comment.author.first_name}</span>
               {comment.is_from_email ? (
                 <>
-                  <span className="text-muted ml-1">{dictionary.repliedViaEmail}</span>
-                  <SvgIconFeather height={16} width={16} icon="send_post_comment" />
+                  <span className="text-muted mx-1">{dictionary.repliedViaEmail}</span>
+                  <SvgIconFeather height={16} width={16} icon="mail" />
                   <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
                 </>
               ) : (
