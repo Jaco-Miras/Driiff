@@ -574,7 +574,9 @@ const PostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members:
-      user.type === "external"
+      workspace && workspace.sharedSlug
+        ? workspace.members
+        : user.type === "external"
         ? members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
             if (u.id === user.id) {
@@ -589,9 +591,12 @@ const PostInput = forwardRef((props, ref) => {
     disableMention: false,
     setInlineImages,
     setImageLoading,
-    prioMentionIds: Object.values(users)
-      .filter((u) => prioIds.some((id) => id === u.id))
-      .map((u) => u.id),
+    prioMentionIds:
+      workspace && workspace.sharedSlug
+        ? workspace.members.map((m) => m.id)
+        : Object.values(users)
+            .filter((u) => prioIds.some((id) => id === u.id))
+            .map((u) => u.id),
     post,
   });
 

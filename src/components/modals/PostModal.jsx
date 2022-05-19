@@ -396,6 +396,7 @@ const PostModal = (props) => {
     actualUsers,
   } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
+    isSharedWorkspace: isSharedWorkspace,
   });
 
   const { enlargeEmoji } = useEnlargeEmoticons();

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
@@ -34,6 +34,8 @@ const PostSearch = (props) => {
   const { search, placeholder } = props;
   const dispatch = useDispatch();
   const params = useParams();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [searchValue, setSearchValue] = useState(search === null ? "" : search);
   const [searching, setSearching] = useState(false);
   const cancelToken = useRef(null);
@@ -72,11 +74,18 @@ const PostSearch = (props) => {
       //Save the cancel token for the current request
       cancelToken.current = axios.CancelToken.source();
       setSearching(true);
-      const payload = {
+      let payload = {
         search: searchValue,
         cancelToken: cancelToken.current.token,
         topic_id: topic_id,
       };
+      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+        const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         fetchPosts(payload, (err, res) => {
           setSearching(false);
