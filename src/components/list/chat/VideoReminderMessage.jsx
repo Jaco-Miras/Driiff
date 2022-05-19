@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
@@ -49,41 +49,22 @@ const getSlug = () => {
   }
 };
 
-const DriffTalkMessage = (props) => {
-  const { reply, timeFormat, channelId, channelTitle, type, selectedChannel } = props;
+const VideoReminderMessage = (props) => {
+  const { reply, timeFormat, channelId, channelTitle, type } = props;
   const dispatch = useDispatch();
   const [startingMeet, setStartingMeet] = useState(false);
-  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
-  let author;
-  const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
-  let slug = selectedChannel.slug ? selectedChannel.slug : getSlug();
-  if (isCreateMessage) {
-    const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
-    author = data.author;
-  } else {
-    const data = JSON.parse(reply.body.replace("MEETING_ENDED::", ""));
-    author = data.host;
-  }
-
+  const data = JSON.parse(reply.body.replace("DUE_REMINDER::", ""));
+  console.log(data);
   const handleJoinMeeting = () => {
-    if (startingMeet || !isCreateMessage) return;
+    if (startingMeet) return;
     setStartingMeet(true);
-    const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
-    //let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
-    //let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
-    setStartingMeet(true);
-    let payload = {
+    let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
+    let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
+    const payload = {
       channel_id: channelId,
       host: false,
-      room_name: data.meet_event.room_name,
+      room_name: getSlug() + "~" + parseChannel + "~" + channelId + "~" + data[0].remind_at.timestamp,
     };
-    if (selectedChannel.slug && sharedWs[slug]) {
-      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
-      payload = {
-        ...payload,
-        sharedPayload: sharedPayload,
-      };
-    }
     if (deviceType === "mobile" && browserName === "WebKit") {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
@@ -99,29 +80,23 @@ const DriffTalkMessage = (props) => {
   };
   const { _t } = useTranslationActions();
   const dictionary = {
-    driffTalkMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This call is private to the participants in this channel"),
-    userStartMeet: _t("DRIFF_TALK_USER_START", "::name:: started a video meeting", { name: author.name }),
+    videoReminderMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This call is private to the participants in this channel"),
     joinMeeting: _t("JOIN_MEETING", "Join Meeting"),
     meetingEnded: _t("MEETING_ENDED", "Meeting ended"),
+    scheduleMeet: _t("DRIFF_TALK_SCHEDULE_MEETING", "Scheduled meeting is starting"),
   };
   return (
     <Wrapper className="google-meeting">
       <SvgIconFeather icon="video" />
-      <span>{dictionary.userStartMeet}</span>
-      {isCreateMessage ? (
-        <button className="btn btn-primary" onClick={handleJoinMeeting}>
-          <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
-        </button>
-      ) : (
-        <button className="btn btn-secondary" disabled={true}>
-          {dictionary.meetingEnded}
-        </button>
-      )}
+      <span>{dictionary.scheduleMeet}</span>
+      <button className="btn btn-primary" onClick={handleJoinMeeting}>
+        <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
+      </button>
 
-      <span className="text-muted">{dictionary.driffTalkMessage}</span>
+      <span className="text-muted">{dictionary.videoReminderMessage}</span>
       <span className="reply-date created text-muted">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
     </Wrapper>
   );
 };
 
-export default DriffTalkMessage;
+export default VideoReminderMessage;

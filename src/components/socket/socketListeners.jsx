@@ -1284,7 +1284,7 @@ class SocketListeners extends Component {
             this.props.incomingChatMessage({ ...message, translated_body: null });
             delete e.SOCKET_TYPE;
             delete e.socket;
-            if (e.user.id !== user.id) {
+            if (e.user && e.user.id !== user.id) {
               if (!e.is_muted) {
                 if (this.props.notificationsOn && isSafari && e.is_active) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || isIdle || !isBrowserActive || !document.hasFocus()) {
@@ -1304,7 +1304,7 @@ class SocketListeners extends Component {
                   entity_type: "CHAT_REMINDER_MESSAGE",
                 };
               } else {
-                if (message.user.id !== user.id && e.is_muted === false) {
+                if (message.user && message.user.id !== user.id && e.is_muted === false) {
                   notificationCounterEntryPayload = {
                     count: 1,
                     entity_type: "CHAT_MESSAGE",
@@ -1313,7 +1313,7 @@ class SocketListeners extends Component {
               }
               this.props.setGeneralChat(notificationCounterEntryPayload);
             } else {
-              if (message.user.id !== user.id) {
+              if (message.user && message.user.id !== user.id) {
                 this.props.setGeneralChat({
                   count: 1,
                   entity_type: "WORKSPACE_CHAT_MESSAGE",
