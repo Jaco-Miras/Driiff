@@ -205,6 +205,7 @@ const ChatContentPanel = (props) => {
     no: _t("NO", "No"),
     googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
+    repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
