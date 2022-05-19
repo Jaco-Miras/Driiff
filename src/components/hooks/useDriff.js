@@ -3,6 +3,7 @@ import { $_GET, isIPAddress } from "../../helpers/commonFunctions";
 import useDriffActions from "./useDriffActions";
 import { getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { isIOS } from "react-device-detect";
+import { useSelector } from "react-redux";
 
 export const getDriffName = () => {
   let driff = $_GET("driff");
@@ -40,33 +41,38 @@ const useDriff = () => {
   const actions = useDriffActions();
   const [redirected, setRedirected] = useState(actions.getName());
   const [registeredDriff, setRegisteredDriff] = useState(actions.getName());
+  const faviconImg = useSelector((state) => state.settings.driff.favicon);
+
   const driffUrl = getCurrentDriffUrl();
 
   const refs = {
-    faviconState: useRef(false)
+    faviconState: useRef(false),
   };
 
   const updateFaviconState = (isActive = false) => {
     if (refs.faviconState.current !== isActive) {
       refs.faviconState.current = isActive;
-      let link = document.querySelector("link[rel*='icon shortcut']") || document.createElement('link');
-      link.type = 'image/x-icon';
-      link.rel = 'shortcut icon';
+      let link = document.querySelector("link[rel*='icon shortcut']") || document.createElement("link");
+      link.type = "image/x-icon";
+      link.rel = "shortcut icon";
       link.href = isActive ? `${driffUrl}/assets/icons/favicon-active.png` : `${driffUrl}/assets/icons/favicon.png`;
-      document.getElementsByTagName('head')[0].appendChild(link);
+      if (faviconImg) {
+        link.href = faviconImg;
+      }
+
+      document.getElementsByTagName("head")[0].appendChild(link);
     }
   };
 
   useEffect(() => {
-    if (init)
-      return;
+    if (init) return;
 
     if (isIOS) {
-      let link = document.createElement('link');
+      let link = document.createElement("link");
       link.href = `${driffUrl}/assets/icons/favicon.png`;
-      link.rel = 'apple-touch-icon';
+      link.rel = "apple-touch-icon";
 
-      document.getElementsByTagName('head')[0].appendChild(link);
+      document.getElementsByTagName("head")[0].appendChild(link);
     }
 
     init = true;
@@ -107,7 +113,7 @@ const useDriff = () => {
     redirected,
     registeredDriff,
     setRegisteredDriff,
-    updateFaviconState
+    updateFaviconState,
   };
 };
 

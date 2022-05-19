@@ -145,6 +145,8 @@ function StylingSettingsBody() {
     styling: _t("STYLING", "Styling"),
     dashboardBg: _t("LABEL.DASHBOARD_BACKGROUND", "Dashboard background"),
     uploadBg: _t("BUTTON.UPLOAD_BACKGROUND", "Upload background"),
+    faviconImg: _t("LABEL.FAVICON", "Favicon"),
+    uploadFavicon: _t("BUTTON.UPLOAD_FAVICON", "Upload favicon"),
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
     companyLanguage: _t("SETTINGS.COMPANY_LANGUAGE_LABEL", "Company language"),
     updateLanguage: _t("BUTTON.UPDATE_LANGUAGE", "Update language"),
@@ -152,11 +154,12 @@ function StylingSettingsBody() {
   };
 
   const iconDropZone = useRef(null);
+  const faviconDropZone = useRef(null);
   const [showIconDropzone, setShowIconDropzone] = useState(false);
   const bgDropZone = useRef(null);
   const [showBgDropzone, setShowBgDropzone] = useState(false);
   const toast = useToaster();
-  const { uploadLogo, resetLogo, uploadDashboardBackground, fetchLoginSettings } = useAdminActions();
+  const { uploadLogo, resetLogo, uploadDashboardBackground, fetchLoginSettings, uploadFaviconImage } = useAdminActions();
   const logo = useSelector((state) => state.settings.driff.logo);
   const theme = useSelector((state) => state.settings.driff.theme);
   const origTheme = useSelector((state) => state.settings.origTheme);
@@ -176,6 +179,7 @@ function StylingSettingsBody() {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const [notifications, setNotifications] = useState(notificationSettings);
   const [savingNotifications, setSavingNotifications] = useState(false);
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
 
   useEffect(() => {
     if (!notificationsLoaded) {
@@ -236,6 +240,22 @@ function StylingSettingsBody() {
     };
     uploadDashboardBackground(payload, cb);
   };
+  const handleUploadFavicon = (file) => {
+    setUploadingFavicon(true);
+    let payload = {
+      file: file,
+      code: "code",
+    };
+    let cb = (err, res) => {
+      setUploadingFavicon(false);
+      if (err) return;
+      toast.success(dictionary.uploadSuccess);
+
+      const favicon = document.getElementById("favicon");
+      favicon.href = res.data.path.image_link;
+    };
+    uploadFaviconImage(payload, cb);
+  };
 
   const dropBgAction = (uploadedFiles) => {
     if (uploadedFiles.length === 0) {
@@ -244,6 +264,14 @@ function StylingSettingsBody() {
       toast.warning(dictionary.multipleFileError);
     }
     handleUploadDashboardBg(uploadedFiles[0]);
+  };
+  const dropFaviconAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toast.error(dictionary.fileTypeError);
+    } else if (uploadedFiles.length > 1) {
+      toast.warning(dictionary.multipleFileError);
+    }
+    handleUploadFavicon(uploadedFiles[0]);
   };
 
   const handleOpenBgDropzone = () => {
@@ -419,6 +447,20 @@ function StylingSettingsBody() {
             />
             <button className="btn btn-primary" onClick={handleOpenBgDropzone}>
               {dictionary.uploadBg}
+            </button>
+          </div>
+          <h4 className="mt-3">{dictionary.faviconImg}</h4>
+          <div>
+            <DropDocument
+              acceptType="imageOnly"
+              hide
+              ref={faviconDropZone}
+              onDrop={({ acceptedFiles }) => {
+                dropFaviconAction(acceptedFiles);
+              }}
+            />
+            <button className="btn btn-primary" onClick={() => faviconDropZone.current.open()} disabled={uploadingFavicon}>
+              {dictionary.uploadFavicon} {uploadingFavicon && <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
             </button>
           </div>
           <h4 className="mt-3">{dictionary.styling}</h4>
