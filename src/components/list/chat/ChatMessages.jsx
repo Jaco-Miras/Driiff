@@ -16,6 +16,7 @@ import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
 import GoogleMeetMessage from "./GoogleMeetMessage";
 import DriffTalkMessage from "./DriffTalkMessage";
+import VideoReminderMessage from "./VideoReminderMessage";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -723,6 +724,7 @@ class ChatMessages extends React.PureComponent {
                         let showMessageLine = false;
                         let showDownloadAll = false;
                         let downloadFiles = [];
+                        let isVideoReminder = false;
 
                         if (reply.user) {
                           if (reply.created_at.timestamp) {
@@ -767,6 +769,15 @@ class ChatMessages extends React.PureComponent {
                           }
                           let botCodes = ["gripp_bot_account", "gripp_bot_invoice", "gripp_bot_offerte", "gripp_bot_project", "gripp_bot_account", "driff_webhook_bot", "huddle_bot"];
                           isBot = botCodes.includes(reply.user.code);
+                        } else {
+                          if (reply.body.startsWith("DUE_REMINDER::")) {
+                            const data = JSON.parse(reply.body.replace("DUE_REMINDER::", ""));
+                            if (data.length) {
+                              if (data[0].link_type === "DRIFF_TALK") {
+                                isVideoReminder = true;
+                              }
+                            }
+                          }
                         }
                         return (
                           <ChatList key={this.props.selectedChannel.code + reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
@@ -841,7 +852,7 @@ class ChatMessages extends React.PureComponent {
                                 )}
                               </ChatBubbleContainer>
                             )}
-                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && !reply.body.startsWith("MEETING_ENDED::") && (
+                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && !reply.body.startsWith("MEETING_ENDED::") && !isVideoReminder && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
@@ -895,6 +906,13 @@ class ChatMessages extends React.PureComponent {
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && reply.body.startsWith("DUE_REMINDER::") && isVideoReminder && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <VideoReminderMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
