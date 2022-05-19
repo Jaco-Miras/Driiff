@@ -32,6 +32,7 @@ import {
   getAllWorkspaces as getAllWorkspacesService,
   getMeetingSettings as getMeetingSettingsService,
   putMeetingSettings as putMeetingSettingsService,
+  uploadFavicon as uploadFaviconService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -204,4 +205,8 @@ export function putMeetingSettings(payload, callback) {
 
 export function incomingMeetingSettings(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_MEETING_SETTINGS", payload, callback);
+}
+
+export function uploadFavicon(payload, callback) {
+  return dispatchActionToReducer(uploadFaviconService(payload), "UPLOAD_FAVICON_START", "UPLOAD_FAVICON_SUCCESS", "UPLOAD_FAVICON_FAILURE", callback);
 }

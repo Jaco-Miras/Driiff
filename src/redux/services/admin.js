@@ -252,3 +252,13 @@ export function putMeetingSettings(payload) {
     data: payload,
   });
 }
+
+export function uploadFavicon(payload) {
+  let url = "/v2/favicon-upload";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
+  });
+}
