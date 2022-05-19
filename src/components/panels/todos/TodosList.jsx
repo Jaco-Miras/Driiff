@@ -307,7 +307,7 @@ const TodosList = (props) => {
           </span>
           <span className={`align-items-center todo-title-description text-truncate mr-3 ${isDone && "text-muted"}`} onClick={handleTitleClick}>
             <span className={"todo-title"}>{todo.title}</span>
-            {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {/* {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />} */}
             {!isDone &&
               todo.files.map((file) => {
                 return (

@@ -169,6 +169,9 @@ const ChatSidebarPanel = (props) => {
         searching: query.trim() !== "",
       });
 
+      setChatSetting({
+        filter_channel: false,
+      });
       // const firstChannel = document.querySelector(".first-channel");
       // if (firstChannel) {
       //   firstChannel.focus();

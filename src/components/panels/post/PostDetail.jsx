@@ -105,10 +105,10 @@ const MainBody = styled.div`
       box-shadow: 0 5px 10px -1px rgba(0, 0, 0, 0.15);
       background: #fff;
 
-      &:hover {
+      /* &:hover {
         max-height: 300px;
         opacity: 1;
-      }
+      } */
 
       .dark & {
         border: 1px solid #25282c;
@@ -188,13 +188,13 @@ const MainBody = styled.div`
     }
   }
 
-  .user-reads-container {
+  /* .user-reads-container {
     span.not-readers:hover ~ span.not-read-users-container,
     span.no-readers:hover ~ span.read-users-container {
       opacity: 1;
       max-height: 175px;
     }
-  }
+  } */
 `;
 
 const StyledMoreOptions = styled(MoreOptions)`
