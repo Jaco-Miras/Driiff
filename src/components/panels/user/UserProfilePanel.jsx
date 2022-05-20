@@ -913,7 +913,7 @@ const UserProfilePanel = (props) => {
                     }
                     <div className="row mb-2">
                       <div className="col col-label text-muted">{dictionary.invitedBy}</div>
-                      <div className="col col-form">{user?.invited_by?.first_name} {user?.invited_by?.last_name}</div>
+                      <div className="col col-form">{user.userData?.invited_by?.first_name} {user.userData?.invited_by?.last_name}</div>
                     </div>
                   </>
                 }
