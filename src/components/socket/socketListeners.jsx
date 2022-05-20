@@ -1043,7 +1043,7 @@ class SocketListeners extends Component {
             }
             if (e.author.id !== this.props.user.id) {
               const workspacesMuted = [];
-              const hasMentioned = e.code_data && e.code_data.mention_ids.some((id) => this.props.user.id === id);
+              const hasMentioned = e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => this.props.user.id === id);
               e.workspaces.forEach((ws) => {
                 if (this.props.workspaces[ws.topic_id] && !this.props.workspaces[ws.topic_id].is_active) {
                   workspacesMuted.push(ws.topic_id);

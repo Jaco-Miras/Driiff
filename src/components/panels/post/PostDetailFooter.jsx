@@ -789,6 +789,7 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
+                hasPostAccess={prioMentionIds.some((id) => id === user.id)}
               />
             </ChatInputContainer>
 
