@@ -348,7 +348,7 @@ const PostDetail = (props) => {
       mode: "post",
       post: post,
       members: workspace ? workspace.members : [],
-      //team_channel: !post.shared_with_client && hasExternalWorkspace && !isExternalUser ? workspace.team_channel.id : null,
+      sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
     };
 
     dispatch(addToModals(modal));

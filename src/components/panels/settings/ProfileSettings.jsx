@@ -100,13 +100,22 @@ const ProfileSettings = (props) => {
 
   const { _t } = useTranslationActions();
 
+  const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
+
+  const i18update = {};
+
+  for (let key in i18new) {
+    if (!(key in i18n)) {
+      i18update[key] = i18new[key];
+    }
+  }
 
   const uploadTranslationToServer = (callback = () => {}) => {
     let vocabulary = [];
     let bodyText = "You are about to add the following words to the dictionary files, continue?";
     bodyText += "<table>";
-    Object.keys(i18new).forEach((k) => {
+    Object.keys(i18update).forEach((k) => {
       bodyText += "<tr>";
       bodyText += `<td>${k}</td>`;
       bodyText += `<td>${i18new[k]}</td>`;

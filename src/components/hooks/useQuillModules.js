@@ -26,6 +26,7 @@ const useQuillModules = ({
   post = null,
   setImageLoading = null,
   inlineImageType = "private",
+  sharedSlug = null,
 }) => {
   const dispatch = useDispatch();
   const [modules, setModules] = useState({});
@@ -42,6 +43,7 @@ const useQuillModules = ({
   const previousPost = usePreviousValue(post);
   const savedCallback = useRef(callback);
   const removeCallback = useRef(removeMention);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -329,12 +331,21 @@ const useQuillModules = ({
             return new Promise((resolve, reject) => {
               var formData = new FormData();
               formData.append("file", file);
-              uploadDocument({
+              let filePayload = {
                 user_id: user.id,
                 file: formData,
                 file_type: inlineImageType,
                 folder_id: null,
-              })
+              };
+              if (sharedSlug) {
+                const sharedPayload = { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true };
+                filePayload = {
+                  ...filePayload,
+                  sharedPayload: sharedPayload,
+                  user_id: sharedWs[sharedSlug].user_auth.id,
+                };
+              }
+              uploadDocument(filePayload)
                 .then((result) => {
                   if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
                   if (setImageLoading) setImageLoading(false);

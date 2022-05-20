@@ -10,33 +10,37 @@ const useFiles = (triggerFetch = false) => {
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const { workspaceFiles, googleDriveApiFiles, gifBlobs, fileBlobs, fileThumbnailBlobs } = useSelector((state) => state.files);
 
   const [fetchingFiles, setFetchingFiles] = useState(false);
 
   useEffect(() => {
     if (triggerFetch) {
-      if (!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) {
+      if ((!fetchingFiles && activeTopic && !workspaceFiles.hasOwnProperty(activeTopic.id)) || (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id) && !workspaceFiles[activeTopic.id].hasOwnProperty("loaded"))) {
+        let payload = {
+          topic_id: activeTopic.id,
+        };
         const cb = (err, res) => {
           setFetchingFiles(false);
-          fileActions.getFolders({ topic_id: activeTopic.id });
-          fileActions.getFilesDetail(activeTopic.id);
-          fileActions.getFavoriteFiles(activeTopic.id);
-          fileActions.getPopularFiles(activeTopic.id);
-          fileActions.getEditedFiles(activeTopic.id);
-          fileActions.getTrashFiles(activeTopic.id);
-          fileActions.getGoogleDriveFiles(activeTopic.id);
-          fileActions.getGoogleDriveFolders(activeTopic.id);
+          fileActions.getFolders({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getFilesDetail({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getFavoriteFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getPopularFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getEditedFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getTrashFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getGoogleDriveFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
+          fileActions.getGoogleDriveFolders({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
           if (user.type === "internal" && activeTopic && activeTopic.team_channel && activeTopic.team_channel.code) {
             fileActions.fetchClientChatFiles({ topic_id: activeTopic.id, filter_by: "client" });
             fileActions.fetchTeamChatFiles({ topic_id: activeTopic.id, filter_by: "team" });
             fileActions.fetchPrivatePostFiles({ topic_id: activeTopic.id, filter_by: "privatePost" });
             fileActions.fetchClientPostFiles({ topic_id: activeTopic.id, filter_by: "clientPost" });
           }
-          fetchTopicDriveLinks({ topic_id: activeTopic.id });
+          fetchTopicDriveLinks({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
         };
         setFetchingFiles(true);
-        fileActions.getFiles({ topic_id: activeTopic.id }, cb);
+        fileActions.getFiles({ ...payload, sharedPayload: activeTopic.sharedSlug ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null }, cb);
       }
       if (!fetchingFiles && activeTopic && workspaceFiles.hasOwnProperty(activeTopic.id)) {
         if (params.hasOwnProperty("fileFolderId") && workspaceFiles[activeTopic.id].folders.hasOwnProperty(params.fileFolderId) && !workspaceFiles[activeTopic.id].folders[params.fileFolderId].hasOwnProperty("loaded")) {
@@ -49,11 +53,18 @@ const useFiles = (triggerFetch = false) => {
             topic_id: activeTopic.id,
             folder_id: parseInt(params.fileFolderId),
           };
+          if (activeTopic.sharedSlug) {
+            const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
+            payload = {
+              ...payload,
+              sharedPayload: sharedPayload,
+            };
+          }
           fileActions.getFiles(payload, cb);
         }
       }
     }
-  }, [fetchingFiles, activeTopic, workspaceFiles, params]);
+  }, [fetchingFiles, activeTopic, workspaceFiles, params, sharedWs]);
 
   let fileIds = [];
   if (Object.values(workspaceFiles).length && workspaceFiles.hasOwnProperty(params.workspaceId)) {

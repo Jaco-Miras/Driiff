@@ -200,22 +200,24 @@ const useFileActions = () => {
     dispatch(getWorkspacePrimaryFiles({ topic_id: id }, callback));
   };
 
-  const getGoogleDriveFiles = (id, callback) => {
+  const getGoogleDriveFiles = (payload, callback) => {
     dispatch(
       getWorkspaceGoogleFileAttachments(
         {
-          workspace_id: id,
+          ...payload,
+          workspace_id: payload.topic_id,
         },
         callback
       )
     );
   };
 
-  const getGoogleDriveFolders = (id, callback) => {
+  const getGoogleDriveFolders = (payload, callback) => {
     dispatch(
       getWorkspaceGoogleFolderAttachments(
         {
-          workspace_id: id,
+          ...payload,
+          workspace_id: payload.topic_id,
         },
         callback
       )
@@ -237,20 +239,20 @@ const useFileActions = () => {
     );
   };
 
-  const getFilesDetail = (id, callback) => {
-    dispatch(getWorkspaceFilesDetail({ topic_id: id }, callback));
+  const getFilesDetail = (payload, callback) => {
+    dispatch(getWorkspaceFilesDetail(payload, callback));
   };
 
-  const getPopularFiles = (id, callback) => {
-    dispatch(getWorkspacePopularFiles({ topic_id: id }, callback));
+  const getPopularFiles = (payload, callback) => {
+    dispatch(getWorkspacePopularFiles(payload, callback));
   };
 
-  const getEditedFiles = (id, callback) => {
-    dispatch(getWorkspaceRecentlyEditedFiles({ topic_id: id }, callback));
+  const getEditedFiles = (payload, callback) => {
+    dispatch(getWorkspaceRecentlyEditedFiles(payload, callback));
   };
 
-  const getTrashFiles = (id, callback) => {
-    dispatch(getWorkspaceTrashFiles({ topic_id: id }, callback));
+  const getTrashFiles = (payload, callback) => {
+    dispatch(getWorkspaceTrashFiles(payload, callback));
   };
 
   const createFolder = (payload, callback) => {
@@ -609,8 +611,8 @@ const useFileActions = () => {
     );
   };
 
-  const getFavoriteFiles = (id, callback) => {
-    dispatch(getWorkspaceFavoriteFiles({ topic_id: id }, callback));
+  const getFavoriteFiles = (payload, callback) => {
+    dispatch(getWorkspaceFavoriteFiles(payload, callback));
   };
 
   const viewFiles = (file, callback) => {

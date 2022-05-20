@@ -598,6 +598,7 @@ const PostInput = forwardRef((props, ref) => {
             .filter((u) => prioIds.some((id) => id === u.id))
             .map((u) => u.id),
     post,
+    sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
   });
 
   return (
