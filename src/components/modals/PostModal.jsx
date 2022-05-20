@@ -802,6 +802,16 @@ const PostModal = (props) => {
     attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.bodyFormData.get("file")));
     uploadData["files"] = formData;
 
+    if (isSharedWorkspace) {
+      let slug = activeTopic.slug;
+      if (sharedWs[slug]) {
+        const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    }
     await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))
       .then((result) => {
         if (type === "edit") {
@@ -1202,18 +1212,25 @@ const PostModal = (props) => {
           setInlineImages={setInlineImages}
           setImageLoading={setImageLoading}
           disableBodyMention={isExternalUser}
-          prioMentionIds={addressIds}
-          members={Object.values(actualUsers).filter((u) => {
-            if (user.type === "external") {
-              return addressIds.some((id) => u.id === id);
-            } else {
-              if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-          })}
+          prioMentionIds={addressIds.filter((id) => id !== user.id)}
+          members={
+            isSharedWorkspace
+              ? activeTopic.members
+              : Object.values(actualUsers).filter((u) => {
+                  if (user.type === "external") {
+                    return addressIds.some((id) => u.id === id);
+                  } else {
+                    if (u.id === user.id) {
+                      return false;
+                    } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }
+                })
+          }
+          sharedSlug={isSharedWorkspace ? activeTopic.slug : null}
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
