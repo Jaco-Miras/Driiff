@@ -727,12 +727,9 @@ const UserProfilePanel = (props) => {
     emailDefaultValue = isPhoneNumber && registerMode === "email" ? "" : user.email;
   }
 
-
-
   return (
     <Wrapper className={`user-profile-panel container-fluid h-100 ${className}`} registerMode={registerMode}>
       <div className="row row-user-profile-panel">
-
         <div className="col-12 col-lg-6 col-xl-6">
           <div className="card">
             {loggedUser.role.id <= 2 && loggedUser.id !== user.id && <UserOptions user={user} />}
@@ -903,20 +900,22 @@ const UserProfilePanel = (props) => {
                     <div className="col col-form">{user.type === "external" ? dictionary.external : user.role.display_name}</div>
                   </div>
                 )}
-                {user.type === "external" &&
+                {user.type === "external" && (
                   <>
-                    {user.last_login?.timestamp &&
+                    {user.last_login?.timestamp && (
                       <div className="row mb-2">
                         <div className="col col-label text-muted">{dictionary.lastLoggedIn}</div>
                         <div className="col col-form">{moment.unix(user?.last_login?.timestamp).format("MMMM DD YYYY hh:mm A").toString()}</div>
                       </div>
-                    }
+                    )}
                     <div className="row mb-2">
                       <div className="col col-label text-muted">{dictionary.invitedBy}</div>
-                      <div className="col col-form">{user?.invited_by?.first_name} {user?.invited_by?.last_name}</div>
+                      <div className="col col-form">
+                        {user.userData?.invited_by?.first_name} {user.userData?.invited_by?.last_name}
+                      </div>
                     </div>
                   </>
-                }
+                )}
               </div>
             ) : (
               <div className="card-body">
