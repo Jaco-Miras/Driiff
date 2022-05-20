@@ -24,6 +24,7 @@ const VideoConference = (props) => {
   const dispatch = useDispatch();
   const apiRef = useRef(null);
   const jitsi = useSelector((state) => state.chat.jitsi);
+  const userLang = useSelector((state) => state.settings.user.GENERAL_SETTINGS.language);
   //const channels = useSelector((state) => state.chat.channels);
   const appId = "vpaas-magic-cookie-c0cc9d62fd3340d58d783df7885be71c";
   const handleClearJitsi = () => {
@@ -89,6 +90,7 @@ const VideoConference = (props) => {
         disableDeepLinking: isMobile,
         liveStreamingEnabled: false,
         transcribingEnabled: false,
+        defaultLanguage: userLang,
         // Configs for prejoin page.
         prejoinConfig: {
           // When 'true', it shows an intermediate page before joining, where the user can configure their devices.

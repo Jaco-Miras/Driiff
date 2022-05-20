@@ -185,7 +185,7 @@ import {
   incomingWorkpaceNotificationStatus,
   incomingUpdatedWorkspaceQuickLinks,
 } from "../../redux/actions/workspaceActions";
-import { incomingUpdateCompanyName, updateCompanyPostAnnouncement } from "../../redux/actions/settingsActions";
+import { incomingUpdateCompanyName, updateCompanyPostAnnouncement, incomingFaviconImage } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { incomingReminderNotification, getNotifications, incomingSnoozedNotification, incomingSnoozedAllNotification, removeNotificationReducer, incomingReadNotifications } from "../../redux/actions/notificationActions";
 import { toast } from "react-toastify";
@@ -1048,7 +1048,7 @@ class SocketListeners extends Component {
             }
             if (e.author.id !== this.state.userId) {
               const workspacesMuted = [];
-              const hasMentioned = e.code_data && e.code_data.mention_ids.some((id) => this.state.userId === id);
+              const hasMentioned = e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => this.state.userId === id);
               e.workspaces.forEach((ws) => {
                 if (this.props.workspaces[ws.topic_id] && !this.props.workspaces[ws.topic_id].is_active) {
                   workspacesMuted.push(ws.topic_id);
@@ -1846,6 +1846,9 @@ class SocketListeners extends Component {
             }
           }
         }
+      })
+      .listen(".upload-favicon-event", (e) => {
+        this.props.incomingFaviconImage(e.files.image_link);
       });
     // old / legacy channel
     window[this.state.slug]
@@ -2688,6 +2691,7 @@ function mapDispatchToProps(dispatch) {
     incomingUpdatedWorkspaceQuickLinks: bindActionCreators(incomingUpdatedWorkspaceQuickLinks, dispatch),
     incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
     incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
+    incomingFaviconImage: bindActionCreators(incomingFaviconImage, dispatch),
   };
 }
 

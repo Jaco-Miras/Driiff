@@ -1935,10 +1935,17 @@ export default function (state = INITIAL_STATE, action) {
           ...Object.values(state.channels)
             .map((channel) => {
               if (action.data.channel_ids.some((id) => id === channel.id)) {
-                return {
-                  ...channel,
-                  members: channel.members.filter((m) => m.id !== action.data.user.id),
-                };
+                if (channel.type === "DIRECT" && channel.profile && channel.profile.id === action.data.user.id) {
+                  return {
+                    ...channel,
+                    is_archived: true,
+                  };
+                } else {
+                  return {
+                    ...channel,
+                    members: channel.members.filter((m) => m.id !== action.data.user.id),
+                  };
+                }
               } else {
                 return channel;
               }
@@ -1948,6 +1955,7 @@ export default function (state = INITIAL_STATE, action) {
               return channels;
             }, {}),
         },
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "DIRECT" && state.selectedChannel.profile.id === action.data.user.id ? { ...state.selectedChannel, is_archived: true } : state.selectedChannel,
       };
     }
     case "INCOMING_UNARCHIVED_USER": {
@@ -1957,10 +1965,17 @@ export default function (state = INITIAL_STATE, action) {
           ...Object.values(state.channels)
             .map((channel) => {
               if (action.data.connected_channel_ids.some((id) => id === channel.id)) {
-                return {
-                  ...channel,
-                  members: [...channel.members, { ...action.data.profile, last_visited_at: { timestamp: Math.floor(Date.now() / 1000) } }],
-                };
+                if (channel.type === "DIRECT" && channel.profile && channel.profile.id === action.data.profile.id) {
+                  return {
+                    ...channel,
+                    is_archived: false,
+                  };
+                } else {
+                  return {
+                    ...channel,
+                    members: [...channel.members, { ...action.data.profile, last_visited_at: { timestamp: Math.floor(Date.now() / 1000) } }],
+                  };
+                }
               } else {
                 return channel;
               }
@@ -1970,6 +1985,7 @@ export default function (state = INITIAL_STATE, action) {
               return channels;
             }, {}),
         },
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "DIRECT" && state.selectedChannel.profile.id === action.data.profile.id ? { ...state.selectedChannel, is_archived: false } : state.selectedChannel,
       };
     }
     case "GET_USER_BOTS_SUCCESS": {

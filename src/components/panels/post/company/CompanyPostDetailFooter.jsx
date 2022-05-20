@@ -677,6 +677,7 @@ const CompanyPostDetailFooter = (props) => {
               toggleApprover={toggleApprover}
               editPostComment={editPostComment}
               mainInput={mainInput}
+              hasPostAccess={prioMentionIds.some((id) => id === user.id)}
             />
           </ChatInputContainer>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
