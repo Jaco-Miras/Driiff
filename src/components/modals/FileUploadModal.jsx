@@ -409,9 +409,9 @@ const FileUploadModal = (props) => {
           },
         },
       };
-      if (mode === "chat" && sharedSlug) {
-        let slug = selectedChannel.slug ? selectedChannel.slug : null;
-        if (selectedChannel.slug && sharedWs[slug]) {
+      if (sharedSlug) {
+        let slug = sharedSlug;
+        if (sharedWs[sharedSlug]) {
           const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
           payload = {
             ...payload,
@@ -652,6 +652,13 @@ const FileUploadModal = (props) => {
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
       };
+      if (sharedSlug && sharedWs[sharedSlug]) {
+        const sharedPayload = { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       //setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
       dispatch(saveInputData({ sent: true }));

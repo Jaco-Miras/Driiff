@@ -346,6 +346,7 @@ const PostDetail = (props) => {
       mode: "post",
       post: post,
       members: workspace ? workspace.members : [],
+      sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
     };
 
     dispatch(addToModals(modal));

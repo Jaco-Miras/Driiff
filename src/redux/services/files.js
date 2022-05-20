@@ -34,37 +34,67 @@ export function postWorkspaceFiles(payload) {
 }
 
 export function getWorkspaceFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceTrashFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-trash-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceFavoriteFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-favorite-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceRecentlyEditedFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-recent-edited-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspacePopularFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-popular-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -76,9 +106,15 @@ export function getWorkspacePrimaryFiles(payload) {
 }
 
 export function getWorkspaceFolders(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-folders?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -90,9 +126,15 @@ export function getWorkspaceFoldersBreadcrumb(payload) {
 }
 
 export function getWorkspaceFilesDetail(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-files-detail?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -353,18 +395,30 @@ export function postGoogleAttachments(payload) {
 }
 
 export function getWorkspaceGoogleFileAttachments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FILE`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceGoogleFolderAttachments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FOLDER`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -586,6 +640,11 @@ export function postDriveLink(payload) {
 }
 
 export function getDriveLinks(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/drive/links";
   if (payload.topic_id) {
     url = `/v2/drive/links?topic_id=${payload.topic_id}`;
@@ -594,6 +653,7 @@ export function getDriveLinks(payload) {
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
