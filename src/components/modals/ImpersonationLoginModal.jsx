@@ -76,12 +76,12 @@ const ImpersonationLoginModal = (props) => {
           <p>{dictionary.body}</p>
         </ModalBody>
         <ModalFooter>
+          <Button disabled={loading} className="btn btn-primary" color="primary" onClick={toggle}>
+            {dictionary.cancelText}
+          </Button>
           <Button disabled={loading} className="btn btn-outline-secondary " outline color="secondary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
             {dictionary.confirmationText}
-          </Button>
-          <Button disabled={loading} className="btn btn-primary" color="primary" onClick={toggle}>
-            {dictionary.cancelText}
           </Button>
         </ModalFooter>
       </form>
