@@ -502,12 +502,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-        .map((m) => {
-          if (m.member_ids) {
-            return m.member_ids;
-          } else return m.id;
-        })
-        .flat()
+      .map((m) => {
+        if (m.member_ids) {
+          return m.member_ids;
+        } else return m.id;
+      })
+      .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -624,7 +624,7 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                           {dictionary.withClient}
                           </div>
                         </li>
                       )}
@@ -678,7 +678,7 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                            {dictionary.withClient}
                           </div>
                         </li>
                       )}

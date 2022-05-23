@@ -336,7 +336,7 @@ const AboutWorkspaceModal = (props) => {
           {workspace.active === 0 && <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>}
           {workspace.is_shared && !isExternal && (
             <div className={"badge badge-external ml-1 d-flex align-items-center"}>
-              <Icon icon="eye" /> {dictionary.withClient}
+              {dictionary.withClient}
             </div>
           )}
 
