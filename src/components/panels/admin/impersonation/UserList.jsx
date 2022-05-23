@@ -62,7 +62,7 @@ const UserList = () => {
       <div className="px-3 mb-4">
         <Search ref={refs.search} value={search} closeButton onClickEmpty={emptySearchInput} placeholder={dictionary.searchPlaceholder} onChange={handleSearchChange} autoFocus disabled={!usersLoaded} />
       </div>
-      <div class="list-group list-group-flush">
+      <div className="list-group list-group-flush">
         {userSort.map((user) => (
           <UserListItem key={user.id} user={user} />
         ))}

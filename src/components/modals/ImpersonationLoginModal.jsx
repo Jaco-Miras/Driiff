@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
@@ -33,6 +33,14 @@ const ImpersonationLoginModal = (props) => {
   const dispatch = useDispatch();
   const [modal, setModal] = useState(true);
 
+  useEffect(() => {
+    document.body.addEventListener("keyup", handleKeyboardEvent);
+
+    return () => {
+      document.body.removeEventListener("keyup", handleKeyboardEvent);
+    };
+  }, []);
+
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -51,6 +59,12 @@ const ImpersonationLoginModal = (props) => {
     onSubmit({ email: user.email, user_id: loggedUser.id }, toggle);
   };
 
+  const handleKeyboardEvent = (event) => {
+    if (event.keyCode === 13 || event.keyCode === 27) {
+      toggle();
+    }
+  };
+
   return (
     <ModalWrapper isOpen={modal} toggle={toggle} size={size} centered>
       <form>
@@ -62,12 +76,12 @@ const ImpersonationLoginModal = (props) => {
           <p>{dictionary.body}</p>
         </ModalBody>
         <ModalFooter>
-          <Button disabled={loading} className="btn btn-outline-secondary" outline color="secondary" onClick={toggle}>
-            {dictionary.cancelText}
-          </Button>
-          <Button disabled={loading} className="btn btn-primary" color="primary" onClick={handleConfirm}>
+          <Button disabled={loading} className="btn btn-outline-secondary " outline color="secondary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
             {dictionary.confirmationText}
+          </Button>
+          <Button disabled={loading} className="btn btn-primary" color="primary" onClick={toggle}>
+            {dictionary.cancelText}
           </Button>
         </ModalFooter>
       </form>
