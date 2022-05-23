@@ -2101,7 +2101,11 @@ const CreateEditWorkspaceModal = (props) => {
             <div className={"lock-workspace-text-container pb-3"}>
               <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
             </div>
-            <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
+            <button
+              className="btn btn-primary"
+              onClick={handleConfirm}
+              disabled={form.name.trim() === "" || form.name.trim().length > MAX_NAME_CHAR || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}
+            >
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
             </button>
