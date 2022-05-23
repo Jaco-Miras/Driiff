@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
@@ -29,19 +29,19 @@ const ButtonsContainer = styled.div`
   }
 `;
 
-// const AudioStyle = styled.audio`
-//   display: none;
-//   opacity: 0;
-//   visibility: hidden;
-// `;
+const AudioStyle = styled.audio`
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+`;
 
 const JitsiInviteModal = (props) => {
   const { type, title, host, hideJoin, channel_id, channelType } = props.data;
   const dispatch = useDispatch();
-  //   const isIdle = useSelector((state) => state.global.isIdle);
-  //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
+  const isIdle = useSelector((state) => state.global.isIdle);
+  const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
   const { _t } = useTranslationActions();
-  //   const audioRef = useRef(null);
+  const audioRef = useRef(null);
   const dictionary = {
     jitsiInvite: _t("JITSI.INVITE_POP_UP", "::host:: has started a new Meeting for ::title::", { host: host.name, title: title }),
     reject: _t("REJECT", "Reject"),
@@ -70,7 +70,7 @@ const JitsiInviteModal = (props) => {
       }
     }
   };
-  let stripTitle = title.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
+  let stripTitle = title.replace(/[&/\\#, +()$~%.'":*?<>{}]/g, "_");
   let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : stripTitle;
   const payload = {
     channel_id: channel_id,
@@ -96,55 +96,55 @@ const JitsiInviteModal = (props) => {
     }
   };
 
-  //   const handleSoundPlay = () => {
-  //     if (audioRef.current && !isIdle && isBrowserActive && !hideJoin) {
-  //       const promiseAudioPlay = audioRef.current.play();
-  //       if (promiseAudioPlay !== undefined) {
-  //         promiseAudioPlay
-  //           .then(() => {
-  //             // Start whatever you need to do only after playback
-  //             // has begun.
-  //           })
-  //           .catch((error) => {
-  //             /**
-  //              * @todo need a fallback in case autoplay is not allowed
-  //              **/
-  //           });
-  //       }
-  //     }
-  //   };
+  const handleSoundPlay = () => {
+    if (audioRef.current && !isIdle && isBrowserActive && !hideJoin) {
+      const promiseAudioPlay = audioRef.current.play();
+      if (promiseAudioPlay !== undefined) {
+        promiseAudioPlay
+          .then(() => {
+            // Start whatever you need to do only after playback
+            // has begun.
+          })
+          .catch((error) => {
+            /**
+             * @todo need a fallback in case autoplay is not allowed
+             **/
+          });
+      }
+    }
+  };
 
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       handleSoundPlay();
-  //     }, 800);
-  //     return () => {
-  //       if (audioRef.current) {
-  //         const promiseAudioPause = audioRef.current.pause();
+  useEffect(() => {
+    setTimeout(() => {
+      handleSoundPlay();
+    }, 800);
+    return () => {
+      if (audioRef.current) {
+        const promiseAudioPause = audioRef.current.pause();
 
-  //         if (promiseAudioPause !== undefined) {
-  //           promiseAudioPause
-  //             .then(() => {
-  //               // Start whatever you need to do only after playback
-  //               // has begun.
-  //             })
-  //             .catch((error) => {
-  //               /**
-  //                * @todo need a fallback in case autoplay is not allowed
-  //                **/
-  //             });
-  //         }
-  //       }
-  //     };
-  //   }, []);
+        if (promiseAudioPause !== undefined) {
+          promiseAudioPause
+            .then(() => {
+              // Start whatever you need to do only after playback
+              // has begun.
+            })
+            .catch((error) => {
+              /**
+               * @todo need a fallback in case autoplay is not allowed
+               **/
+            });
+        }
+      }
+    };
+  }, []);
 
   return (
     <Modal isOpen={modal} toggle={toggle} centered>
       <ModalBody>
-        {/* <AudioStyle ref={audioRef} controls loop>
-          <source src={require("../../assets/audio/zoomcall.mp3")} type="audio/mp3" />
+        <AudioStyle ref={audioRef} controls loop>
+          <source src={require("../../assets/audio/jitsi.mp3")} type="audio/mp3" />
           Your browser does not support the audio element.
-        </AudioStyle> */}
+        </AudioStyle>
         <h3>{startingMeet ? dictionary.startingMeeting : dictionary.jitsiInvite}</h3>
         {!startingMeet && (
           <ButtonsContainer>
