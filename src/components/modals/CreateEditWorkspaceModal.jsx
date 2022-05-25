@@ -1207,8 +1207,6 @@ const CreateEditWorkspaceModal = (props) => {
                 return found ? found : member;
               });
 
-              updateMembers(updatedMembers, res.data.id);
-
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
                 history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: form.selectedFolder.value,
