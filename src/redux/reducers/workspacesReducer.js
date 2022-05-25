@@ -204,9 +204,9 @@ export default (state = INITIAL_STATE, action) => {
       let connectedTeamIds = [];
       let workspaces = action.data.workspaces.map((ws) => {
         if (action.slug !== getSlug()) {
-          return { ...ws, id: `${ws.id}-${action.slug}` };
+          return { ...ws, isSharedWs: true };
         } else {
-          return ws;
+          return { ...ws, isSharedWs: false };
         }
       });
       workspaces.forEach((ws) => {
@@ -224,7 +224,7 @@ export default (state = INITIAL_STATE, action) => {
               const teams = t.members.filter((m) => m.hasOwnProperty("parent_team"));
               connectedTeamIds.push(teams);
             }
-            if (!state.workspaces[t.id]) {
+            if (!state.workspaces[ws.isSharedWs ? `${t.id}-${action.slug}` : t.id]) {
               updatedWorkspaces[t.id] = {
                 ...t,
                 channel: { ...t.channel, loaded: false },
@@ -246,7 +246,7 @@ export default (state = INITIAL_STATE, action) => {
             const teams = ws.members.filter((m) => m.hasOwnProperty("parent_team"));
             connectedTeamIds.push(teams);
           }
-          updatedWorkspaces[ws.id] = {
+          updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id] = {
             ...ws,
             is_favourite: ws.topic_detail.is_favourite,
             is_shared: ws.topic_detail.is_shared,

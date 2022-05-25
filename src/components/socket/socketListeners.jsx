@@ -469,7 +469,7 @@ class SocketListeners extends Component {
           unfurls: [],
           g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
         };
-        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id, slug: this.state.slug });
       })
       .listen(".recording-uploaded-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
@@ -496,7 +496,7 @@ class SocketListeners extends Component {
           unfurls: [],
           g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
         };
-        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id, slug: this.state.slug });
       })
       .listen(".create-meeting-notification", (e) => {
         if (this.state.userId !== e.host.id) {
@@ -638,6 +638,7 @@ class SocketListeners extends Component {
             this.props.incomingChatMessage({
               ...e.message,
               huddle_log: e.huddle_log,
+              slug: this.state.slug,
             });
             // const huddleAnswered = localStorage.getItem("huddle");
             // if (huddleAnswered) {
@@ -1255,7 +1256,7 @@ class SocketListeners extends Component {
                 message.is_read = true;
               }
             }
-            this.props.incomingChatMessage({ ...message, translated_body: null });
+            this.props.incomingChatMessage({ ...message, translated_body: null, slug: this.state.slug });
             delete e.SOCKET_TYPE;
             delete e.socket;
             if (e.user && e.user.id !== user.id) {
@@ -1955,7 +1956,7 @@ class SocketListeners extends Component {
             unfurls: [],
             g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
           };
-          this.props.incomingChatMessage({ ...chatMessage, channel_id: data.channel_id });
+          this.props.incomingChatMessage({ ...chatMessage, channel_id: data.channel_id, slug: this.state.slug });
           if (data.author.id !== this.state.userId) {
             this.props.addToModals({
               ...e,
