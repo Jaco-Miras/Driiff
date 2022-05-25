@@ -346,9 +346,16 @@ const ChatHeaderPanel = (props) => {
     }
 
     document.body.classList.remove("navigation-show");
-    if (workspaces[chatChannel.entity_id]) {
-      workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
-      workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+    if (chatChannel.slug) {
+      if (workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]) {
+        workspaceAction.selectWorkspace(workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]);
+        workspaceAction.redirectTo(workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]);
+      }
+    } else {
+      if (workspaces[chatChannel.entity_id]) {
+        workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
+        workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+      }
     }
   };
 

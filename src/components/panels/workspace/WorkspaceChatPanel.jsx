@@ -6,7 +6,6 @@ import { useRouteMatch } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
 import { createWorkspaceTeamChannel } from "../../../redux/actions/workspaceActions";
 import { useFetchWsCount } from "../../hooks";
-//mport { fetchRecentPosts } from "../../../redux/actions/postActions";
 import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div``;
@@ -35,7 +34,6 @@ const EmptyState = styled.div`
 const WorkspaceChatPanel = (props) => {
   const { className = "", workspace } = props;
   const route = useRouteMatch();
-  //const params = useParams();
   const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
@@ -60,12 +58,6 @@ const WorkspaceChatPanel = (props) => {
       if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (params.hasOwnProperty("workspaceId")) {
-  //     dispatch(fetchRecentPosts({ topic_id: params.workspaceId }));
-  //   }
-  // }, [params.workspaceId]);
 
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>

@@ -202,7 +202,14 @@ export default (state = INITIAL_STATE, action) => {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let connectedTeamIds = [];
-      action.data.workspaces.forEach((ws) => {
+      let workspaces = action.data.workspaces.map((ws) => {
+        if (action.slug !== getSlug()) {
+          return { ...ws, id: `${ws.id}-${action.slug}` };
+        } else {
+          return ws;
+        }
+      });
+      workspaces.forEach((ws) => {
         if (ws.type === "FOLDER") {
           if (updatedFolders.hasOwnProperty(ws.id)) {
             updatedFolders[ws.id].workspace_ids = [...updatedFolders[ws.id].workspace_ids, ...ws.topics.map((t) => t.id)];

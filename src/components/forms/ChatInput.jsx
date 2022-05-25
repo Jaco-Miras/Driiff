@@ -371,12 +371,12 @@ const ChatInput = (props) => {
         };
       }
     }
-
+    const messageUser = selectedChannel.slug && sharedWs[selectedChannel.slug] ? sharedWs[selectedChannel.slug].user_auth : user;
     let obj = {
       message: el.innerHTML,
       body: body,
       mention_ids: mention_ids,
-      user: user,
+      user: messageUser,
       original_body: quillData.text,
       is_read: true,
       editable: true,
@@ -395,6 +395,7 @@ const ChatInput = (props) => {
       unfurls: [],
       g_date: localizeDate(timestamp, "YYYY-MM-DD"),
       status: "pending",
+      slug: selectedChannel.slug,
     };
 
     if (!editMode) {

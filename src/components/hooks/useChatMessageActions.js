@@ -25,7 +25,7 @@ import {
 } from "../../redux/actions/chatActions";
 import { useToaster, useTodoActions, useTranslationActions } from "./index";
 import useChannelActions from "./useChannelActions";
-import { addToModals, deleteUnfurl, removeUnfurlReducer } from "../../redux/actions/globalActions";
+import { addToModals } from "../../redux/actions/globalActions";
 import { setViewFiles } from "../../redux/actions/fileActions";
 
 const useChatMessageActions = () => {
@@ -36,6 +36,7 @@ const useChatMessageActions = () => {
   const todoActions = useTodoActions();
   const { _t } = useTranslationActions();
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
 
   const dictionary = {
     reminderAlreadyExists: _t("TOASTER.REMINDER_EXISTS", "Reminder already exists"),
@@ -155,15 +156,17 @@ const useChatMessageActions = () => {
    * @param {function} [callback]
    */
   const react = (messageId, reactType, callback = () => {}) => {
-    dispatch(
-      postChatReaction(
-        {
-          message_id: messageId,
-          react_type: reactType,
-        },
-        callback
-      )
-    );
+    let payload = {
+      message_id: messageId,
+      react_type: reactType,
+    };
+    if (selectedChannel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
+      };
+    }
+    dispatch(postChatReaction(payload, callback));
   };
 
   /**
@@ -171,15 +174,16 @@ const useChatMessageActions = () => {
    * @param {function} [callback]
    */
   const remove = (messageId, callback = () => {}) => {
-    dispatch(
-      deleteChatMessage(
-        {
-          message_id: messageId,
-          //...getSharedPayload(),
-        },
-        callback
-      )
-    );
+    let payload = {
+      message_id: messageId,
+    };
+    if (selectedChannel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
+      };
+    }
+    dispatch(deleteChatMessage(payload, callback));
   };
 
   /**
@@ -249,17 +253,6 @@ const useChatMessageActions = () => {
   };
 
   /**
-   * @param {number} unfurl_id
-   * @param {number} channel_id
-   * @param {number} message_id
-   * @param {string} type
-   */
-  const removeUnfurl = (payload) => {
-    dispatch(deleteUnfurl(payload));
-    dispatch(removeUnfurlReducer(payload));
-  };
-
-  /**
    * @param {boolean} status
    */
   const setLastMessageVisiblility = (payload) => {
@@ -305,15 +298,17 @@ const useChatMessageActions = () => {
    * @param {function} [callback]
    */
   const markImportant = (chat, callback = () => {}) => {
-    dispatch(
-      putImportantChat(
-        {
-          message_id: chat.id,
-          is_important: chat.is_important ? 0 : 1,
-        },
-        callback
-      )
-    );
+    let payload = {
+      message_id: chat.id,
+      is_important: chat.is_important ? 0 : 1,
+    };
+    if (selectedChannel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
+      };
+    }
+    dispatch(putImportantChat(payload, callback));
   };
 
   /**
@@ -395,7 +390,6 @@ const useChatMessageActions = () => {
     edit,
     react,
     remove,
-    removeUnfurl,
     remind,
     markComplete,
     forward,

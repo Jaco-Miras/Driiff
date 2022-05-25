@@ -77,28 +77,8 @@ const WorkspacePageHeaderPanel = (props) => {
   const history = useHistory();
   const { className = "", workspace, user } = props;
 
-  //const dispatch = useDispatch();
-
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const params = useParams();
-
-  // const fetchWsCount = () => {
-  //   let payload = {
-  //     topic_id: params.workspaceId,
-  //   };
-  //   dispatch(
-  //     getWorkspaceRemindersCount(payload, (err, res) => {
-  //       if (err) return;
-  //       dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
-  //     })
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (!workspaceReminders.hasOwnProperty(params.workspaceId)) {
-  //     fetchWsCount();
-  //   }
-  // }, [workspaceReminders, params]);
 
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 

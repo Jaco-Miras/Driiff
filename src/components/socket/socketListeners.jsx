@@ -15,7 +15,6 @@ import {
   getChannelMembers,
   incomingArchivedChannel,
   incomingChatMessage,
-  incomingChatMessageFromOthers,
   incomingChatMessageReaction,
   incomingChatStar,
   incomingDeletedChatMessage,
@@ -27,12 +26,10 @@ import {
   incomingUpdatedChannelDetail,
   incomingUpdatedChatMessage,
   incomingUpdatedHuddleBot,
-  setAllMessagesAsRead,
   setChannel,
   setMemberTimestamp,
   setSelectedChannel,
   unreadChannelReducer,
-  updateChannelMembersTitle,
   clearUnpublishedAnswer,
   incomingHuddleSkip,
   transferChannelMessages,
@@ -84,7 +81,6 @@ import {
   addToModals,
   addUserToReducers,
   generateUnfurl,
-  generateUnfurlReducer,
   getConnectedSlugs,
   getLatestReply,
   getToDoDetail,
@@ -419,7 +415,7 @@ class SocketListeners extends Component {
           });
         }
 
-        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id });
+        this.props.incomingChatMessage({ ...chatMessage, channel_id: e.channel_id, slug: this.state.slug });
       })
       .listen(".end-driff-talk-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
@@ -446,7 +442,7 @@ class SocketListeners extends Component {
           unfurls: [],
           g_date: this.props.localizeDate(timestamp, "YYYY-MM-DD"),
         };
-        this.props.incomingJitsiEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
+        this.props.incomingJitsiEnded({ ...e, chat: chatMessage, channel_id: e.channel_id, slug: this.state.slug });
       })
       .listen(".left-driff-talk-notification", (e) => {
         let timestamp = Math.floor(Date.now() / 1000);
@@ -1242,29 +1238,7 @@ class SocketListeners extends Component {
                 this.publishChannelId.current = null;
               }, 5000);
             }
-            //unfurl link
             let message = { ...e };
-            // let urlArray = [...new Set(urlify(e.body))];
-            // if (urlArray.length) {
-            //   this.props.generateUnfurl(
-            //     {
-            //       type: "chat",
-            //       message_id: message.id,
-            //       link_url: urlArray[0],
-            //     },
-            //     (err, res) => {
-            //       if (res) {
-            //         this.props.generateUnfurlReducer({
-            //           unfurls: res.data.unfurls,
-            //           channel_id: message.channel_id,
-            //           message_id: message.id,
-            //         });
-            //       } else {
-            //         console.log(err);
-            //       }
-            //     }
-            //   );
-            // }
             if (e.is_active) {
               if (message.user === null || (message.user.id !== user.id && !message.is_muted)) {
                 this.props.soundPlay();
@@ -1325,15 +1299,19 @@ class SocketListeners extends Component {
             }
 
             //check if channel exist
-            let channel = this.props.channels[e.channel_id];
-            if ((typeof channel === "undefined" && e.is_active) || (typeof channel === "undefined" && !e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.state.userId))) {
+            if (this.props.channels[e.channel_code]) return;
+            if (!this.props.channels[e.channel_id] && e.is_active) {
+              //check if channel is active and channel is not loaded yet
+              this.props.getChannel({ code: e.channel_code });
+            } else if (!this.props.channels[e.channel_id] && !e.is_active && e.code_data && e.code_data.mention_ids && e.code_data.mention_ids.some((id) => id === this.state.userId)) {
+              //check if channel is not loaded yet and is not active and if user is mentioned
               this.props.getChannel({ code: e.channel_code });
             }
 
             break;
           }
           case "CHAT_UPDATE": {
-            this.props.incomingUpdatedChatMessage({ ...e, translated_body: null });
+            this.props.incomingUpdatedChatMessage({ ...e, translated_body: null, slug: this.state.slug });
             break;
           }
           case "CHAT_DELETE": {
@@ -1342,7 +1320,7 @@ class SocketListeners extends Component {
             break;
           }
           case "TOGGLE_IMPORTANT": {
-            this.props.incomingImportantChat(e);
+            this.props.incomingImportantChat({ ...e, slug: this.state.slug });
             break;
           }
           case "STAR_CHAT": {
@@ -2352,6 +2330,7 @@ class SocketListeners extends Component {
       .listen(".update-channel-name", (e) => {
         let data = {
           ...e,
+          slug: this.state.slug,
           message: {
             ...e.message,
             g_date: this.props.localizeDate(e.message.created_at.timestamp, "YYYY-MM-DD"),
@@ -2367,7 +2346,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedChannelDetail(data);
       })
       .listen(".member-update-timestamp", (e) => {
-        this.props.setMemberTimestamp({ ...e, userId: this.state.userId });
+        this.props.setMemberTimestamp({ ...e, userId: this.state.userId, slug: this.state.slug });
       })
       .listen(".new-added-member-chat", (e) => {
         if (e.id) {
@@ -2528,7 +2507,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".chat-message-react", (e) => {
-        this.props.incomingChatMessageReaction({ ...e, user_name: e.name });
+        this.props.incomingChatMessageReaction({ ...e, user_name: e.name, slug: this.state.slug });
       })
       .listen(".updated-notification-counter", (e) => {
         if (e.entity_group_type === "CHAT") {
@@ -2605,13 +2584,10 @@ function mapDispatchToProps(dispatch) {
     getConnectedSlugs: bindActionCreators(getConnectedSlugs, dispatch),
     getUser: bindActionCreators(getUser, dispatch),
     setMemberTimestamp: bindActionCreators(setMemberTimestamp, dispatch),
-    setAllMessagesAsRead: bindActionCreators(setAllMessagesAsRead, dispatch),
     incomingChatMessage: bindActionCreators(incomingChatMessage, dispatch),
-    incomingChatMessageFromOthers: bindActionCreators(incomingChatMessageFromOthers, dispatch),
     addFilesToChannelAction: bindActionCreators(addFilesToChannel, dispatch),
     deleteFilesFromChannelAction: bindActionCreators(deleteFilesFromChannel, dispatch),
     generateUnfurl: bindActionCreators(generateUnfurl, dispatch),
-    generateUnfurlReducer: bindActionCreators(generateUnfurlReducer, dispatch),
     setChannel: bindActionCreators(setChannel, dispatch),
     incomingArchivedChannel: bindActionCreators(incomingArchivedChannel, dispatch),
     incomingChatMessageReaction: bindActionCreators(incomingChatMessageReaction, dispatch),
@@ -2619,7 +2595,6 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedChatMessage: bindActionCreators(incomingDeletedChatMessage, dispatch),
     incomingUpdatedChannelDetail: bindActionCreators(incomingUpdatedChannelDetail, dispatch),
     getChannelMembers: bindActionCreators(getChannelMembers, dispatch),
-    updateChannelMembersTitle: bindActionCreators(updateChannelMembersTitle, dispatch),
     incomingWorkspaceFolder: bindActionCreators(incomingWorkspaceFolder, dispatch),
     incomingWorkspace: bindActionCreators(incomingWorkspace, dispatch),
     incomingUpdatedWorkspaceFolder: bindActionCreators(incomingUpdatedWorkspaceFolder, dispatch),

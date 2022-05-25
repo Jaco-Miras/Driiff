@@ -138,22 +138,32 @@ export function putChatMessage(payload) {
 }
 
 export function postChatReaction(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-message-react";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function deleteChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channel-messages/${payload.message_id}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -304,11 +314,17 @@ export function getSelectChannel(payload) {
  * @returns {Promise<*>}
  */
 export function putImportantChat(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/set-message-important";
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
