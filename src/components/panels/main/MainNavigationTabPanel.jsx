@@ -193,7 +193,7 @@ const MainNavigationTabPanel = (props) => {
 
   useEffect(() => {
     if (params.workspaceId && activeTopic) {
-      if (parseInt(params.workspaceId) !== activeTopic.id && workspaces[params.workspaceId]) {
+      if (parseInt(params.workspaceId) !== activeTopic.id && !activeTopic.sharedSlug && workspaces[params.workspaceId]) {
         // if url params of workspace id is not equal to active workspace id then set workspace and channel
         actions.selectWorkspace(workspaces[params.workspaceId]);
       }

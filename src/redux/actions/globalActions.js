@@ -56,10 +56,6 @@ export function generateUnfurl(payload, callback) {
   return dispatchActionToReducer(generateUnfurlService(payload), "GENERATE_UNFURL_START", "GENERATE_UNFURL_SUCCESS", "GENERATE_UNFURL_FAILURE", callback);
 }
 
-export function generateUnfurlReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("GENERATE_UNFURL_REDUCER", payload, callback);
-}
-
 export function addToModals(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_TO_MODALS", payload, callback);
 }
@@ -141,10 +137,6 @@ export function getDrafts(payload, callback) {
 
 export function deleteUnfurl(payload, callback) {
   return dispatchActionToReducer(deleteUnfurlService(payload), "DELETE_UNFURL_START", "DELETE_UNFURL_SUCCESS", "DELETE_UNFURL_FAIL", callback);
-}
-
-export function removeUnfurlReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("REMOVE_UNFURL", payload, callback);
 }
 
 export function getQuickLinks(payload, callback) {

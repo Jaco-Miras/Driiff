@@ -5,7 +5,6 @@ import ChatBubbleVirtualized from "./ChatBubbleVirtualized";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
 import ChatReactionButton from "./ChatReactionButton";
-//import ChatUnfurl from "./ChatUnfurl";
 import ChatReactions from "./Reactions/ChatReactions";
 import SeenIndicator from "./SeenIndicator";
 import SystemMessageVirtualized from "./SystemMessageVirtualized";

@@ -16,6 +16,8 @@ const Wrapper = styled.div`
 const WorkspaceFilesPanel = (props) => {
   const { className = "", isMember, workspace } = props;
 
+  const isWorkspaceMember = isMember || workspace.sharedSlug;
+
   const dispatch = useDispatch();
   const history = useHistory();
   const { _t } = useTranslationActions();
@@ -117,7 +119,7 @@ const WorkspaceFilesPanel = (props) => {
           <>
             <FilesSidebar
               actions={actions}
-              isMember={isMember}
+              isMember={isWorkspaceMember}
               clearFilter={clearFilter}
               params={params}
               dropZoneRef={refs.dropZone}
@@ -133,7 +135,7 @@ const WorkspaceFilesPanel = (props) => {
             <div className="col-md-9 app-content mb-4">
               <div className="app-content-overlay" />
               <FilesHeader
-                isMember={isMember}
+                isMember={isWorkspaceMember}
                 clearFilter={clearFilter}
                 dropZoneRef={refs.dropZone}
                 history={history}
@@ -156,7 +158,7 @@ const WorkspaceFilesPanel = (props) => {
                 folders={folders}
                 folder={folder}
                 fileIds={fileIds}
-                isMember={isMember}
+                isMember={isWorkspaceMember}
                 subFolders={subFolders}
                 history={history}
                 actions={actions}

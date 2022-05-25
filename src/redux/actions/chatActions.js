@@ -95,10 +95,6 @@ export function getChatMessages(payload, callback) {
   return dispatchActionToReducer(getChatMessagesService(payload), "GET_CHAT_MESSAGES_START", "GET_CHAT_MESSAGES_SUCCESS", "GET_CHAT_MESSAGES_FAILURE", callback);
 }
 
-export function setAllMessagesAsRead(cbdata, callback) {
-  return SimpleDispatchActionToReducer("MARK_ALL_MESSAGES_AS_READ", cbdata, callback);
-}
-
 export function addChatMessage(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_CHAT_MESSAGE", payload, callback);
 }
@@ -113,10 +109,6 @@ export function putChatMessage(payload, callback) {
 
 export function incomingChatMessage(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CHAT_MESSAGE", payload, callback);
-}
-
-export function incomingChatMessageFromOthers(payload, callback) {
-  return SimpleDispatchActionToReducer("INCOMING_CHAT_MESSAGE_FROM_OTHERS", payload, callback);
 }
 
 export function incomingArchivedChannel(payload, callback) {
@@ -228,10 +220,6 @@ export function deleteChannelMembers(payload, callback) {
 
 export function getChannelMembers(payload, callback) {
   return dispatchActionToReducer(getChannelMembersService(payload), "GET_CHAT_MEMBERS_START", "GET_CHAT_MEMBERS_SUCCESS", "GET_CHAT_MEMBERS_FAILURE", callback);
-}
-
-export function updateChannelMembersTitle(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_CHANNEL_MEMBERS_TITLE", payload, callback);
 }
 
 export function setLastVisitedChannel(payload, callback) {
