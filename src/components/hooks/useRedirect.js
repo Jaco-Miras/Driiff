@@ -156,6 +156,10 @@ const useRedirect = () => {
     history.push("/todos");
   };
 
+  const toMeetings = () => {
+    history.push("/meetings");
+  };
+
   return {
     fetchWorkspaceAndRedirect,
     toChannel,
@@ -165,6 +169,7 @@ const useRedirect = () => {
     toPost,
     toWorkspace,
     toTodos,
+    toMeetings,
   };
 };
 

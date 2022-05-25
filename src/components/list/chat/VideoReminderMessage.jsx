@@ -80,7 +80,7 @@ const VideoReminderMessage = (props) => {
   };
   const { _t } = useTranslationActions();
   const dictionary = {
-    videoReminderMessage: _t("DRIFF_TALK_CHAT_MESSAGE", "This call is private to the participants in this channel"),
+    videoReminderMessage: _t("SCHEDULED_DRIFF_TALK_CHAT_MESSAGE", "Grab some coffe, check your hair and join the call. This call is private to the participants in this channel"),
     joinMeeting: _t("JOIN_MEETING", "Join Meeting"),
     meetingEnded: _t("MEETING_ENDED", "Meeting ended"),
     scheduleMeet: _t("DRIFF_TALK_SCHEDULE_MEETING", "Scheduled meeting is starting"),
@@ -90,7 +90,7 @@ const VideoReminderMessage = (props) => {
       <SvgIconFeather icon="video" />
       <span>{dictionary.scheduleMeet}</span>
       <button className="btn btn-primary" onClick={handleJoinMeeting}>
-        <SvgIconFeather icon="user-plus" className={"mr-2"} /> {dictionary.joinMeeting}
+        <SvgIconFeather icon="calendar" className={"mr-2"} /> {dictionary.joinMeeting}
       </button>
 
       <span className="text-muted">{dictionary.videoReminderMessage}</span>

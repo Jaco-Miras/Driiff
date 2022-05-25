@@ -321,7 +321,8 @@ const MainSnooze = (props) => {
       dispatch(setSelectedChannel({ id: n.channel.id }));
       return;
     } else if (type === "todo") {
-      redirect.toTodos();
+      if (n.link_type === "DRIFF_TALK") redirect.toMeetings();
+      else redirect.toTodos();
     } else {
       let post = { id: n.data.post_id, title: n.data.title };
       let workspace = null;
