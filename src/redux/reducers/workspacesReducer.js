@@ -264,7 +264,7 @@ export default (state = INITIAL_STATE, action) => {
             slug: action.slug,
             sharedSlug: action.slug !== getSlug(),
           };
-          delete updatedWorkspaces[ws.id].topic_detail;
+          delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
       });
       return {
