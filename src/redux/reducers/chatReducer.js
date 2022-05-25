@@ -276,12 +276,14 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_SELECTED_CHANNEL": {
       let channel = null;
-      if (action.data.slug) {
+      if (action.data.slug && action.data.code) {
         channel = { ...state.channels[action.data.code] };
       } else {
-        channel = {
-          ...state.channels[action.data.id],
-        };
+        if (state.channels[action.data.id]) {
+          channel = {
+            ...state.channels[action.data.id],
+          };
+        }
       }
 
       let updatedChannels = { ...state.channels };
@@ -906,7 +908,6 @@ export default function (state = INITIAL_STATE, action) {
         sendButtonClicked: action.data,
       };
     }
-    //todo update reducer
     case "ADD_QUOTE": {
       return {
         ...state,
@@ -916,7 +917,6 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
-    //todo update reducer
     case "CLEAR_QUOTE": {
       let updatedQuotes = { ...state.chatQuotes };
       delete updatedQuotes[action.data.channel_id];
@@ -1408,6 +1408,7 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: selectedChannel,
       };
     }
+    //todo
     case "INCOMING_POST_NOTIFICATION_MESSAGE": {
       let channels = { ...state.channels };
       if (Object.keys(channels).length && channels.hasOwnProperty(action.data.channel_id)) {
@@ -2800,7 +2801,6 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
-    //todo
     case "INCOMING_JITSI_ENDED": {
       let fromSharedSlug = false;
       if (action.data.slug && action.data.slug !== getSlug()) fromSharedSlug = true;
