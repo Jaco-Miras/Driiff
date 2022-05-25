@@ -1408,11 +1408,28 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: selectedChannel,
       };
     }
-    //todo
     case "INCOMING_POST_NOTIFICATION_MESSAGE": {
-      let channels = { ...state.channels };
-      if (Object.keys(channels).length && channels.hasOwnProperty(action.data.channel_id)) {
-        channels = {
+      return {
+        ...state,
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
+            ? {
+                ...state.selectedChannel,
+                selected: true,
+                is_hidden: false,
+                last_reply: action.data,
+                replies: state.selectedChannel.replies.some((r) => r.id === action.data.id)
+                  ? state.selectedChannel.replies.map((r) => {
+                      if (r.id === action.data.id) {
+                        return action.data;
+                      } else {
+                        return r;
+                      }
+                    })
+                  : [...state.selectedChannel.replies, action.data],
+              }
+            : state.selectedChannel,
+        channels: {
           ...Object.values(state.channels)
             .map((channel) => {
               if (channel.id === action.data.channel_id) {
@@ -1448,12 +1465,7 @@ export default function (state = INITIAL_STATE, action) {
               channels[channel.id] = channel;
               return channels;
             }, {}),
-        };
-      }
-      return {
-        ...state,
-        selectedChannel: state.selectedChannel && channels[state.selectedChannel.id] ? { ...channels[state.selectedChannel.id], selected: true } : state.selectedChannel,
-        channels: channels,
+        },
       };
     }
     //todo update reducer

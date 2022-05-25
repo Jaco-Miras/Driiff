@@ -816,6 +816,7 @@ class SocketListeners extends Component {
             // m.system_message.new_post = true;
             m.system_message.topic = m.topic;
             m.system_message.shared_with_client = true;
+            m.system_message.slug = this.state.slug;
             this.props.incomingPostNotificationMessage(m.system_message);
           });
       })
@@ -941,6 +942,7 @@ class SocketListeners extends Component {
                   new_post: true,
                   topic: m.topic,
                   shared_with_client: e.shared_with_client,
+                  slug: this.state.slug,
                 };
 
                 this.props.incomingPostNotificationMessage(message);
@@ -972,6 +974,7 @@ class SocketListeners extends Component {
                     m.system_message.new_post = false;
                     m.system_message.topic = m.topic;
                     m.system_message.shared_with_client = e.shared_with_client;
+                    m.system_message.slug = this.state.slug;
                     this.props.incomingPostNotificationMessage(m.system_message);
                   });
               } else if (e.post_participant_data.from_company) {
@@ -1645,6 +1648,7 @@ class SocketListeners extends Component {
             // m.system_message.new_post = true;
             m.system_message.topic = m.topic;
             m.system_message.shared_with_client = true;
+            m.system_message.slug = this.state.slug;
             this.props.incomingPostNotificationMessage(m.system_message);
           });
       })
