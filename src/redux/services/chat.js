@@ -348,20 +348,6 @@ export function putChatStar(payload) {
 
 /**
  * @param payload
- * @param number payload.message_id
- * @returns {Promise<*>}
- */
-export function getChatStar(payload) {
-  let url = `/v2/chat-star?${objToUrlParams(payload)}`;
-  return apiCall({
-    method: "GET",
-    url: url,
-    data: payload,
-  });
-}
-
-/**
- * @param payload
  * @returns {Promise<*>}
  */
 export function getHuddleChatbot(payload) {

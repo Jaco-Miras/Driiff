@@ -16,7 +16,6 @@ import {
   incomingArchivedChannel,
   incomingChatMessage,
   incomingChatMessageReaction,
-  incomingChatStar,
   incomingDeletedChatMessage,
   incomingDeletedHuddleBot,
   incomingImportantChat,
@@ -1236,10 +1235,6 @@ class SocketListeners extends Component {
           }
           case "TOGGLE_IMPORTANT": {
             this.props.incomingImportantChat({ ...e, slug: this.state.slug });
-            break;
-          }
-          case "STAR_CHAT": {
-            this.props.incomingChatStar(e);
             break;
           }
           default:
@@ -2601,7 +2596,6 @@ function mapDispatchToProps(dispatch) {
     getUnreadWorkspacePostEntries: bindActionCreators(getUnreadWorkspacePostEntries, dispatch),
     updateWorkspacePostCount: bindActionCreators(updateWorkspacePostCount, dispatch),
     incomingPostApproval: bindActionCreators(incomingPostApproval, dispatch),
-    incomingChatStar: bindActionCreators(incomingChatStar, dispatch),
     incomingCommentApproval: bindActionCreators(incomingCommentApproval, dispatch),
     incomingArchivedUser: bindActionCreators(incomingArchivedUser, dispatch),
     incomingUnarchivedUser: bindActionCreators(incomingUnarchivedUser, dispatch),

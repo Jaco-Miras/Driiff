@@ -6,7 +6,6 @@ import {
   addQuote,
   deleteChatMessage,
   getChatMessages,
-  getChatStar,
   postChatMessage,
   postChatReaction,
   putChatMessage,
@@ -311,21 +310,6 @@ const useChatMessageActions = () => {
   };
 
   /**
-   * @param number messageId
-   * @param {function} [callback]
-   */
-  const getStars = (messageId, callback = () => {}) => {
-    dispatch(
-      getChatStar(
-        {
-          message_id: messageId,
-        },
-        callback
-      )
-    );
-  };
-
-  /**
    * @param {object} payload
    * @parm number payload.star 1|0
    * @parm number payload.message_id chat.id
@@ -403,7 +387,6 @@ const useChatMessageActions = () => {
     clipboardLink,
     setLastMessageVisiblility,
     markImportant,
-    getStars,
     setStar,
     setHuddleAnswers,
     saveTranslationBody,

@@ -67,7 +67,6 @@ export {
   getLastChannel,
   getChannelLastReply,
   putChatStar,
-  getChatStar,
   getHuddleChatbot,
   postHuddleChatbot,
   putHuddleChatbot,
