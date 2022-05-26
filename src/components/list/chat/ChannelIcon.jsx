@@ -142,7 +142,7 @@ const ChannelIcon = (props) => {
       )} */}
       {channel && channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
       {channel && channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
-      {channel && channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {channel && channel.type === "PERSONAL_BOT" && <Icon icon="clipboard" alt={channel.title} />}
       {channel && channel.type === "TOPIC" && (
         <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />
       )}
