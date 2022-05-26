@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useInView } from "react-intersection-observer";
 import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
@@ -112,6 +112,7 @@ const SystemMessage = (props) => {
 
   const componentIsMounted = useRef(true);
   const [generatingSignature, setGeneratingSignature] = useState(false);
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
   const { parseBody } = useSystemMessage({ dictionary, reply, selectedChannel, user });
 
   const [lastChatRef, inView, entry] = useInView({
@@ -196,7 +197,16 @@ const SystemMessage = (props) => {
           if (params.folderId) {
             history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           } else {
-            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          }
+        } else if (selectedChannel.slug) {
+          let ws = workspaces[`${selectedChannel.entity_id}-${selectedChannel.slug}`];
+          if (ws) {
+            if (ws.folder_id) {
+              history.push(`/workspace/posts/${ws.folder_id}/${ws.folder_name}/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            } else {
+              history.push(`/workspace/posts/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            }
           }
         } else {
           history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);

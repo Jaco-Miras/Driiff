@@ -187,7 +187,7 @@ export default (state = INITIAL_STATE, action) => {
               })
             : ws.members;
           //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
-          res[ws.id] = {
+          res[ws.sharedSlug ? ws.key : ws.id] = {
             ...ws,
             members: wsMembers,
             //is_shared: action.data.type === "external" ? true : isStillExternal,
@@ -225,7 +225,7 @@ export default (state = INITIAL_STATE, action) => {
               connectedTeamIds.push(teams);
             }
             if (!state.workspaces[ws.isSharedWs ? `${t.id}-${action.slug}` : t.id]) {
-              updatedWorkspaces[t.id] = {
+              updatedWorkspaces[ws.isSharedWs ? `${t.id}-${action.slug}` : t.id] = {
                 ...t,
                 channel: { ...t.channel, loaded: false },
                 is_lock: t.private,
@@ -237,6 +237,7 @@ export default (state = INITIAL_STATE, action) => {
                 type: "WORKSPACE",
                 slug: action.slug,
                 sharedSlug: action.slug !== getSlug(),
+                key: `${t.id}-${action.slug}`,
               };
             }
           });
@@ -263,6 +264,7 @@ export default (state = INITIAL_STATE, action) => {
             show_about: ws.topic_detail.show_about,
             slug: action.slug,
             sharedSlug: action.slug !== getSlug(),
+            key: `${ws.id}-${action.slug}`,
           };
           delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
@@ -962,9 +964,9 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
           if (action.data.data.workspace_data.topic && action.data.data.workspace_data.topic.id === ws.id) {
-            acc[ws.id] = { ...ws, members: [...ws.members, ...action.data.users], member_ids: [...ws.member_ids, ...action.data.users.map((u) => u.id)] };
+            acc[ws.sharedSlug ? ws.key : ws.id] = { ...ws, members: [...ws.members, ...action.data.users], member_ids: [...ws.member_ids, ...action.data.users.map((u) => u.id)] };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -1254,6 +1256,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "ADD_POST_REACT": {
       return {
         ...state,
@@ -1283,6 +1286,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "REMOVE_POST_REACT": {
       return {
         ...state,
@@ -1312,8 +1316,8 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "GET_POST_CLAP_HOVER_SUCCESS": {
-      const user_ids = action.data.claps.map((c) => c.user_id);
       return {
         ...state,
         workspacePosts: {
@@ -1393,6 +1397,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
@@ -1422,6 +1427,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //todo
     case "INCOMING_POST_MARK_DONE": {
       return {
         ...state,
@@ -1450,6 +1456,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -2018,6 +2025,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -2047,6 +2055,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo
     case "ARCHIVE_POST_REDUCER": {
       return {
         ...state,
@@ -2154,6 +2163,7 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+    //todo
     case "INCOMING_POST_TOGGLE_FOLLOW": {
       return {
         ...state,
@@ -2353,7 +2363,7 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((workspaces, workspace) => {
-              workspaces[workspace.id] = workspace;
+              workspaces[workspace.sharedSlug ? `${workspace.id}-${workspace.slug}` : workspace.id] = workspace;
               return workspaces;
             }, {}),
         },
@@ -3179,6 +3189,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
+    //todo
     case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
@@ -3247,7 +3258,7 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((workspaces, workspace) => {
-              workspaces[workspace.id] = workspace;
+              workspaces[workspace.sharedSlug ? workspace.key : workspace.id] = workspace;
               return workspaces;
             }, {}),
         },
@@ -3285,7 +3296,7 @@ export default (state = INITIAL_STATE, action) => {
         },
         workspaces: {
           ...Object.values(state.workspaces).reduce((res, ws) => {
-            res[ws.id] = {
+            res[ws.sharedSlug ? ws.key : ws.id] = {
               ...ws,
               is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
             };
@@ -4082,7 +4093,7 @@ export default (state = INITIAL_STATE, action) => {
         return {
           ...state,
           workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-            if (ws.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))) {
+            if (!ws.sharedSlug && ws.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))) {
               acc[ws.id] = {
                 ...ws,
                 members: ws.members.map((mem) => {
@@ -4107,7 +4118,7 @@ export default (state = INITIAL_STATE, action) => {
             return acc;
           }, {}),
           activeTopic:
-            state.activeTopic && state.activeTopic.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))
+            state.activeTopic && !state.activeTopic.sharedSlug && state.activeTopic.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))
               ? {
                   ...state.activeTopic,
                   members: state.activeTopic.members.map((mem) => {
@@ -4187,7 +4198,9 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.members.some((m) => m.id === action.data.id)) {
+          if (ws.sharedSlug) {
+            acc[ws.key] = ws;
+          } else if (ws.members.some((m) => m.id === action.data.id)) {
             acc[ws.id] = { ...ws, members: ws.members.filter((m) => m.id !== action.data.id) };
           } else {
             acc[ws.id] = ws;
@@ -4201,7 +4214,9 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
+          if (ws.sharedSlug && ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
+            acc[ws.key] = { ...ws, is_active: action.data.is_active };
+          } else if (ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
             acc[ws.id] = { ...ws, is_active: action.data.is_active };
           } else {
             acc[ws.id] = ws;

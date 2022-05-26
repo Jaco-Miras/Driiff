@@ -302,10 +302,10 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
       let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+      if (state.channels[action.data.channel_id]) {
         channel = { ...state.channels[action.data.channel_id] };
-      } else if (Object.values(state.channels).find((c) => c.id && c.slug)) {
-        channel = Object.values(state.channels).find((c) => c.id && c.slug && c.slug === action.data.slug);
+      } else if (Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug)) {
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug && c.slug === action.data.slug);
       }
       if (channel) {
         channel = {
@@ -2280,35 +2280,36 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
-    //todo
     case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
       return {
         ...state,
         channels: {
           ...Object.values(state.channels).reduce((res, channel) => {
-            res[channel.id] = {
-              ...channel,
-              replies: channel.replies.map((r) => {
-                if (r.files.some((f) => f.file_id === action.data.file_id)) {
-                  return {
-                    ...r,
-                    files: r.files.map((file) => {
-                      if (file.file_id === action.data.file_id) {
-                        return {
-                          ...file,
-                          deleted_at: { timestamp: getCurrentTimestamp() },
-                          file_type: "trashed",
-                        };
-                      } else {
-                        return file;
-                      }
-                    }),
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            };
+            if (state.channels[channel.id]) {
+              res[channel.id] = {
+                ...channel,
+                replies: channel.replies.map((r) => {
+                  if (r.files.some((f) => f.file_id === action.data.file_id)) {
+                    return {
+                      ...r,
+                      files: r.files.map((file) => {
+                        if (file.file_id === action.data.file_id) {
+                          return {
+                            ...file,
+                            deleted_at: { timestamp: getCurrentTimestamp() },
+                            file_type: "trashed",
+                          };
+                        } else {
+                          return file;
+                        }
+                      }),
+                    };
+                  } else {
+                    return r;
+                  }
+                }),
+              };
+            }
             return res;
           }, {}),
         },
