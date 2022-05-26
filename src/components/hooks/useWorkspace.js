@@ -133,60 +133,79 @@ const useWorkspace = () => {
     const fetchingCallback = (err, res) => {
       if (res) setFetchingChannel(false);
     };
-    if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
+    if (activeTopic && activeTopic.sharedSlug) {
       if (url.startsWith("/workspace/team-chat")) {
-        if (activeTopic.team_channel.code && channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
-          actions.selectChannel({ id: activeTopic.team_channel.id });
-        } else if (activeTopic.team_channel.code && !channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
-          if (!fetchingChannel) {
-            setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
-          }
+        if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelId !== activeTopic.team_channel.id) {
+          actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.channel.id });
         }
-      } else {
+      } else if (url.startsWith("/workspace/chat")) {
         if (activeTopic.is_shared) {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
-            actions.selectChannel({ id: activeTopic.channel.id });
-          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
-            setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+          if (channelIds.some((id) => id === activeTopic.channel.code) && selectedChannelId !== activeTopic.channel.id) {
+            actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.channel.code, id: activeTopic.channel.id });
           }
         } else {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
-            actions.selectChannel({ id: activeTopic.team_channel.id });
-          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
-            setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
+          if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelId !== activeTopic.team_channel.id) {
+            console.log(activeTopic);
+            actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.team_channel.id });
           }
         }
       }
-    } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
-      // check if channel is not match
-      if (url.startsWith("/workspace/team-chat")) {
-        if (activeTopic.team_channel.code && activeTopic.team_channel.id !== selectedChannelId) {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
+    } else {
+      if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
+        if (url.startsWith("/workspace/team-chat")) {
+          if (activeTopic.team_channel.code && channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
             actions.selectChannel({ id: activeTopic.team_channel.id });
-          } else {
+          } else if (activeTopic.team_channel.code && !channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
             if (!fetchingChannel) {
               setFetchingChannel(true);
               actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
             }
           }
+        } else {
+          if (activeTopic.is_shared) {
+            if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
+              actions.selectChannel({ id: activeTopic.channel.id });
+            } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
+              setFetchingChannel(true);
+              actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+            }
+          } else {
+            if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+              actions.selectChannel({ id: activeTopic.team_channel.id });
+            } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+              setFetchingChannel(true);
+              actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
+            }
+          }
         }
-      } else {
-        if (activeTopic.is_shared) {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
-            actions.selectChannel({ id: activeTopic.channel.id });
-          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
-            setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+      } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
+        // check if channel is not match
+        if (url.startsWith("/workspace/team-chat")) {
+          if (activeTopic.team_channel.code && activeTopic.team_channel.id !== selectedChannelId) {
+            if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
+              actions.selectChannel({ id: activeTopic.team_channel.id });
+            } else {
+              if (!fetchingChannel) {
+                setFetchingChannel(true);
+                actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
+              }
+            }
           }
         } else {
-          if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
-            actions.selectChannel({ id: activeTopic.team_channel.id });
-          } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
-            setFetchingChannel(true);
-            actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
+          if (activeTopic.is_shared) {
+            if (channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId) {
+              actions.selectChannel({ id: activeTopic.channel.id });
+            } else if (!channelIds.some((id) => parseInt(id) === activeTopic.channel.id) && activeTopic.channel.id !== selectedChannelId && activeTopic.channel.code && !fetchingChannel) {
+              setFetchingChannel(true);
+              actions.fetchChannel({ code: activeTopic.channel.code }, fetchingCallback);
+            }
+          } else {
+            if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId) {
+              actions.selectChannel({ id: activeTopic.team_channel.id });
+            } else if (!channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id) && activeTopic.team_channel.id !== selectedChannelId && activeTopic.team_channel.code && !fetchingChannel) {
+              setFetchingChannel(true);
+              actions.fetchChannel({ code: activeTopic.team_channel.code }, fetchingCallback);
+            }
           }
         }
       }
@@ -199,25 +218,6 @@ const useWorkspace = () => {
       setFetchingChannel(false);
     }
   }, [params]);
-
-  // useEffect(() => {
-  //   if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
-  //     setFetchingPrimary(true);
-  //     const callback = (err, res) => {
-  //       setTimeout(() => {
-  //         setFetchingPrimary(false);
-  //       }, 300);
-  //       if (err) return;
-  //       let payload = {
-  //         id: activeTopic.id,
-  //         folder_id: activeTopic.workspace_id,
-  //         files: res.data,
-  //       };
-  //       actions.addPrimaryFilesToWorkspace(payload);
-  //     };
-  //     actions.getPrimaryFiles(activeTopic.id, callback);
-  //   }
-  // }, [fetchingPrimary, activeTopic, url, user]);
 
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {

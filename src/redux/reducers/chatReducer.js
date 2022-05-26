@@ -1544,7 +1544,7 @@ export default function (state = INITIAL_STATE, action) {
               }
             })
             .reduce((channels, channel) => {
-              channels[channel.id] = channel;
+              channels[channel.slug ? channel.code : channel.id] = channel;
               return channels;
             }, {}),
         },
@@ -1759,108 +1759,6 @@ export default function (state = INITIAL_STATE, action) {
         }),
       };
     }
-    case "GET_CHAT_STAR_SUCCESS": {
-      return {
-        ...state,
-        ...(state.selectedChannel &&
-          state.selectedChannel.replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1 && {
-            selectedChannel: {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.id === action.data.chat_message_id) {
-                  return {
-                    ...r,
-                    star_users: action.data.users,
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          }),
-        channels: {
-          ...Object.values(state.channels)
-            .map((channel) => {
-              if (state.channels[channel.id].replies.findIndex((r) => r.id === action.data.chat_message_id) !== -1) {
-                return {
-                  ...state.channels[channel.id],
-                  replies: state.channels[channel.id].replies.map((r) => {
-                    if (r.id === action.data.chat_message_id) {
-                      return {
-                        ...r,
-                        star_users: action.data.users,
-                      };
-                    } else {
-                      return r;
-                    }
-                  }),
-                };
-              } else {
-                return channel;
-              }
-            })
-            .reduce((channels, channel) => {
-              channels[channel.id] = channel;
-              return channels;
-            }, {}),
-        },
-      };
-    }
-    case "INCOMING_CHAT_STAR": {
-      return {
-        ...state,
-        ...(state.selectedChannel &&
-          state.selectedChannel.id === action.data.channel.id && {
-            selectedChannel: {
-              ...state.selectedChannel,
-              replies: state.selectedChannel.replies.map((r) => {
-                if (r.id === action.data.chat.id) {
-                  return {
-                    ...r,
-                    ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
-                    star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
-                    ...(typeof state.star_users === "undefined"
-                      ? {
-                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
-                        }
-                      : {
-                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
-                        }),
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          }),
-        ...(typeof state.channels[action.data.channel.id] !== "undefined" && {
-          channels: {
-            ...state.channels,
-            [action.data.channel.id]: {
-              ...state.channels[action.data.channel.id],
-              replies: state.channels[action.data.channel.id].replies.map((r) => {
-                if (r.id === action.data.chat.id) {
-                  return {
-                    ...r,
-                    ...(state.user.id === action.data.author.id && { i_starred: action.data.star === 1 ? true : false }),
-                    star_count: action.data.star === 1 ? r.star_count + 1 : r.star_count - 1,
-                    ...(typeof state.star_users === "undefined"
-                      ? {
-                          ...(action.data.star === 1 ? { star_users: [action.data.author] } : { star_users: [] }),
-                        }
-                      : {
-                          ...(action.data.star === 1 ? { star_users: [state.star_users, action.data.author] } : { star_users: state.star_users.filter((u) => u.id !== action.data.author.id) }),
-                        }),
-                  };
-                } else {
-                  return r;
-                }
-              }),
-            },
-          },
-        }),
-      };
-    }
     case "INCOMING_ARCHIVED_USER": {
       return {
         ...state,
@@ -1884,7 +1782,7 @@ export default function (state = INITIAL_STATE, action) {
               }
             })
             .reduce((channels, channel) => {
-              channels[channel.id] = channel;
+              channels[channel.slug ? channel.code : channel.id] = channel;
               return channels;
             }, {}),
         },
@@ -1914,7 +1812,7 @@ export default function (state = INITIAL_STATE, action) {
               }
             })
             .reduce((channels, channel) => {
-              channels[channel.id] = channel;
+              channels[channel.slug ? channel.code : channel.id] = channel;
               return channels;
             }, {}),
         },
@@ -2866,7 +2764,7 @@ export default function (state = INITIAL_STATE, action) {
           if (ch.type === "COMPANY") {
             acc[ch.id] = { ...ch, members: ch.members.filter((m) => m.id !== action.data.user_id) };
           } else {
-            acc[ch.id] = ch;
+            acc[ch.slug ? ch.code : ch.id] = ch;
           }
           return acc;
         }, {}),
@@ -2912,9 +2810,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if ((channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && channel.entity_id === parseInt(action.data.id)) {
-            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+            acc[channel.slug ? channel.code : channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -2940,7 +2838,7 @@ export default function (state = INITIAL_STATE, action) {
               title = `${action.data.name} & ${otherUser}`;
               if (action.data.icon_link) icon_link = action.data.icon_link;
             }
-            acc[channel.id] = {
+            acc[channel.slug ? channel.code : channel.id] = {
               ...channel,
               title: title,
               icon_link: icon_link,
@@ -2954,7 +2852,7 @@ export default function (state = INITIAL_STATE, action) {
               ],
             };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -2991,7 +2889,7 @@ export default function (state = INITIAL_STATE, action) {
             // }
           })
           .reduce((acc, channel) => {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
             return acc;
           }, {}),
         selectedChannel: state.selectedChannel && state.selectedChannel.entity_id === parseInt(action.data.id) ? null : state.selectedChannel,
@@ -3018,7 +2916,7 @@ export default function (state = INITIAL_STATE, action) {
           ...state,
           channels: Object.values(state.channels).reduce((acc, channel) => {
             if ((channel.type === "TEAM" || channel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === channel.entity_id)) {
-              acc[channel.id] = {
+              acc[channel.slug ? channel.code : channel.id] = {
                 ...channel,
                 members: channel.members.some((m) => m.id === action.data.id)
                   ? channel.members.map((m) => {
@@ -3029,7 +2927,7 @@ export default function (state = INITIAL_STATE, action) {
                   : [...channel.members, newUser],
               };
             } else if (channel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => channel.team_ids && channel.team_ids.some((cid) => cid === id))) {
-              acc[channel.id] = {
+              acc[channel.slug ? channel.code : channel.id] = {
                 ...channel,
                 members: channel.members.some((m) => m.id === action.data.id)
                   ? channel.members.map((m) => {
@@ -3040,7 +2938,7 @@ export default function (state = INITIAL_STATE, action) {
                   : [...channel.members, newUser],
               };
             } else {
-              acc[channel.id] = channel;
+              acc[channel.slug ? channel.code : channel.id] = channel;
             }
             return acc;
           }, {}),
@@ -3071,7 +2969,7 @@ export default function (state = INITIAL_STATE, action) {
             return !action.data.channels.some((id) => id === channel.id);
           })
           .reduce((acc, channel) => {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
             return acc;
           }, {}),
         selectedChannel: state.selectedChannel && action.data.channels.some((id) => id === state.selectedChannel.id) ? null : state.selectedChannel,
@@ -3084,9 +2982,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if (action.data.channels.some((id) => id === channel.id)) {
-            acc[channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
+            acc[channel.slug ? channel.code : channel.id] = { ...channel, members: channel.members.filter((m) => !action.data.remove_member_ids.some((id) => id === m.id)) };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -3101,9 +2999,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if (channel.members.some((m) => m.id === action.data.id)) {
-            acc[channel.id] = { ...channel, members: channel.members.filter((m) => m.id !== action.data.id) };
+            acc[channel.slug ? channel.code : channel.id] = { ...channel, members: channel.members.filter((m) => m.id !== action.data.id) };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -3178,9 +3076,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if (channel.type === "TOPIC" && action.data.id === channel.entity_id) {
-            acc[channel.id] = { ...channel, is_active: action.data.is_active };
+            acc[channel.slug ? channel.code : channel.id] = { ...channel, is_active: action.data.is_active };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -3205,7 +3103,7 @@ export default function (state = INITIAL_STATE, action) {
               }),
             };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),
@@ -3230,9 +3128,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
           if (action.data.channel_id === channel.id) {
-            acc[channel.id] = { ...channel, replies: [...channel.replies, action.data.chat] };
+            acc[channel.slug ? channel.code : channel.id] = { ...channel, replies: [...channel.replies, action.data.chat] };
           } else {
-            acc[channel.id] = channel;
+            acc[channel.slug ? channel.code : channel.id] = channel;
           }
           return acc;
         }, {}),

@@ -10,7 +10,6 @@ import {
   getChannelMembers as getChannelMembersService,
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
-  getChatStar as getChatStarService,
   getCompanyChannel as getCompanyChannelService,
   getGlobalRecipients as getGlobalRecipientsService,
   getHuddleChatbot as getHuddleChatbotService,
@@ -304,16 +303,8 @@ export function putChatStar(payload, callback) {
   return dispatchActionToReducer(putChatStarService(payload), "PUT_CHAT_STAR_START", "PUT_CHAT_STAR_SUCCESS", "PUT_CHAT_STAR_FAIL", callback);
 }
 
-export function getChatStar(payload, callback) {
-  return dispatchActionToReducer(getChatStarService(payload), "GET_CHAT_STAR_START", "GET_CHAT_STAR_SUCCESS", "GET_CHAT_STAR_FAIL", callback);
-}
-
 export function setIsStarred(payload, callback) {
   return SimpleDispatchActionToReducer("SET_IS_STARRED", payload, callback);
-}
-
-export function incomingChatStar(payload, callback) {
-  return SimpleDispatchActionToReducer("INCOMING_CHAT_STAR", payload, callback);
 }
 
 export function getHuddleChatbot(payload, callback) {
