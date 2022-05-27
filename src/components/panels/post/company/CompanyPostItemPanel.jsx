@@ -262,7 +262,7 @@ const CompanyPostItemPanel = (props) => {
     }
   };
 
-  const isUnread = post.is_unread === 1;
+  const isUnread = post.is_archived !== 1 && post.is_unread === 1 && post.is_followed;
 
   const handleCheckboxClick = (e) => {
     toggleCheckbox(post);
@@ -293,13 +293,7 @@ const CompanyPostItemPanel = (props) => {
         </CheckBoxContainer>
         <PostContent onClick={() => openPost(post, "/posts")}>
           <Author className="d-flex ml-2 mr-2">
-            <Avatar
-              title={`FROM: ${post.author.name}`}
-              className="author-avatar mr-2"
-              id={post.author.id}
-              name={post.author.name}
-              imageLink={post.author.profile_image_link}
-            />
+            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
           </Author>
           <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
             <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>
@@ -322,8 +316,12 @@ const CompanyPostItemPanel = (props) => {
                 </HoverButtons>
               </div>
               <PostReplyCounter>
-                {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
-                {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
+                {isUnread && (
+                  <>
+                    {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+                    {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
+                  </>
+                )}
                 <div className="text-muted">{post.reply_count === 0 ? dictionary.noComment : post.reply_count === 1 ? dictionary.oneComment : dictionary.comments.replace("::comment_count::", post.reply_count)}</div>
                 <span className="time-stamp text-muted">
                   <span>{fromNow(post.updated_at.timestamp)}</span>
