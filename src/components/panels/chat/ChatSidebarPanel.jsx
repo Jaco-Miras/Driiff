@@ -238,6 +238,7 @@ const ChatSidebarPanel = (props) => {
     withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
     team: _t("TEAM", "Team"),
     personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
+    withShared: _t("CHANNEL.SHARED", "Shared"),
   };
 
   const handleOpenGroupChatModal = () => {

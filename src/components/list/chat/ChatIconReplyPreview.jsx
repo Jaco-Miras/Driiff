@@ -112,8 +112,8 @@ const ReplyPreview = (props) => {
       )}
       {channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && (
         <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-          <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} />
-          {channel.team ? dictionary.withTeam : dictionary.withClient}
+          <SvgIconFeather icon={channel.team ? "eye-off" : "plus"} height={13} />
+          {channel.team ? dictionary.withTeam : dictionary.withShared}
         </StyledBadge>
       )}
     </ChatHeaderBadgeContainer>
