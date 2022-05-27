@@ -1616,7 +1616,7 @@ const TodoReminderModal = (props) => {
                         dropdownMode="select"
                         minDate={minDate}
                         //filterTime={filterPassedTime}
-                        filterDate={filterPassedDate}
+                        //filterDate={filterPassedDate}
                         //showTimeSelect
                         //timeIntervals={15}
                         dateFormat="EEEE, MMMM d, yyyy"
@@ -1660,7 +1660,7 @@ const TodoReminderModal = (props) => {
                             dropdownMode="select"
                             minDate={minEndDate}
                             //filterTime={filterPassedTime}
-                            filterDate={filterPassedDate}
+                            //filterDate={filterPassedDate}
                             //showTimeSelect
                             //timeIntervals={15}
                             dateFormat="EEEE, MMMM d, yyyy"
