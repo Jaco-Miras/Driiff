@@ -145,7 +145,6 @@ const useWorkspace = () => {
           }
         } else {
           if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelId !== activeTopic.team_channel.id) {
-            console.log(activeTopic);
             actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.team_channel.id });
           }
         }

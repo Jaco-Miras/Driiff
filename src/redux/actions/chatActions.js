@@ -233,10 +233,6 @@ export function clearSelectedChannel(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_SELECTED_CHANNEL", payload, callback);
 }
 
-export function unreadChannelReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("UNREAD_CHANNEL_REDUCER", payload, callback);
-}
-
 export function readChannelReducer(payload, callback) {
   return SimpleDispatchActionToReducer("READ_CHANNEL_REDUCER", payload, callback);
 }

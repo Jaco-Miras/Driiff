@@ -588,11 +588,14 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
-    //todo update reducer
     case "INCOMING_ARCHIVED_CHANNEL": {
       let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
+      if (action.data.slug && action.data.slug !== getSlug()) {
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+      } else {
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id);
+      }
+      if (channel) {
         channel = {
           ...channel,
           is_archived: action.data.status === "ARCHIVED" ? true : false,
@@ -600,13 +603,12 @@ export default function (state = INITIAL_STATE, action) {
       }
       return {
         ...state,
-        channels:
-          channel !== null
-            ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
-            : state.channels,
+        channels: channel
+          ? {
+              ...state.channels,
+              [channel.slug ? channel.code : channel.id]: channel,
+            }
+          : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
@@ -616,7 +618,6 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
-    //todo update reducer
     case "ARCHIVE_REDUCER": {
       const isArchived = action.data.status === "ARCHIVED";
       return {
@@ -649,7 +650,7 @@ export default function (state = INITIAL_STATE, action) {
               }
             })
             .reduce((channels, channel) => {
-              channels[channel.id] = channel;
+              channels[channel.slug ? channel.code : channel.id] = channel;
               return channels;
             }, {}),
         },
@@ -667,9 +668,13 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
-    //todo update reducer
     case "UNARCHIVE_REDUCER": {
       let channel = null;
+      if (action.data.slug && action.data.slug !== getSlug()) {
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+      } else {
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id);
+      }
       if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
         channel = { ...state.channels[action.data.channel_id] };
         channel = {
@@ -679,13 +684,12 @@ export default function (state = INITIAL_STATE, action) {
       }
       return {
         ...state,
-        channels:
-          channel !== null
-            ? {
-                ...state.channels,
-                [action.data.channel_id]: channel,
-              }
-            : state.channels,
+        channels: channel
+          ? {
+              ...state.channels,
+              [channel.slug ? channel.code : channel.id]: channel,
+            }
+          : state.channels,
         selectedChannel:
           state.selectedChannel && state.selectedChannel.id === action.data.channel_id
             ? {
@@ -1086,29 +1090,6 @@ export default function (state = INITIAL_STATE, action) {
             : state.selectedChannel,
       };
     }
-    case "UNREAD_CHANNEL_REDUCER": {
-      let updatedChannels = { ...state.channels };
-      if (updatedChannels.hasOwnProperty(action.data.channel_id)) {
-        updatedChannels = {
-          ...updatedChannels,
-          [action.data.channel_id]: {
-            ...updatedChannels[action.data.channel_id],
-            is_read: false,
-          },
-        };
-      }
-      return {
-        ...state,
-        channels: updatedChannels,
-        selectedChannel:
-          state.selectedChannel && state.selectedChannel.id === action.data.channel_id
-            ? {
-                ...state.selectedChannel,
-                is_read: false,
-              }
-            : state.selectedChannel,
-      };
-    }
     case "UPDATE_UNREAD_LIST_COUNTER": {
       let updatedChannels = { ...state.channels };
       let updatedChannel = { ...state.selectedChannel };
@@ -1129,10 +1110,6 @@ export default function (state = INITIAL_STATE, action) {
       }
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      // let teamPostNotif = [];
-      // if (action.data.type === "WORKSPACE" && action.data.team_channel && state.channels[action.data.team_channel.id]) {
-      //   teamPostNotif = state.channels[action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client);
-      // }
       let updatedMembers = action.data.members
         .map((m) => {
           if (m.member_ids) {
@@ -1175,17 +1152,6 @@ export default function (state = INITIAL_STATE, action) {
                         return true;
                       }
                     }),
-                    // {
-                    //   ...action.data.system_message,
-                    //   created_at: action.data.updated_at,
-                    //   editable: false,
-                    //   is_read: true,
-                    //   is_deleted: false,
-                    //   files: [],
-                    //   reactions: [],
-                    //   unfurls: [],
-                    // },
-                    //...teamPostNotif,
                   ],
                 }),
                 icon_link: action.data.channel.icon_link,
@@ -1238,17 +1204,6 @@ export default function (state = INITIAL_STATE, action) {
                       return true;
                     }
                   }),
-                  // {
-                  //   ...action.data.system_message,
-                  //   created_at: action.data.updated_at,
-                  //   editable: false,
-                  //   is_read: true,
-                  //   is_deleted: false,
-                  //   files: [],
-                  //   reactions: [],
-                  //   unfurls: [],
-                  // },
-                  //...teamPostNotif,
                 ],
               }),
               icon_link: action.data.channel.icon_link,
@@ -2081,7 +2036,6 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.id ? { ...state.selectedChannel, ...action.data } : state.selectedChannel,
       };
     }
-    //todo
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -2411,7 +2365,6 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
-    //todo
     case "INCOMING_DEACTIVATED_USER": {
       return {
         ...state,
