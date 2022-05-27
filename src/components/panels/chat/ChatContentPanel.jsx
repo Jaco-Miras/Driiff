@@ -206,6 +206,8 @@ const ChatContentPanel = (props) => {
     googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
     personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
     repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
+    personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
+    personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list."),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
