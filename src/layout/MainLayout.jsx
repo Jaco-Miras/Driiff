@@ -216,7 +216,7 @@ const MainLayout = (props) => {
       )} */}
       <MobileOverlay />
       {user.id !== undefined && window[slug] !== undefined && (
-        <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
+        <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} sharedSlug={false} />
       )}
       {sharedWsLoaded &&
         Object.keys(sharedWs).length > 0 &&
@@ -233,6 +233,7 @@ const MainLayout = (props) => {
                 soundPlay={handleSoundPlay}
                 workspaceActions={workspaceActions}
                 notificationsOn={notifications_on}
+                sharedSlug={true}
               />
             );
           } else {

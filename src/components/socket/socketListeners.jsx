@@ -28,7 +28,6 @@ import {
   setChannel,
   setMemberTimestamp,
   setSelectedChannel,
-  unreadChannelReducer,
   clearUnpublishedAnswer,
   incomingHuddleSkip,
   transferChannelMessages,
@@ -234,6 +233,7 @@ class SocketListeners extends Component {
   };
 
   refetch = () => {
+    if (this.props.sharedSlug) return;
     this.props.getUnreadNotificationCounterEntries({}, (err, res) => {
       if (err) return;
       if (res) {
@@ -1376,10 +1376,10 @@ class SocketListeners extends Component {
         this.props.incomingPostAccess(e);
       })
       .listen(".create-team", (e) => {
-        this.props.incomingTeam(e);
+        this.props.incomingTeam({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".update-team", (e) => {
-        this.props.incomingUpdatedTeam(e);
+        this.props.incomingUpdatedTeam({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".remove-team", (e) => {
         Array.from(Object.values(this.props.workspaces)).map((ws) => {
@@ -1685,7 +1685,7 @@ class SocketListeners extends Component {
       .listen(".user-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "USER_UPDATE": {
-            this.props.incomingUpdatedUser(e);
+            this.props.incomingUpdatedUser({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
             if (e.id === this.state.userId || e.user_id === this.state.userId) {
               this.props.getUser({ id: this.state.userId }, (err, res) => {
                 if (err) return;
@@ -2058,19 +2058,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedDriveLink(e);
       })
       .listen(".favourite-workspace-notification", (e) => {
-        this.props.incomingFavouriteWorkspace(e);
-        // switch (e.SOCKET_TYPE) {
-        //   case "WORKSPACE_FAVOURITE": {
-        //     this.props.incomingFavouriteWorkspace(e);
-        //     break;
-        //   }
-        //   case "WORKSPACE_REMOVE_FAVOURITE": {
-        //     this.props.incomingFavouriteWorkspace(e);
-        //     break;
-        //   }
-        //   default:
-        //     return null;
-        // }
+        this.props.incomingFavouriteWorkspace({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".post-read-require", (e) => {
         this.props.incomingMarkAsRead(e);
@@ -2434,59 +2422,12 @@ class SocketListeners extends Component {
             this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
           }
           if (e.channel_data.status === "UNARCHIVED") {
-            this.props.incomingUnArchivedWorkspaceChannel(e.channel_data);
+            this.props.incomingUnArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug });
           } else {
-            // if (this.props.activeTopic && this.props.activeTopic.id === e.channel_data.topic_detail.id) {
-            //   let workspace = null;
-            //   if (e.channel_data.topic_detail.workspace_id !== null || e.channel_data.topic_detail.workspace_id !== 0) {
-            //     // set the workspace to the first workspace of the folder
-            //     // get the workspaces under the folder
-            //     if (this.props.folders.hasOwnProperty(e.channel_data.topic_detail.workspace_id) && this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.length > 1) {
-            //       let otherWorkspaces = Object.values(this.props.workspaces)
-            //         .filter((ws) => {
-            //           return this.props.folders[e.channel_data.topic_detail.workspace_id].workspace_ids.some((id) => id === ws.id);
-            //         })
-            //         .sort((a, b) => a.name.localeCompare(b.name));
-
-            //       if (otherWorkspaces[0].id === this.props.activeTopic.id) {
-            //         workspace = otherWorkspaces[1];
-            //       } else {
-            //         workspace = otherWorkspaces[0];
-            //       }
-            //     } else {
-            //       //set the workspace to the first workspace of the general folder
-            //       let workspaces = Object.values(this.props.workspaces)
-            //         .filter((ws) => {
-            //           return ws.folder_id === null;
-            //         })
-            //         .sort((a, b) => a.name.localeCompare(b.name));
-
-            //       if (workspaces.length) {
-            //         workspace = workspaces[0];
-            //       }
-            //     }
-            //   } else {
-            //     //set the workspace to the first workspace of the general folder
-            //     let workspaces = Object.values(this.props.workspaces)
-            //       .filter((ws) => {
-            //         return ws.folder_id === null;
-            //       })
-            //       .sort((a, b) => a.name.localeCompare(b.name));
-
-            //     if (workspaces.length) {
-            //       workspace = workspaces[0];
-            //     }
-            //   }
-
-            //   if (workspace) {
-            //     this.props.workspaceActions.selectWorkspace(workspace);
-            //     this.props.workspaceActions.redirectTo(workspace);
-            //   }
-            // }
-            this.props.incomingArchivedWorkspaceChannel(e.channel_data);
+            this.props.incomingArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug });
           }
         } else {
-          this.props.incomingArchivedChannel(e.channel_data);
+          this.props.incomingArchivedChannel({ ...e.channel_data, slug: this.state.slug });
         }
       })
       .listen(".new-chat-channel", (e) => {
@@ -2636,7 +2577,6 @@ function mapDispatchToProps(dispatch) {
     incomingDeletedPostFile: bindActionCreators(incomingDeletedPostFile, dispatch),
     incomingDeletedComment: bindActionCreators(incomingDeletedComment, dispatch),
     incomingUpdatedUser: bindActionCreators(incomingUpdatedUser, dispatch),
-    unreadChannelReducer: bindActionCreators(unreadChannelReducer, dispatch),
     incomingRemovedFile: bindActionCreators(incomingRemovedFile, dispatch),
     incomingRemovedFolder: bindActionCreators(incomingRemovedFolder, dispatch),
     getWorkspace: bindActionCreators(getWorkspace, dispatch),

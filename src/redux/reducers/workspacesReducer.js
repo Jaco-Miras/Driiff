@@ -135,7 +135,32 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_UPDATED_USER": {
       let activeTopic = state.activeTopic;
 
-      if (activeTopic && activeTopic.members.some((m) => m.id === action.data.id)) {
+      if (activeTopic && action.data.fromSharedWs && activeTopic.sharedSlug && activeTopic.members.some((m) => m.id === action.data.id)) {
+        const updatedMembers = activeTopic.members.map((m) => {
+          if (m.id === action.data.id) {
+            return {
+              ...m,
+              active: action.data.active ? action.data.active : m.active,
+              email: action.data.email ? action.data.email : m.email,
+              name: action.data.name ? action.data.name : m.name,
+              profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+              profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+              type: action.data.type ? action.data.type : m.type,
+              designation: action.data.designation ? action.data.designation : m.designation,
+              contact: action.data.contact ? action.data.contact : m.contact,
+              external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+            };
+          } else {
+            return m;
+          }
+        });
+        //const isStillExternal = action.data.type === "internal" && updatedMembers.filter((m) => m.type === "external").length > 0;
+        activeTopic = {
+          ...activeTopic,
+          is_shared: action.data.type === "external" ? true : activeTopic.is_shared,
+          members: updatedMembers,
+        };
+      } else if (activeTopic && !action.data.fromSharedWs && !activeTopic.sharedSlug && activeTopic.members.some((m) => m.id === action.data.id)) {
         const updatedMembers = activeTopic.members.map((m) => {
           if (m.id === action.data.id) {
             return {
@@ -166,26 +191,27 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         flipper: !state.flipper,
         workspaces: Object.values(state.workspaces).reduce((res, ws) => {
-          const wsMembers = ws.members.some((m) => m.id === action.data.id)
-            ? ws.members.map((m) => {
-                if (m.id === action.data.id) {
-                  return {
-                    ...m,
-                    active: action.data.active ? action.data.active : m.active,
-                    email: action.data.email ? action.data.email : m.email,
-                    name: action.data.name ? action.data.name : m.name,
-                    profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
-                    profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
-                    type: action.data.type ? action.data.type : m.type,
-                    designation: action.data.designation ? action.data.designation : m.designation,
-                    contact: action.data.contact ? action.data.contact : m.contact,
-                    external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
-                  };
-                } else {
-                  return m;
-                }
-              })
-            : ws.members;
+          const wsMembers =
+            (ws.members.some((m) => m.id === action.data.id) && action.data.fromSharedWs && ws.sharedSlug) || (ws.members.some((m) => m.id === action.data.id) && !action.data.fromSharedWs && !ws.sharedSlug)
+              ? ws.members.map((m) => {
+                  if (m.id === action.data.id) {
+                    return {
+                      ...m,
+                      active: action.data.active ? action.data.active : m.active,
+                      email: action.data.email ? action.data.email : m.email,
+                      name: action.data.name ? action.data.name : m.name,
+                      profile_image_link: action.data.profile_image_link ? action.data.profile_image_link : m.profile_image_link,
+                      profile_image_thumbnail_link: action.data.profile_image_thumbnail_link ? action.data.profile_image_thumbnail_link : m.profile_image_thumbnail_link,
+                      type: action.data.type ? action.data.type : m.type,
+                      designation: action.data.designation ? action.data.designation : m.designation,
+                      contact: action.data.contact ? action.data.contact : m.contact,
+                      external_company_name: action.data.external_company_name ? action.data.external_company_name : m.external_company_name,
+                    };
+                  } else {
+                    return m;
+                  }
+                })
+              : ws.members;
           //const isStillExternal = action.data.type === "internal" && wsMembers.filter((m) => m.type === "external").length > 0;
           res[ws.sharedSlug ? ws.key : ws.id] = {
             ...ws,
@@ -340,6 +366,7 @@ export default (state = INITIAL_STATE, action) => {
         favoriteWorkspacesLoaded: true,
       };
     }
+    //for checking
     case "GET_WORKSPACE_SET_TO_FAV_SUCCESS": {
       let ws = {
         ...action.data.workspace_data,
@@ -561,13 +588,6 @@ export default (state = INITIAL_STATE, action) => {
         if (!members.some((m) => m.id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
-            // if (Object.values(updatedWorkspaces).length) {
-            //   if (Object.values(updatedWorkspaces)[0].id === action.data.id) {
-            //     updatedTopic = Object.values(updatedWorkspaces)[1];
-            //   } else {
-            //     updatedTopic = Object.values(updatedWorkspaces)[0];
-            //   }
-            // }
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
               let isMember = false;
               updatedFolders[action.data.workspace_id].workspace_ids
@@ -583,47 +603,6 @@ export default (state = INITIAL_STATE, action) => {
                 delete updatedFolders[action.data.workspace_id];
               }
             }
-          } else {
-            // check if still needed
-            // if (state.activeTopic && state.activeTopic.id === action.data.id) {
-            //   workspaceToDelete = action.data.id;
-            //   //check if workspace is under a folder
-            //   //then check if the user is a member in other workspace under the same folder
-            //   // if user is no longer a member then set the folderToDelete id
-            //   if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
-            //     let isMember = false;
-            //     updatedFolders[action.data.workspace_id].workspace_ids
-            //       .filter((id) => id !== action.data.id)
-            //       .forEach((wsid) => {
-            //         if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
-            //           if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
-            //             isMember = true;
-            //           }
-            //         }
-            //       });
-            //     if (!isMember) {
-            //       folderToDelete = action.data.workspace_id;
-            //     }
-            //   }
-            // } else {
-            //   delete updatedWorkspaces[action.data.id];
-            //   //check if workspace is under a folder
-            //   //then check if the user is a member in other workspace under the same folder
-            //   // if user is no longer a member then delete the folder
-            //   if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
-            //     let isMember = false;
-            //     updatedFolders[action.data.workspace_id].workspace_ids.forEach((wsid) => {
-            //       if (state.workspaces.hasOwnProperty(wsid) && action.data.id !== wsid) {
-            //         if (state.workspaces[wsid].member_ids.some((id) => id === state.user.id)) {
-            //           isMember = true;
-            //         }
-            //       }
-            //     });
-            //     if (!isMember) {
-            //       delete updatedFolders[action.data.workspace_id];
-            //     }
-            //   }
-            // }
           }
         }
         if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
@@ -701,21 +680,6 @@ export default (state = INITIAL_STATE, action) => {
         showAboutModal: action.data && state.workspaces[action.data.id] ? state.workspaces[action.data.id].show_about : false,
       };
     }
-    // case "SET_SELECTED_CHANNEL": {
-    //   // let workspace = { ...state.activeTopic };
-    //   // let workspaces = { ...state.workspaces };
-    //   // if (action.data.type === "TOPIC") {
-    //   //   workspaces[workspace.id].channel.loaded = true;
-    //   //   workspace.channel.loaded = true;
-    //   // }
-
-    //   return {
-    //     ...state,
-    //     // activeTopic: action.data.type === "TOPIC" ? workspace : state.activeTopic,
-    //     // workspaces: workspaces,
-    //     activeChannelId: action.data.type === "TOPIC" ? action.data.id : state.activeChannelId,
-    //   };
-    // }
     case "GET_LAST_CHANNEL_SUCCESS": {
       if (action.data) {
         return {
@@ -1514,50 +1478,6 @@ export default (state = INITIAL_STATE, action) => {
         //   : state.activeTopic,
       };
     }
-    // case "INCOMING_POST": {
-    //   let newWorkspacePosts = { ...state.workspacePosts };
-    //   let updatedWorkspaces = { ...state.workspaces };
-    //   let updatedFolders = { ...state.folders };
-    //   let addUnreadPost = false;
-    //   const isApprover = action.data.users_approval.some((ua) => state.user && state.user.id === ua.id);
-    //   const mustRead = action.data.must_read_users && action.data.must_read_users.some((u) => state.user && state.user.id === u.id && !u.must_read);
-    //   const mustReply = action.data.must_reply_users && action.data.must_reply_users.some((u) => state.user && state.user.id === u.id && !u.must_reply);
-    //   const hasMentioned = action.data.mention_ids.some((id) => state.user && state.user.id === id);
-    //   action.data.workspaces.forEach((ws) => {
-    //     if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-    //       if ((typeof updatedWorkspaces[ws.topic_id] !== "undefined" && updatedWorkspaces[ws.topic_id].is_active) || isApprover || mustRead || mustReply || hasMentioned) newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
-    //       else {
-    //         if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
-    //           newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
-    //         } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
-    //           newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
-    //         } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id] && newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
-    //           newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
-    //         }
-    //       }
-    //     }
-    //     if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
-    //       if (updatedWorkspaces[ws.topic_id].is_active || isApprover || mustRead || mustReply || hasMentioned) updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
-    //       if (state.activeTopic && state.activeTopic.id === ws.topic_id) {
-    //         if (state.activeTopic.is_active || isApprover || mustRead || mustReply || hasMentioned) addUnreadPost = true;
-    //       }
-    //       if (ws.workspace_id !== null) {
-    //         updatedFolders[ws.workspace_id].unread_count = updatedFolders[ws.workspace_id].unread_count + 1;
-    //       }
-    //     }
-    //   });
-    //   return {
-    //     ...state,
-    //     workspacePosts: newWorkspacePosts,
-    //     workspaces: updatedWorkspaces,
-    //     activeTopic: addUnreadPost
-    //       ? {
-    //           ...state.activeTopic,
-    //           unread_posts: state.activeTopic.unread_posts + 1,
-    //         }
-    //       : state.activeTopic,
-    //   };
-    // }
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
@@ -2298,6 +2218,7 @@ export default (state = INITIAL_STATE, action) => {
         //workspacePosts: newWorkspacePosts
       };
     }
+    //todo
     case "INCOMING_CHAT_MESSAGE": {
       let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
       if (!action.data.is_read) {
@@ -3298,7 +3219,12 @@ export default (state = INITIAL_STATE, action) => {
           ...Object.values(state.workspaces).reduce((res, ws) => {
             res[ws.sharedSlug ? ws.key : ws.id] = {
               ...ws,
-              is_favourite: ws.id === action.data.topic_id.id ? (action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE" ? true : false) : ws.is_favourite,
+              is_favourite:
+                (ws.sharedSlug && action.data.fromSharedWs && ws.id === action.data.topic_id.id) || (!ws.sharedSlug && !action.data.fromSharedWs && ws.id === action.data.topic_id.id)
+                  ? action.data.SOCKET_TYPE === "WORKSPACE_FAVOURITE"
+                    ? true
+                    : false
+                  : ws.is_favourite,
             };
             return res;
           }, {}),
@@ -3789,20 +3715,20 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "TOGGLE_SHOW_ABOUT_SUCCESS": {
-      return {
-        ...state,
-        activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
-        workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.id === action.data.message.id) {
-            acc[ws.id] = { ...ws, show_about: action.data.message.show_about === false ? 0 : 1 };
-          } else {
-            acc[ws.id] = ws;
-          }
-          return acc;
-        }, {}),
-      };
-    }
+    // case "TOGGLE_SHOW_ABOUT_SUCCESS": {
+    //   return {
+    //     ...state,
+    //     activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
+    //     workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
+    //       if (ws.id === action.data.message.id) {
+    //         acc[ws.id] = { ...ws, show_about: action.data.message.show_about === false ? 0 : 1 };
+    //       } else {
+    //         acc[ws.id] = ws;
+    //       }
+    //       return acc;
+    //     }, {}),
+    //   };
+    // }
     case "GET_ALL_WORKSPACE_FOLDERS_SUCCESS": {
       return {
         ...state,
@@ -3816,12 +3742,24 @@ export default (state = INITIAL_STATE, action) => {
         allFoldersLoaded: true,
       };
     }
+    //to do
     case "INCOMING_UPDATED_TEAM":
     case "INCOMING_TEAM": {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+          if (ws.sharedSlug && action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.key] = {
+              ...ws,
+              members: ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return action.data;
+                } else {
+                  return m;
+                }
+              }),
+            };
+          } else if (!ws.sharedSlug && !action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
             acc[ws.id] = {
               ...ws,
               members: ws.members.map((m) => {
@@ -3833,7 +3771,7 @@ export default (state = INITIAL_STATE, action) => {
               }),
             };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -3874,7 +3812,7 @@ export default (state = INITIAL_STATE, action) => {
           })
           .reduce((acc, ws) => {
             if (ws.members.some((m) => m.members && m.id === action.data.id)) {
-              acc[ws.id] = {
+              acc[ws.sharedSlug ? ws.key : ws.id] = {
                 ...ws,
                 members: ws.members.map((m) => {
                   if (m.id === action.data.id) {
@@ -3885,7 +3823,7 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               };
             } else {
-              acc[ws.id] = ws;
+              acc[ws.sharedSlug ? ws.key : ws.id] = ws;
             }
             return acc;
           }, {}),
@@ -3940,7 +3878,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+          if (ws.sharedSlug && action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.key] = {
+              ...ws,
+              members: ws.members.filter((m) => {
+                if (m.id === action.data.id) {
+                  return false;
+                } else {
+                  return true;
+                }
+              }),
+            };
+          } else if (!ws.sharedSlug && !action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
             acc[ws.id] = {
               ...ws,
               members: ws.members.filter((m) => {
@@ -3952,7 +3901,7 @@ export default (state = INITIAL_STATE, action) => {
               }),
             };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -4019,7 +3968,18 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.members.some((m) => m.members && m.id === action.data.id)) {
+          if (ws.sharedSlug && action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
+            acc[ws.key] = {
+              ...ws,
+              members: ws.members.map((m) => {
+                if (m.id === action.data.id) {
+                  return { ...m, member_ids: action.data.member_ids, members: action.data.members };
+                } else {
+                  return m;
+                }
+              }),
+            };
+          } else if (!ws.sharedSlug && !action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
             acc[ws.id] = {
               ...ws,
               members: ws.members.map((m) => {
@@ -4031,7 +3991,7 @@ export default (state = INITIAL_STATE, action) => {
               }),
             };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -4112,8 +4072,27 @@ export default (state = INITIAL_STATE, action) => {
                   } else return mem;
                 }),
               };
+            } else if (ws.sharedSlug && ws.members.some((m) => m.members && action.data.team_ids.some((id) => id === m.id))) {
+              acc[ws.key] = {
+                ...ws,
+                members: ws.members.map((mem) => {
+                  if (action.data.team_ids.some((id) => id === mem.id)) {
+                    return {
+                      ...mem,
+                      member_ids: mem.member_ids.some((id) => id === action.data.id) ? mem.member_ids : [...mem.member_ids, action.data.id],
+                      members: mem.members.some((m) => m.id === action.data.id)
+                        ? mem.members.map((m) => {
+                            if (action.data.id === m.id) {
+                              return { ...m, has_accepted: true };
+                            } else return m;
+                          })
+                        : [...mem.members, newUser],
+                    };
+                  } else return mem;
+                }),
+              };
             } else {
-              acc[ws.id] = ws;
+              acc[ws.sharedSlug ? ws.key : ws.id] = ws;
             }
             return acc;
           }, {}),
@@ -4217,9 +4196,9 @@ export default (state = INITIAL_STATE, action) => {
           if (ws.sharedSlug && ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
             acc[ws.key] = { ...ws, is_active: action.data.is_active };
           } else if (ws.id === action.data.id && state.user && state.user.id === action.data.user.id) {
-            acc[ws.id] = { ...ws, is_active: action.data.is_active };
+            acc[ws.sharedSlug ? ws.key : ws.id] = { ...ws, is_active: action.data.is_active };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -4312,9 +4291,9 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
           if (ws.id === action.data.id) {
-            acc[ws.id] = { ...ws, description: action.data.description };
+            acc[ws.sharedSlug ? ws.key : ws.id] = { ...ws, description: action.data.description };
           } else {
-            acc[ws.id] = ws;
+            acc[ws.sharedSlug ? ws.key : ws.id] = ws;
           }
           return acc;
         }, {}),
@@ -4492,6 +4471,7 @@ export default (state = INITIAL_STATE, action) => {
         folders: _.omit(state.folders, action.data.id),
       };
     }
+    // to update
     case "UPDATE_WORKSPACE_MEMBERS": {
       debugger;
       const workspaceId = action.data.workspaceId;

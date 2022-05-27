@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { useSystemMessage, useZoomActions } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
+import { setActiveTopic } from "../../../redux/actions/workspaceActions";
 
 const SystemMessageContainer = styled.span`
   display: block;
@@ -203,8 +204,10 @@ const SystemMessage = (props) => {
           let ws = workspaces[`${selectedChannel.entity_id}-${selectedChannel.slug}`];
           if (ws) {
             if (ws.folder_id) {
+              dispatch(setActiveTopic(ws));
               history.push(`/workspace/posts/${ws.folder_id}/${ws.folder_name}/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
             } else {
+              dispatch(setActiveTopic(ws));
               history.push(`/workspace/posts/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
             }
           }
