@@ -49,6 +49,8 @@ const usePosts = () => {
             }
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts.map((p) => {
                   return { ...p, slug: workspace.slug };
@@ -80,17 +82,13 @@ const usePosts = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (params.hasOwnProperty("workspaceId")) {
-  //     actions.getRecentPosts(params.workspaceId);
-  //   }
-  // }, [params.workspaceId]);
   useEffect(() => {
     workspaceRef.current = workspace;
   }, [workspace]);
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
+      if (workspaceRef.current && wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`)) return;
       if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost && !isNaN(parseInt(params.workspaceId))) {
         setFetchingPost(true);
         let cb = (err, res) => {
@@ -106,6 +104,8 @@ const usePosts = () => {
           //actions.getTagsCount(parseInt(params.workspaceId));
           dispatch(
             addToWorkspacePosts({
+              slug: res.slug,
+              isSharedSlug: res.isSharedSlug,
               topic_id: parseInt(params.workspaceId),
               posts: res.data.posts.map((p) => {
                 return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
@@ -143,9 +143,10 @@ const usePosts = () => {
           if (files.length) {
             files = files.flat();
           }
-
           dispatch(
             addToWorkspacePosts({
+              slug: res.slug,
+              isSharedSlug: res.isSharedSlug,
               topic_id: parseInt(params.workspaceId),
               posts: res.data.posts.map((p) => {
                 return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
@@ -197,12 +198,17 @@ const usePosts = () => {
   };
   let activeFilters = null;
 
-  if (Object.keys(recentPosts).length && recentPosts.hasOwnProperty(params.workspaceId)) {
-    rPosts = recentPosts[params.workspaceId].posts;
+  // if (Object.keys(recentPosts).length && recentPosts.hasOwnProperty(params.workspaceId)) {
+  //   rPosts = recentPosts[params.workspaceId].posts;
+  // }
+
+  let key = params.workspaceId;
+  if (workspace && workspace.sharedSlug) {
+    key = `${workspace.id}-${workspace.slug}`;
   }
 
-  if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(params.workspaceId)) {
-    let { filter, sort, tag, postListTag, posts, search, searchResults, filters } = wsPosts[params.workspaceId];
+  if (Object.keys(wsPosts).length && wsPosts.hasOwnProperty(key)) {
+    let { filter, sort, tag, postListTag, posts, search, searchResults, filters } = wsPosts[key];
     activeSearch = search;
     activeSort = sort;
     activeFilter = filter;
@@ -318,7 +324,7 @@ const usePosts = () => {
     counters: counters,
     filters: activeFilters,
     postLists: postsLists,
-    showLoader: !wsPosts.hasOwnProperty(params.workspaceId),
+    showLoader: !wsPosts.hasOwnProperty(params.workspaceId) && workspaceRef.current && !wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`),
     showUnread: showUnread,
     sharedWs: sharedWs,
   };

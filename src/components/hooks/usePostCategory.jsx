@@ -14,9 +14,14 @@ const usePostCategory = (props) => {
   const mustReply = useSelector((state) => state.posts.mustReply);
   const noReplies = useSelector((state) => state.posts.noReplies);
   const closedPost = useSelector((state) => state.posts.closedPost);
-  const wsPosts = useSelector((state) => state.workspaces.workspacePosts[params.workspaceId]);
+  const workspacePosts = useSelector((state) => state.workspaces.workspacePosts);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
+  let wsPosts = workspacePosts[params.workspaceId];
+  if (workspace && workspace.sharedSlug) {
+    wsPosts = workspacePosts[`${workspace.id}-${workspace.slug}`];
+  }
 
   const workspaceRef = useRef(null);
   const sharedWsRef = useRef(null);
@@ -132,6 +137,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -160,6 +167,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -188,6 +197,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -216,6 +227,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -257,6 +270,8 @@ const usePostCategory = (props) => {
           if (err) return;
           dispatch(
             addToWorkspacePosts({
+              slug: res.slug,
+              isSharedSlug: res.isSharedSlug,
               topic_id: parseInt(params.workspaceId),
               posts: [],
               categories: {

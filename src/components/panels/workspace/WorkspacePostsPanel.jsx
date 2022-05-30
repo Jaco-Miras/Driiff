@@ -156,6 +156,8 @@ const WorkspacePostsPanel = (props) => {
               topic_id: workspace.id,
               filter: "inbox",
               tag: null,
+              slug: res.slug,
+              isSharedSlug: res.isSharedSlug,
             };
             dispatch(updateWorkspacePostFilterSort(payload));
             if (params.folderId) {
@@ -274,6 +276,8 @@ const WorkspacePostsPanel = (props) => {
         }
         dispatch(
           addToWorkspacePosts({
+            slug: res.slug,
+            isSharedSlug: res.isSharedSlug,
             topic_id: parseInt(params.workspaceId),
             posts: res.data.posts,
             filter: res.data.posts,
@@ -309,6 +313,8 @@ const WorkspacePostsPanel = (props) => {
         }
         dispatch(
           addToWorkspacePosts({
+            slug: res.slug,
+            isSharedSlug: res.isSharedSlug,
             topic_id: parseInt(params.workspaceId),
             posts: res.data.posts,
             filter: res.data.posts,
@@ -344,6 +350,8 @@ const WorkspacePostsPanel = (props) => {
         }
         dispatch(
           addToWorkspacePosts({
+            slug: res.slug,
+            isSharedSlug: res.isSharedSlug,
             topic_id: parseInt(params.workspaceId),
             posts: res.data.posts,
             filter: res.data.posts,
@@ -462,6 +470,8 @@ const WorkspacePostsPanel = (props) => {
         }
         dispatch(
           addToWorkspacePosts({
+            slug: res.slug,
+            isSharedSlug: res.isSharedSlug,
             topic_id: workspace.id,
             posts: res.data.posts,
             files,
@@ -552,6 +562,8 @@ const WorkspacePostsPanel = (props) => {
           tag: null,
           postListTag: postLists[0].id,
           filter: null,
+          slug: workspace.slug,
+          isSharedSlug: workspace.sharedSlug,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
       }
@@ -564,6 +576,8 @@ const WorkspacePostsPanel = (props) => {
       tag: null,
       postListTag: null,
       filter: "all",
+      slug: workspace.slug,
+      isSharedSlug: workspace.sharedSlug,
     };
     dispatch(updateWorkspacePostFilterSort(payload));
   };

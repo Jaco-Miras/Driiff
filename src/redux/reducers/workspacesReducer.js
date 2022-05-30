@@ -770,55 +770,59 @@ export default (state = INITIAL_STATE, action) => {
       if (state.drafts.length) {
         postDrafts = convertArrayToObject(state.drafts, "post_id");
       }
-      if (state.workspacePosts.hasOwnProperty(action.data.topic_id)) {
+      let key = action.data.topic_id;
+      if (action.data.isSharedSlug) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
+      if (state.workspacePosts[key]) {
         return {
           ...state,
           workspacePosts: {
             ...state.workspacePosts,
-            [action.data.topic_id]: {
-              ...state.workspacePosts[action.data.topic_id],
+            [key]: {
+              ...state.workspacePosts[key],
               ...(action.data.filters && {
                 filters: {
-                  ...state.workspacePosts[action.data.topic_id].filters,
+                  ...state.workspacePosts[key].filters,
                   ...action.data.filters,
                 },
               }),
               posts: {
-                ...state.workspacePosts[action.data.topic_id].posts,
+                ...state.workspacePosts[key].posts,
                 ...convertedPosts,
                 ...postDrafts,
               },
               ...(action.data.categories && {
                 categoriesLoaded: true,
                 categories: {
-                  ...state.workspacePosts[action.data.topic_id].categories,
+                  ...state.workspacePosts[key].categories,
                   ...action.data.categories,
                 },
               }),
               ...(action.data.category && {
                 categories: {
-                  ...state.workspacePosts[action.data.topic_id].categories,
+                  ...state.workspacePosts[key].categories,
                   ...(action.data.category.mustRead && {
                     mustRead: {
-                      ...state.workspacePosts[action.data.topic_id].categories.mustRead,
+                      ...state.workspacePosts[key].categories.mustRead,
                       ...action.data.category.mustRead,
                     },
                   }),
                   ...(action.data.category.mustReply && {
                     mustReply: {
-                      ...state.workspacePosts[action.data.topic_id].categories.mustReply,
+                      ...state.workspacePosts[key].categories.mustReply,
                       ...action.data.category.mustReply,
                     },
                   }),
                   ...(action.data.category.noReplies && {
                     noReplies: {
-                      ...state.workspacePosts[action.data.topic_id].categories.noReplies,
+                      ...state.workspacePosts[key].categories.noReplies,
                       ...action.data.category.noReplies,
                     },
                   }),
                   ...(action.data.category.closedPost && {
                     closedPost: {
-                      ...state.workspacePosts[action.data.topic_id].categories.closedPost,
+                      ...state.workspacePosts[key].categories.closedPost,
                       ...action.data.category.closedPost,
                     },
                   }),
@@ -832,7 +836,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state,
           workspacePosts: {
             ...state.workspacePosts,
-            [action.data.topic_id]: {
+            [key]: {
               filters: action.data.filters,
               filter: "all",
               sort: "recent",
@@ -877,32 +881,19 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
-    case "SET_UNREAD_POST_IDS": {
-      if (state.workspacePosts.hasOwnProperty(action.data.topic_id)) {
-        return {
-          ...state,
-          workspacePosts: {
-            ...state.workspacePosts,
-            [action.data.topic_id]: {
-              ...state.workspacePosts[action.data.topic_id],
-              unreadPostIds: action.data.unreadPostIds,
-            },
-          },
-        };
-      } else {
-        return state;
-      }
-    }
     case "UPDATE_WORKSPACE_POST_FILTER_SORT": {
+      let key = action.data.topic_id;
+      if (action.data.isSharedSlug) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          ...(state.workspacePosts[action.data.topic_id] && {
-            [action.data.topic_id]: {
-              ...state.workspacePosts[action.data.topic_id],
+          ...(state.workspacePosts[key] && {
+            [key]: {
+              ...state.workspacePosts[key],
               filter: action.data.filter,
-              //sort: action.data.sort ? (action.data.sort === state.workspacePosts[action.data.topic_id].sort ? state.workspacePosts[action.data.topic_id].sort : action.data.sort) : state.workspacePosts[action.data.topic_id].sort,
               tag: action.data.tag,
               postListTag: action.data.postListTag,
             },
@@ -1038,14 +1029,7 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    // case "REMOVE_POST": {
-    //   let newWorkspacePosts = { ...state.workspacePosts };
-    //   delete state.workspacePosts[action.data.topic_id].posts[action.data.post_id];
-    //   return {
-    //     ...state,
-    //     workspacePosts: newWorkspacePosts,
-    //   };
-    // }
+    //todo
     case "FETCH_COMMENTS_SUCCESS": {
       let postComments = { ...state.postComments };
       let comments = {};
@@ -1220,7 +1204,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post ids
     case "ADD_POST_REACT": {
       return {
         ...state,
@@ -1250,7 +1234,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post ids
     case "REMOVE_POST_REACT": {
       return {
         ...state,
@@ -1280,7 +1264,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post ids
     case "GET_POST_CLAP_HOVER_SUCCESS": {
       return {
         ...state,
@@ -1309,6 +1293,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo unique post ids
     case "ADD_COMMENT": {
       let postComment = { ...state.postComments[action.data.post_id] };
       if (action.data.parent_id) {
@@ -1342,6 +1327,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo unique post id
     case "STAR_POST_REDUCER": {
       if (!action.data.topic_id) return { ...state };
 
@@ -1361,7 +1347,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
@@ -1391,7 +1377,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_POST_MARK_DONE": {
       return {
         ...state,
@@ -1420,7 +1406,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -1445,37 +1431,34 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
-      let newWorkspacePosts = { ...state.workspacePosts };
-      let updatedWorkspaces = { ...state.workspaces };
-      //let updatedFolders = { ...state.folders };
-      let addUnreadPost = false;
-      action.data.workspaces.forEach((ws) => {
-        if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-          newWorkspacePosts[ws.topic_id].posts[action.data.id] = action.data;
-
-          if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_read === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_must_read = newWorkspacePosts[ws.topic_id].count.is_must_read + 1;
-          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_must_reply === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_must_reply = newWorkspacePosts[ws.topic_id].count.is_must_reply + 1;
-          } else if (newWorkspacePosts[ws.topic_id].posts[action.data.id].is_read_only === 1) {
-            newWorkspacePosts[ws.topic_id].count.is_read_only = newWorkspacePosts[ws.topic_id].count.is_read_only + 1;
-          }
-        }
-        if (action.data.author.id !== state.user.id && typeof updatedWorkspaces[ws.topic_id] !== "undefined") {
-          //updatedWorkspaces[ws.topic_id].unread_posts = updatedWorkspaces[ws.topic_id].unread_posts + 1;
-          addUnreadPost = true;
-        }
-      });
       return {
         ...state,
-        workspacePosts: newWorkspacePosts,
-        workspaces: updatedWorkspaces,
-        // activeTopic: addUnreadPost
-        //   ? {
-        //       ...state.activeTopic,
-        //       //unread_posts: state.activeTopic.unread_posts + 1,
-        //     }
-        //   : state.activeTopic,
+        workspacePosts: {
+          ...Object.keys(state.workspacePosts)
+            .filter((wsId) => state.workspacePosts[wsId])
+            .map((wsId) => {
+              return {
+                [wsId]: {
+                  ...state.workspacePosts[wsId],
+                  posts: {
+                    ...state.workspacePosts[wsId].posts,
+                    [action.data.id]: action.data,
+                  },
+                  count: state.workspacePosts[wsId].count
+                    ? {
+                        ...state.workspacePosts[wsId].count,
+                        is_must_read: state.workspacePosts[wsId].count.is_must_read + 1,
+                        is_must_reply: state.workspacePosts[wsId].count.is_must_reply + 1,
+                        is_read_only: state.workspacePosts[wsId].count.is_read_only + 1,
+                      }
+                    : null,
+                },
+              };
+            })
+            .reduce((obj, workspace) => {
+              return { ...obj, ...workspace };
+            }, {}),
+        },
       };
     }
     case "INCOMING_TO_DO":
@@ -1536,14 +1519,18 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_UPDATED_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
       action.data.recipient_ids.forEach((id) => {
-        if (newWorkspacePosts.hasOwnProperty(id)) {
+        let key = id;
+        if (action.data.slug !== getSlug()) {
+          key = `${id}-${action.data.slug}`;
+        }
+        if (newWorkspacePosts.hasOwnProperty(key)) {
           if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
-            delete newWorkspacePosts[id].posts[action.data.id];
+            delete newWorkspacePosts[key].posts[action.data.id];
           } else {
-            if (newWorkspacePosts[id].posts.hasOwnProperty(action.data.id)) {
-              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, claps: newWorkspacePosts[id].posts[action.data.id].claps };
+            if (newWorkspacePosts[key].posts.hasOwnProperty(action.data.id)) {
+              newWorkspacePosts[key].posts[action.data.id] = { ...action.data, claps: newWorkspacePosts[key].posts[action.data.id].claps };
             } else {
-              newWorkspacePosts[id].posts[action.data.id] = { ...action.data, claps: [] };
+              newWorkspacePosts[key].posts[action.data.id] = { ...action.data, claps: [] };
             }
           }
         }
@@ -1554,26 +1541,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_POST": {
-      // let newWorkspacePosts = { ...state.workspacePosts };
-      // //need recipient ids
-      // return {
-      //   ...state,
-      //   workspacePosts: newWorkspacePosts,
-      // };
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...action.data.recipient_ids.reduce((res, rid) => {
-            if (state.workspacePosts[rid]) {
-              res[rid] = {
-                ...state.workspacePosts[rid],
-                ...(state.workspacePosts[rid].posts && {
+            let key = rid;
+            if (action.data.slug !== getSlug()) {
+              key = `${rid}-${action.data.slug}`;
+            }
+            if (state.workspacePosts[key]) {
+              res[key] = {
+                ...state.workspacePosts[key],
+                ...(state.workspacePosts[key].posts && {
                   posts: {
-                    ...Object.keys(state.workspacePosts[rid].posts)
-                      .filter((key) => parseInt(key) !== action.data.post_id)
+                    ...Object.keys(state.workspacePosts[key].posts)
+                      .filter((k) => parseInt(k) !== action.data.post_id)
                       .reduce((post, id) => {
-                        post[id] = { ...state.workspacePosts[rid].posts[id] };
+                        post[id] = { ...state.workspacePosts[key].posts[id] };
                         return post;
                       }, {}),
                   },
@@ -1583,25 +1568,9 @@ export default (state = INITIAL_STATE, action) => {
             return res;
           }, {}),
         },
-        workspaceTimeline: {
-          ...state.workspaceTimeline,
-          ...action.data.recipient_ids.reduce((acc, id) => {
-            if (state.workspaceTimeline[id]) {
-              acc[id] = {
-                ...state.workspaceTimeline[id],
-                timeline: Object.values(state.workspaceTimeline[id].timeline)
-                  .filter((timeline) => !(timeline.tag === "POST" && timeline.item && timeline.item.id === action.data.post_id))
-                  .reduce((pacc, t) => {
-                    pacc[t.id] = t;
-                    return pacc;
-                  }, {}),
-              };
-            }
-            return acc;
-          }, {}),
-        },
       };
     }
+    //todo unique post id
     case "INCOMING_COMMENT": {
       const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
       const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
@@ -1690,30 +1659,33 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: {
           ...state.workspacePosts,
           ...action.data.workspaces.reduce((res, ws) => {
-            if (state.workspacePosts[ws.topic_id]) {
-              res[ws.topic_id] = {
-                ...state.workspacePosts[ws.topic_id],
+            let key = ws.topic_id;
+            if (action.data.sharedSlug) {
+              key = `${ws.topic_id}-${action.data.slug}`;
+            }
+            if (state.workspacePosts[key]) {
+              res[key] = {
+                ...state.workspacePosts[key],
                 posts: {
-                  ...state.workspacePosts[ws.topic_id].posts,
-                  ...(state.workspacePosts[ws.topic_id].posts[action.data.post_id] && {
+                  ...state.workspacePosts[key].posts,
+                  ...(state.workspacePosts[key].posts[action.data.post_id] && {
                     [action.data.post_id]: {
-                      ...state.workspacePosts[ws.topic_id].posts[action.data.post_id],
+                      ...state.workspacePosts[key].posts[action.data.post_id],
                       post_approval_label: allUsersAgreed
                         ? "ACCEPTED"
                         : allUsersDisagreed
                         ? "REQUEST_UPDATE"
                         : isApprover && hasPendingAproval
                         ? "NEED_ACTION"
-                        : state.workspacePosts[ws.topic_id].posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                        : state.workspacePosts[key].posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
                         ? "REQUEST_APPROVAL"
-                        : state.workspacePosts[ws.topic_id].posts[action.data.post_id].post_approval_label,
+                        : state.workspacePosts[key].posts[action.data.post_id].post_approval_label,
                       //is_archived: 0,
-                      reply_count: isNewComment ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].reply_count,
-                      updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[ws.topic_id].posts[action.data.post_id].updated_at,
-                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[ws.topic_id].posts[action.data.post_id].has_replied,
-                      unread_count:
-                        isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].unread_count,
-                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[ws.topic_id].posts[action.data.post_id].is_unread,
+                      reply_count: isNewComment ? state.workspacePosts[key].posts[action.data.post_id].reply_count + 1 : state.workspacePosts[key].posts[action.data.post_id].reply_count,
+                      updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[key].posts[action.data.post_id].updated_at,
+                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[key].posts[action.data.post_id].has_replied,
+                      unread_count: isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[key].posts[action.data.post_id].unread_count + 1 : state.workspacePosts[key].posts[action.data.post_id].unread_count,
+                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[key].posts[action.data.post_id].is_unread,
                     },
                   }),
                 },
@@ -1722,41 +1694,6 @@ export default (state = INITIAL_STATE, action) => {
             return res;
           }, {}),
         },
-      };
-    }
-    case "ADD_PRIMARY_FILES": {
-      return {
-        ...state,
-        workspaces: {
-          ...state.workspaces,
-          ...(action.data.folder_id &&
-            state.workspaces[action.data.folder_id] &&
-            state.workspaces[action.data.folder_id].topics[action.data.id] && {
-              [action.data.folder_id]: {
-                ...state.workspaces[action.data.folder_id],
-                topics: {
-                  ...state.workspaces[action.data.folder_id].topics,
-                  [action.data.id]: {
-                    ...state.workspaces[action.data.folder_id].topics[action.data.id],
-                    primary_files: action.data.files,
-                  },
-                },
-              },
-            }),
-          ...(state.workspaces[action.data.id] && {
-            [action.data.id]: {
-              ...state.workspaces[action.data.id],
-              primary_files: action.data.files,
-            },
-          }),
-        },
-        activeTopic:
-          state.activeTopic.id === action.data.id
-            ? {
-                ...state.activeTopic,
-                primary_files: action.data.files,
-              }
-            : state.activeTopic,
       };
     }
     case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
@@ -1786,6 +1723,7 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
+    // todo unique post id
     case "INCOMING_POST_CLAP": {
       const channelIds = Object.keys(state.workspacePosts);
       return {
@@ -1878,44 +1816,13 @@ export default (state = INITIAL_STATE, action) => {
           }),
       };
     }
-    case "FETCH_TIMELINE_SUCCESS": {
-      return {
-        ...state,
-        workspaceTimeline: {
-          ...state.workspaceTimeline,
-          [action.data.topic_id]: {
-            ...(typeof state.workspaceTimeline[action.data.topic_id] === "undefined"
-              ? {
-                  hasMore: action.data.total_count > 10,
-                  timeline: action.data.timeline.reduce((timeline, item) => {
-                    timeline[item.id] = item;
-                    return timeline;
-                  }, {}),
-                  total_items: action.data.total_count,
-                  page: 1,
-                  maxPage: Math.ceil(action.data.total_count / 10),
-                }
-              : {
-                  ...state.workspaceTimeline[action.data.topic_id],
-                  hasMore: Object.keys(state.workspaceTimeline[action.data.topic_id].timeline).length + action.data.timeline.length === action.data.total_count,
-                  timeline: {
-                    ...state.workspaceTimeline[action.data.topic_id].timeline,
-                    ...action.data.timeline.reduce((timeline, item) => {
-                      timeline[item.id] = item;
-                      return timeline;
-                    }, {}),
-                  },
-                  total_items: action.data.total_count,
-                  maxPage: Math.ceil(action.data.total_count / 10),
-                }),
-          },
-        },
-      };
-    }
     case "FETCH_WORKSPACE_MEMBERS_SUCCESS": {
       let newWorkspaces = { ...state.workspaces };
-
-      newWorkspaces[action.data.id].members = action.data.members;
+      if (action.slug !== getSlug()) {
+        newWorkspaces[`${action.data.id}-${action.slug}`].members = action.data.members;
+      } else {
+        newWorkspaces[action.data.id].members = action.data.members;
+      }
 
       return {
         ...state,
@@ -1930,12 +1837,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "FETCH_TAG_COUNTER_SUCCESS": {
+      let key = action.data.topic_id;
+      if (action.slug !== getSlug()) {
+        key = `${action.data.id}-${action.slug}`;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          [action.data.topic_id]: {
-            ...state.workspacePosts[action.data.topic_id],
+          [key]: {
+            ...state.workspacePosts[key],
             count: {
               is_must_reply: action.data.counters.filter((c) => c.type === "MUST_REPLY")[0].counter,
               is_must_read: action.data.counters.filter((c) => c.type === "MUST_READ")[0].counter,
@@ -1945,7 +1856,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -1975,7 +1886,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo
+    //todo unique ids
     case "ARCHIVE_POST_REDUCER": {
       return {
         ...state,
@@ -2008,9 +1919,12 @@ export default (state = INITIAL_STATE, action) => {
       let workspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       let updatedSearch = { ...state.search };
-
-      if (workspaces[action.data.topic_detail.id]) {
-        workspaces[action.data.topic_detail.id].active = 0;
+      let key = action.data.topic_detail.id;
+      if (action.data.sharedSlug) {
+        key = `${action.data.topic_detail.id}-${action.slug}`;
+      }
+      if (workspaces[key]) {
+        workspaces[key].active = 0;
       }
 
       if (action.data.topic_detail.workspace_id && action.data.topic_detail.workspace_id !== 0) {
@@ -2052,9 +1966,14 @@ export default (state = INITIAL_STATE, action) => {
     case "UNARCHIVE_REDUCER": {
       let workspaces = { ...state.workspaces };
       let updatedSearch = { ...state.search };
-      if (workspaces.hasOwnProperty(action.data.topic_detail.id)) {
-        workspaces[action.data.topic_detail.id].active = 1;
+      let key = action.data.topic_detail.id;
+      if (action.data.sharedSlug) {
+        key = `${action.data.topic_detail.id}-${action.slug}`;
       }
+      if (workspaces[key]) {
+        workspaces[key].active = 1;
+      }
+
       if (updatedSearch.results.length) {
         updatedSearch.results = updatedSearch.results.map((item) => {
           if (item.topic.id === action.data.topic_detail.id) {
@@ -2083,7 +2002,7 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_POST_TOGGLE_FOLLOW": {
       return {
         ...state,
@@ -2108,13 +2027,6 @@ export default (state = INITIAL_STATE, action) => {
             .reduce((obj, workspace) => {
               return { ...obj, ...workspace };
             }, {}),
-        },
-        activeTopic: {
-          ...state.activeTopic,
-          ...(state.workspacePosts.hasOwnProperty(state.workspacePosts) &&
-            state.workspacePosts[state.activeTopic.id].posts.hasOwnProperty(action.data.post_id) && {
-              is_followed: false,
-            }),
         },
       };
     }
@@ -2145,19 +2057,6 @@ export default (state = INITIAL_STATE, action) => {
             }, {}),
         },
       };
-    }
-    case "INCOMING_TIMELINE": {
-      let newTimeline = { ...state.workspaceTimeline };
-      if (newTimeline.hasOwnProperty(action.data.workspace_data.topic_id)) {
-        newTimeline[action.data.workspace_data.topic_id].timeline[action.data.timeline_data.id] = action.data.timeline_data;
-        newTimeline[action.data.workspace_data.topic_id].total_items = newTimeline[action.data.workspace_data.topic_id].total_items + 1;
-        return {
-          ...state,
-          workspaceTimeline: newTimeline,
-        };
-      } else {
-        return state;
-      }
     }
     case "INCOMING_DELETED_POST_FILE": {
       let newWorkspacePosts = { ...state.workspacePosts };
@@ -2196,15 +2095,6 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DELETED_COMMENT": {
       let newPostComments = { ...state.postComments };
-      //let newWorkspacePosts = {...state.workspacePosts};
-      // if (action.data.workspaces.length) {
-      //     action.data.workspaces.forEach(ws => {
-      //         if (newWorkspacePosts.hasOwnProperty(ws.topic_id) && newWorkspacePosts[ws.topic_id].posts.hasOwnProperty(action.data.post_id)) {
-      //             newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count = newWorkspacePosts[ws.topic_id].posts[action.data.post_id].reply_count - 1;
-      //             return;
-      //         }
-      //     })
-      // }
       if (newPostComments.hasOwnProperty(action.data.post_id)) {
         if (action.data.parent_id) {
           delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id];
@@ -2215,23 +2105,26 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         postComments: newPostComments,
-        //workspacePosts: newWorkspacePosts
       };
     }
     //todo
     case "INCOMING_CHAT_MESSAGE": {
       let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
+      let key = action.data.workspace_id;
+      if (action.data.slug && action.data.slug !== getSlug()) {
+        key = `${action.data.workspace_id}-${action.data.slug}`;
+      }
       if (!action.data.is_read) {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
-          if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+          if (updatedWorkspaces.hasOwnProperty(key)) {
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id && action.data.is_active) {
               if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
                 updatedTopic.team_unread_chats = updatedTopic.team_unread_chats + 1;
-                updatedWorkspaces[action.data.workspace_id].team_unread_chats = updatedWorkspaces[action.data.workspace_id].team_unread_chats + 1;
+                updatedWorkspaces[key].team_unread_chats = updatedWorkspaces[key].team_unread_chats + 1;
               } else {
                 updatedTopic.unread_chats = updatedTopic.unread_chats + 1;
-                updatedWorkspaces[action.data.workspace_id].unread_chats = updatedWorkspaces[action.data.workspace_id].unread_chats + 1;
+                updatedWorkspaces[key].unread_chats = updatedWorkspaces[key].unread_chats + 1;
               }
             }
           }
@@ -2246,13 +2139,13 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         let updatedWorkspaces = { ...state.workspaces };
         if (Object.keys(updatedWorkspaces).length > 0) {
-          if (updatedWorkspaces.hasOwnProperty(action.data.workspace_id)) {
+          if (updatedWorkspaces.hasOwnProperty(key)) {
             if (state.activeTopic && state.activeTopic.id === action.data.workspace_id && action.data.is_active) {
               if (state.activeTopic.team_channel && state.activeTopic.team_channel.id === action.data.channel_id) {
                 updatedTopic.team_unread_chats = 0;
-                updatedWorkspaces[action.data.workspace_id].team_unread_chats = 0;
+                updatedWorkspaces[key].team_unread_chats = 0;
               } else {
-                updatedWorkspaces[action.data.workspace_id].unread_chats = 0;
+                updatedWorkspaces[key].unread_chats = 0;
                 updatedTopic.unread_chats = 0;
               }
             }
@@ -2314,10 +2207,6 @@ export default (state = INITIAL_STATE, action) => {
       let updatedTopic = { ...state.activeTopic };
       if (Object.keys(updatedWorkspaces).length > 0) {
         updatedWorkspaces[action.data.topic_id].unread_posts = action.data.unread_posts;
-        if (action.data.folder_id) {
-          //check undefined unread count
-          //updatedWorkspaces[action.data.folder_id].unread_count = action.data.unread_count;
-        }
         if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
           updatedTopic.unread_posts = action.data.unread_posts;
         }
@@ -2374,8 +2263,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE_ROLE": {
       let updatedWorkspaces = { ...state.workspaces };
-      if (updatedWorkspaces.hasOwnProperty(action.data.topic_id)) {
-        updatedWorkspaces[action.data.topic_id].members = updatedWorkspaces[action.data.topic_id].members.map((m) => {
+      let key = action.data.topic_id;
+      if (action.data.slug && action.data.slug !== getSlug()) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
+      if (updatedWorkspaces.hasOwnProperty(key)) {
+        updatedWorkspaces[key].members = updatedWorkspaces[key].members.map((m) => {
           if (m.id === action.data.user_id) {
             return {
               ...m,
@@ -2413,9 +2306,13 @@ export default (state = INITIAL_STATE, action) => {
       let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
       if (updatedFolders.hasOwnProperty(action.data.id)) {
         Object.values(updatedWorkspaces).forEach((ws) => {
+          let key = ws.id;
+          if (ws.sharedSlug) {
+            key = `${ws.id}-${ws.slug}`;
+          }
           if (ws.folder_id && ws.folder_id === action.data.id) {
-            updatedWorkspaces[ws.id].folder_id = null;
-            updatedWorkspaces[ws.id].folder_name = null;
+            updatedWorkspaces[key].folder_id = null;
+            updatedWorkspaces[key].folder_name = null;
             if (updatedTopic && updatedTopic.id === ws.id) {
               updatedTopic.folder_id = null;
               updatedTopic.folder_name = null;
@@ -2440,8 +2337,12 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_EXTERNAL_USER": {
       let updatedWorkspaces = { ...state.workspaces };
       let updatedTopic = null;
-      if (updatedWorkspaces.hasOwnProperty(action.data.current_topic.id)) {
-        updatedWorkspaces[action.data.current_topic.id].members = updatedWorkspaces[action.data.current_topic.id].members.map((m) => {
+      let key = action.data.current_topic.id;
+      if (action.data.sharedSlug) {
+        key = `${action.data.current_topic.id}-${action.data.slug}`;
+      }
+      if (updatedWorkspaces.hasOwnProperty(key)) {
+        updatedWorkspaces[key].members = updatedWorkspaces[key].members.map((m) => {
           if (m.id === action.data.current_user.id) {
             return {
               ...m,
@@ -2473,65 +2374,21 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: updatedTopic,
       };
     }
-    case "UPDATE_WORKSPACE_TIMELINE_PAGE": {
-      let workspaceTimeline = { ...state.workspaceTimeline };
-      workspaceTimeline[action.data.id].page = action.data.page;
-      return {
-        ...state,
-        workspaceTimeline: workspaceTimeline,
-      };
-    }
-    case "READ_ALL_POSTS": {
-      let workspacePosts = { ...state.workspacePosts };
-      let workspaces = { ...state.workspaces };
-      let activeTopic = state.activeTopic ? { ...state.activeTopic } : null;
-      if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
-        Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
-          workspacePosts[action.data.topic_id].posts[p.id].is_read = true;
-          //workspacePosts[action.data.topic_id].posts[p.id].is_updated = true;
-          workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
-          workspacePosts[action.data.topic_id].posts[p.id].is_unread = 0;
-        });
-        workspaces[action.data.topic_id].unread_posts = 0;
-        if (activeTopic && activeTopic.id === action.data.topic_id) {
-          activeTopic.unread_posts = 0;
-        }
-        return {
-          ...state,
-          workspacePosts: workspacePosts,
-          workspaces: workspaces,
-          activeTopic: activeTopic,
-        };
-      } else {
-        return state;
-      }
-    }
-    case "ARCHIVE_ALL_POSTS": {
-      let workspacePosts = { ...state.workspacePosts };
-      if (action.data.topic_id && workspacePosts.hasOwnProperty(action.data.topic_id)) {
-        Object.values(workspacePosts[action.data.topic_id].posts).forEach((p) => {
-          workspacePosts[action.data.topic_id].posts[p.id].is_archived = 1;
-          workspacePosts[action.data.topic_id].posts[p.id].unread_count = 0;
-        });
-        return {
-          ...state,
-          workspacePosts: workspacePosts,
-        };
-      } else {
-        return state;
-      }
-    }
     case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let post = { ...action.data, claps: [], last_visited_at: { timestamp: null } };
       action.data.workspaces.forEach((ws) => {
-        if (newWorkspacePosts.hasOwnProperty(ws.topic_id)) {
-          if (newWorkspacePosts[ws.topic_id].posts[post.id]) {
-            newWorkspacePosts[ws.topic_id].posts[post.id] = { ...post, claps: newWorkspacePosts[ws.topic_id].posts[post.id].claps, last_visited_at: newWorkspacePosts[ws.topic_id].posts[post.id].last_visited_at };
-          } else newWorkspacePosts[ws.topic_id].posts[post.id] = post;
+        let key = ws.topic_id;
+        if (action.slug !== getSlug()) {
+          key = `${ws.topic_id}-${action.slug}`;
+        }
+        if (newWorkspacePosts.hasOwnProperty(key)) {
+          if (newWorkspacePosts[key].posts[post.id]) {
+            newWorkspacePosts[key].posts[post.id] = { ...post, claps: newWorkspacePosts[key].posts[post.id].claps, last_visited_at: newWorkspacePosts[key].posts[post.id].last_visited_at };
+          } else newWorkspacePosts[key].posts[post.id] = post;
         } else {
-          newWorkspacePosts[ws.topic_id] = {
+          newWorkspacePosts[key] = {
             filters: {},
             filter: "all",
             sort: "recent",
@@ -2578,6 +2435,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWorkspacePosts,
       };
     }
+    //todo
     case "UPDATE_POST_FILES": {
       return {
         ...state,
@@ -2604,6 +2462,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo unique post ids
     case "UPDATE_COMMENT_FILES": {
       return {
         ...state,
@@ -2650,6 +2509,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //todo unique post ids
     case "INCOMING_IMPORTANT_COMMENT": {
       return {
         ...state,
@@ -2673,19 +2533,23 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_READ_SELECTED_POSTS": {
+      let key = action.data.topic_id;
+      if (action.data.topic_id && action.data.sharedSlug) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          ...(action.data.topic_id && {
-            [action.data.topic_id]: {
-              ...state.workspacePosts[action.data.topic_id],
+          ...(key && {
+            [key]: {
+              ...state.workspacePosts[key],
               posts: {
-                ...state.workspacePosts[action.data.topic_id].posts,
+                ...state.workspacePosts[key].posts,
                 ...action.data.post_ids.reduce((res, id) => {
-                  if (state.workspacePosts[action.data.topic_id].posts[id]) {
+                  if (state.workspacePosts[key].posts[id]) {
                     res[id] = {
-                      ...state.workspacePosts[action.data.topic_id].posts[id],
+                      ...state.workspacePosts[key].posts[id],
                       is_read: true,
                       unread_count: 0,
                       is_unread: 0,
@@ -2699,6 +2563,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //continue here
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
       return {
         ...state,

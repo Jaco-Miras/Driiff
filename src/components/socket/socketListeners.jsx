@@ -713,7 +713,7 @@ class SocketListeners extends Component {
         }
       })
       .listen(".workspace-role-notification", (e) => {
-        this.props.incomingWorkspaceRole(e);
+        this.props.incomingWorkspaceRole({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".google-attachment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
@@ -877,7 +877,7 @@ class SocketListeners extends Component {
             break;
           }
           case "READ_SELECTED_UNREAD_POST": {
-            this.props.incomingReadSelectedPosts(e);
+            this.props.incomingReadSelectedPosts({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "ARCHIVED_SELECTED_POST": {
@@ -954,7 +954,7 @@ class SocketListeners extends Component {
               if (!e.post_participant_data.from_company && !e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 //user is not participant of post
                 this.props.deletePostNotification(e.channel_messages);
-                this.props.incomingDeletedPost(e);
+                this.props.incomingDeletedPost({ ...e, slug: this.state.slug });
               } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 // from private to public post
                 e.claps = [];
@@ -995,7 +995,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_DELETE": {
-            this.props.incomingDeletedPost(e);
+            this.props.incomingDeletedPost({ ...e, slug: this.state.slug });
             if (e.notification_ids) {
               const ids = Array.from(e.notification_ids);
               ids.forEach((id) => {
@@ -1006,7 +1006,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment(e);
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_CLAP_TOGGLE": {
@@ -1108,13 +1108,13 @@ class SocketListeners extends Component {
                 });
               });
               if (hasMentioned || e.workspaces.length === 0) {
-                this.props.incomingComment(e);
+                this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
               } else {
                 const comment = { ...e, allMuted: workspacesMuted.length === e.workspaces.length };
-                this.props.incomingComment(comment);
+                this.props.incomingComment({ ...comment, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
               }
             } else {
-              this.props.incomingComment(e);
+              this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             }
             break;
           }
@@ -1123,7 +1123,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment(e);
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
@@ -1567,7 +1567,7 @@ class SocketListeners extends Component {
         this.props.incomingDeletedWorkspaceFolder(e);
       })
       .listen(".workspace-role-notification", (e) => {
-        this.props.incomingWorkspaceRole(e);
+        this.props.incomingWorkspaceRole({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".google-attachment-notification", (e) => {
         switch (e.SOCKET_TYPE) {
@@ -1591,7 +1591,7 @@ class SocketListeners extends Component {
       //   console.log(e, "new user");
       // })
       .listen(".external-user-notification", (e) => {
-        this.props.incomingExternalUser(e);
+        this.props.incomingExternalUser({ ...e, sharedSlug: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".user-notification", (e) => {
         switch (e.SOCKET_TYPE) {
@@ -2333,12 +2333,12 @@ class SocketListeners extends Component {
             this.props.incomingTimeline({ timeline_data: e.channel_data.timeline, workspace_data: { topic_id: e.channel_data.topic_detail.id } });
           }
           if (e.channel_data.status === "UNARCHIVED") {
-            this.props.incomingUnArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug });
+            this.props.incomingUnArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
           } else {
-            this.props.incomingArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug });
+            this.props.incomingArchivedWorkspaceChannel({ ...e.channel_data, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
           }
         } else {
-          this.props.incomingArchivedChannel({ ...e.channel_data, slug: this.state.slug });
+          this.props.incomingArchivedChannel({ ...e.channel_data, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
         }
       })
       .listen(".new-chat-channel", (e) => {

@@ -378,18 +378,7 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const {
-    options: addressToOptions,
-    getDefaultAddressTo,
-    getAddressTo,
-    responsible_ids,
-    recipient_ids,
-    is_personal,
-    workspace_ids,
-    userOptions,
-    addressIds,
-    actualUsers,
-  } = useWorkspaceAndUserOptions({
+  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
     isSharedWorkspace: isSharedWorkspace,
   });
@@ -625,6 +614,8 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
@@ -837,6 +828,8 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {

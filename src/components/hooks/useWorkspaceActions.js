@@ -2,7 +2,6 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
 import {
-  addPrimaryFiles,
   deleteWorkspaceRole,
   fetchDetail,
   fetchMembers,
@@ -45,10 +44,6 @@ const useWorkspaceActions = () => {
 
   const getPrimaryFiles = (id, callback) => {
     dispatch(fetchPrimaryFiles({ topic_id: id }, callback));
-  };
-
-  const addPrimaryFilesToWorkspace = (files) => {
-    dispatch(addPrimaryFiles(files));
   };
 
   const getMembers = (id, callback) => {
@@ -222,7 +217,6 @@ const useWorkspaceActions = () => {
   };
 
   return {
-    addPrimaryFilesToWorkspace,
     addRole,
     deleteRole,
     clearChannel,
