@@ -313,7 +313,8 @@ export default function (state = INITIAL_STATE, action) {
           selected: false,
           skip: 0,
           isFetching: false,
-          slug: action.slug !== getSlug() ? action.slug : undefined,
+          slug: action.slug !== getSlug() ? action.slug : null,
+          sharedSlug: action.slug === getSlug(),
         };
       }
 

@@ -447,28 +447,28 @@ export default (state = INITIAL_STATE, action) => {
             },
           },
         }),
-        recentPosts: {
-          ...state.recentPosts,
-          ...Object.keys(state.recentPosts)
-            .filter((wsId) => state.recentPosts[wsId].posts.hasOwnProperty(action.data.post_id))
-            .map((wsId) => {
-              return {
-                [wsId]: {
-                  ...state.recentPosts[wsId],
-                  posts: {
-                    ...state.recentPosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.recentPosts[wsId].posts[action.data.post_id],
-                      is_mark_done: action.data.is_done,
-                    },
-                  },
-                },
-              };
-            })
-            .reduce((obj, workspace) => {
-              return { ...obj, ...workspace };
-            }, {}),
-        },
+        // recentPosts: {
+        //   ...state.recentPosts,
+        //   ...Object.keys(state.recentPosts)
+        //     .filter((wsId) => state.recentPosts[wsId].posts.hasOwnProperty(action.data.post_id))
+        //     .map((wsId) => {
+        //       return {
+        //         [wsId]: {
+        //           ...state.recentPosts[wsId],
+        //           posts: {
+        //             ...state.recentPosts[wsId].posts,
+        //             [action.data.post_id]: {
+        //               ...state.recentPosts[wsId].posts[action.data.post_id],
+        //               is_mark_done: action.data.is_done,
+        //             },
+        //           },
+        //         },
+        //       };
+        //     })
+        //     .reduce((obj, workspace) => {
+        //       return { ...obj, ...workspace };
+        //     }, {}),
+        // },
       };
     }
     case "GET_DRAFTS_SUCCESS": {

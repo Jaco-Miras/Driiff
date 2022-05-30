@@ -143,7 +143,7 @@ const useQuillModules = ({
       ];
     }
 
-    if (Object.keys(workspaces).length) {
+    if (Object.keys(workspaces).length && !sharedSlug) {
       newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
           return Object.assign({}, workspace, {
