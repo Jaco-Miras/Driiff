@@ -7,7 +7,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions, useOutsideClick } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
-import { putCompanyFolders, postCompanyFolders, addFolder, putFolder, addGoogleDriveFolder } from "../../redux/actions/fileActions";
+import { putCompanyFolders, postCompanyFolders, addFolder, putFolder, addGoogleDriveFile } from "../../redux/actions/fileActions";
 import { BlockPicker } from "react-color";
 import colorWheel from "../../assets/img/svgs/RGB_color_wheel_12.svg";
 import { useSelector } from "react-redux";
@@ -57,23 +57,27 @@ const ColorWheelIcon = styled.img`
 `;
 const defaultColors = ["#D9E3F0", "#F47373", "#697689", "#37D67A", "#2CCCE4", "#555555", "#dce775", "#ff8a65", "#ba68c8"];
 
-const CreateFilesFolderModal = (props) => {
+const CreateFilesModal = (props) => {
   const { type, folder = null, mode = "create", params, topic_id = null, parentFolder = null } = props.data;
+  console.log("create files modal===>", type);
   const theme = useSelector((state) => state.settings.driff.theme);
   const folderName = parentFolder ? parentFolder.search : "";
   const history = useHistory();
   const { _t } = useTranslationActions();
+
   const dictionary = {
-    folderDescription: _t("FOLDER_MODAL.DESCRIPTION", "Folders help to organize your files. A file can only be connected to one folder."),
-    folderName: _t("FOLDER_MODAL.FOLDER_NAME", "Folder name"),
+    folderDescription: _t("FILE_MODAL.DESCRIPTION", "A file can only be connected to one folder."),
+    fileName: _t("FILE_MODAL.FOLDER_NAME", "File name"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     update: _t("BUTTON.UPDATE", "Update"),
-    createFolder: _t("FILE.CREATE_FOLDER", "Create folder"),
+    createFile: _t("FILE.CREATE_FILE", "Create file"),
     create: _t("FILE.CREATE", "Create"),
-    updateFolder: _t("FILE.UPDATE_FOLDER", "Update folder"),
-    altText: _t("ALT_TEXT_FOLDER_COLOR", "Select folder color"),
-    postInputLabel: _t("FOLDER_MODAL.PARENT_FOLDER_LABEL", "The folder will be created inside ::folderName::", { folderName: folderName }),
+    updateFile: _t("FILE.UPDATE_FILE", "Update file"),
+    altText: _t("ALT_TEXT_FILE_COLOR", "Select file color"),
+    postInputLabel: _t("FILE_MODAL.PARENT_FOLDER_LABEL", "The file will be created inside ::folderName::", { folderName: folderName }),
   };
+
+
   const dispatch = useDispatch();
 
   const refs = {
@@ -101,7 +105,7 @@ const CreateFilesFolderModal = (props) => {
     setInputValue(e.target.value);
   };
 
-  const handleCreateFolder = () => {
+  const handleCreateFile = () => {
     let cb = (err, res) => {
       if (err) return;
       if (topic_id) {
@@ -115,8 +119,8 @@ const CreateFilesFolderModal = (props) => {
       }
     };
     let payload = {
-      name: inputValue,
-      bg_color: color,
+      title: inputValue,
+      doc_type: params.doc_type,
     };
     if (params.hasOwnProperty("folderId") && topic_id === null) {
       payload = {
@@ -129,15 +133,13 @@ const CreateFilesFolderModal = (props) => {
         ...payload,
         folder_id: params.fileFolderId,
       };
-    }
-    if (topic_id) {
-      dispatch(addFolder({ ...payload, topic_id: topic_id }, cb));      
-    } else {
-      dispatch(postCompanyFolders(payload, cb));
     }    
+    if (topic_id) {     
+      dispatch(addGoogleDriveFile({ ...payload, topic_id: topic_id }, cb));
+    }
   };
 
-  const handleUpdateFolder = () => {
+  const handleUpdateFile = () => {
     let cb = (err, res) => {
       if (err) return;
       if (topic_id) {
@@ -165,8 +167,8 @@ const CreateFilesFolderModal = (props) => {
 
   const handleConfirm = () => {
     toggle();
-    if (mode === "create") handleCreateFolder();
-    else handleUpdateFolder();
+    if (mode === "create") handleCreateFile();
+    else handleUpdateFile();
   };
 
   const inputRef = useRef();
@@ -192,11 +194,11 @@ const CreateFilesFolderModal = (props) => {
 
   return (
     <Wrapper ref={refs.main} isOpen={true} toggle={toggle} centered onOpened={onOpened} className={"single-input-modal"} color={color}>
-      <ModalHeaderSection toggle={toggle}>{mode === "create" ? dictionary.createFolder : dictionary.updateFolder}</ModalHeaderSection>
+      <ModalHeaderSection toggle={toggle}>{mode === "create" ? dictionary.createFile : dictionary.updateFile}</ModalHeaderSection>
       <ModalBody>
         <Label className={"modal-info mb-3"}>{dictionary.folderDescription}</Label>
         <WrapperDiv>
-          <Label className={"modal-label"}>{dictionary.folderName}</Label>
+          <Label className={"modal-label"}>{dictionary.fileName}</Label>
           <div className="d-flex align-items-center mb-2">
             <Input innerRef={inputRef} autoFocus defaultValue={mode === "create" ? "" : folder.search} onChange={handleInputChange} />
             <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt={dictionary.altText} onClick={handleShowColorPicker} />
@@ -221,4 +223,4 @@ const CreateFilesFolderModal = (props) => {
   );
 };
 
-export default React.memo(CreateFilesFolderModal);
+export default React.memo(CreateFilesModal);

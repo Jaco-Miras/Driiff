@@ -2,6 +2,8 @@ import dispatchActionToReducer, { SimpleDispatchActionToReducer } from "../actio
 import {
   getLoginSettings as getLoginSettingsService,
   putLoginSettings as putLoginSettingsService,
+  getGoogleAuthSettings as getGoogleAuthSettingsService,
+  getGoogleAuth as getGoogleAuthService,
   putQuickLinks as putQuickLinksService,
   postQuickLinks as postQuickLinksService,
   getUserBot as getUserBotService,
@@ -41,6 +43,14 @@ export function getLoginSettings(payload, callback) {
 
 export function putLoginSettings(payload, callback) {
   return dispatchActionToReducer(putLoginSettingsService(payload), "PUT_LOGIN_SETTINGS_START", "PUT_LOGIN_SETTINGS_SUCCESS", "PUT_LOGIN_SETTINGS_FAILURE", callback);
+}
+
+export function getGoogleAuthSettings(payload, callback) {
+  return dispatchActionToReducer(getGoogleAuthSettingsService(payload), "GET_GOOGLE_AUTH_SETTINGS_START", "GET_GOOGLE_AUTH_SETTINGS_SUCCESS", "GET_GOOGLE_AUTH_SETTINGS_FAILURE", callback);
+}
+
+export function getGoogleAuth(payload, callback) {
+  return dispatchActionToReducer(getGoogleAuthService(payload), "GET_GOOGLE_AUTH_START", "GET_GOOGLE_AUTH_SUCCESS", "GET_GOOGLE_AUTH_FAILURE", callback);
 }
 
 export function setFilter(payload, callback) {

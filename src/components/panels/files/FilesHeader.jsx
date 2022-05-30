@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 `;
 
 const FilesHeader = (props) => {
-  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, handleAddEditFolder, folders, history, params, clearFilter, dictionary, disableOptions, onClickEmpty, value } = props;
+  const { className = "", isMember, dropZoneRef, onSearchChange, onSearch, onEnter, wsFiles, handleAddEditFolder, handleAddEditFile, folders, history, params, clearFilter, dictionary, disableOptions, onClickEmpty, value } = props;
 
   const dispatch = useDispatch();
 
@@ -94,16 +94,52 @@ const FilesHeader = (props) => {
     items:
       wsFiles && Object.values(folders).length
         ? Object.values(folders)
-            .filter((f) => !f.is_archived)
-            .map((f) => {
-              return {
-                value: f.id,
-                label: f.search,
-                //label: <>Video <span className="text-muted">21</span></>,
-                onClick: handleClickFolder,
-              };
-            })
+          .filter((f) => !f.is_archived)
+          .map((f) => {
+            return {
+              value: f.id,
+              label: f.search,
+              //label: <>Video <span className="text-muted">21</span></>,
+              onClick: handleClickFolder,
+            };
+          })
         : [],
+  };
+
+  const GdriveDropDown = {
+    label: (
+      <>
+        <SvgIconFeather className="mr-1" icon="google-drive" /> {dictionary.googleDrive}
+      </>
+    ),
+    items: [
+      {
+        value: "document",
+        label: dictionary.googleDocument,
+        onClick: () => handleAddEditFile(null, "create", "document"),
+      },
+      {
+        value: "drawing",
+        label: dictionary.googleDrawing,
+        onClick: () => handleAddEditFile(null, "create", "drawing"),
+      },
+      {
+        value: "slides",
+        label: dictionary.googleSlides,
+        onClick: () => handleAddEditFile(null, "create", "slides"),
+      },
+      {
+        value: "sheets",
+        label: dictionary.googleSheets,
+        onClick: () => handleAddEditFile(null, "create", "sheets"),
+      },
+      {
+        value: "folder",
+        label: dictionary.googleFolder,
+        onClick: () => handleAddEditFolder(null, "create", ),
+      },
+    ],
+
   };
 
   const openMobileModal = () => {
@@ -139,6 +175,11 @@ const FilesHeader = (props) => {
               <button className="btn btn-outline-light" onClick={showExternalFileFolderModal}>
                 {dictionary.driveLink}
               </button>
+            </li>
+          )}
+          {isMember === true && (
+            <li className="list-inline-item mb-0">
+              <ButtonDropdown dropdown={GdriveDropDown} />
             </li>
           )}
         </ul>

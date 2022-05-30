@@ -24,6 +24,7 @@ import {
   UpdateAdminBotModal,
   TrialEndedModal,
   CreateFilesFolderModal,
+  CreateFilesModal,
   AboutWorkspaceModal,
   CreateExternalFileFolder,
   CreateEditTeamModal,
@@ -131,6 +132,8 @@ const ModalPanel = () => {
             return <TrialEndedModal key={modal.type} data={modal} />;
           case "files_folder":
             return <CreateFilesFolderModal key={modal.type} data={modal} />;
+          case "files":
+            return <CreateFilesModal key={modal.type} data={modal} />;
           case "about_workspace":
             return <AboutWorkspaceModal key={modal.type} data={modal} />;
           case "external_file_folder":

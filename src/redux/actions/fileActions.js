@@ -41,6 +41,8 @@ import {
   postCompanyUploadFiles as postCompanyUploadFilesService,
   postFavorite as postFavoriteService,
   postFolder as postFolderService,
+  postGoogleDriveFolder as postGoogleDriveFolderService,
+  postGoogleDriveFile as postGoogleDriveFileService,
   postGoogleAttachments as postGoogleAttachmentsService,
   postWorkspaceFiles as postWorkspaceFilesService,
   putCompanyFileMove as putCompanyFileMoveService,
@@ -152,6 +154,14 @@ export function addFolder(payload, callback) {
 
 export function putFolder(payload, callback) {
   return dispatchActionToReducer(putFolderService(payload), "UPDATE_FOLDER_START", "UPDATE_FOLDER_SUCCESS", "UPDATE_FOLDER_FAIL", callback);
+}
+
+export function addGoogleDriveFolder(payload, callback) {
+  return dispatchActionToReducer(postGoogleDriveFolderService(payload), "ADD_GOOGLE_DRIVE_FOLDER_START", "ADD_GOOGLE_DRIVE_FOLDER_SUCCESS", "ADD_GOOGLE_DRIVE_FOLDER_FAIL", callback);
+}
+
+export function addGoogleDriveFile(payload, callback) {
+  return dispatchActionToReducer(postGoogleDriveFileService(payload), "ADD_GOOGLE_DRIVE_FILE_START", "ADD_GOOGLE_DRIVE_FILE_SUCCESS", "ADD_GOOGLE_DRIVE_FILE_FAIL", callback);
 }
 
 export function uploadWorkspaceFiles(payload, callback) {

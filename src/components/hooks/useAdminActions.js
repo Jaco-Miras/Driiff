@@ -2,6 +2,7 @@ import { useDispatch } from "react-redux";
 import {
   getLoginSettings,
   putLoginSettings,
+  getGoogleAuthSettings,
   setFilter,
   putQuickLinks,
   postQuickLinks,
@@ -51,6 +52,14 @@ const useAdminActions = () => {
       })
     );
   };
+
+  const fetchGoogleAuthSettings = (payload, callback) => {
+    dispatch(
+      getGoogleAuthSettings(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    )
+  }
 
   const updateLoginSettings = (payload, callback) => {
     dispatch(
@@ -286,6 +295,7 @@ const useAdminActions = () => {
 
   return {
     fetchLoginSettings,
+    fetchGoogleAuthSettings,
     updateLoginSettings,
     setAdminFilter,
     updateQuickLinks,

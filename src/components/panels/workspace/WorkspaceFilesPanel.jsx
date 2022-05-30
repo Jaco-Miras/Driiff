@@ -86,9 +86,18 @@ const WorkspaceFilesPanel = (props) => {
     searchInputPlaceholder: _t("FILES.SEARCH_INPUT_PLACEHOLDER", "Search by file or folder name"),
     uploadFiles: _t("UPLOAD_FILES", "Upload files"),
     driveLink: _t("BUTTON.DRIVE_LINK", "Drive link"),
+    googleDrive: _t("BUTTON.GOOGLE_DRIVE", "Google Drive"),
+    googleDocument: _t("CREATE_GOOGLE_DOCUMENT", "Create Google Document"),
+    googleDrawing: _t("CREATE GOOGLE DRAWING", "Create Google Drawing"),
+    googleSlides: _t("CREATE_GOOGLE_SLIDES", "Create Google Slides"),
+    googleSheets: _t("CREATE_GOOGLE_SHEETS", "Create Google Sheets"),
+    googleFolder: _t("CREATE_GOOGLE_FOLDER", "Create Google Folder"),
   };
 
-  const handleAddEditFolder = (f, mode = "create") => {
+  const handleAddEditFolder = (f, mode = "create") => {    
+    if (folder) {
+      params.googleDriveFolderId = folder.google_folder_id
+    }
     const modal = {
       type: "files_folder",
       folder: mode === "create" ? null : f,
@@ -98,7 +107,22 @@ const WorkspaceFilesPanel = (props) => {
       parentFolder: folder ? folder : null,
     };
     dispatch(addToModals(modal));
-  };
+  }; 
+
+  const handleAddEditFile = (f, mode = "create", file_type) => {    
+    if (folder) {
+      params.googleDriveFolderId = folder.google_folder_id
+    }
+    const modal = {
+      type: "files",
+      folder: mode === "create" ? null : f,
+      params: { ...params, doc_type: file_type },
+      mode: mode,
+      topic_id: topic.id,
+      parentFolder: folder ? folder : null,
+    };
+    dispatch(addToModals(modal));
+  };   
 
   const clearFilter = () => {
     setFilter("");
@@ -146,11 +170,12 @@ const WorkspaceFilesPanel = (props) => {
                 onEnter={handleEnter}
                 wsFiles={wsFiles}
                 handleAddEditFolder={handleAddEditFolder}
+                handleAddEditFile={handleAddEditFile}
                 folders={folders}
                 dictionary={dictionary}
                 disableOptions={disableOptions}
                 onClickEmpty={clearSearch}
-                value={search}
+                value={search}                
               />
               <FilesBody
                 dropZoneRef={refs.dropZone}
@@ -165,7 +190,7 @@ const WorkspaceFilesPanel = (props) => {
                 actions={actions}
                 params={params}
                 wsFiles={wsFiles}
-                handleAddEditFolder={handleAddEditFolder}
+                handleAddEditFolder={handleAddEditFolder}                
                 dictionary={dictionary}
                 disableOptions={disableOptions}
               />
