@@ -103,6 +103,7 @@ const INITIAL_STATE = {
       time_format: "HH:mm",
       personal_links: [],
       notifications_on: true,
+      enable_all_notification_reply_in_email: true,
       order_channel: {
         order_by: "channel_date_updated",
         sort_by: "DESC",
