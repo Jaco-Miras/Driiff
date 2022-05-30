@@ -438,16 +438,6 @@ const usePostActions = () => {
     copyTextToClipboard(toaster, link);
   };
 
-  const snoozePost = (post) => {
-    let payload = {
-      type: "snooze_post",
-      post: post,
-      topic_id: params.workspaceId,
-    };
-
-    dispatch(addToModals(payload));
-  };
-
   const followPost = (post) => {
     let payload = {
       post_id: post.id,
@@ -1076,7 +1066,6 @@ const usePostActions = () => {
     markAsRead,
     markAsUnread,
     sharePost,
-    snoozePost,
     followPost,
     trash,
     showModal,

@@ -497,10 +497,10 @@ class SocketListeners extends Component {
         this.props.incomingSnoozedAllNotification(e);
       })
       .listen(".post-follow", (e) => {
-        this.props.incomingFollowPost(e);
+        this.props.incomingFollowPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".post-unfollow", (e) => {
-        this.props.incomingUnfollowPost(e);
+        this.props.incomingUnfollowPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".unarchive-post-notification", (e) => {
         e.posts.forEach((p) => {
@@ -838,31 +838,23 @@ class SocketListeners extends Component {
         this.props.getFavoriteWorkspaceCounters();
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
-            this.props.incomingClosePost(e);
+            this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
-          // case "FOLLOW_POST": {
-          //   console.log(e, "follow post");
-          //   this.props.incomingFollowPost(e);
-          //   break;
-          // }
-          // case "UNFOLLOW_POST": {
-          //   console.log(e, "unfollow post");
-          //   this.props.incomingUnfollowPost(e);
-          //   break;
-          // }
           case "POST_APPROVED": {
-            this.props.incomingPostApproval(e);
+            this.props.incomingPostApproval({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_REQUIRED": {
-            this.props.incomingPostRequired(e);
+            this.props.incomingPostRequired({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_COMMENT_APPROVED": {
             this.props.getNotifications({ skip: 0, limit: 5 });
             this.props.incomingCommentApproval({
               ...e,
+              slug: this.state.slug,
+              sharedSlug: this.props.sharedSlug,
               users_approval: e.users_approval.map((u) => {
                 if (u.id === e.user_approved.id) {
                   return {
@@ -881,7 +873,7 @@ class SocketListeners extends Component {
             break;
           }
           case "ARCHIVED_SELECTED_POST": {
-            this.props.incomingArchivedSelectedPosts(e);
+            this.props.incomingArchivedSelectedPosts({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "ADD_RECIPIENTS": {
@@ -1104,6 +1096,8 @@ class SocketListeners extends Component {
                   this.props.updateWorkspacePostCount({
                     topic_id: ws.topic_id,
                     count: res.data.result,
+                    slug: this.state.slug,
+                    sharedSlug: this.props.sharedSlug,
                   });
                 });
               });
@@ -1431,6 +1425,8 @@ class SocketListeners extends Component {
               channel_ids: [...e.connected_data.user_removed_channel_ids, ...e.connected_data.archived_channel_ids],
               topic_ids: [...e.connected_data.user_removed_topic_ids, ...e.connected_data.archived_topic_ids],
               user: e.user,
+              slug: this.state.slug,
+              sharedSlug: this.props.sharedSlug,
             };
             this.props.incomingArchivedUser(payload);
             if (e.user.id === this.state.userId) {
@@ -1443,7 +1439,7 @@ class SocketListeners extends Component {
             break;
           }
           case "RESTORED_ACCOUNT": {
-            this.props.incomingUnarchivedUser(e);
+            this.props.incomingUnarchivedUser({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "DEACTIVATE_ACCOUNT": {

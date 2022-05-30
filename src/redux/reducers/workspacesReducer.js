@@ -2563,21 +2563,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //continue here
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
+      let key = action.data.topic_id;
+      if (action.data.topic_id && action.data.sharedSlug) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          ...(action.data.topic_id && {
-            [action.data.topic_id]: {
-              ...state.workspacePosts[action.data.topic_id],
+          ...(key && {
+            [key]: {
+              ...state.workspacePosts[key],
               posts: {
-                ...state.workspacePosts[action.data.topic_id].posts,
+                ...state.workspacePosts[key].posts,
                 ...action.data.post_ids.reduce((res, id) => {
-                  if (state.workspacePosts[action.data.topic_id].posts[id]) {
+                  if (state.workspacePosts[key].posts[id]) {
                     res[id] = {
-                      ...state.workspacePosts[action.data.topic_id].posts[id],
+                      ...state.workspacePosts[key].posts[id],
                       is_archived: 1,
                       unread_count: 0,
                       is_unread: 0,
@@ -2592,14 +2595,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_WORKSPACE_POST_COUNT": {
+      let key = action.data.topic_id;
+      if (action.data.topic_id && action.data.sharedSlug) {
+        key = `${action.data.topic_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         activeTopic: state.activeTopic && state.activeTopic.id === action.data.topic_id ? { ...state.activeTopic, unread_posts: action.data.count } : state.activeTopic,
         workspaces: {
           ...state.workspaces,
-          ...(state.workspaces[action.data.topic_id] && {
-            [action.data.topic_id]: {
-              ...state.workspaces[action.data.topic_id],
+          ...(state.workspaces[key] && {
+            [key]: {
+              ...state.workspaces[key],
               unread_posts: action.data.count,
             },
           }),
@@ -2618,14 +2625,22 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.workspaces.length > 0 && {
             ...state.workspacePosts,
             ...action.data.workspaces.reduce((res, ws) => {
-              if (state.workspacePosts[ws.topic.id]) {
-                res[ws.topic.id] = {
-                  ...state.workspacePosts[ws.topic.id],
+              let key = ws.topic.id;
+              if (action.data.sharedSlug || action.isSharedSlug) {
+                if (action.data.sharedSlug) {
+                  key = `${ws.topic.id}-${action.data.slug}`;
+                } else {
+                  key = `${ws.topic.id}-${action.slug}`;
+                }
+              }
+              if (state.workspacePosts[key]) {
+                res[key] = {
+                  ...state.workspacePosts[key],
                   posts: {
-                    ...state.workspacePosts[ws.topic.id].posts,
-                    ...(state.workspacePosts[ws.topic.id].posts[action.data.post.id] && {
+                    ...state.workspacePosts[key].posts,
+                    ...(state.workspacePosts[key].posts[action.data.post.id] && {
                       [action.data.post.id]: {
-                        ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                        ...state.workspacePosts[key].posts[action.data.post.id],
                         post_approval_label: allUsersAgreed
                           ? "ACCEPTED"
                           : allUsersDisagreed
@@ -2634,8 +2649,8 @@ export default (state = INITIAL_STATE, action) => {
                           ? "SPLIT"
                           : action.data.user_approved.id === state.user.id
                           ? null
-                          : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
-                        users_approval: state.workspacePosts[ws.topic.id].posts[action.data.post.id].users_approval.map((u) => {
+                          : state.workspacePosts[key].posts[action.data.post.id].post_approval_label,
+                        users_approval: state.workspacePosts[key].posts[action.data.post.id].users_approval.map((u) => {
                           if (u.id === action.data.user_approved.id) {
                             return {
                               ...u,
@@ -2730,13 +2745,17 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.workspaces.length > 0 && {
             ...state.workspacePosts,
             ...action.data.workspaces.reduce((res, ws) => {
-              if (state.workspacePosts[ws.topic.id]) {
-                res[ws.topic.id] = {
-                  ...state.workspacePosts[ws.topic.id],
+              let key = ws.topic.id;
+              if (action.data.sharedSlug) {
+                key = `${ws.topic.id}-${action.data.slug}`;
+              }
+              if (state.workspacePosts[key]) {
+                res[key] = {
+                  ...state.workspacePosts[key],
                   posts: {
-                    ...state.workspacePosts[ws.topic.id].posts,
+                    ...state.workspacePosts[key].posts,
                     [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      ...state.workspacePosts[key].posts[action.data.post.id],
                       post_approval_label: allUsersAgreed
                         ? "ACCEPTED"
                         : allUsersDisagreed
@@ -2760,7 +2779,11 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_ARCHIVED_USER": {
       let updatedWorkspaces = { ...state.workspaces };
       action.data.topic_ids.forEach((wid) => {
-        updatedWorkspaces[wid].members = updatedWorkspaces[wid].members.filter((m) => m.id !== action.data.user.id);
+        let key = wid;
+        if (action.data.sharedSlug) {
+          key = `${wid}-${action.data.slug}`;
+        }
+        updatedWorkspaces[key].members = updatedWorkspaces[key].members.filter((m) => m.id !== action.data.user.id);
       });
       return {
         ...state,
@@ -2770,35 +2793,15 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_UNARCHIVED_USER": {
       let updatedWorkspaces = { ...state.workspaces };
       action.data.connected_topic_ids.forEach((wid) => {
-        updatedWorkspaces[wid].members = [...updatedWorkspaces[wid].members, action.data.profile];
+        let key = wid;
+        if (action.data.sharedSlug) {
+          key = `${wid}-${action.data.slug}`;
+        }
+        updatedWorkspaces[key].members = [...updatedWorkspaces[key].members, action.data.profile];
       });
       return {
         ...state,
         workspaces: updatedWorkspaces,
-      };
-    }
-    case "SET_POSTREAD": {
-      return {
-        ...state,
-        workspacePosts: {
-          ...Object.keys(state.workspacePosts).reduce((res, key) => {
-            if (key !== "flipper") {
-              res[key] = {
-                ...state.workspacePosts[key],
-                posts: {
-                  ...state.workspacePosts[key].posts,
-                  ...(state.workspacePosts[key].posts[action.data.postId] && {
-                    [action.data.postId]: {
-                      ...state.workspacePosts[key].posts[action.data.postId],
-                      post_reads: [...action.data.readPosts],
-                    },
-                  }),
-                },
-              };
-            }
-            return res;
-          }, {}),
-        },
       };
     }
     case "INCOMING_CLOSE_POST": {
@@ -2811,43 +2814,47 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.workspaces.length > 0 && {
             ...state.workspacePosts,
             ...action.data.workspaces.reduce((res, ws) => {
-              if (state.workspacePosts[ws.topic.id]) {
-                res[ws.topic.id] = {
-                  ...state.workspacePosts[ws.topic.id],
+              let key = ws.topic.id;
+              if (action.data.sharedSlug) {
+                key = `${ws.topic.id}-${action.data.slug}`;
+              }
+              if (state.workspacePosts[key]) {
+                res[key] = {
+                  ...state.workspacePosts[key],
                   posts: {
-                    ...state.workspacePosts[ws.topic.id].posts,
+                    ...state.workspacePosts[key].posts,
                     [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      ...state.workspacePosts[key].posts[action.data.post.id],
                       is_close: action.data.is_close,
                       post_close: {
                         initiator: action.data.initiator,
                       },
                     },
                   },
-                  ...(state.workspacePosts[ws.topic.id].categories && {
+                  ...(state.workspacePosts[key].categories && {
                     categories: {
-                      ...state.workspacePosts[ws.topic.id].categories,
+                      ...state.workspacePosts[key].categories,
                       closedPost: {
-                        ...state.workspacePosts[ws.topic.id].categories.closedPost,
-                        count: action.data.is_close ? state.workspacePosts[ws.topic.id].categories.closedPost.count + 1 : state.workspacePosts[ws.topic.id].categories.closedPost.count - 1,
+                        ...state.workspacePosts[key].categories.closedPost,
+                        count: action.data.is_close ? state.workspacePosts[key].categories.closedPost.count + 1 : state.workspacePosts[key].categories.closedPost.count - 1,
                       },
                       mustReply: {
-                        ...state.workspacePosts[ws.topic.id].categories.mustReply,
+                        ...state.workspacePosts[key].categories.mustReply,
                         count:
                           action.data.is_close && mustReply
-                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
+                            ? state.workspacePosts[key].categories.mustReply.count - 1
                             : !action.data.is_close && mustReply
-                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count + 1
-                            : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                            ? state.workspacePosts[key].categories.mustReply.count + 1
+                            : state.workspacePosts[key].categories.mustReply.count,
                       },
                       mustRead: {
-                        ...state.workspacePosts[ws.topic.id].categories.mustRead,
+                        ...state.workspacePosts[key].categories.mustRead,
                         count:
                           action.data.is_close && mustRead
-                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
+                            ? state.workspacePosts[key].categories.mustRead.count - 1
                             : !action.data.is_close && mustRead
-                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count + 1
-                            : state.workspacePosts[ws.topic.id].categories.mustRead.count,
+                            ? state.workspacePosts[key].categories.mustRead.count + 1
+                            : state.workspacePosts[key].categories.mustRead.count,
                       },
                     },
                   }),
@@ -2900,6 +2907,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: workspacePost,
       };
     }
+    //to review
     case "REMOVE_POST": {
       return {
         ...state,
@@ -2928,6 +2936,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to review
     case "POST_LIST_CONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
         if (!wp.posts.hasOwnProperty(action.data.post_id)) {
@@ -2951,6 +2960,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
+    //to review
     case "POST_LIST_DISCONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
         if (!wp.posts.hasOwnProperty(action.data.post_id)) {
@@ -2975,7 +2985,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
-    //todo
+    //todo unique post id
     case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
@@ -2984,35 +2994,39 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.workspaces.length > 0 && {
             ...state.workspacePosts,
             ...action.data.workspaces.reduce((res, ws) => {
-              if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post.id]) {
-                res[ws.topic.id] = {
-                  ...state.workspacePosts[ws.topic.id],
+              let key = ws.topic.id;
+              if (action.data.sharedSlug) {
+                key = `${ws.topic.id}-${action.data.slug}`;
+              }
+              if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post.id]) {
+                res[key] = {
+                  ...state.workspacePosts[key],
                   posts: {
-                    ...state.workspacePosts[ws.topic.id].posts,
+                    ...state.workspacePosts[key].posts,
                     [action.data.post.id]: {
-                      ...state.workspacePosts[ws.topic.id].posts[action.data.post.id],
+                      ...state.workspacePosts[key].posts[action.data.post.id],
                       required_users: action.data.required_users,
                       user_reads: action.data.user_reads,
                       must_read_users: action.data.must_read_users,
                       must_reply_users: action.data.must_reply_users,
                     },
                   },
-                  ...(state.workspacePosts[ws.topic.id].hasOwnProperty("categories") && {
+                  ...(state.workspacePosts[key].hasOwnProperty("categories") && {
                     categories: {
-                      ...state.workspacePosts[ws.topic.id].categories,
+                      ...state.workspacePosts[key].categories,
                       mustRead: {
-                        ...state.workspacePosts[ws.topic.id].categories.mustRead,
+                        ...state.workspacePosts[key].categories.mustRead,
                         count:
                           action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
-                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
-                            : state.workspacePosts[ws.topic.id].categories.mustRead.count,
+                            ? state.workspacePosts[key].categories.mustRead.count - 1
+                            : state.workspacePosts[key].categories.mustRead.count,
                       },
                       mustReply: {
-                        ...state.workspacePosts[ws.topic.id].categories.mustReply,
+                        ...state.workspacePosts[key].categories.mustReply,
                         count:
                           action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
-                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
-                            : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                            ? state.workspacePosts[key].categories.mustReply.count - 1
+                            : state.workspacePosts[key].categories.mustReply.count,
                       },
                     },
                   }),
@@ -3533,15 +3547,18 @@ export default (state = INITIAL_STATE, action) => {
             action.data.workspaces.length > 0 && {
               ...state.workspacePosts,
               ...action.data.workspaces.reduce((res, ws) => {
-                if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
-                  res[ws.topic.id] = {
-                    ...state.workspacePosts[ws.topic.id],
+                let key = ws.topic.id;
+                if (action.data.sharedSlug) {
+                  key = `${ws.topic.id}-${action.data.slug}`;
+                }
+                if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post_id]) {
+                  res[key] = {
+                    ...state.workspacePosts[key],
                     posts: {
-                      ...state.workspacePosts[ws.topic.id].posts,
+                      ...state.workspacePosts[key].posts,
                       [action.data.post_id]: {
-                        ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
-                        //is_followed: action.data.new_recipient_id === state.user.id ? true : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
-                        user_unfollow: state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                        ...state.workspacePosts[key].posts[action.data.post_id],
+                        user_unfollow: state.workspacePosts[key].posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
                       },
                     },
                   };
@@ -3561,15 +3578,18 @@ export default (state = INITIAL_STATE, action) => {
             action.data.workspaces.length > 0 && {
               ...state.workspacePosts,
               ...action.data.workspaces.reduce((res, ws) => {
-                if (state.workspacePosts[ws.topic.id] && state.workspacePosts[ws.topic.id].posts[action.data.post_id]) {
-                  res[ws.topic.id] = {
-                    ...state.workspacePosts[ws.topic.id],
+                let key = ws.topic.id;
+                if (action.data.sharedSlug) {
+                  key = `${ws.topic.id}-${action.data.slug}`;
+                }
+                if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post_id]) {
+                  res[key] = {
+                    ...state.workspacePosts[key],
                     posts: {
-                      ...state.workspacePosts[ws.topic.id].posts,
+                      ...state.workspacePosts[key].posts,
                       [action.data.post_id]: {
-                        ...state.workspacePosts[ws.topic.id].posts[action.data.post_id],
-                        //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.workspacePosts[ws.topic.id].posts[action.data.post_id].is_followed,
-                        user_unfollow: [...state.workspacePosts[ws.topic.id].posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                        ...state.workspacePosts[key].posts[action.data.post_id],
+                        user_unfollow: [...state.workspacePosts[key].posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
                       },
                     },
                   };
@@ -3580,20 +3600,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    // case "TOGGLE_SHOW_ABOUT_SUCCESS": {
-    //   return {
-    //     ...state,
-    //     activeTopic: state.activeTopic && state.activeTopic.id === action.data.message.id ? { ...state.activeTopic, show_about: action.data.message.show_about } : state.activeTopic,
-    //     workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-    //       if (ws.id === action.data.message.id) {
-    //         acc[ws.id] = { ...ws, show_about: action.data.message.show_about === false ? 0 : 1 };
-    //       } else {
-    //         acc[ws.id] = ws;
-    //       }
-    //       return acc;
-    //     }, {}),
-    //   };
-    // }
     case "GET_ALL_WORKSPACE_FOLDERS_SUCCESS": {
       return {
         ...state,
@@ -3833,7 +3839,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspaces: Object.values(state.workspaces).reduce((acc, ws) => {
-          if (ws.sharedSlug && action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
+          if (ws.sharedSlug && ws.members.some((m) => m.members && m.id === action.data.id)) {
             acc[ws.key] = {
               ...ws,
               members: ws.members.map((m) => {
@@ -3844,7 +3850,7 @@ export default (state = INITIAL_STATE, action) => {
                 }
               }),
             };
-          } else if (!ws.sharedSlug && !action.data.fromSharedWs && ws.members.some((m) => m.members && m.id === action.data.id)) {
+          } else if (!ws.sharedSlug && ws.members.some((m) => m.members && m.id === action.data.id)) {
             acc[ws.id] = {
               ...ws,
               members: ws.members.map((m) => {
@@ -4151,6 +4157,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to review
     case "SET_SELECTED_POST": {
       return {
         ...state,
