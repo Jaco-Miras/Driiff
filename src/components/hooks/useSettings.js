@@ -73,6 +73,7 @@ const useSettings = () => {
             ...userSettings.GENERAL_SETTINGS,
             ...e,
           },
+          enable_all_notification_reply_in_email: e.enable_all_notification_reply_in_email,
         };
 
         if (loggedUser) {
@@ -240,6 +241,9 @@ const useSettings = () => {
       );
     }
   };
+  const setEmailNotificationSettings = (e) => {
+    /*    dispatch(updateUserSettings({ enable_all_notification_reply_in_email: e.enable_all_notification_reply_in_email })); */
+  };
 
   const setPushSubscription = (payload) => {
     dispatch(setPushNotification(payload));
@@ -269,6 +273,7 @@ const useSettings = () => {
     showModal,
     loggedUser,
     setWorkspaceSetting,
+    setEmailNotificationSettings,
   };
 };
 

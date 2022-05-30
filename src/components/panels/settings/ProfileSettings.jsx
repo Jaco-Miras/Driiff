@@ -82,13 +82,15 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest, enable_all_notification_reply_in_email },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
+
+
     // driffSettings,
   } = useSettings();
 
@@ -98,7 +100,7 @@ const ProfileSettings = (props) => {
 
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
-  const uploadTranslationToServer = (callback = () => {}) => {
+  const uploadTranslationToServer = (callback = () => { }) => {
     let vocabulary = [];
     let bodyText = "You are about to add the following words to the dictionary files, continue?";
     bodyText += "<table>";
@@ -155,6 +157,7 @@ const ProfileSettings = (props) => {
     extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
+    emailToggle: _t("SETTINGS.EMAIL_TOGGLE", "On email notification"),
   };
 
   const notificationSoundOptions = [
@@ -491,6 +494,7 @@ const ProfileSettings = (props) => {
     e.persist();
     const { name, checked, dataset } = e.target;
 
+    console.log(e)
     setGeneralSetting(
       {
         [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
@@ -608,6 +612,14 @@ const ProfileSettings = (props) => {
     e.preventDefault();
     window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
   };
+
+  const handleEmailNotificationToggle = (e) => {
+    e.persist();
+    const { name, dataset } = e.target;
+    setGeneralSetting({ enable_all_notification_reply_in_email: e.target.checked });
+    toaster.success(<span>{dataset.successMessage}</span>);
+  };
+
 
   return (
     <Wrapper className={`profile-settings ${className}`}>
@@ -816,6 +828,20 @@ const ProfileSettings = (props) => {
                     value={notificationSoundOptions.find((o) => o.value === notification_sound)}
                     onChange={handleNotificationSoundChange}
                     options={notificationSoundOptions}
+                  />
+                </div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-12 text-muted">
+                  <CustomInput
+                    className="cursor-pointer text-muted"
+                    checked={enable_all_notification_reply_in_email}
+                    type="switch"
+                    id="enable_all_notification_reply_in_email"
+                    name="enable_all_notification_reply_in_email"
+                    data-success-message={`${!enable_all_notification_reply_in_email ? "Email Notification enabled" : "Email Notification disabled"}`}
+                    onChange={handleEmailNotificationToggle}
+                    label={<span>{dictionary.emailToggle}</span>}
                   />
                 </div>
               </div>
