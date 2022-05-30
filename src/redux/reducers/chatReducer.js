@@ -247,7 +247,8 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
-          slug: action.slug !== getSlug() ? action.slug : undefined,
+          slug: action.slug !== getSlug() ? action.slug : null,
+          sharedSlug: action.slug === getSlug(),
         };
 
       return {
