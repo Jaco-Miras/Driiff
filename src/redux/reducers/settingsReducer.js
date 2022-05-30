@@ -346,7 +346,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_USER_GENERAL_SETTING": {
-      console.log(state)
       return {
         ...state,
         user: {
