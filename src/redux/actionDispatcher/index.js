@@ -44,7 +44,7 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             slug: slug,
             isSharedSlug: slug !== getSlug(),
           });
-          if (callback) callback(null, result);
+          if (callback) callback(null, { ...result, isSharedSlug: slug !== getSlug(), slug: slug });
         } else {
           dispatch({
             type: actionTypeFailure,

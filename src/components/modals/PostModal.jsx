@@ -630,6 +630,8 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
@@ -842,6 +844,8 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {

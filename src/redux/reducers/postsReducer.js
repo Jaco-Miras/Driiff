@@ -726,36 +726,6 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: companyPosts,
       };
     }
-    case "READ_ALL_POSTS": {
-      if (action.data.topic_id) return state;
-      let companyPosts = { ...state.companyPosts };
-      if (Object.keys(companyPosts.posts).length) {
-        Object.values(companyPosts.posts).forEach((p) => {
-          companyPosts.posts[p.id].is_read = true;
-          //companyPosts.posts[p.id].is_updated = true;
-          companyPosts.posts[p.id].unread_count = 0;
-          companyPosts.posts[p.id].is_unread = 0;
-        });
-      }
-      return {
-        ...state,
-        companyPosts: companyPosts,
-      };
-    }
-    case "ARCHIVE_ALL_POSTS": {
-      if (action.data.topic_id) return state;
-      let companyPosts = { ...state.companyPosts };
-      if (Object.keys(companyPosts.posts).length) {
-        Object.values(companyPosts.posts).forEach((p) => {
-          companyPosts.posts[p.id].is_archived = 1;
-          companyPosts.posts[p.id].unread_count = 0;
-        });
-      }
-      return {
-        ...state,
-        companyPosts: companyPosts,
-      };
-    }
     case "ADD_USER_TO_POST_RECIPIENTS": {
       let companyPosts = { ...state.companyPosts };
       if (companyPosts.posts.hasOwnProperty(action.data.post_id)) {

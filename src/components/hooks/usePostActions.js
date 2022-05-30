@@ -9,7 +9,6 @@ import {
   addCommentReact,
   addPostReact,
   addUserToPostRecipients,
-  //archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
   commentApprove,
@@ -45,7 +44,6 @@ import {
   postVisit,
   putCompanyPosts,
   putPost,
-  //readAllCallback,
   removeDraftPost,
   removePost,
   removePostReact,
@@ -181,6 +179,7 @@ const usePostActions = () => {
         ...payload,
         sharedPayload: sharedPayload,
       };
+      topic_id = `${params.workspaceId}-${post.slug}`;
     }
     dispatch(
       postFavorite(payload, (err, res) => {
@@ -949,25 +948,11 @@ const usePostActions = () => {
   };
 
   const archiveAll = (payload = {}, callback) => {
-    dispatch(
-      archiveAllPosts(payload, (err, res) => {
-        if (err) return;
-
-        // if (callback) callback();
-        // dispatch(archiveAllCallback(payload))
-      })
-    );
+    dispatch(archiveAllPosts(payload));
   };
 
   const readAll = (payload = {}, callback) => {
-    dispatch(
-      markAllPostAsRead(payload, (err, res) => {
-        if (err) return;
-
-        // if (callback) callback();
-        // dispatch(readAllCallback(payload))
-      })
-    );
+    dispatch(markAllPostAsRead(payload));
   };
 
   const addUserToPost = (payload = {}, callback) => {

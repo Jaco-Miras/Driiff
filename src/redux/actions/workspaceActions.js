@@ -124,10 +124,6 @@ export function fetchPrimaryFiles(payload, callback) {
   return dispatchActionToReducer(fetchPrimaryFilesService(payload), "FETCH_WORKSPACE_PRIMARY_FILES_START", "FETCH_WORKSPACE_PRIMARY_FILES_SUCCESS", "FETCH_WORKSPACE_PRIMARY_FILES_FAIL", callback);
 }
 
-export function addPrimaryFiles(payload, callback) {
-  return SimpleDispatchActionToReducer("ADD_PRIMARY_FILES", payload, callback);
-}
-
 export function fetchMembers(payload, callback) {
   return dispatchActionToReducer(fetchMembersService(payload), "FETCH_WORKSPACE_MEMBERS_START", "FETCH_WORKSPACE_MEMBERS_SUCCESS", "FETCH_WORKSPACE_MEMBERS_FAIL", callback);
 }
@@ -301,10 +297,6 @@ export function putWorkspaceNotification(payload, callback) {
 
 export function incomingWorkpaceNotificationStatus(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_NOTIFICATION_STATUS", payload, callback);
-}
-
-export function setUnreadPostIds(payload, callback) {
-  return SimpleDispatchActionToReducer("SET_UNREAD_POST_IDS", payload, callback);
 }
 
 export function setPostIsSelected(payload, callback) {

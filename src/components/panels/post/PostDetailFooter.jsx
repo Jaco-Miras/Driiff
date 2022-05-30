@@ -602,6 +602,8 @@ const PostDetailFooter = (props) => {
       topic_id: workspace.id,
       filter: "inbox",
       tag: null,
+      slug: workspace.slug,
+      isSharedSlug: workspace.sharedSlug,
     };
     const path =
       workspace.folder_name && workspace.folder_id

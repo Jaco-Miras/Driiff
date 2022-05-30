@@ -299,14 +299,6 @@ export function archiveAllPosts(payload, callback) {
   return dispatchActionToReducer(archiveAllPostsService(payload), "ARCHIVE_ALL_POSTS_START", "ARCHIVE_ALL_POSTS_SUCCESS", "ARCHIVE_ALL_POSTS_FAIL", callback);
 }
 
-export function readAllCallback(payload, callback) {
-  return SimpleDispatchActionToReducer("READ_ALL_POSTS", payload, callback);
-}
-
-export function archiveAllCallback(payload, callback) {
-  return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
-}
-
 export function addPostRecipients(payload, callback) {
   return dispatchActionToReducer(addPostRecipientsService(payload), "ADD_POST_RECIPIENTS_START", "ADD_POST_RECIPIENTS_SUCCESS", "ADD_POST_RECIPIENTS_FAIL", callback);
 }

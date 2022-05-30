@@ -31,6 +31,8 @@ const PostList = (props) => {
       tag: null,
       postListTag: e.target.dataset.id,
       filter: null,
+      slug: workspace.slug,
+      isSharedSlug: workspace.sharedSlug,
     };
 
     dispatch(updateWorkspacePostFilterSort(payload));
