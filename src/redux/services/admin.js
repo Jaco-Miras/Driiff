@@ -15,6 +15,22 @@ export function putLoginSettings(payload) {
   });
 }
 
+export function getGoogleAuthSettings(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/v2/google-drive-settings/auth",
+    data: payload
+  });
+}
+
+export function getGoogleAuth(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/gdrive-auth",
+    data: payload
+  });
+}
+
 export function putQuickLinks(payload) {
   return apiCall({
     method: "PUT",

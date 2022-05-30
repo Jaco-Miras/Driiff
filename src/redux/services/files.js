@@ -181,6 +181,35 @@ export function postFolder(payload) {
     data: payload,
   });
 }
+/**
+ * @param {Object} payload
+ * @param {number} payload.topic_id
+ * @param {string} payload.name
+ * @returns {Promise<*>}
+ */
+export function postGoogleDriveFolder(payload) {
+  let url = "/v2/workspace-gdrive/create-folder";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+/**
+ * @param {Object} payload
+ * @param {number} payload.workspace_id
+ * @param {string} payload.title
+ * @param {string} payload.doc_type
+ * @returns {Promise<*>}
+ */
+export function postGoogleDriveFile(payload) {
+  let url = "/v2/workspace-gdrive/create-file";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
 
 /**
  * @param {Object} payload

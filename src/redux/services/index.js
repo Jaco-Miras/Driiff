@@ -5,6 +5,8 @@ export { apiCall, apiNoTokenCall } from "./service";
 export {
   getLoginSettings,
   putLoginSettings,
+  getGoogleAuthSettings,
+  getGoogleAuth,
   postQuickLinks,
   putQuickLinks,
   getUserBot,
@@ -178,6 +180,8 @@ export {
   postWorkspaceFiles,
   patchWorkspaceFileViewed,
   postFolder,
+  postGoogleDriveFolder,
+  postGoogleDriveFile,
   putFolder,
   restoreWorkspaceFile,
   deleteWorkspaceFile,
