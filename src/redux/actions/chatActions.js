@@ -68,10 +68,6 @@ export function putMarkReadChannel(payload, callback) {
   return dispatchActionToReducer(putMarkReadChannelService(payload), "MARK_READ_CHANNEL_START", "MARK_READ_CHANNEL_SUCCESS", "MARK_READ_CHANNEL_FAIL", callback);
 }
 
-export function updateUnreadChatReplies(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_UNREAD_CHAT_REPLIES", payload, callback);
-}
-
 export function putMarkUnreadChannel(payload, callback) {
   return dispatchActionToReducer(putMarkUnreadChannelService(payload), "MARK_AS_UNREAD_CHANNEL_START", "MARK_AS_UNREAD_CHANNEL_SUCCESS", "MARK_AS_UNREAD_CHANNEL_FAIL", callback);
 }
@@ -229,10 +225,6 @@ export function getChannelMembers(payload, callback) {
 
 export function setLastVisitedChannel(payload, callback) {
   return SimpleDispatchActionToReducer("SAVE_LAST_VISITED_CHANNEL", payload, callback);
-}
-
-export function restoreLastVisitedChannel(payload, callback) {
-  return SimpleDispatchActionToReducer("RESTORE_LAST_VISITED_CHANNEL", payload, callback);
 }
 
 export function clearSelectedChannel(payload, callback) {

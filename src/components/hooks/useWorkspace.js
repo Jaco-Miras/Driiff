@@ -23,6 +23,7 @@ const useWorkspace = () => {
   //const channels = useSelector((state) => state.chat.channels);
   const channelIds = useSelector((state) => Object.keys(state.chat.channels));
   const selectedChannelId = useSelector((state) => state.chat.selectedChannelId);
+  const selectedChannelCode = useSelector((state) => state.chat.selectedChannelCode);
   const user = useSelector((state) => state.session.user);
   //const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
@@ -135,16 +136,16 @@ const useWorkspace = () => {
     };
     if (activeTopic && activeTopic.sharedSlug) {
       if (url.startsWith("/workspace/team-chat")) {
-        if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelId !== activeTopic.team_channel.id) {
+        if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelCode !== activeTopic.team_channel.code) {
           actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.channel.id });
         }
       } else if (url.startsWith("/workspace/chat")) {
         if (activeTopic.is_shared) {
-          if (channelIds.some((id) => id === activeTopic.channel.code) && selectedChannelId !== activeTopic.channel.id) {
+          if (channelIds.some((id) => id === activeTopic.channel.code) && selectedChannelCode !== activeTopic.channel.code) {
             actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.channel.code, id: activeTopic.channel.id });
           }
         } else {
-          if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelId !== activeTopic.team_channel.id) {
+          if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelCode !== activeTopic.team_channel.code) {
             actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.team_channel.id });
           }
         }
@@ -209,7 +210,7 @@ const useWorkspace = () => {
         }
       }
     }
-  }, [activeTopic, selectedChannelId, fetchingChannel, url, channelIds]);
+  }, [activeTopic, selectedChannelId, fetchingChannel, url, channelIds, selectedChannelCode]);
 
   useEffect(() => {
     // setFetching to false when changing workspaces
