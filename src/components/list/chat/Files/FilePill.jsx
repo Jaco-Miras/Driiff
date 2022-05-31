@@ -231,7 +231,7 @@ const FilePill = (props) => {
       ) : file.type.toLowerCase().includes("video") ? (
         <>
           <FileVideo muted data-attempt={0} width="320" height="240" playsInline controls onError={handleVideoOnError}>
-            <source src={`${file.view_link}`} type={file.type} />
+            <source src={`${file.view_link}?playsinline=1`} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
         </>
