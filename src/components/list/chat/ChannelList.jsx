@@ -171,7 +171,7 @@ const ChannelList = (props) => {
     <Wrapper
       ref={firstRef}
       className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
-      selected={selectedChannel !== null && channel.id === selectedChannel.id}
+      selected={selectedChannel !== null && channel.code === selectedChannel.code}
       onClick={handleSelectChannel}
       tabIndex={tabIndex}
       onKeyDown={(e) => handleResultKeydown(e, index)}

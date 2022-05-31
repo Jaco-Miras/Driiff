@@ -303,18 +303,28 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "GET_CHANNEL_SUCCESS": {
-      let channel = state.channels[action.data.id];
       let sharedChannel = action.slug !== getSlug();
+      let channel = null;
+      if (sharedChannel) {
+        channel = {
+          ...action.data,
+          hasMore: true,
+          skip: 0,
+          isFetching: false,
+          slug: action.slug,
+          sharedSlug: true,
+        };
+      } else {
+        channel = { ...state.channels[action.data.id] };
+      }
       if (typeof channel === "undefined") {
         channel = {
           ...action.data,
           hasMore: true,
-          replies: [],
-          selected: false,
           skip: 0,
           isFetching: false,
-          slug: action.slug !== getSlug() ? action.slug : null,
-          sharedSlug: action.slug === getSlug(),
+          slug: null,
+          sharedSlug: false,
         };
       }
 
@@ -344,20 +354,26 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_SELECTED_CHANNEL": {
       let channel = null;
-      if (action.data.slug && action.data.code) {
-        channel = { ...state.channels[action.data.code] };
+      if (action.data.slug && action.data.code && action.data.sharedSlug) {
+        channel = { ...state.channels[action.data.code], selected: true };
       } else {
         if (state.channels[action.data.id]) {
           channel = {
             ...state.channels[action.data.id],
+            selected: true,
           };
         }
       }
 
       let updatedChannels = { ...state.channels };
       if (state.selectedChannel) {
-        if (updatedChannels[state.selectedChannel.id]) updatedChannels[state.selectedChannel.id].selected = false;
-        if (updatedChannels[action.data.id]) updatedChannels[action.data.id].selected = true;
+        if (state.selectedChannel.sharedSlug) {
+          if (updatedChannels[state.selectedChannel.code]) updatedChannels[state.selectedChannel.code].selected = false;
+          if (updatedChannels[action.data.code]) updatedChannels[action.data.code].selected = true;
+        } else {
+          if (updatedChannels[state.selectedChannel.id]) updatedChannels[state.selectedChannel.id].selected = false;
+          if (updatedChannels[action.data.id]) updatedChannels[action.data.id].selected = true;
+        }
       }
 
       return {

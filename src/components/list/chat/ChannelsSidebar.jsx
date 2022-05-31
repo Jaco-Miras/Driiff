@@ -166,7 +166,7 @@ const ChannelsSidebar = (props) => {
           }
 
           return (
-            <React.Fragment key={channel.id}>
+            <React.Fragment key={channel.code}>
               {search !== "" && chatHeader !== "" && (
                 <ChatHeaderContainer>
                   {/* <ChatHeader>{searchingChannels ? `Searching ${chatSidebarSearch}...` : chatHeader} </ChatHeader> */}

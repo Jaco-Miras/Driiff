@@ -183,11 +183,7 @@ const MainNavigationTabPanel = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
-  const channels = useSelector((state) =>
-    Object.values(state.chat.channels).map((channel) => {
-      return { id: channel.id, code: channel.code };
-    })
-  );
+  const channels = useSelector((state) => Object.values(state.chat.channels));
 
   const { dark_mode } = generalSettings;
 
@@ -202,7 +198,7 @@ const MainNavigationTabPanel = (props) => {
       if (selectedChannel.code !== params.code) {
         // if active channel code is not equal to chat url channel code then set channel
         let channel = channels.find((c) => c.code === params.code);
-        if (channel) actions.selectChannel({ id: channel.id });
+        if (channel) actions.selectChannel({ ...channel });
       }
     }
   }, [params, workspaces, activeTopic, selectedChannel]);
