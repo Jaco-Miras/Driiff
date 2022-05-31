@@ -24,6 +24,7 @@ const INITIAL_STATE = {
   channels: {},
   selectedChannel: null,
   selectedChannelId: null,
+  selectedChannelCode: null,
   startNewChannels: {},
   channelDrafts: {},
   unreadChatCount: 0,
@@ -290,7 +291,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_SELECTED_CHANNEL": {
       let channel = null;
-      if (action.data.slug && action.data.code && action.data.sharedSlug) {
+      if (action.data.slug && action.data.code) {
         channel = { ...state.channels[action.data.code], selected: true };
       } else {
         if (state.channels[action.data.id]) {
@@ -317,15 +318,20 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: channel ? channel : state.selectedChannel,
         channels: updatedChannels,
         lastVisitedChannel: channel ? channel : state.lastVisitedChannel,
-        selectedChannelId: action.data.id,
+        selectedChannelId: channel ? channel.id : state.selectedChannelId,
+        selectedChannelCode: channel && channel.slug ? channel.code : null,
       };
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
       let channel = null;
-      if (state.channels[action.data.channel_id]) {
-        channel = { ...state.channels[action.data.channel_id] };
-      } else if (Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug)) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug && c.slug === action.data.slug);
+      if (action.data.slug !== getSlug()) {
+        if (Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug)) {
+          channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug && c.slug === action.data.slug);
+        }
+      } else {
+        if (state.channels[action.data.channel_id]) {
+          channel = { ...state.channels[action.data.channel_id] };
+        }
       }
       if (channel) {
         channel = {
@@ -414,21 +420,10 @@ export default function (state = INITIAL_STATE, action) {
           }),
       };
     }
-    case "UPDATE_UNREAD_CHAT_REPLIES": {
-      return {
-        ...state,
-        selectedChannel: action.data.id === state.selectedChannel.id ? action.data : state.selectedChannel,
-        channels: {
-          ...state.channels,
-          [action.data.id]: action.data,
-        },
-        unreadChatCount: state.unreadChatCount > 0 ? state.unreadChatCount - action.data.minus_count : state.unreadChatCount,
-      };
-    }
     case "ADD_CHAT_MESSAGE": {
       let channel;
       if (action.data.slug) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && action.data.slug);
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && action.data.slug === c.slug);
       } else {
         channel = { ...state.channels[action.data.channel_id] };
       }
@@ -535,7 +530,7 @@ export default function (state = INITIAL_STATE, action) {
     case "INCOMING_CHAT_MESSAGE": {
       let channel = null;
       if (action.data.slug && action.data.slug !== getSlug()) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug === action.data.slug);
       } else {
         channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id);
       }
@@ -611,7 +606,7 @@ export default function (state = INITIAL_STATE, action) {
     case "INCOMING_ARCHIVED_CHANNEL": {
       let channel = null;
       if (action.data.slug && action.data.slug !== getSlug()) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug === action.data.slug);
       } else {
         channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id);
       }
@@ -1068,40 +1063,30 @@ export default function (state = INITIAL_STATE, action) {
         lastVisitedChannel: channel,
       };
     }
-    case "RESTORE_LAST_VISITED_CHANNEL": {
-      let channel = { ...state.channels[action.data.channel_id] };
-      return {
-        ...state,
-        selectedChannel: channel.hasOwnProperty("id") ? channel : state.selectedChannel,
-      };
-    }
-    case "CLEAR_SELECTED_CHANNEL": {
-      return {
-        ...state,
-        ...(state.lastVisitedChannel && {
-          selectedChannel: state.lastVisitedChannel ? { ...state.channels[state.lastVisitedChannel.id] } : null,
-        }),
-      };
-    }
     case "JOIN_WORKSPACE_REDUCER": {
       let channel_id = action.data.channel_id;
       let workspace_id = action.data.data && action.data.data.workspace_data ? action.data.data.workspace_data.topic.id : null;
       return {
         ...state,
         channels: Object.values(state.channels).reduce((acc, channel) => {
-          if (workspace_id) {
-            if (channel.entity_id === workspace_id) {
-              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
-            } else {
-              acc[channel.id] = channel;
-            }
+          if (channel.sharedSlug) {
+            acc[channel.code] = channel;
           } else {
-            if (channel_id === channel.id) {
-              acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+            if (workspace_id) {
+              if (channel.entity_id === workspace_id) {
+                acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+              } else {
+                acc[channel.id] = channel;
+              }
             } else {
-              acc[channel.id] = channel;
+              if (channel_id === channel.id) {
+                acc[channel.id] = { ...channel, members: [...channel.members, ...action.data.users], replies: [...channel.replies, action.data.message] };
+              } else {
+                acc[channel.id] = channel;
+              }
             }
           }
+
           return acc;
         }, {}),
         selectedChannel:
