@@ -224,6 +224,7 @@ const MainLayout = (props) => {
           if (window[ws]) {
             return (
               <SocketListeners
+                key={ws}
                 slug={ws}
                 userId={sharedWs[ws].user_auth.id}
                 dictionary={dictionary}
