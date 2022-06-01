@@ -383,6 +383,7 @@ const PostDetail = (props) => {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        post_code: post.code,
       };
     }
     postActions.clap(payload, (err, res) => {
@@ -557,6 +558,7 @@ const PostDetail = (props) => {
           disableOptions={disableOptions}
           workspaceId={workspace ? workspace.id : null}
           disableMarkAsRead={disableMarkAsRead}
+          workspace={workspace}
         />
         <div className="d-flex justify-content-center align-items-center mb-3">
           {post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read) && (
@@ -604,6 +606,7 @@ const PostDetail = (props) => {
               dictionary={dictionary}
               disableOptions={disableOptions}
               postActions={postActions}
+              userId={userId}
             />
             <hr className="m-0" />
           </>

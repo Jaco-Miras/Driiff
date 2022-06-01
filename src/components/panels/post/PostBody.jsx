@@ -214,7 +214,7 @@ const SharedBadge = styled.span`
 `;
 
 const PostBody = (props) => {
-  const { post, user, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead } = props;
+  const { post, user, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead, workspace } = props;
 
   const isExternalUser = user.type === "external";
   const dispatch = useDispatch();
@@ -310,11 +310,12 @@ const PostBody = (props) => {
                 });
                 postActions.updatePostImages({
                   post_id: post.id,
-                  topic_id: workspaceId,
+                  topic_id: workspace && workspace.sharedSlug ? `${workspace.id}-${workspace.slug}` : workspaceId,
                   file: {
                     ...file,
                     blobUrl: imgObj,
                   },
+                  post_code: workspace && workspace.sharedSlug ? post.code : null,
                 });
               })
               .catch((error) => {

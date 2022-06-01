@@ -12,17 +12,19 @@ const useFetchWsCount = () => {
     let payload = {
       topic_id: params.workspaceId,
     };
+    let key = params.workspaceId;
     if (workspace && workspace.sharedSlug) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
       };
+      key = workspace.key;
     }
     if (params.workspaceId) {
       dispatch(
         getWorkspaceRemindersCount(payload, (err, res) => {
           if (err) return;
-          dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
+          dispatch(updateWorkspaceRemindersCount({ count: res.data, id: key }));
         })
       );
     }

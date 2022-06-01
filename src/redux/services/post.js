@@ -536,10 +536,16 @@ export function postMarkRead(payload) {
  * @returns {Promise<*>}
  */
 export function deleteComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/messages/${payload.comment_id}`;
   return apiCall({
     method: "DELETE",
     url,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -565,19 +571,6 @@ export function getPostClapHover(payload) {
   return apiCall({
     method: "GET",
     url: `/v1/post-clap-hover/?${objToUrlParams(payload)}`,
-    data: payload,
-  });
-}
-
-/**
- * @param {Object} payload
- * @param {number} payload.message_id
- * @returns {Promise<*>}
- */
-export function getReplyClapHover(payload) {
-  return apiCall({
-    method: "GET",
-    url: `/v1/reply-clap-hover/?${objToUrlParams(payload)}`,
     data: payload,
   });
 }
@@ -681,10 +674,16 @@ export function getUnreadPostComments(payload) {
  * @returns {Promise<*>}
  */
 export function putCommentImportant(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/set-important-comment",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

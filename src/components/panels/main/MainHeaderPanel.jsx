@@ -21,6 +21,7 @@ const MainHeaderPanel = (props) => {
     <Wrapper className={`header ${className}`} id="main-top-header">
       <Switch>
         <Route render={() => <WorkspaceHeaderPanel isExternal={isExternal} {...props} />} path={["/workspace/:page"]} />
+        <Route render={() => <WorkspaceHeaderPanel isExternal={isExternal} {...props} />} path={["/shared-workspace/:page"]} />
         <Route render={() => <CompanyHeaderPanel isExternal={isExternal} {...props} />} path={["/:page"]} />
       </Switch>
     </Wrapper>

@@ -2,11 +2,13 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import moment from "moment-timezone";
-import { useTimeFormat, useTodoActions } from "./index";
+import { useTimeFormat, useTodoActions, useFetchWsCount } from "./index";
+import { useHistory } from "react-router-dom";
 
 const useWorkspaceReminders = () => {
   const items = useSelector((state) => state.global.todos.items);
 
+  const history = useHistory();
   const params = useParams();
   const { user: loggedUser } = useSelector((state) => state.session);
   const users = useSelector((state) => state.users.users);
@@ -15,12 +17,21 @@ const useWorkspaceReminders = () => {
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const onSharedWsURL = history.location.pathname.startsWith("/shared-workspace");
+  const wsKey = activeTopic && onSharedWsURL ? activeTopic.key : params.workspaceId;
 
-  const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
+  const isLoaded = typeof workspaceReminders[wsKey] !== "undefined";
+
+  useFetchWsCount();
 
   const loadMore = () => {
     if (isLoaded) {
-      let ws = workspaceReminders[params.workspaceId];
+      let ws = workspaceReminders[wsKey];
+      let sharedPayload = null;
+      if (onSharedWsURL && activeTopic && sharedWs[activeTopic.slug]) {
+        sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true, key: activeTopic.key };
+      }
       if (ws) {
         if (ws.hasMore) {
           let payload = {
@@ -28,6 +39,7 @@ const useWorkspaceReminders = () => {
             limit: 25,
             topic_id: params.workspaceId,
             filter: "new",
+            sharedPayload: sharedPayload,
           };
           todoActions.fetchWs(payload);
         }
@@ -37,6 +49,7 @@ const useWorkspaceReminders = () => {
             limit: 10,
             topic_id: params.workspaceId,
             filter: "done",
+            sharedPayload: sharedPayload,
           };
           todoActions.fetchWsDone(payload);
         }
@@ -46,6 +59,7 @@ const useWorkspaceReminders = () => {
             limit: 10,
             topic_id: params.workspaceId,
             filter: "overdue",
+            sharedPayload: sharedPayload,
           };
           todoActions.fetchWsOverdue(payload);
         }
@@ -55,6 +69,7 @@ const useWorkspaceReminders = () => {
             limit: 10,
             topic_id: params.workspaceId,
             filter: "today",
+            sharedPayload: sharedPayload,
           };
           todoActions.fetchWsToday(payload);
         }
@@ -66,15 +81,24 @@ const useWorkspaceReminders = () => {
         topic_id: params.workspaceId,
         filter: "new",
       };
-      todoActions.fetchWs(payload);
-      todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
-      todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
-      todoActions.fetchWsToday({ ...payload, limit: 25, filter: "today" });
+      if (onSharedWsURL) {
+        if (activeTopic && sharedWs[activeTopic.slug]) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true, key: activeTopic.key },
+          };
+          todoActions.fetchWs(payload);
+          todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
+          todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
+          todoActions.fetchWsToday({ ...payload, limit: 25, filter: "today" });
+        }
+      } else {
+        todoActions.fetchWs(payload);
+        todoActions.fetchWsDone({ ...payload, limit: 10, filter: "done" });
+        todoActions.fetchWsOverdue({ ...payload, limit: 25, filter: "overdue" });
+        todoActions.fetchWsToday({ ...payload, limit: 25, filter: "today" });
+      }
     }
-  };
-
-  const fetchCount = () => {
-    todoActions.fetchWsCount({ topic_id: params.workspaceId });
   };
 
   let defaultCount = {
@@ -140,13 +164,12 @@ const useWorkspaceReminders = () => {
 
   useEffect(() => {
     loadMore();
-    fetchCount();
   }, []);
 
   return {
     isLoaded: isLoaded,
     items,
-    count: isLoaded ? workspaceReminders[params.workspaceId].count : defaultCount,
+    count: isLoaded ? workspaceReminders[wsKey].count : defaultCount,
     getWorkspaceReminders,
     action: {
       ...todoActions,

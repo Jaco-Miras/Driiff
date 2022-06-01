@@ -220,8 +220,14 @@ const usePosts = () => {
       drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
     };
 
-    if (posts.hasOwnProperty(params.postId)) {
-      post = posts[params.postId];
+    if (workspace && workspace.sharedSlug) {
+      if (Object.values(posts).find((p) => p.id === parseInt(params.postId))) {
+        post = Object.values(posts).find((p) => p.id === parseInt(params.postId));
+      }
+    } else {
+      if (posts.hasOwnProperty(params.postId)) {
+        post = posts[params.postId];
+      }
     }
 
     filteredPosts = Object.values(posts);

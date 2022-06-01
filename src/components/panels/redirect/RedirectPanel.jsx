@@ -55,11 +55,12 @@ const RedirectPanel = (props) => {
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
+                let ws_type = wsFolder.sharedSlug ? "shared-workspace" : "workspace";
                 if (wsFolder) {
-                  let link = `/workspace/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/${ws_type}/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 } else {
-                  let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/${ws_type}/chat/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 }
               } else if (res.data.additional_data.data) {

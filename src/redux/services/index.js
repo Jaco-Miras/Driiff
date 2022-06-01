@@ -270,7 +270,6 @@ export {
   postCompanyPosts,
   putCompanyPosts,
   getPostClapHover,
-  getReplyClapHover,
   getUnreadPostEntries,
   getUnreadPostComments,
   archiveAllPosts,

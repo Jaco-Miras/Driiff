@@ -308,7 +308,8 @@ const CreateWorkspaceFolderModal = (props) => {
         (err, res) => {
           if (err) return;
           if (activeTopic && activeTopic.folder_id === item.id) {
-            history.push(`/workspace/chat/${activeTopic.id}/${replaceChar(activeTopic.name)}`);
+            let ws_type = activeTopic.sharedSlug ? "shared-workspace" : "workspace";
+            history.push(`/${ws_type}/chat/${activeTopic.id}/${replaceChar(activeTopic.name)}`);
           }
         }
       )

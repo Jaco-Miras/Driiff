@@ -288,6 +288,7 @@ const PostInput = forwardRef((props, ref) => {
         unfurls: [],
         user_clap_count: 0,
         users_approval: [],
+        post_code: post.slug !== slug ? post.code : null,
       };
 
       commentActions.add(commentObj);

@@ -35,8 +35,9 @@ const useRedirect = () => {
       if (user.type === "external") {
         let ws = Object.values(workspaces).find((ws) => ws.channel.id === cnl.id || (ws.team_channel && ws.team_channel.id === cnl.id));
         if (ws) {
+          let ws_type = ws.sharedSlug ? "shared-workspace" : "workspace";
           history.push({
-            pathname: ws.folder_id ? `/workspace/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/workspace/chat/${ws.id}/${ws.name}`,
+            pathname: ws.folder_id ? `/${ws_type}/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/${ws_type}/chat/${ws.id}/${ws.name}`,
             state: { focusOn: message.code },
           });
         }

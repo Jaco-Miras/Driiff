@@ -146,6 +146,7 @@ const useQuillModules = ({
     if (Object.keys(workspaces).length && !sharedSlug) {
       newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
+          let ws_type = workspace.sharedSlug ? "shared-workspace" : "workspace";
           return Object.assign({}, workspace, {
             ...workspace,
             value: workspace.name,
@@ -155,7 +156,7 @@ const useQuillModules = ({
             type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`,
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         }),
       ];

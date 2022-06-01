@@ -50,6 +50,7 @@ const useTodoActions = () => {
   };
 
   const fetchWs = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -58,6 +59,7 @@ const useTodoActions = () => {
           getWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -65,6 +67,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsDone = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -73,6 +76,7 @@ const useTodoActions = () => {
           getDoneWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -80,6 +84,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsOverdue = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -88,6 +93,7 @@ const useTodoActions = () => {
           getOverdueWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -95,6 +101,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsToday = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -103,6 +110,7 @@ const useTodoActions = () => {
           getTodayWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -136,7 +144,7 @@ const useTodoActions = () => {
           toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
         }
         if (params.workspaceId) {
-          fetchWsCount({ topic_id: params.workspaceId });
+          //fetchWsCount({ topic_id: params.workspaceId });
         } else {
           fetchDetail();
         }
@@ -167,7 +175,7 @@ const useTodoActions = () => {
         (err, res) => {
           if (callback) callback(err, res);
           if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
+            //fetchWsCount({ topic_id: params.workspaceId });
           } else {
             fetchDetail();
           }
@@ -186,9 +194,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (callback) callback(err, res);
-          if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
-          } else {
+          if (!params.workspaceId) {
             fetchDetail();
           }
         }
@@ -206,9 +212,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (callback) callback(err, res);
-          if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
-          } else {
+          if (!params.workspaceId) {
             fetchDetail();
           }
         }
@@ -233,9 +237,7 @@ const useTodoActions = () => {
           }
           if (res) {
             toaster.success(<span dangerouslySetInnerHTML={{ __html: todo.link_type === "DRIFF_TALK" ? dictionary.toasterCreateMeeting : dictionary.toasterUpdateTodo }} />);
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
           }
@@ -275,9 +277,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (res) {
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
@@ -297,9 +297,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (res) {
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUnDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
@@ -340,9 +338,7 @@ const useTodoActions = () => {
         (err, res) => {
           if (res) {
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDeleteTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
           }

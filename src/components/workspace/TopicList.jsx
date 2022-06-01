@@ -89,14 +89,11 @@ const TopicList = (props) => {
   }, [workspaceRef, showTopics, triggerFocus, topic]);
 
   let unread_count = topic.unread_chats + topic.unread_posts + topic.team_unread_chats;
-
+  let ws_type = topic.sharedSlug ? "shared-workspace" : "workspace";
   return (
     <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
       <div className={"topic-text-container"}>
-        <a
-          href={topic.folder_id ? `/workspace/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`}
-          onClick={(e) => e.preventDefault(e)}
-        >
+        <a href={topic.folder_id ? `/${ws_type}/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/${ws_type}/${topic.id}/${replaceChar(topic.name)}`} onClick={(e) => e.preventDefault(e)}>
           <span className={"topic-text"}>{topic.name}</span>
           {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
           {topic.is_shared && <Icon icon={"eye"} strokeWidth="3" />}

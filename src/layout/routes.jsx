@@ -63,7 +63,7 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/releases", "/admin-settings", "/meetings"]}>
             {children}
           </Route>
-          <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token"]}>
+          <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token", "/shared-workspace/chat", "/shared-workspace/:page"]}>
             {children}
           </Route>
           <Redirect

@@ -809,6 +809,14 @@ const WorspaceHeaderPanel = (props) => {
                       "/workspace/:page/:workspaceId/:workspaceName",
                       "/workspace/:workspaceId/:workspaceName",
                       "/workspace/:page",
+                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-workspace/:page/:workspaceId/:workspaceName",
+                      "/shared-workspace/:workspaceId/:workspaceName",
+                      "/shared-workspace/:page",
                     ]}
                   />
                 </div>

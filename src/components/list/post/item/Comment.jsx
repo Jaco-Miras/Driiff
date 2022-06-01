@@ -210,7 +210,25 @@ const CommentInput = styled(PostDetailFooter)``;
 const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false, postActions } = props;
+  const {
+    className = "",
+    comment,
+    post,
+    type = "main",
+    user,
+    commentActions,
+    parentId,
+    onShowFileDialog,
+    dropAction,
+    parentShowInput = null,
+    workspace,
+    isMember,
+    dictionary,
+    disableOptions,
+    isCompanyPost = false,
+    postActions,
+    userId = null,
+  } = props;
 
   const dispatch = useDispatch();
 
@@ -237,6 +255,7 @@ const Comment = (props) => {
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const uid = userId ? userId : user.id;
 
   const handleShowInput = (commentId = null) => {
     if (parentShowInput) {
@@ -280,24 +299,16 @@ const Comment = (props) => {
 
   const handleReaction = () => {
     if (disableOptions) return;
-
-    // setReact((prevState) => ({
-    //   user_clap_count: !!prevState.user_clap_count ? 0 : 1,
-    //   clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
-    // }));
-
-    // setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
-    //   prevState.filter(r => r.type_id !== user.id) :
-    //   prevState.concat(recipients.find(r => r.type_id === user.id)));
-
+    let sharedPost = post.slug && slug !== post.slug && sharedWs[post.slug];
     let payload = {
       id: comment.id,
       reaction: "clap",
       counter: comment.user_clap_count === 0 ? 1 : 0,
       post_id: post.id,
       parent_id: type === "main" ? null : parentId,
+      post_code: sharedPost ? post.code : null,
     };
-    if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+    if (sharedPost) {
       const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
       payload = {
         ...payload,
@@ -403,6 +414,7 @@ const Comment = (props) => {
                     ...file,
                     blobUrl: imgObj,
                   },
+                  post_code: workspace && workspace.sharedSlug ? post.code : null,
                 });
               })
               .catch((error) => {
@@ -535,7 +547,7 @@ const Comment = (props) => {
 
   return (
     <>
-      <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={user.id}>
+      <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={uid}>
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
         {comment.quote && <Quote quote={comment.quote} dictionary={dictionary} />}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
@@ -552,16 +564,16 @@ const Comment = (props) => {
               ) : (
                 <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
               )}
-              {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+              {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && uid !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
                 {comment.todo_reminder === null && <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
-                {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.important(comment)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
+                {uid !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.remove(comment, workspace)}>{dictionary.removeReply}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.important(comment, workspace)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
               </MoreOptions>
             )}
           </CommentHeader>
@@ -633,6 +645,7 @@ const Comment = (props) => {
           disableOptions={disableOptions}
           isCompanyPost={isCompanyPost}
           postActions={postActions}
+          userId={userId}
         />
       )}
       {showInput !== null && (
