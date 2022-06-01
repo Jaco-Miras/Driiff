@@ -157,7 +157,7 @@ const ProfileSettings = (props) => {
     extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
-    emailToggle: _t("SETTINGS.EMAIL_TOGGLE", "On email notification"),
+    emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
   };
 
   const notificationSoundOptions = [
