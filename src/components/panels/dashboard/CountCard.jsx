@@ -57,25 +57,26 @@ const CountCard = (props) => {
   }, []);
 
   const handleRedirect = () => {
+    let ws_type = workspace && workspace.sharedSlug ? "shared-workspace" : "workspace";
     if (isWorkspace) {
       if (!workspace) return;
       if (type === "chat") {
         if (workspace.folder_id) {
-          history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else if (type === "posts") {
         if (workspace.folder_id) {
-          history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/posts/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else {
         if (workspace.folder_id) {
-          history.push(`/workspace/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       }
     } else {

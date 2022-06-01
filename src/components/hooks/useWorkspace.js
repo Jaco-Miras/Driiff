@@ -28,6 +28,8 @@ const useWorkspace = () => {
   //const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
+  const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
+
   const { _t } = useTranslationActions();
   const dictionary = {
     notAuthorized: _t("TOASTER.NOT_AUTHORIZED", "You are not authorized to view this workspace"),
@@ -35,16 +37,18 @@ const useWorkspace = () => {
 
   useEffect(() => {
     if (params.workspaceId) {
-      actions.fetchWorkspace(params.workspaceId, (err, res) => {
-        if (err) {
-          if (err.response.status === 422) {
-            history.push("/chat");
-            if (err.response.data.errors.error_message && err.response.data.errors.error_message.includes("NOT_AUTHORIZED")) {
-              toaster.error(dictionary.notAuthorized);
+      if (history.location.pathname.startsWith("/workspace")) {
+        actions.fetchWorkspace(params.workspaceId, (err, res) => {
+          if (err) {
+            if (err.response.status === 422) {
+              history.push("/chat");
+              if (err.response.data.errors.error_message && err.response.data.errors.error_message.includes("NOT_AUTHORIZED")) {
+                toaster.error(dictionary.notAuthorized);
+              }
             }
           }
-        }
-      });
+        });
+      }
     }
     actions.fetchFavoriteWorkspaces({}, () => {
       actions.fetchWorkspaces({
@@ -71,6 +75,16 @@ const useWorkspace = () => {
             // fetch the detail
             if (!fetchingRef.current) {
               fetchingRef.current = true;
+              if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && sharedWsLoaded) {
+                const sws = Object.keys(workspaces).reduce((acc, cur) => {
+                  if (workspaces[cur].id == params.workspaceId) {
+                    return workspaces[cur];
+                  }
+                }, {});
+                actions.selectWorkspace(sws);
+                actions.redirectTo(sws);
+                return;
+              }
               actions.fetchWorkspace(params.workspaceId, (err, res) => {
                 fetchingRef.current = null;
                 if (err) {
@@ -114,20 +128,20 @@ const useWorkspace = () => {
         if (["search", "all"].includes(params.page)) return;
         if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
           actions.selectWorkspace(workspaces[activeTopicSettings.id]);
-          if (url.startsWith("/workspace")) {
+          if (url.startsWith("/workspace") || url.startsWith("/shared-workspace")) {
             actions.redirectTo(workspaces[activeTopicSettings.id]);
           }
         } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister") && user.type === "external") {
           actions.selectWorkspace(Object.values(workspaces)[0]);
           actions.redirectTo(Object.values(workspaces)[0]);
           localStorage.removeItem("fromRegister");
-        } else if (user.type === "external" && url.startsWith("/workspace/chat")) {
+        } else if (user.type === "external" && (url.startsWith("/workspace/chat") || url.startsWith("/shared-workspace/chat"))) {
           actions.selectWorkspace(Object.values(workspaces)[0]);
           actions.redirectTo(Object.values(workspaces)[0]);
         }
       }
     }
-  }, [activeTopic, activeTopicSettings, params, workspaces, url, workspacesLoaded]);
+  }, [activeTopic, activeTopicSettings, params, workspaces, url, workspacesLoaded, sharedWsLoaded]);
 
   useEffect(() => {
     //check if workspace is active and channel is not set yet
@@ -139,7 +153,7 @@ const useWorkspace = () => {
         if (channelIds.some((id) => id === activeTopic.team_channel.code) && selectedChannelCode !== activeTopic.team_channel.code) {
           actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.team_channel.code, id: activeTopic.channel.id });
         }
-      } else if (url.startsWith("/workspace/chat")) {
+      } else if (url.startsWith("/workspace/chat") || url.startsWith("/shared-workspace/chat")) {
         if (activeTopic.is_shared) {
           if (channelIds.some((id) => id === activeTopic.channel.code) && selectedChannelCode !== activeTopic.channel.code) {
             actions.selectChannel({ slug: activeTopic.slug, code: activeTopic.channel.code, id: activeTopic.channel.id });
@@ -151,8 +165,8 @@ const useWorkspace = () => {
         }
       }
     } else {
-      if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
-        if (url.startsWith("/workspace/team-chat")) {
+      if (activeTopic && !selectedChannelId && channelIds.length && (url.startsWith("/workspace") || url.startsWith("/shared-workspace"))) {
+        if (url.startsWith("/workspace/team-chat") || url.startsWith("/shared-workspace/team-chat")) {
           if (activeTopic.team_channel.code && channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
             actions.selectChannel({ id: activeTopic.team_channel.id });
           } else if (activeTopic.team_channel.code && !channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
@@ -180,7 +194,7 @@ const useWorkspace = () => {
         }
       } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
         // check if channel is not match
-        if (url.startsWith("/workspace/team-chat")) {
+        if (url.startsWith("/workspace/team-chat") || url.startsWith("/shared-workspace/team-chat")) {
           if (activeTopic.team_channel.code && activeTopic.team_channel.id !== selectedChannelId) {
             if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
               actions.selectChannel({ id: activeTopic.team_channel.id });
