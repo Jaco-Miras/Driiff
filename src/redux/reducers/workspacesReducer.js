@@ -760,12 +760,23 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_TO_WORKSPACE_POSTS": {
-      let convertedPosts = convertArrayToObject(
-        action.data.posts.map((p) => {
-          return Object.assign({}, p, { claps: [] });
-        }),
-        "id"
-      );
+      let convertedPosts = {};
+      if (action.data.isSharedSlug) {
+        convertedPosts = convertArrayToObject(
+          action.data.posts.map((p) => {
+            return Object.assign({}, p, { claps: [] });
+          }),
+          "code"
+        );
+      } else {
+        convertedPosts = convertArrayToObject(
+          action.data.posts.map((p) => {
+            return Object.assign({}, p, { claps: [] });
+          }),
+          "id"
+        );
+      }
+
       let postDrafts = [];
       if (state.drafts.length) {
         postDrafts = convertArrayToObject(state.drafts, "post_id");
@@ -1029,7 +1040,6 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    //todo
     case "FETCH_COMMENTS_SUCCESS": {
       let postComments = { ...state.postComments };
       let comments = {};
@@ -1044,11 +1054,12 @@ export default (state = INITIAL_STATE, action) => {
           };
         });
       }
-      postComments[action.data.post_id] = {
-        ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id]),
+      let key = action.data.isSharedSlug ? action.data.post_code : action.data.post_id;
+      postComments[key] = {
+        ...(typeof postComments[key] !== "undefined" && postComments[key]),
         skip: action.data.next_skip,
         hasMore: action.data.messages.length === 20,
-        comments: { ...comments, ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id].comments) },
+        comments: { ...comments, ...(typeof postComments[key] !== "undefined" && postComments[key].comments) },
       };
       return {
         ...state,
@@ -1081,24 +1092,25 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_COMMENT_REACT": {
+      let key = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         postComments: {
           ...state.postComments,
-          [action.data.post_id]: {
-            ...state.postComments[action.data.post_id],
+          [key]: {
+            ...state.postComments[key],
             ...(action.data.parent_id
               ? {
                   comments: {
-                    ...state.postComments[action.data.post_id].comments,
+                    ...state.postComments[key].comments,
                     [action.data.parent_id]: {
-                      ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                      ...state.postComments[key].comments[action.data.parent_id],
                       replies: {
-                        ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                        ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
-                          ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
-                          claps: [...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: state.user.id }],
-                          clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
+                          ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
+                          claps: [...state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: state.user.id }],
+                          clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
                           user_clap_count: 1,
                         },
                       },
@@ -1106,13 +1118,13 @@ export default (state = INITIAL_STATE, action) => {
                   },
                 }
               : {
-                  ...(state.postComments[action.data.post_id] && {
+                  ...(state.postComments[key] && {
                     comments: {
-                      ...state.postComments[action.data.post_id].comments,
+                      ...state.postComments[key].comments,
                       [action.data.id]: {
-                        ...state.postComments[action.data.post_id].comments[action.data.id],
-                        claps: [...state.postComments[action.data.post_id].comments[action.data.id].claps, { user_id: state.user.id }],
-                        clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count + 1,
+                        ...state.postComments[key].comments[action.data.id],
+                        claps: [...state.postComments[key].comments[action.data.id].claps, { user_id: state.user.id }],
+                        clap_count: state.postComments[key].comments[action.data.id].clap_count + 1,
                         user_clap_count: 1,
                       },
                     },
@@ -1123,24 +1135,25 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMOVE_COMMENT_REACT": {
+      let key = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         postComments: {
           ...state.postComments,
-          [action.data.post_id]: {
-            ...state.postComments[action.data.post_id],
-            ...(action.data.parent_id && state.postComments[action.data.post_id]
+          [key]: {
+            ...state.postComments[key],
+            ...(action.data.parent_id && state.postComments[key]
               ? {
                   comments: {
-                    ...state.postComments[action.data.post_id].comments,
+                    ...state.postComments[key].comments,
                     [action.data.parent_id]: {
-                      ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                      ...state.postComments[key].comments[action.data.parent_id],
                       replies: {
-                        ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                        ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
-                          ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
-                          claps: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
-                          clap_count: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
+                          ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
+                          claps: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                          clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
                           user_clap_count: 0,
                         },
                       },
@@ -1148,13 +1161,13 @@ export default (state = INITIAL_STATE, action) => {
                   },
                 }
               : {
-                  ...(state.postComments[action.data.post_id] && {
+                  ...(state.postComments[key] && {
                     comments: {
-                      ...state.postComments[action.data.post_id].comments,
+                      ...state.postComments[key].comments,
                       [action.data.id]: {
-                        ...state.postComments[action.data.post_id].comments[action.data.id],
-                        claps: state.postComments[action.data.post_id].comments[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
-                        clap_count: state.postComments[action.data.post_id].comments[action.data.id].clap_count - 1,
+                        ...state.postComments[key].comments[action.data.id],
+                        claps: state.postComments[key].comments[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                        clap_count: state.postComments[key].comments[action.data.id].clap_count - 1,
                         user_clap_count: 0,
                       },
                     },
@@ -1164,64 +1177,27 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "GET_REPLY_CLAP_HOVER_SUCCESS": {
-      return {
-        ...state,
-        postComments: {
-          ...state.postComments,
-          [action.data.post_id]: {
-            ...state.postComments[action.data.post_id],
-            ...(action.data.parent_id && state.postComments[action.data.post_id]
-              ? {
-                  comments: {
-                    ...state.postComments[action.data.post_id].comments,
-                    [action.data.parent_id]: {
-                      ...state.postComments[action.data.post_id].comments[action.data.parent_id],
-                      replies: {
-                        ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
-                        [action.data.message_id]: {
-                          ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id],
-                          //clap_user_ids: action.data.claps.map((c) => c.user_id),
-                          fetchedReact: true,
-                        },
-                      },
-                    },
-                  },
-                }
-              : {
-                  ...(state.postComments[action.data.post_id] && {
-                    comments: {
-                      ...state.postComments[action.data.post_id].comments,
-                      [action.data.message_id]: {
-                        ...state.postComments[action.data.post_id].comments[action.data.message_id],
-                        //clap_user_ids: action.data.claps.map((c) => c.user_id),
-                        fetchedReact: true,
-                      },
-                    },
-                  }),
-                }),
-          },
-        },
-      };
-    }
-    //todo unique post ids
     case "ADD_POST_REACT": {
+      let key = action.data.post_id;
+      if (action.data.post_code) {
+        key = action.data.post_code;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(key))
             .map((wsId) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      claps: [...state.workspacePosts[wsId].posts[action.data.post_id].claps, { user_id: state.user.id }],
-                      clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count + 1,
+                    [key]: {
+                      ...state.workspacePosts[wsId].posts[key],
+                      claps: [...state.workspacePosts[wsId].posts[key].claps, { user_id: state.user.id }],
+                      clap_count: state.workspacePosts[wsId].posts[key].clap_count + 1,
                       user_clap_count: 1,
                     },
                   },
@@ -1234,24 +1210,27 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo unique post ids
     case "REMOVE_POST_REACT": {
+      let key = action.data.post_id;
+      if (action.data.post_code) {
+        key = action.data.post_code;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(key))
             .map((wsId) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      claps: state.workspacePosts[wsId].posts[action.data.post_id].claps.filter((c) => c.user_id !== state.user.id),
-                      clap_count: state.workspacePosts[wsId].posts[action.data.post_id].clap_count - 1,
+                    [key]: {
+                      ...state.workspacePosts[wsId].posts[key],
+                      claps: state.workspacePosts[wsId].posts[key].claps.filter((c) => c.user_id !== state.user.id),
+                      clap_count: state.workspacePosts[wsId].posts[key].clap_count - 1,
                       user_clap_count: 0,
                     },
                   },
@@ -1264,38 +1243,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo unique post ids
-    case "GET_POST_CLAP_HOVER_SUCCESS": {
-      return {
-        ...state,
-        workspacePosts: {
-          ...state.workspacePosts,
-          ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
-            .map((wsId) => {
-              return {
-                [wsId]: {
-                  ...state.workspacePosts[wsId],
-                  posts: {
-                    ...state.workspacePosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.post_id],
-                      fetchedReact: true,
-                      //clap_user_ids: user_ids,
-                    },
-                  },
-                },
-              };
-            })
-            .reduce((obj, workspace) => {
-              return { ...obj, ...workspace };
-            }, {}),
-        },
-      };
-    }
-    //todo unique post ids
     case "ADD_COMMENT": {
-      let postComment = { ...state.postComments[action.data.post_id] };
+      let key = action.data.post_id;
+      if (action.data.post_code) {
+        key = action.data.post_code;
+      }
+      let postComment = { ...state.postComments[key] };
       if (action.data.parent_id) {
         postComment = {
           ...postComment,
@@ -1323,14 +1276,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         postComments: {
           ...state.postComments,
-          [action.data.post_id]: postComment,
+          [key]: postComment,
         },
       };
     }
-    //todo unique post id
     case "STAR_POST_REDUCER": {
       if (!action.data.topic_id) return { ...state };
-
+      let postKey = action.data.post_id;
+      if (action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -1338,9 +1293,9 @@ export default (state = INITIAL_STATE, action) => {
             ...state.workspacePosts[action.data.topic_id],
             posts: {
               ...state.workspacePosts[action.data.topic_id].posts,
-              [action.data.post_id]: {
-                ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
-                is_favourite: !state.workspacePosts[action.data.topic_id].posts[action.data.post_id].is_favourite,
+              [postKey]: {
+                ...state.workspacePosts[action.data.topic_id].posts[postKey],
+                is_favourite: !state.workspacePosts[action.data.topic_id].posts[postKey].is_favourite,
               },
             },
           },
@@ -1348,6 +1303,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post id
+    //to review
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
@@ -1378,6 +1334,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post id
+    //to review
     case "INCOMING_POST_MARK_DONE": {
       return {
         ...state,
@@ -1407,6 +1364,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post id
+    //todo review
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -1431,6 +1389,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -1442,7 +1404,7 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.id]: action.data,
+                    [postKey]: action.data,
                   },
                   count: state.workspacePosts[wsId].count
                     ? {
@@ -1518,6 +1480,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_UPDATED_POST": {
       let newWorkspacePosts = { ...state.workspacePosts };
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       action.data.recipient_ids.forEach((id) => {
         let key = id;
         if (action.data.slug !== getSlug()) {
@@ -1525,12 +1491,12 @@ export default (state = INITIAL_STATE, action) => {
         }
         if (newWorkspacePosts.hasOwnProperty(key)) {
           if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
-            delete newWorkspacePosts[key].posts[action.data.id];
+            delete newWorkspacePosts[key].posts[postKey];
           } else {
-            if (newWorkspacePosts[key].posts.hasOwnProperty(action.data.id)) {
-              newWorkspacePosts[key].posts[action.data.id] = { ...action.data, claps: newWorkspacePosts[key].posts[action.data.id].claps };
+            if (newWorkspacePosts[key].posts.hasOwnProperty(postKey)) {
+              newWorkspacePosts[key].posts[postKey] = { ...action.data, claps: newWorkspacePosts[key].posts[postKey].claps };
             } else {
-              newWorkspacePosts[key].posts[action.data.id] = { ...action.data, claps: [] };
+              newWorkspacePosts[key].posts[postKey] = { ...action.data, claps: [] };
             }
           }
         }
@@ -1540,7 +1506,12 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWorkspacePosts,
       };
     }
+    //for checking of data
     case "INCOMING_DELETED_POST": {
+      let postKey = action.data.post_id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -1571,6 +1542,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post id
+    //need post_code
     case "INCOMING_COMMENT": {
       const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
       const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
@@ -1696,34 +1668,35 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
-      let newWorkspaces = { ...state.workspaces };
-      let files = action.data.files.map((f) => {
-        return {
-          ...f,
-          uploader: state.user,
-        };
-      });
-      if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
-          newWorkspaces[action.data.topic_id].primary_files = [...new Set([...newWorkspaces[action.data.topic_id].primary_files, ...files])];
-        } else {
-          newWorkspaces[action.data.topic_id].primary_files = files;
-        }
-      }
-      return {
-        ...state,
-        workspaces: newWorkspaces,
-        activeTopic:
-          state.activeTopic && state.activeTopic.id === action.data.topic_id
-            ? {
-                ...state.activeTopic,
-                primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...new Set([...state.activeTopic.primary_files, ...files])] : files,
-              }
-            : state.activeTopic,
-      };
-    }
+    // case "UPLOADING_WORKSPACE_FILES_SUCCESS": {
+    //   let newWorkspaces = { ...state.workspaces };
+    //   let files = action.data.files.map((f) => {
+    //     return {
+    //       ...f,
+    //       uploader: state.user,
+    //     };
+    //   });
+    //   if (newWorkspaces.hasOwnProperty(action.data.topic_id)) {
+    //     if (newWorkspaces[action.data.topic_id].hasOwnProperty("primary_files")) {
+    //       newWorkspaces[action.data.topic_id].primary_files = [...new Set([...newWorkspaces[action.data.topic_id].primary_files, ...files])];
+    //     } else {
+    //       newWorkspaces[action.data.topic_id].primary_files = files;
+    //     }
+    //   }
+    //   return {
+    //     ...state,
+    //     workspaces: newWorkspaces,
+    //     activeTopic:
+    //       state.activeTopic && state.activeTopic.id === action.data.topic_id
+    //         ? {
+    //             ...state.activeTopic,
+    //             primary_files: state.activeTopic.hasOwnProperty("primary_files") ? [...new Set([...state.activeTopic.primary_files, ...files])] : files,
+    //           }
+    //         : state.activeTopic,
+    //   };
+    // }
     // todo unique post id
+    // need post_code
     case "INCOMING_POST_CLAP": {
       const channelIds = Object.keys(state.workspacePosts);
       return {
@@ -1764,6 +1737,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //need post code
     case "INCOMING_COMMENT_CLAP": {
       return {
         ...state,
@@ -1857,6 +1831,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post id
+    // need post code
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -1886,7 +1861,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo unique ids
     case "ARCHIVE_POST_REDUCER": {
       return {
         ...state,
@@ -1900,7 +1874,7 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[id].posts,
                   ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
                     ...Object.values(state.workspacePosts[id].posts).reduce((pos, p) => {
-                      pos[p.id] = {
+                      pos[action.data.post_code ? p.code : p.id] = {
                         ...p,
                         is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
                       };
@@ -2002,22 +1976,22 @@ export default (state = INITIAL_STATE, action) => {
             : state.activeTopic,
       };
     }
-    //todo unique post id
     case "INCOMING_POST_TOGGLE_FOLLOW": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(postKey))
             .map((wsId) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                    [postKey]: {
+                      ...state.workspacePosts[wsId].posts[postKey],
                       is_followed: action.data.is_followed,
                     },
                   },
@@ -2030,23 +2004,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need post code
     case "INCOMING_READ_UNREAD_REDUCER": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.post_id))
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(postKey))
             .map((wsId) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.post_id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.post_id],
+                    [postKey]: {
+                      ...state.workspacePosts[wsId].posts[postKey],
                       is_unread: action.data.unread,
-                      unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[action.data.post_id].unread_count,
+                      unread_count: action.data.unread === 0 ? 0 : state.workspacePosts[wsId].posts[postKey].unread_count,
                     },
                   },
                 },
@@ -2093,13 +2069,15 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    //need post code
     case "INCOMING_DELETED_COMMENT": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       let newPostComments = { ...state.postComments };
-      if (newPostComments.hasOwnProperty(action.data.post_id)) {
+      if (newPostComments.hasOwnProperty(postKey)) {
         if (action.data.parent_id) {
-          delete newPostComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.message_id];
+          delete newPostComments[postKey].comments[action.data.parent_id].replies[action.data.message_id];
         } else {
-          delete newPostComments[action.data.post_id].comments[action.data.message_id];
+          delete newPostComments[postKey].comments[action.data.message_id];
         }
       }
       return {
@@ -2200,21 +2178,6 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         folders: updatedFolders,
-      };
-    }
-    case "UPDATE_WORKSPACE_COUNTER": {
-      let updatedWorkspaces = { ...state.workspaces };
-      let updatedTopic = { ...state.activeTopic };
-      if (Object.keys(updatedWorkspaces).length > 0) {
-        updatedWorkspaces[action.data.topic_id].unread_posts = action.data.unread_posts;
-        if (state.activeTopic && state.activeTopic.id === action.data.topic_id) {
-          updatedTopic.unread_posts = action.data.unread_posts;
-        }
-      }
-      return {
-        ...state,
-        workspaces: updatedWorkspaces,
-        activeTopic: updatedTopic,
       };
     }
     case "INCOMING_DELETED_FILES": {
@@ -2374,19 +2337,20 @@ export default (state = INITIAL_STATE, action) => {
         activeTopic: updatedTopic,
       };
     }
-    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       let newWorkspacePosts = { ...state.workspacePosts };
       let post = { ...action.data, claps: [], last_visited_at: { timestamp: null } };
       action.data.workspaces.forEach((ws) => {
         let key = ws.topic_id;
+        let postKey = post.id;
         if (action.slug !== getSlug()) {
           key = `${ws.topic_id}-${action.slug}`;
+          postKey = post.code;
         }
         if (newWorkspacePosts.hasOwnProperty(key)) {
-          if (newWorkspacePosts[key].posts[post.id]) {
-            newWorkspacePosts[key].posts[post.id] = { ...post, claps: newWorkspacePosts[key].posts[post.id].claps, last_visited_at: newWorkspacePosts[key].posts[post.id].last_visited_at };
-          } else newWorkspacePosts[key].posts[post.id] = post;
+          if (newWorkspacePosts[key].posts[postKey]) {
+            newWorkspacePosts[key].posts[postKey] = { ...post, claps: newWorkspacePosts[key].posts[postKey].claps, last_visited_at: newWorkspacePosts[key].posts[postKey].last_visited_at };
+          } else newWorkspacePosts[key].posts[postKey] = post;
         } else {
           newWorkspacePosts[key] = {
             filters: {},
@@ -2397,9 +2361,9 @@ export default (state = INITIAL_STATE, action) => {
             searchResults: [],
             count: null,
             posts: {
-              [post.id]: post,
+              [postKey]: post,
             },
-            post_ids: [post.id],
+            post_ids: [postKey],
             categoriesLoaded: false,
             categories: {
               mustRead: {
@@ -2435,8 +2399,8 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWorkspacePosts,
       };
     }
-    //todo
     case "UPDATE_POST_FILES": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         workspacePosts: {
@@ -2446,9 +2410,9 @@ export default (state = INITIAL_STATE, action) => {
               ...state.workspacePosts[action.data.topic_id],
               posts: {
                 ...state.workspacePosts[action.data.topic_id].posts,
-                [action.data.post_id]: {
-                  ...state.workspacePosts[action.data.topic_id].posts[action.data.post_id],
-                  files: state.workspacePosts[action.data.topic_id].posts[action.data.post_id].files.map((f) => {
+                [postKey]: {
+                  ...state.workspacePosts[action.data.topic_id].posts[postKey],
+                  files: state.workspacePosts[action.data.topic_id].posts[postKey].files.map((f) => {
                     if (f.id === action.data.file.id) {
                       return action.data.file;
                     } else {
@@ -2462,25 +2426,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //todo unique post ids
     case "UPDATE_COMMENT_FILES": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
         postComments: {
           ...state.postComments,
-          ...(action.data.post_id && {
-            [action.data.post_id]: {
-              ...state.postComments[action.data.post_id],
+          ...(postKey && {
+            [postKey]: {
+              ...state.postComments[postKey],
               comments: {
-                ...state.postComments[action.data.post_id].comments,
+                ...state.postComments[postKey].comments,
                 ...(action.data.parent_id && {
                   [action.data.parent_id]: {
-                    ...state.postComments[action.data.post_id].comments[action.data.parent_id],
+                    ...state.postComments[postKey].comments[action.data.parent_id],
                     replies: {
-                      ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies,
+                      ...state.postComments[postKey].comments[action.data.parent_id].replies,
                       [action.data.id]: {
-                        ...state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id],
-                        files: state.postComments[action.data.post_id].comments[action.data.parent_id].replies[action.data.id].files.map((f) => {
+                        ...state.postComments[postKey].comments[action.data.parent_id].replies[action.data.id],
+                        files: state.postComments[postKey].comments[action.data.parent_id].replies[action.data.id].files.map((f) => {
                           if (f.id === action.data.file.id) {
                             return action.data.file;
                           } else {
@@ -2493,8 +2457,8 @@ export default (state = INITIAL_STATE, action) => {
                 }),
                 ...(action.data.parent_id === null && {
                   [action.data.id]: {
-                    ...state.postComments[action.data.post_id].comments[action.data.id],
-                    files: state.postComments[action.data.post_id].comments[action.data.id].files.map((f) => {
+                    ...state.postComments[postKey].comments[action.data.id],
+                    files: state.postComments[postKey].comments[action.data.id].files.map((f) => {
                       if (f.id === action.data.file.id) {
                         return action.data.file;
                       } else {
@@ -2510,20 +2474,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     //todo unique post ids
+    //need post code on socket
     case "INCOMING_IMPORTANT_COMMENT": {
+      let postKey = action.data.sharedSlug && action.data.post.code ? action.data.post.code : action.data.post.id;
       return {
         ...state,
-        ...(state.postComments[action.data.post.id] && {
+        ...(state.postComments[postKey] && {
           postComments: {
             ...state.postComments,
-            [action.data.post.id]: {
-              ...state.postComments[action.data.post.id],
+            [postKey]: {
+              ...state.postComments[postKey],
               comments: {
-                ...state.postComments[action.data.post.id].comments,
-                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                ...state.postComments[postKey].comments,
+                ...(state.postComments[postKey].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
-                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
-                    is_important: !state.postComments[action.data.post.id].comments[action.data.comment.id].is_important,
+                    ...state.postComments[postKey].comments[action.data.comment.id],
+                    is_important: !state.postComments[postKey].comments[action.data.comment.id].is_important,
                   },
                 }),
               },
@@ -2533,9 +2499,11 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_READ_SELECTED_POSTS": {
+      let isSharedSlug = false;
       let key = action.data.topic_id;
       if (action.data.topic_id && action.data.sharedSlug) {
         key = `${action.data.topic_id}-${action.data.slug}`;
+        isSharedSlug = true;
       }
       return {
         ...state,
@@ -2547,13 +2515,25 @@ export default (state = INITIAL_STATE, action) => {
               posts: {
                 ...state.workspacePosts[key].posts,
                 ...action.data.post_ids.reduce((res, id) => {
-                  if (state.workspacePosts[key].posts[id]) {
-                    res[id] = {
-                      ...state.workspacePosts[key].posts[id],
-                      is_read: true,
-                      unread_count: 0,
-                      is_unread: 0,
-                    };
+                  if (isSharedSlug) {
+                    let post = Object.values(state.workspacePosts[key].posts).find((p) => p.id === id);
+                    if (post) {
+                      res[post.code] = {
+                        ...state.workspacePosts[key].posts[post.code],
+                        is_read: true,
+                        unread_count: 0,
+                        is_unread: 0,
+                      };
+                    }
+                  } else {
+                    if (state.workspacePosts[key].posts[id]) {
+                      res[id] = {
+                        ...state.workspacePosts[key].posts[id],
+                        is_read: true,
+                        unread_count: 0,
+                        is_unread: 0,
+                      };
+                    }
                   }
                   return res;
                 }, {}),
@@ -2564,9 +2544,11 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
+      let isSharedSlug = false;
       let key = action.data.topic_id;
       if (action.data.topic_id && action.data.sharedSlug) {
         key = `${action.data.topic_id}-${action.data.slug}`;
+        isSharedSlug = true;
       }
       return {
         ...state,
@@ -2578,13 +2560,25 @@ export default (state = INITIAL_STATE, action) => {
               posts: {
                 ...state.workspacePosts[key].posts,
                 ...action.data.post_ids.reduce((res, id) => {
-                  if (state.workspacePosts[key].posts[id]) {
-                    res[id] = {
-                      ...state.workspacePosts[key].posts[id],
-                      is_archived: 1,
-                      unread_count: 0,
-                      is_unread: 0,
-                    };
+                  if (isSharedSlug) {
+                    let post = Object.values(state.workspacePosts[key].posts).find((p) => p.id === id);
+                    if (post) {
+                      res[post.code] = {
+                        ...state.workspacePosts[key].posts[post.code],
+                        is_archived: 1,
+                        unread_count: 0,
+                        is_unread: 0,
+                      };
+                    }
+                  } else {
+                    if (state.workspacePosts[key].posts[id]) {
+                      res[id] = {
+                        ...state.workspacePosts[key].posts[id],
+                        is_archived: 1,
+                        unread_count: 0,
+                        is_unread: 0,
+                      };
+                    }
                   }
                   return res;
                 }, {}),
@@ -2613,8 +2607,13 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need post code
     case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
+      let postKey = action.data.post.id;
+      if (action.data.sharedSlug && action.data.post.code) {
+        postKey = action.data.post.code;
+      }
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
@@ -2638,9 +2637,9 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[key],
                   posts: {
                     ...state.workspacePosts[key].posts,
-                    ...(state.workspacePosts[key].posts[action.data.post.id] && {
-                      [action.data.post.id]: {
-                        ...state.workspacePosts[key].posts[action.data.post.id],
+                    ...(state.workspacePosts[key].posts[postKey] && {
+                      [postKey]: {
+                        ...state.workspacePosts[key].posts[postKey],
                         post_approval_label: allUsersAgreed
                           ? "ACCEPTED"
                           : allUsersDisagreed
@@ -2649,8 +2648,8 @@ export default (state = INITIAL_STATE, action) => {
                           ? "SPLIT"
                           : action.data.user_approved.id === state.user.id
                           ? null
-                          : state.workspacePosts[key].posts[action.data.post.id].post_approval_label,
-                        users_approval: state.workspacePosts[key].posts[action.data.post.id].users_approval.map((u) => {
+                          : state.workspacePosts[key].posts[postKey].post_approval_label,
+                        users_approval: state.workspacePosts[key].posts[postKey].users_approval.map((u) => {
                           if (u.id === action.data.user_approved.id) {
                             return {
                               ...u,
@@ -2671,7 +2670,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need post code
     case "INCOMING_COMMENT_APPROVAL": {
+      let postKey = action.data.post.id;
+      if (action.data.sharedSlug && action.data.post.code) {
+        postKey = action.data.post.code;
+      }
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
@@ -2679,17 +2683,17 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         postComments: {
           ...state.postComments,
-          ...(state.postComments[action.data.post.id] && {
-            [action.data.post.id]: {
-              ...state.postComments[action.data.post.id],
+          ...(state.postComments[postKey] && {
+            [postKey]: {
+              ...state.postComments[postKey],
               comments: {
-                ...state.postComments[action.data.post.id].comments,
-                ...(state.postComments[action.data.post.id].comments[action.data.comment.id] && {
+                ...state.postComments[postKey].comments,
+                ...(state.postComments[postKey].comments[action.data.comment.id] && {
                   [action.data.comment.id]: {
-                    ...state.postComments[action.data.post.id].comments[action.data.comment.id],
+                    ...state.postComments[postKey].comments[action.data.comment.id],
                     users_approval:
-                      state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.length > 1
-                        ? state.postComments[action.data.post.id].comments[action.data.comment.id].users_approval.map((ua) => {
+                      state.postComments[postKey].comments[action.data.comment.id].users_approval.length > 1
+                        ? state.postComments[postKey].comments[action.data.comment.id].users_approval.map((ua) => {
                             if (ua.id === action.data.user_approved.id) {
                               return {
                                 ...ua,
@@ -2701,32 +2705,32 @@ export default (state = INITIAL_STATE, action) => {
                           })
                         : [],
                     replies: {
-                      ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies,
+                      ...state.postComments[postKey].comments[action.data.comment.id].replies,
                       ...(action.data.transferred_comment &&
-                        state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id] && {
+                        state.postComments[postKey].comments[action.data.comment.id].replies[action.data.transferred_comment.id] && {
                           [action.data.transferred_comment.id]: {
-                            ...state.postComments[action.data.post.id].comments[action.data.comment.id].replies[action.data.transferred_comment.id],
+                            ...state.postComments[postKey].comments[action.data.comment.id].replies[action.data.transferred_comment.id],
                             users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
                           },
                         }),
                     },
                   },
                 }),
-                ...(!state.postComments[action.data.post.id].comments.hasOwnProperty(action.data.comment.id) && {
-                  ...Object.keys(state.postComments[action.data.post.id].comments).reduce((res, key) => {
+                ...(!state.postComments[postKey].comments.hasOwnProperty(action.data.comment.id) && {
+                  ...Object.keys(state.postComments[postKey].comments).reduce((res, key) => {
                     res[key] = {
-                      ...state.postComments[action.data.post.id].comments[key],
-                      ...(state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id] && {
+                      ...state.postComments[postKey].comments[key],
+                      ...(state.postComments[postKey].comments[key].replies[action.data.comment.id] && {
                         replies: {
-                          ...state.postComments[action.data.post.id].comments[key].replies,
+                          ...state.postComments[postKey].comments[key].replies,
                           [action.data.comment.id]: {
-                            ...state.postComments[action.data.post.id].comments[key].replies[action.data.comment.id],
+                            ...state.postComments[postKey].comments[key].replies[action.data.comment.id],
                             users_approval: [],
                           },
                           ...(action.data.transferred_comment &&
-                            state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id] && {
+                            state.postComments[postKey].comments[key].replies[action.data.transferred_comment.id] && {
                               [action.data.transferred_comment.id]: {
-                                ...state.postComments[action.data.post.id].comments[key].replies[action.data.transferred_comment.id],
+                                ...state.postComments[postKey].comments[key].replies[action.data.transferred_comment.id],
                                 users_approval: [{ ...action.data.user_approved, created_at: action.data.created_at }],
                               },
                             }),
@@ -2754,8 +2758,8 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[key],
                   posts: {
                     ...state.workspacePosts[key].posts,
-                    [action.data.post.id]: {
-                      ...state.workspacePosts[key].posts[action.data.post.id],
+                    [postKey]: {
+                      ...state.workspacePosts[key].posts[postKey],
                       post_approval_label: allUsersAgreed
                         ? "ACCEPTED"
                         : allUsersDisagreed
@@ -2764,7 +2768,7 @@ export default (state = INITIAL_STATE, action) => {
                         ? "SPLIT"
                         : action.data.user_approved.id === state.user.id
                         ? null
-                        : state.workspacePosts[ws.topic.id].posts[action.data.post.id].post_approval_label,
+                        : state.workspacePosts[ws.topic.id].posts[postKey].post_approval_label,
                       //post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
                     },
                   },
@@ -2804,7 +2808,12 @@ export default (state = INITIAL_STATE, action) => {
         workspaces: updatedWorkspaces,
       };
     }
+    //need post code
     case "INCOMING_CLOSE_POST": {
+      let postKey = action.data.post.id;
+      if (action.data.sharedSlug && action.data.post.code) {
+        postKey = action.data.post.code;
+      }
       const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
       const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
       return {
@@ -2823,8 +2832,8 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[key],
                   posts: {
                     ...state.workspacePosts[key].posts,
-                    [action.data.post.id]: {
-                      ...state.workspacePosts[key].posts[action.data.post.id],
+                    [postKey]: {
+                      ...state.workspacePosts[key].posts[postKey],
                       is_close: action.data.is_close,
                       post_close: {
                         initiator: action.data.initiator,
@@ -2907,7 +2916,6 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: workspacePost,
       };
     }
-    //to review
     case "REMOVE_POST": {
       return {
         ...state,
@@ -2922,9 +2930,15 @@ export default (state = INITIAL_STATE, action) => {
                   ...(state.workspacePosts[ws.id].posts && {
                     posts: {
                       ...Object.keys(state.workspacePosts[ws.id].posts)
-                        .filter((key) => parseInt(key) !== action.data.id)
-                        .reduce((post, id) => {
-                          post[id] = { ...state.workspacePosts[ws.id].posts[id] };
+                        .filter((key) => {
+                          if (action.data.sharedSlug) {
+                            return key !== action.data.post_code;
+                          } else {
+                            return parseInt(key) !== action.data.id;
+                          }
+                        })
+                        .reduce((post, key) => {
+                          post[key] = { ...state.workspacePosts[ws.id].posts[key] };
                           return post;
                         }, {}),
                     },
@@ -2985,8 +2999,12 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
-    //todo unique post id
+    //need post code
     case "INCOMING_POST_REQUIRED": {
+      let postKey = action.data.post.id;
+      if (action.data.sharedSlug && action.data.post.code) {
+        postKey = action.data.post.code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -2998,13 +3016,13 @@ export default (state = INITIAL_STATE, action) => {
               if (action.data.sharedSlug) {
                 key = `${ws.topic.id}-${action.data.slug}`;
               }
-              if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post.id]) {
+              if (state.workspacePosts[key] && state.workspacePosts[key].posts[postKey]) {
                 res[key] = {
                   ...state.workspacePosts[key],
                   posts: {
                     ...state.workspacePosts[key].posts,
-                    [action.data.post.id]: {
-                      ...state.workspacePosts[key].posts[action.data.post.id],
+                    [postKey]: {
+                      ...state.workspacePosts[key].posts[postKey],
                       required_users: action.data.required_users,
                       user_reads: action.data.user_reads,
                       must_read_users: action.data.must_read_users,
@@ -3329,6 +3347,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "GET_FAVORITE_WORKSPACE_COUNTERS_SUCCESS": {
       return {
         ...state,
@@ -3538,7 +3557,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need post code
     case "INCOMING_FOLLOW_POST": {
+      let postKey = action.data.post_id;
+      if (action.data.sharedSlug && action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -3551,14 +3575,14 @@ export default (state = INITIAL_STATE, action) => {
                 if (action.data.sharedSlug) {
                   key = `${ws.topic.id}-${action.data.slug}`;
                 }
-                if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post_id]) {
+                if (state.workspacePosts[key] && state.workspacePosts[key].posts[postKey]) {
                   res[key] = {
                     ...state.workspacePosts[key],
                     posts: {
                       ...state.workspacePosts[key].posts,
-                      [action.data.post_id]: {
-                        ...state.workspacePosts[key].posts[action.data.post_id],
-                        user_unfollow: state.workspacePosts[key].posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                      [postKey]: {
+                        ...state.workspacePosts[key].posts[postKey],
+                        user_unfollow: state.workspacePosts[key].posts[postKey].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
                       },
                     },
                   };
@@ -3569,7 +3593,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need post code
     case "INCOMING_UNFOLLOW_POST": {
+      let postKey = action.data.post_id;
+      if (action.data.sharedSlug && action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
         workspacePosts: {
@@ -3582,14 +3611,14 @@ export default (state = INITIAL_STATE, action) => {
                 if (action.data.sharedSlug) {
                   key = `${ws.topic.id}-${action.data.slug}`;
                 }
-                if (state.workspacePosts[key] && state.workspacePosts[key].posts[action.data.post_id]) {
+                if (state.workspacePosts[key] && state.workspacePosts[key].posts[postKey]) {
                   res[key] = {
                     ...state.workspacePosts[key],
                     posts: {
                       ...state.workspacePosts[key].posts,
-                      [action.data.post_id]: {
-                        ...state.workspacePosts[key].posts[action.data.post_id],
-                        user_unfollow: [...state.workspacePosts[key].posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                      [postKey]: {
+                        ...state.workspacePosts[key].posts[postKey],
+                        user_unfollow: [...state.workspacePosts[key].posts[postKey].user_unfollow, action.data.user_unfollow],
                       },
                     },
                   };
@@ -3906,6 +3935,7 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    //to review workspace post
     case "INCOMING_ACCEPTED_INTERNAL_USER": {
       if (action.data.team_ids.length) {
         const newUser = {
@@ -4020,6 +4050,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "FETCH_COMMENTS_ON_VISIT_SUCCESS": {
       let postComments = { ...state.postComments };
+      let postKey = action.data.post_id;
+      if (action.isSharedSlug) {
+        postKey = action.data.post_code;
+      }
       if (action.data.messages.length) {
         const comments = action.data.messages.reduce((acc, c) => {
           acc[c.id] = {
@@ -4032,9 +4066,9 @@ export default (state = INITIAL_STATE, action) => {
           };
           return acc;
         }, {});
-        postComments[action.data.post_id] = {
-          ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id]),
-          comments: { ...comments, ...(typeof postComments[action.data.post_id] !== "undefined" && postComments[action.data.post_id].comments) },
+        postComments[postKey] = {
+          ...(typeof postComments[postKey] !== "undefined" && postComments[postKey]),
+          comments: { ...comments, ...(typeof postComments[postKey] !== "undefined" && postComments[postKey].comments) },
         };
         return {
           ...state,
@@ -4103,19 +4137,20 @@ export default (state = INITIAL_STATE, action) => {
                 ...state.workspacePosts[id],
                 posts: {
                   ...state.workspacePosts[id].posts,
-                  ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
-                    ...Object.values(state.workspacePosts[id].posts).reduce((pos, post) => {
-                      if (post.id && action.data.post_id) {
-                        pos[post.id] = {
-                          ...post,
-                          last_visited_at: { timestamp: action.data.last_visit },
-                        };
-                      } else {
-                        pos[post.id] = post;
-                      }
-                      return pos;
-                    }, {}),
-                  }),
+                  ...(state.workspacePosts[id].posts &&
+                    Object.values(state.workspacePosts[id].posts).length > 0 && {
+                      ...Object.values(state.workspacePosts[id].posts).reduce((pos, post) => {
+                        if (post.id && action.data.post_id) {
+                          pos[post.id] = {
+                            ...post,
+                            last_visited_at: { timestamp: action.data.last_visit },
+                          };
+                        } else {
+                          pos[post.id] = post;
+                        }
+                        return pos;
+                      }, {}),
+                    }),
                 },
               };
               return res;
@@ -4125,20 +4160,24 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_POST_READ_CLAP_SUCCESS": {
+      let postKey = action.data.id;
+      if (action.isSharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       return {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(action.data.id))
+            .filter((wsId) => state.workspacePosts[wsId].posts && state.workspacePosts[wsId].posts.hasOwnProperty(postKey))
             .map((wsId) => {
               return {
                 [wsId]: {
                   ...state.workspacePosts[wsId],
                   posts: {
                     ...state.workspacePosts[wsId].posts,
-                    [action.data.id]: {
-                      ...state.workspacePosts[wsId].posts[action.data.id],
+                    [postKey]: {
+                      ...state.workspacePosts[wsId].posts[postKey],
                       claps: action.data.claps,
                       post_reads: action.data.reads.map((r) => {
                         return {
@@ -4157,7 +4196,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to review
+    //to review && update function
     case "SET_SELECTED_POST": {
       return {
         ...state,
@@ -4191,6 +4230,7 @@ export default (state = INITIAL_STATE, action) => {
         }, {}),
       };
     }
+    //to update
     case "UPDATE_POST_CATEGORY_COUNT": {
       return {
         ...state,
@@ -4232,14 +4272,15 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS":
     case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
-      const workspaceId = action.data[0].group_id;
+      const workspaceId = action.data.quick_links[0].group_id;
       return {
         ...state,
         workspaceQuickLinks: {
           ...state.workspaceQuickLinks,
-          [workspaceId]: action.data,
+          [workspaceId]: action.data.quick_links,
         },
       };
     }

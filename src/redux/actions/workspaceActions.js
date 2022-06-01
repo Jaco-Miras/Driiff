@@ -144,10 +144,6 @@ export function getWorkspace(payload, callback) {
   return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_START", "GET_WORKSPACE_SUCCESS", "GET_WORKSPACE_FAIL", callback);
 }
 
-export function updateWorkspaceCounter(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_COUNTER", payload, callback);
-}
-
 export function incomingArchivedWorkspaceChannel(payload, callback) {
   return SimpleDispatchActionToReducer("ARCHIVE_REDUCER", payload, callback);
 }

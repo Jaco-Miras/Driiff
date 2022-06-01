@@ -127,7 +127,6 @@ import {
   getPostList,
   incomingPostListConnect,
   incomingPostListDisconnect,
-  getUnarchivePost,
   incomingPostRequired,
   incomingFollowPost,
   incomingUnfollowPost,
@@ -172,7 +171,6 @@ import {
   incomingWorkspaceFolder,
   incomingWorkspaceRole,
   joinWorkspaceReducer,
-  updateWorkspaceCounter,
   updateWorkspacePostCount,
   setActiveTopic,
   getAllWorkspaceFolders,
@@ -511,7 +509,7 @@ class SocketListeners extends Component {
               claps: [],
               is_unread: 1,
             };
-            this.props.incomingPost({ ...post, slug: this.state.slug });
+            this.props.incomingPost({ ...post, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
           });
         });
       })
@@ -822,7 +820,7 @@ class SocketListeners extends Component {
       .listen(".favourite-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "FAVOURITE_ITEM": {
-            this.props.incomingFavouriteItem(e);
+            this.props.incomingFavouriteItem({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default: {
@@ -831,7 +829,8 @@ class SocketListeners extends Component {
         }
       })
       .listen(".unread-post", (e) => {
-        this.props.incomingReadUnreadReducer(e);
+        //need post code
+        this.props.incomingReadUnreadReducer({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
         //this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
@@ -883,13 +882,14 @@ class SocketListeners extends Component {
                 ...res.data,
                 claps: [],
                 slug: this.state.slug,
+                sharedSlug: this.props.sharedSlug,
               };
               this.props.incomingPost(post);
             });
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [], slug: this.state.slug };
+            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [], slug: this.state.slug, sharedSlug: this.props.sharedSlug };
             const isApprover = post.users_approval.some((ua) => ua.id === this.state.userId);
             const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
             const hasMentioned = post.mention_ids.some((id) => this.state.userId === id);
@@ -941,16 +941,16 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_UPDATE": {
-            this.props.incomingUpdatedPost({ ...e, slug: this.state.slug });
+            this.props.incomingUpdatedPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             if (e.channel_messages && e.post_participant_data) {
               if (!e.post_participant_data.from_company && !e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 //user is not participant of post
                 this.props.deletePostNotification(e.channel_messages);
-                this.props.incomingDeletedPost({ ...e, slug: this.state.slug });
+                this.props.incomingDeletedPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
               } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 // from private to public post
                 e.claps = [];
-                this.props.incomingPost({ ...e, slug: this.state.slug });
+                this.props.incomingPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
                 e.channel_messages &&
                   e.channel_messages.forEach((m) => {
                     m.system_message.files = [];
@@ -987,7 +987,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_DELETE": {
-            this.props.incomingDeletedPost({ ...e, slug: this.state.slug });
+            this.props.incomingDeletedPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             if (e.notification_ids) {
               const ids = Array.from(e.notification_ids);
               ids.forEach((id) => {
@@ -1003,7 +1003,7 @@ class SocketListeners extends Component {
           }
           case "POST_CLAP_TOGGLE": {
             if (this.state.userId !== e.author.id) {
-              this.props.incomingPostClap(e);
+              this.props.incomingPostClap({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
               if (this.state.userId === e.post_user_id && e.clap_count === 1) {
                 toast(`${e.author.name} ${this.props.dictionary.likedYourPost}`, { position: toast.POSITION.BOTTOM_LEFT });
               }
@@ -1015,7 +1015,7 @@ class SocketListeners extends Component {
             break;
           }
           case "COMMENT_IMPORTANT": {
-            this.props.incomingImportantComment(e);
+            this.props.incomingImportantComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -1053,6 +1053,7 @@ class SocketListeners extends Component {
                     ...res.data,
                     claps: [],
                     slug: this.state.slug,
+                    sharedSlug: this.props.sharedSlug,
                     //is_unread: 1,
                   };
                   if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
@@ -1113,7 +1114,8 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_DELETE": {
-            this.props.incomingDeletedComment(e);
+            //need post code
+            this.props.incomingDeletedComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_COMMENT_UPDATE": {
@@ -1122,7 +1124,7 @@ class SocketListeners extends Component {
           }
           case "POST_COMMENT_CLAP_TOGGLE": {
             if (this.state.userId !== e.author.id) {
-              this.props.incomingCommentClap(e);
+              this.props.incomingCommentClap({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
               if (this.state.userId === e.comment_user_id && e.clap_count === 1) {
                 toast(`${e.author.name} ${this.props.dictionary.likedYourComment}`, { position: toast.POSITION.BOTTOM_LEFT });
               }
@@ -1828,7 +1830,7 @@ class SocketListeners extends Component {
     window[this.state.slug]
       .private(`${this.state.slug}.App.User.${this.state.userId}`)
       .listen(".update-workspace-quicklinks", (e) => {
-        this.props.incomingUpdatedWorkspaceQuickLinks(e.quick_links);
+        this.props.incomingUpdatedWorkspaceQuickLinks({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".update-company-workspace", (e) => {
         this.props.incomingCompanyDescription(e);
@@ -1968,7 +1970,7 @@ class SocketListeners extends Component {
         this.props.incomingFavouriteWorkspace({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".post-read-require", (e) => {
-        this.props.incomingMarkAsRead(e);
+        this.props.incomingMarkAsRead({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
       .listen(".new-workspace", (e) => {
         if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.state.userId)) {
@@ -2213,6 +2215,8 @@ class SocketListeners extends Component {
         let payload = {
           post_id: e.post_id,
           viewer: e.user,
+          slug: this.state.slug,
+          sharedSlug: this.props.sharedSlug,
         };
         this.props.incomingPostViewer(payload);
       })
@@ -2490,7 +2494,6 @@ function mapDispatchToProps(dispatch) {
     setSelectedChannel: bindActionCreators(setSelectedChannel, dispatch),
     incomingArchivedWorkspaceChannel: bindActionCreators(incomingArchivedWorkspaceChannel, dispatch),
     incomingUnArchivedWorkspaceChannel: bindActionCreators(incomingUnArchivedWorkspaceChannel, dispatch),
-    updateWorkspaceCounter: bindActionCreators(updateWorkspaceCounter, dispatch),
     fetchPost: bindActionCreators(fetchPost, dispatch),
     incomingDeletedFiles: bindActionCreators(incomingDeletedFiles, dispatch),
     incomingGoogleFile: bindActionCreators(incomingGoogleFile, dispatch),
@@ -2550,7 +2553,6 @@ function mapDispatchToProps(dispatch) {
     getPostList: bindActionCreators(getPostList, dispatch),
     incomingPostListConnect: bindActionCreators(incomingPostListConnect, dispatch),
     incomingPostListDisconnect: bindActionCreators(incomingPostListDisconnect, dispatch),
-    getUnarchivePost: bindActionCreators(getUnarchivePost, dispatch),
     incomingPostRequired: bindActionCreators(incomingPostRequired, dispatch),
     incomingTeamChannel: bindActionCreators(incomingTeamChannel, dispatch),
     incomingRemoveFileAfterDownload: bindActionCreators(incomingRemoveFileAfterDownload, dispatch),

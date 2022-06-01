@@ -12,7 +12,6 @@ import {
   fetchTagCounter as fetchTagCounterService,
   getCompanyPosts as getCompanyPostsService,
   getPostClapHover as getPostClapHoverService,
-  getReplyClapHover as getReplyClapHoverService,
   getUnreadPostComments as getUnreadPostCommentsService,
   getUnreadPostEntries as getUnreadPostEntriesService,
   markAllPostAsRead as markAllPostAsReadService,
@@ -281,10 +280,6 @@ export function incomingMarkAsRead(payload, callback) {
 
 export function getPostClapHover(payload, callback) {
   return dispatchActionToReducer(getPostClapHoverService(payload), "GET_POST_CLAP_HOVER_START", "GET_POST_CLAP_HOVER_SUCCESS", "GET_POST_CLAP_HOVER_FAIL", callback);
-}
-
-export function getReplyClapHover(payload, callback) {
-  return dispatchActionToReducer(getReplyClapHoverService(payload), "GET_REPLY_CLAP_HOVER_START", "GET_REPLY_CLAP_HOVER_SUCCESS", "GET_REPLY_CLAP_HOVER_FAIL", callback);
 }
 
 export function getUnreadPostEntries(payload, callback) {

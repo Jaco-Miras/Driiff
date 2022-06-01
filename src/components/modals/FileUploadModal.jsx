@@ -705,6 +705,7 @@ const FileUploadModal = (props) => {
           user_clap_count: 0,
           claps: [],
           users_approval: [],
+          post_code: sharedSlug ? post.code : null,
         };
 
         dispatch(addComment(commentObj));

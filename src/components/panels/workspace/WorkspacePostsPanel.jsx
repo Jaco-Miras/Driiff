@@ -148,6 +148,7 @@ const WorkspacePostsPanel = (props) => {
 
   useEffect(() => {
     if (params.postId && !post) {
+      //need to update for shared workspace url
       actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
         if (componentIsMounted.current) {
           if (err) {

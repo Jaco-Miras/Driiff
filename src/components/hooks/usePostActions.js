@@ -198,7 +198,7 @@ const usePostActions = () => {
       })
     );
 
-    dispatch(starPostReducer({ post_id: post.id, topic_id }));
+    dispatch(starPostReducer({ post_id: post.id, topic_id, post_code: post.slug && slug !== post.slug ? post.code : null }));
   };
 
   const markPost = (post) => {
@@ -326,6 +326,7 @@ const usePostActions = () => {
             dispatch(
               archiveReducer({
                 post_id: post.id,
+                post_code: slug !== post.slug ? post.code : null,
                 //topic_id: parseInt(params.workspaceId),
                 is_archived: post.is_archived === 1 ? 0 : 1,
               })
@@ -371,6 +372,7 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 0,
             user_id: user.id,
+            post_code: sharedPayload ? post.code : null,
           })
         );
       }
@@ -462,6 +464,7 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: false,
+              post_code: slug !== post.slug ? post.code : null,
             })
           );
           getUnreadNotificationEntries();
@@ -478,6 +481,7 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: true,
+              post_code: slug !== post.slug ? post.code : null,
             })
           );
         })
@@ -511,6 +515,8 @@ const usePostActions = () => {
               topic_id: parseInt(params.workspaceId),
               recipients: post.recipients,
               id: post.id,
+              post_code: post.slug && slug !== post.slug ? post.code : null,
+              sharedSlug: post.slug && slug !== post.slug,
             })
           );
         })
@@ -649,6 +655,7 @@ const usePostActions = () => {
                               parent_id: comment.parent_id,
                               post_id: post.id,
                               reaction: "clap",
+                              post_code: post.code,
                             },
                             cb
                           )
@@ -667,6 +674,7 @@ const usePostActions = () => {
                           parent_id: comment.parent_id,
                           post_id: post.id,
                           reaction: "clap",
+                          post_code: post.code,
                         },
                         cb
                       )

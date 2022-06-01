@@ -237,25 +237,6 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    // case "GET_POST_CLAP_HOVER_SUCCESS": {
-    //   const user_ids = action.data.claps.map((c) => c.user_id);
-    //   return {
-    //     ...state,
-    //     ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
-    //       companyPosts: {
-    //         ...state.companyPosts,
-    //         posts: {
-    //           ...state.companyPosts.posts,
-    //           [action.data.post_id]: {
-    //             ...state.companyPosts.posts[action.data.post_id],
-    //             //clap_user_ids: [...user_ids],
-    //             fetchedReact: true,
-    //           },
-    //         },
-    //       },
-    //     }),
-    //   };
-    // }
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -781,7 +762,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "GET_UNARCHIVE_POST_DETAIL_SUCCESS":
     case "GET_POST_DETAIL_SUCCESS": {
       return {
         ...state,
