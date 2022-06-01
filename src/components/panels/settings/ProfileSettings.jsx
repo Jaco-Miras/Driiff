@@ -158,12 +158,29 @@ const ProfileSettings = (props) => {
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
+    emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always"),
+    emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Never"),
   };
 
   const notificationSoundOptions = [
     {
       value: "appointed",
       label: dictionary.notificationSoundDefault,
+    },
+    // {
+    //   value: "jingle-bells",
+    //   label: dictionary.notificationSoundJingleBells,
+    // },
+  ];
+  const emailOptions = [
+
+    {
+      value: true,
+      label: dictionary.emailToggleLabelOn,
+    },
+    {
+      value: false,
+      label: dictionary.emailToggleLabelOff,
     },
     // {
     //   value: "jingle-bells",
@@ -494,7 +511,6 @@ const ProfileSettings = (props) => {
     e.persist();
     const { name, checked, dataset } = e.target;
 
-    console.log(e)
     setGeneralSetting(
       {
         [name]: name === "daily_digest" ? checked : checked ? "1" : "0",
@@ -613,13 +629,10 @@ const ProfileSettings = (props) => {
     window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
   };
 
-  const handleEmailNotificationToggle = (e) => {
-    e.persist();
-    const { name, dataset } = e.target;
-    setGeneralSetting({ enable_all_notification_reply_in_email: e.target.checked });
-    toaster.success(<span>{dataset.successMessage}</span>);
+  const handleEmailNotificationDropdown = (e) => {
+    setGeneralSetting({ enable_all_notification_reply_in_email: e.value });
+    toaster.success(<span>You have successfully updated notification sound</span>);
   };
-
 
   return (
     <Wrapper className={`profile-settings ${className}`}>
@@ -832,16 +845,15 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
               <div className="row mb-2">
-                <div className="col-12 text-muted">
-                  <CustomInput
-                    className="cursor-pointer text-muted"
-                    checked={enable_all_notification_reply_in_email}
-                    type="switch"
-                    id="enable_all_notification_reply_in_email"
-                    name="enable_all_notification_reply_in_email"
-                    data-success-message={`${!enable_all_notification_reply_in_email ? "Email Notification enabled" : "Email Notification disabled"}`}
-                    onChange={handleEmailNotificationToggle}
-                    label={<span>{dictionary.emailToggle}</span>}
+                <div className="col-5 text-muted">{dictionary.emailToggle}</div>
+                <div className="col-7">
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={emailOptions.find((o) => o.value === enable_all_notification_reply_in_email)}
+                    onChange={handleEmailNotificationDropdown}
+                    options={emailOptions}
                   />
                 </div>
               </div>
