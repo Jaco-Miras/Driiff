@@ -160,7 +160,7 @@ const FilePill = (props) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}?playsinline=1`;
-    } else if (e.currentTarget.dataset.attemp === "1") {
+    } else if (e.currentTarget.dataset.attempt === "1") {
       e.currentTarget.dataset.attempt = 2;
       e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?playsinline=1`;
     }
