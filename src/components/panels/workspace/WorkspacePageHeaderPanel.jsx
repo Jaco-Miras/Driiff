@@ -1,10 +1,9 @@
-import React, { useMemo } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
 import { useTranslationActions } from "../../hooks";
-//import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
 
 const Wrapper = styled.div``;
 

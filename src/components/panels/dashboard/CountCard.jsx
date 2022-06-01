@@ -32,27 +32,46 @@ const CountCard = (props) => {
   const dispatch = useDispatch();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const todosCount = useSelector((state) => state.global.todos.count);
-  const wsReminders = useSelector((state) => state.workspaces.workspaceReminders[params.workspaceId]);
+  const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const onSharedWsURL = history.location.pathname.startsWith("/shared-workspace");
+  const wsKey = workspace && onSharedWsURL ? workspace.key : params.workspaceId;
+  const wsReminders = workspaceReminders[workspace && onSharedWsURL ? workspace.key : params.workspaceId];
 
   useEffect(() => {
-    if (params.workspaceId && !wsReminders) {
-      //fetch the workspace reminders count
-      let payload = {
-        topic_id: params.workspaceId,
-      };
-      if (workspace && workspace.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+    if (history.location.pathname.startsWith("/shared-workspace")) {
+      if (params.workspaceId && workspace && !workspaceReminders[workspace.key]) {
+        //fetch the workspace reminders count
+        let payload = {
+          topic_id: params.workspaceId,
         };
+        if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+          };
+        }
+        dispatch(
+          getWorkspaceRemindersCount(payload, (err, res) => {
+            if (err) return;
+            dispatch(updateWorkspaceRemindersCount({ count: res.data, id: wsKey }));
+          })
+        );
       }
-      dispatch(
-        getWorkspaceRemindersCount(payload, (err, res) => {
-          if (err) return;
-          dispatch(updateWorkspaceRemindersCount({ count: res.data, id: parseInt(params.workspaceId) }));
-        })
-      );
+    } else {
+      if (params.workspaceId && !workspaceReminders[params.workspaceId]) {
+        //fetch the workspace reminders count
+        let payload = {
+          topic_id: params.workspaceId,
+        };
+
+        dispatch(
+          getWorkspaceRemindersCount(payload, (err, res) => {
+            if (err) return;
+            dispatch(updateWorkspaceRemindersCount({ count: res.data, id: wsKey }));
+          })
+        );
+      }
     }
   }, []);
 

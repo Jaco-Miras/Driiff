@@ -3372,14 +3372,16 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceReminders: {
           ...state.workspaceReminders,
-          [action.data.topic_id]: {
-            ...(state.workspaceReminders[action.data.topic_id] && {
-              ...state.workspaceReminders[action.data.topic_id],
+          ...(state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
+              ...state.workspaceReminders[action.data.wsKey],
               hasMore: action.data.todos.length === action.data.limit,
-              skip: state.workspaceReminders[action.data.topic_id].skip + action.data.todos.length,
-              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
-            }),
-            ...(!state.workspaceReminders[action.data.topic_id] && {
+              skip: state.workspaceReminders[action.data.wsKey].skip + action.data.todos.length,
+              reminderIds: [...state.workspaceReminders[action.data.wsKey].reminderIds, ...action.data.todos.map((t) => t.id)],
+            },
+          }),
+          ...(!state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
               skip: action.data.todos.length,
               hasMore: action.data.todos.length === action.data.limit,
               reminderIds: [...action.data.todos.map((t) => t.id)],
@@ -3404,8 +3406,8 @@ export default (state = INITIAL_STATE, action) => {
                 today: 0,
                 new: 0,
               },
-            }),
-          },
+            },
+          }),
         },
       };
     }
@@ -3414,17 +3416,19 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceReminders: {
           ...state.workspaceReminders,
-          [action.data.topic_id]: {
-            ...(state.workspaceReminders[action.data.topic_id] && {
-              ...state.workspaceReminders[action.data.topic_id],
-              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+          ...(state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
+              ...state.workspaceReminders[action.data.wsKey],
+              reminderIds: [...state.workspaceReminders[action.data.wsKey].reminderIds, ...action.data.todos.map((t) => t.id)],
               done: {
                 limit: 10,
                 hasMore: action.data.todos.length === action.data.limit,
-                skip: state.workspaceReminders[action.data.topic_id].done.skip + action.data.todos.length,
+                skip: state.workspaceReminders[action.data.wsKey].done.skip + action.data.todos.length,
               },
-            }),
-            ...(!state.workspaceReminders[action.data.topic_id] && {
+            },
+          }),
+          ...(!state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
               hasMore: true,
               skip: 0,
               done: {
@@ -3439,8 +3443,8 @@ export default (state = INITIAL_STATE, action) => {
                 today: 0,
                 new: 0,
               },
-            }),
-          },
+            },
+          }),
         },
       };
     }
@@ -3449,17 +3453,19 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceReminders: {
           ...state.workspaceReminders,
-          [action.data.topic_id]: {
-            ...(state.workspaceReminders[action.data.topic_id] && {
-              ...state.workspaceReminders[action.data.topic_id],
-              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+          ...(state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
+              ...state.workspaceReminders[action.data.wsKey],
+              reminderIds: [...state.workspaceReminders[action.data.wsKey].reminderIds, ...action.data.todos.map((t) => t.id)],
               overdue: {
                 limit: 25,
                 hasMore: action.data.todos.length === action.data.limit,
-                skip: state.workspaceReminders[action.data.topic_id].overdue.skip + action.data.todos.length,
+                skip: state.workspaceReminders[action.data.wsKey].overdue.skip + action.data.todos.length,
               },
-            }),
-            ...(!state.workspaceReminders[action.data.topic_id] && {
+            },
+          }),
+          ...(!state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
               hasMore: true,
               skip: 0,
               overdue: {
@@ -3474,8 +3480,8 @@ export default (state = INITIAL_STATE, action) => {
                 today: 0,
                 new: 0,
               },
-            }),
-          },
+            },
+          }),
         },
       };
     }
@@ -3484,17 +3490,20 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceReminders: {
           ...state.workspaceReminders,
-          [action.data.topic_id]: {
-            ...(state.workspaceReminders[action.data.topic_id] && {
-              ...state.workspaceReminders[action.data.topic_id],
-              reminderIds: [...state.workspaceReminders[action.data.topic_id].reminderIds, ...action.data.todos.map((t) => t.id)],
+
+          ...(state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
+              ...state.workspaceReminders[action.data.wsKey],
+              reminderIds: [...state.workspaceReminders[action.data.wsKey].reminderIds, ...action.data.todos.map((t) => t.id)],
               today: {
                 limit: 25,
                 hasMore: action.data.todos.length === action.data.limit,
-                skip: state.workspaceReminders[action.data.topic_id].today.skip + action.data.todos.length,
+                skip: state.workspaceReminders[action.data.wsKey].today.skip + action.data.todos.length,
               },
-            }),
-            ...(!state.workspaceReminders[action.data.topic_id] && {
+            },
+          }),
+          ...(!state.workspaceReminders[action.data.wsKey] && {
+            [action.data.wsKey]: {
               hasMore: true,
               skip: 0,
               today: {
@@ -3509,8 +3518,8 @@ export default (state = INITIAL_STATE, action) => {
                 today: 0,
                 new: 0,
               },
-            }),
-          },
+            },
+          }),
         },
       };
     }

@@ -430,11 +430,17 @@ export function getFavoriteWorkspaceCounters(payload) {
 }
 
 export function getWorkspaceReminders(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/to-do?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
