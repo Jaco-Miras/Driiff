@@ -650,7 +650,7 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item is-external">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                            {dictionary.withClient}
                           </div>
                         </li>
                       )}
@@ -713,7 +713,7 @@ const WorspaceHeaderPanel = (props) => {
                       {activeTopic.is_shared && !isExternal && (
                         <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                            {dictionary.withClient}
                           </div>
                         </li>
                       )}

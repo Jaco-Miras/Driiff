@@ -334,11 +334,7 @@ const AboutWorkspaceModal = (props) => {
             </>
           )}
           {workspace.active === 0 && <div className={"badge badge-light text-white ml-1"}>{dictionary.statusWorkspaceArchived}</div>}
-          {workspace.is_shared && !isExternal && (
-            <div className={"badge badge-external ml-1 d-flex align-items-center"}>
-              <Icon icon="eye" /> {dictionary.withClient}
-            </div>
-          )}
+          {workspace.is_shared && !isExternal && <div className={"badge badge-external ml-1 d-flex align-items-center"}>{dictionary.withClient}</div>}
 
           <StyledTooltip arrowSize={5} distance={10} zIndex={9000} onToggle={toggleTooltip} content={workspace.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
             <Icon icon={workspace.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
