@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useParams, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import {
   addCompanyFileSearchResults,
@@ -69,10 +69,18 @@ import { useTranslationActions } from "../hooks";
 const useFileActions = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const history = useHistory();
 
   const toaster = useToaster();
 
   const fileName = useRef("");
+
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
 
   const { _t } = useTranslationActions();
 
@@ -268,6 +276,12 @@ const useFileActions = () => {
   };
 
   const uploadFiles = (payload, callback) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(uploadWorkspaceFiles(payload, callback));
   };
 
@@ -379,8 +393,15 @@ const useFileActions = () => {
           force_delete: 1,
         };
       }
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         deleteFile(payload, (err, res) => {
+          if (err) return;
           toaster.info(`You have removed ${file.search}.`);
         })
       );
@@ -436,33 +457,37 @@ const useFileActions = () => {
 
   const renameFile = (file, callback) => {
     const handleUpdateFileName = () => {
+      let payload = {
+        id: file.id,
+        name: fileName.current,
+        topic_id: params.workspaceId,
+      };
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
-        putFile(
-          {
-            id: file.id,
-            name: fileName.current,
-            topic_id: params.workspaceId,
-          },
-          (err, res) => {
-            if (err) {
-              toaster.error(
-                <span>
-                  System failed to rename the <b>{file.search}</b> to {fileName.current}.
-                </span>
-              );
-            }
-
-            if (res) {
-              toaster.success(
-                <span>
-                  You renamed <b>{file.search}</b> to {fileName.current}.
-                </span>
-              );
-            }
-
-            callback(err, res);
+        putFile(payload, (err, res) => {
+          callback(err, res);
+          if (err) {
+            toaster.error(
+              <span>
+                System failed to rename the <b>{file.search}</b> to {fileName.current}.
+              </span>
+            );
+            return;
           }
-        )
+
+          if (res) {
+            toaster.success(
+              <span>
+                You renamed <b>{file.search}</b> to {fileName.current}.
+              </span>
+            );
+          }
+        })
       );
     };
 
@@ -596,15 +621,17 @@ const useFileActions = () => {
         );
       }
     };
-    dispatch(
-      favoriteFile(
-        {
-          type_id: file.id,
-          type: "file",
-        },
-        cb
-      )
-    );
+    let payload = {
+      type_id: file.id,
+      type: "file",
+    };
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    dispatch(favoriteFile(payload, cb));
   };
 
   const getFavoriteFiles = (payload, callback) => {
@@ -868,8 +895,15 @@ const useFileActions = () => {
           mime_type: file.mime_type,
         },
       };
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         deleteGoogleAttachment(payload, (err, res) => {
+          if (err) return;
           toaster.info(`You have removed ${file.search}.`);
         })
       );
@@ -926,6 +960,12 @@ const useFileActions = () => {
   };
 
   const restoreWorkspaceFile = (payload, callback = () => {}) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
       putWorkspaceRestoreFile(
         {

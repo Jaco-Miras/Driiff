@@ -26,7 +26,8 @@ export const imgAsLogin = () => {
 };
 
 export const getAPIUrl = (data = {}) => {
-  const driffName = getDriffName();
+  let driffName = getDriffName();
+  if (data.sharedSlug) driffName = data.sharedSlug;
   const { REACT_APP_ENV, REACT_APP_apiProtocol, REACT_APP_apiBaseUrl, REACT_APP_apiDNSName, REACT_APP_mockServerBaseUrl } = process.env;
 
   switch (REACT_APP_ENV) {

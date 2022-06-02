@@ -5,7 +5,7 @@ import { useFileActions, useDriveLinkActions } from "../hooks";
 
 const useFiles = (triggerFetch = false) => {
   const params = useParams();
-  const fileActions = useFileActions(params);
+  const fileActions = useFileActions();
   const { fetchTopicDriveLinks } = useDriveLinkActions();
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);

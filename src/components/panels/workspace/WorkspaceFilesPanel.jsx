@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const WorkspaceFilesPanel = (props) => {
   const { className = "", isMember, workspace } = props;
 
-  const isWorkspaceMember = isMember || workspace.sharedSlug;
+  const isWorkspaceMember = isMember || (workspace && workspace.sharedSlug);
 
   const dispatch = useDispatch();
   const history = useHistory();

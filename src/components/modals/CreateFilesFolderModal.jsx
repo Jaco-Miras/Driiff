@@ -89,6 +89,9 @@ const CreateFilesFolderModal = (props) => {
 
   const colors = useMemo(() => [...Object.values(theme.colors), ...defaultColors], [theme.colors]);
 
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
   const toggle = () => {
     dispatch(clearModal({ type: type }));
   };
@@ -130,6 +133,12 @@ const CreateFilesFolderModal = (props) => {
         folder_id: params.fileFolderId,
       };
     }
+    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      };
+    }
     if (topic_id) {
       dispatch(addFolder({ ...payload, topic_id: topic_id }, cb));
     } else {
@@ -150,12 +159,18 @@ const CreateFilesFolderModal = (props) => {
         history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
       }
     };
-    const payload = {
+    let payload = {
       id: folder.id,
       name: inputValue,
       is_archived: true,
       bg_color: color,
     };
+    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      };
+    }
     if (topic_id) {
       dispatch(putFolder({ ...payload, topic_id: topic_id }, cb));
     } else {

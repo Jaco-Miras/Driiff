@@ -5,7 +5,7 @@ import { useFileActions, useDriveLinkActions } from "../hooks";
 
 const useFiles = () => {
   const params = useParams();
-  const fileActions = useFileActions(params);
+  const fileActions = useFileActions();
 
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const { init, count, has_more, skip, limit, items: files, search_results, search_value } = useSelector((state) => state.files.companyFiles);
