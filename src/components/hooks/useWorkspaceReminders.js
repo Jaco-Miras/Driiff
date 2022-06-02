@@ -172,6 +172,7 @@ const useWorkspaceReminders = () => {
       loadMore,
     },
     workspaceName: activeTopic ? activeTopic.name : null,
+    workspace: activeTopic ? activeTopic : null,
   };
 };
 

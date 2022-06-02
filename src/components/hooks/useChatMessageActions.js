@@ -286,6 +286,7 @@ const useChatMessageActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      isSharedWs: channel.slug ? true : false,
     };
 
     dispatch(addToModals(payload));

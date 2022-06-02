@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   addCommentReact,
   addComment,
@@ -28,6 +29,7 @@ import { useToaster, useTodoActions, useTranslationActions } from "./index";
 
 const useCommentActions = () => {
   const dispatch = useDispatch();
+  const params = useParams();
   const todoActions = useTodoActions();
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const toaster = useToaster();
@@ -139,6 +141,7 @@ const useCommentActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
     };
 
     dispatch(addToModals(payload));

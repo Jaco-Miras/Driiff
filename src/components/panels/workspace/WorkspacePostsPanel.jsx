@@ -105,7 +105,7 @@ const LoaderContainer = styled.div`
 const WorkspacePostsPanel = (props) => {
   const { className = "", workspace, isMember } = props;
 
-  const isWorkspaceMember = isMember || workspace.sharedSlug;
+  const isWorkspaceMember = isMember || (workspace && workspace.sharedSlug);
 
   const params = useParams();
   const history = useHistory();

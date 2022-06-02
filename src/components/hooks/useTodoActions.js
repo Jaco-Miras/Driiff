@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo, snoozeTodo, snoozeTodoAll, removeReminderNotification } from "../../redux/actions/globalActions";
 import {
   getDoneWorkspaceRemindersCallback,
@@ -18,6 +18,7 @@ const useTodoActions = () => {
   const toaster = useToaster();
   const { _t } = useTranslationActions();
   const params = useParams();
+  const location = useLocation();
 
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
@@ -272,6 +273,7 @@ const useTodoActions = () => {
       putDoneToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
         },
         (err, res) => {
           if (res) {
@@ -291,6 +293,7 @@ const useTodoActions = () => {
       putDoneToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
           ...(payload.status === "DONE" && { undo: 1 }),
         },
         (err, res) => {
@@ -332,6 +335,7 @@ const useTodoActions = () => {
       delRemoveToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
         },
         (err, res) => {
           if (res) {

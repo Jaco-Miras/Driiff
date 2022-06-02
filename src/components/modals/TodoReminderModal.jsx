@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useHistory } from "react-router-dom";
 import DateTimePicker from "react-datetime-picker";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, InputGroup, Modal, ModalBody, ModalFooter } from "reactstrap";
@@ -109,8 +110,9 @@ const TodoReminderModal = (props) => {
   /**
    * @todo refactor
    */
-  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create" } = props.data;
+  const { type, item, parentItem = null, itemType = null, actions, params, mode = "create", isSharedWs = false } = props.data;
 
+  const history = useHistory();
   const {
     generalSettings: { date_picker_format: date_format, time_picker_format: time_format, language },
   } = useSettings();
@@ -124,6 +126,9 @@ const TodoReminderModal = (props) => {
   const users = useSelector((state) => state.users.users);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const workspacesLoaded = useSelector((state) => state.workspaces.workspacesLoaded);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const isSharedWorkspace = (params && params.workspaceId && activeTopic && activeTopic.sharedSlug) || isSharedWs;
   const [componentUpdate, setComponentUpdate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -252,7 +257,7 @@ const TodoReminderModal = (props) => {
       if (itemType && itemType === "POST" && mode === "create") {
         const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
         if (workspaceRecipient) {
-          const ws = { ...workspaces[workspaceRecipient.id] };
+          const ws = { ...workspaces[workspaceRecipient.key] };
           setSelectedWorkspace({
             ...ws,
             icon: "compass",
@@ -281,7 +286,7 @@ const TodoReminderModal = (props) => {
       if (itemType && itemType === "POST_COMMENT" && parentItem && mode === "create") {
         const workspaceRecipient = parentItem.recipients.find((r) => r.type === "TOPIC");
         if (workspaceRecipient) {
-          const ws = { ...workspaces[workspaceRecipient.id] };
+          const ws = { ...workspaces[workspaceRecipient.key] };
           setSelectedWorkspace({
             ...ws,
             icon: "compass",
@@ -321,40 +326,51 @@ const TodoReminderModal = (props) => {
   }, [mounted, workspacesLoaded, params]);
 
   useEffect(() => {
-    if (mode === "edit" && item && item.workspace && workspaces[item.workspace.id]) {
-      const ws = { ...workspaces[item.workspace.id] };
-      setSelectedWorkspace({
-        ...ws,
-        icon: "compass",
-        value: ws.id,
-        label: ws.name,
-      });
-      setUserOptions(
-        ws.members.map((u) => {
-          return {
-            ...u,
-            icon: "user-avatar",
-            value: u.id,
-            label: u.name && u.name.trim() !== "" ? u.name : u.email,
-            type: "USER",
-            useLabel: true,
-          };
-        })
-      );
-      setForm({
-        ...form,
-        topic_id: { value: ws.id },
-        assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
-      });
-      if (item.assigned_to) {
-        setSelectedUser({
-          ...item.assigned_to,
-          icon: "user-avatar",
-          value: item.assigned_to.id,
-          label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
-          type: "USER",
-          useLabel: true,
-        });
+    if (mode === "edit" && item && item.workspace) {
+      if (Object.values(workspaces).some((ws) => ws.id === item.workspace.id)) {
+        let ws;
+        if (history.location.pathname.startsWith("/shared-workspace")) {
+          if (activeTopic) {
+            ws = { ...workspaces[activeTopic.key] };
+          }
+        } else {
+          ws = { ...workspaces[item.workspace.id] };
+        }
+        if (ws) {
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+          );
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+            assigned_to: { value: item.assigned_to ? item.assigned_to.id : null },
+          });
+          if (item.assigned_to) {
+            setSelectedUser({
+              ...item.assigned_to,
+              icon: "user-avatar",
+              value: item.assigned_to.id,
+              label: item.assigned_to.name ? item.assigned_to.name : item.assigned_to.email,
+              type: "USER",
+              useLabel: true,
+            });
+          }
+        }
       }
     } else if (mode === "edit" && item && !item.workspace) {
       setForm({
@@ -734,6 +750,13 @@ const TodoReminderModal = (props) => {
       file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
       remove_file_ids: removedFiles.map((f) => f.id),
     };
+    if (isSharedWorkspace) {
+      const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     if (attachedFiles.length > 0) {
       uploadFiles(payload);
       toggle();

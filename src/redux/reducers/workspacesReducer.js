@@ -1423,10 +1423,13 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //need review
+    //need post code
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
     case "INCOMING_REMOVE_TO_DO": {
+      if (action.data.sharedSlug) return state;
       let newWorkspacePosts = { ...state.workspacePosts };
       let postComments = { ...state.postComments };
       if (action.data.link_type === "POST" && action.data.data) {
