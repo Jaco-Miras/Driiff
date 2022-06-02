@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const WorkspaceFilesPanel = (props) => {
   const { className = "", isMember, workspace } = props;
 
-  const isWorkspaceMember = isMember || workspace.sharedSlug;
+  const isWorkspaceMember = isMember || (workspace && workspace.sharedSlug);
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -94,9 +94,9 @@ const WorkspaceFilesPanel = (props) => {
     googleFolder: _t("CREATE_GOOGLE_FOLDER", "Create Google Folder"),
   };
 
-  const handleAddEditFolder = (f, mode = "create") => {    
+  const handleAddEditFolder = (f, mode = "create") => {
     if (folder) {
-      params.googleDriveFolderId = folder.google_folder_id
+      params.googleDriveFolderId = folder.google_folder_id;
     }
     const modal = {
       type: "files_folder",
@@ -107,11 +107,11 @@ const WorkspaceFilesPanel = (props) => {
       parentFolder: folder ? folder : null,
     };
     dispatch(addToModals(modal));
-  }; 
+  };
 
-  const handleAddEditFile = (f, mode = "create", file_type) => {    
+  const handleAddEditFile = (f, mode = "create", file_type) => {
     if (folder) {
-      params.googleDriveFolderId = folder.google_folder_id
+      params.googleDriveFolderId = folder.google_folder_id;
     }
     const modal = {
       type: "files",
@@ -122,7 +122,7 @@ const WorkspaceFilesPanel = (props) => {
       parentFolder: folder ? folder : null,
     };
     dispatch(addToModals(modal));
-  };   
+  };
 
   const clearFilter = () => {
     setFilter("");
@@ -175,7 +175,7 @@ const WorkspaceFilesPanel = (props) => {
                 dictionary={dictionary}
                 disableOptions={disableOptions}
                 onClickEmpty={clearSearch}
-                value={search}                
+                value={search}
               />
               <FilesBody
                 dropZoneRef={refs.dropZone}
@@ -190,7 +190,7 @@ const WorkspaceFilesPanel = (props) => {
                 actions={actions}
                 params={params}
                 wsFiles={wsFiles}
-                handleAddEditFolder={handleAddEditFolder}                
+                handleAddEditFolder={handleAddEditFolder}
                 dictionary={dictionary}
                 disableOptions={disableOptions}
               />

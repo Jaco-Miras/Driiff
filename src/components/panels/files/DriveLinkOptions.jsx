@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MoreOptions } from "../../panels/common";
 import { useToaster, useTranslationActions } from "../../hooks";
 import { copyTextToClipboard } from "../../../helpers/commonFunctions";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { useParams } from "react-router-dom";
-import { deleteDriveLink, putCompanyFileMove, putDriveLink } from "../../../redux/actions/fileActions";
+import { useParams, useHistory } from "react-router-dom";
+import { deleteDriveLink, putDriveLink } from "../../../redux/actions/fileActions";
 
 const Wrapper = styled(MoreOptions)`
   .more-options-tooltip {
@@ -39,6 +39,9 @@ const DriveLinkOptions = (props) => {
   const dispatch = useDispatch();
   const params = useParams();
   const toaster = useToaster();
+  const history = useHistory();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const { _t } = useTranslationActions();
 
@@ -82,10 +85,15 @@ const DriveLinkOptions = (props) => {
 
   const handleDelete = () => {
     const handleDeleteLink = () => {
+      let sharedPayload = null;
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+        sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      }
       dispatch(
         deleteDriveLink(
           {
             id: link.id,
+            sharedPayload: sharedPayload,
           },
           (err, res) => {
             if (err) return;
@@ -110,12 +118,17 @@ const DriveLinkOptions = (props) => {
 
   const handleMoveTo = () => {
     if (params.workspaceId) {
+      let sharedPayload = null;
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+        sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      }
       let payload = {
         type: "move_files",
         file: { ...link, search: link.name },
         topic_id: params.workspaceId,
         folder_id: null,
         isLink: true,
+        sharedPayload: sharedPayload,
       };
       if (params.hasOwnProperty("fileFolderId")) {
         payload = {
@@ -134,11 +147,17 @@ const DriveLinkOptions = (props) => {
           folder_id: payload.folder_id,
         };
         if (params.workspaceId) {
+          let sharedPayload = null;
+          if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+            sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+          }
           linkPayload = {
             ...linkPayload,
             topic_id: parseInt(params.workspaceId),
+            sharedPayload: sharedPayload,
           };
         }
+
         dispatch(
           putDriveLink(linkPayload, (err, res) => {
             if (err) {

@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { FormGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -53,6 +54,7 @@ const WrapperDiv = styled(FormGroup)``;
 const CreateExternalFileFolder = (props) => {
   const { type, mode = "create", topic_id = null, link = null, params } = props.data;
 
+  const history = useHistory();
   const { createDriveLink, updateDriveLink } = useDriveLinkActions();
   const { _t } = useTranslationActions();
   const toaster = useToaster();
@@ -75,6 +77,8 @@ const CreateExternalFileFolder = (props) => {
     main: useRef(null),
     name: useRef(null),
   };
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [linkValue, setLinkValue] = useState("");
   const [nameValue, setNameValue] = useState("");
@@ -202,6 +206,12 @@ const CreateExternalFileFolder = (props) => {
       payload = {
         ...payload,
         topic_id: topic_id,
+      };
+    }
+    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
       };
     }
     const cb = (err, res) => {

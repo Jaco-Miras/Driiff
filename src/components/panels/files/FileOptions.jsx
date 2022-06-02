@@ -87,6 +87,7 @@ const FileOptions = (props) => {
     actions.restoreWorkspaceFile(
       file,
       (err, res) => {
+        if (err) return;
         if (res) {
           if (file.folder_id && typeof folders[file.folder_id] !== "undefined") {
             toaster.success(
