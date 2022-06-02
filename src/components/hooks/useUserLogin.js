@@ -130,9 +130,9 @@ export const useUserLogin = (props) => {
           });
       }
     }
+    debugger;
     if (history.location.pathname.startsWith("/authenticate-ios/") && !checkingRef.current) {
       const data = getUrlParams(`${getBaseUrl()}/authenticate-ios?auth_token=${params.tokens}`);
-
       checkingRef.current = true;
       if (data.id && data.auth_token && data.redirect_url) {
         fetch(`${getAPIUrl()}/users/${data.id}`, {
@@ -159,11 +159,23 @@ export const useUserLogin = (props) => {
                 download_token: `${data.download_token}`,
               })
               .then(() => {
-                sessionService.saveUser({
-                  ...res,
-                });
-                window.location.href = data.redirect_url;
+                sessionService
+                  .saveUser({
+                    ...res,
+                  })
+                  .then(() => {
+                    window.location.href = data.redirect_url;
+                  })
+                  .catch(() => {
+                    history.push("/login");
+                  });
+              })
+              .catch((err) => {
+                history.push("/login");
               });
+          })
+          .catch((error) => {
+            history.push("/login");
           });
       }
     }
