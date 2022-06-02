@@ -673,24 +673,24 @@ class SocketListeners extends Component {
         this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_WORKSPACE_TODO": {
-            this.props.incomingToDo({ ...e, user: e.user_id });
+            this.props.incomingToDo({ ...e, user: e.user_id, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "UPDATE_WORKSPACE_TODO": {
-            this.props.incomingUpdateToDo(e);
+            this.props.incomingUpdateToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "DONE_TODO": {
-            this.props.incomingDoneToDo(e);
+            this.props.incomingDoneToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "DELETE_WORKSPACE_TODO": {
-            this.props.incomingRemoveToDo(e);
+            this.props.incomingRemoveToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
-          case "REMIND_WORKSPCE_TODO": {
+          case "REMIND_WORKSPACE_TODO": {
             //pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
-            this.props.incomingUpdateToDo(e);
+            this.props.incomingUpdateToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "ADVANCE_REMIND_TODO": {
@@ -1257,7 +1257,7 @@ class SocketListeners extends Component {
             this.props.incomingChatMessage({ ...message, translated_body: null, slug: this.state.slug });
             delete e.SOCKET_TYPE;
             delete e.socket;
-            if (e.user && e.user.id !== user.id) {
+            if (e.user && e.user.id !== this.state.userId) {
               if (!e.is_muted) {
                 if (this.props.notificationsOn && isSafari && e.is_active) {
                   if (!(this.props.location.pathname.includes("/chat/") && selectedChannel.code === e.channel_code) || isIdle || !isBrowserActive || !document.hasFocus()) {
@@ -1277,7 +1277,7 @@ class SocketListeners extends Component {
                   entity_type: "CHAT_REMINDER_MESSAGE",
                 };
               } else {
-                if (message.user && message.user.id !== user.id && e.is_muted === false) {
+                if (message.user && message.user.id !== this.state.userId && e.is_muted === false) {
                   notificationCounterEntryPayload = {
                     count: 1,
                     entity_type: "CHAT_MESSAGE",
@@ -1286,7 +1286,7 @@ class SocketListeners extends Component {
               }
               this.props.setGeneralChat(notificationCounterEntryPayload);
             } else {
-              if (message.user && message.user.id !== user.id) {
+              if (message.user && message.user.id !== this.state.userId) {
                 this.props.setGeneralChat({
                   count: 1,
                   entity_type: "WORKSPACE_CHAT_MESSAGE",

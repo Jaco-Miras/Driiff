@@ -925,6 +925,7 @@ const usePostActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
     };
 
     dispatch(addToModals(payload));

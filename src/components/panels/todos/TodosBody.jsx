@@ -4,7 +4,6 @@ import { useParams } from "react-router-dom";
 import { useFileActions, useTimeFormat, useRedirect } from "../../hooks";
 import { TodosList } from "./index";
 import ListContainer from "./ListContainer";
-import { SvgIconFeather } from "../../common";
 
 const Wrapper = styled.div`
   flex: unset !important;
@@ -112,7 +111,7 @@ const StyledListContainer = styled(ListContainer)`
 `;
 
 const TodosBody = (props) => {
-  const { className = "", dictionary, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null } = props;
+  const { className = "", dictionary, isLoaded, todoActions, todoItems, doneTodoItems, workspaceName = null, workspace = null } = props;
 
   const { todoFormat, todoFormatShortCode } = useTimeFormat();
   const { getFileIcon } = useFileActions();
@@ -285,6 +284,7 @@ const TodosBody = (props) => {
                 getFileIcon={getFileIcon}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}
                 handleRedirectToWorkspace={handleRedirectToWorkspace}
+                workspace={workspace}
               />
             )}
           ></StyledListContainer>
@@ -312,6 +312,7 @@ const TodosBody = (props) => {
                 getFileIcon={getFileIcon}
                 showWsBadge={!params.hasOwnProperty("workspaceId")}
                 handleRedirectToWorkspace={handleRedirectToWorkspace}
+                workspace={workspace}
               />
             )}
           ></StyledListContainer>
