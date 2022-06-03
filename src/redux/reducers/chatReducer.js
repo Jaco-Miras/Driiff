@@ -451,19 +451,36 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_TRANSLATED_BODY": {
       let channel = null;
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
-        channel = { ...state.channels[action.data.channel_id] };
-        channel = {
-          ...channel,
-          is_hidden: false,
-          last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
-          replies: channel.replies.map((r) => {
-            if (r.id === action.data.id) {
-              return action.data;
-            } else return r;
-          }),
-        };
+      if (action.data.sharedSlug) {
+        if (Object.keys(state.channels).length > 0 && action.data.channelCode && state.channels.hasOwnProperty(action.data.channelCode)) {
+          channel = { ...state.channels[action.data.channelCode] };
+          channel = {
+            ...channel,
+            is_hidden: false,
+            last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
+            replies: channel.replies.map((r) => {
+              if (r.id === action.data.id) {
+                return action.data;
+              } else return r;
+            }),
+          };
+        }
+      } else {
+        if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.channel_id)) {
+          channel = { ...state.channels[action.data.channel_id] };
+          channel = {
+            ...channel,
+            is_hidden: false,
+            last_reply: channel.last_reply && channel.last_reply.id === action.data.id ? action.data : channel.last_reply,
+            replies: channel.replies.map((r) => {
+              if (r.id === action.data.id) {
+                return action.data;
+              } else return r;
+            }),
+          };
+        }
       }
+
       return {
         ...state,
         selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
@@ -471,7 +488,7 @@ export default function (state = INITIAL_STATE, action) {
           channel !== null
             ? {
                 ...state.channels,
-                [action.data.channel_id]: channel,
+                [channel.sharedSlug ? channel.code : channel.id]: channel,
               }
             : state.channels,
       };
@@ -505,13 +522,22 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "SET_CHANNEL_TRANSLATE_STATE": {
       let channel = null;
-
-      if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
-        channel = { ...state.channels[action.data.id] };
-        channel = {
-          ...channel,
-          is_translate: action.data.is_translate,
-        };
+      if (action.data.sharedSlug) {
+        if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.code)) {
+          channel = { ...state.channels[action.data.code] };
+          channel = {
+            ...channel,
+            is_translate: action.data.is_translate,
+          };
+        }
+      } else {
+        if (Object.keys(state.channels).length > 0 && state.channels.hasOwnProperty(action.data.id)) {
+          channel = { ...state.channels[action.data.id] };
+          channel = {
+            ...channel,
+            is_translate: action.data.is_translate,
+          };
+        }
       }
 
       return {
@@ -521,7 +547,7 @@ export default function (state = INITIAL_STATE, action) {
           channel !== null
             ? {
                 ...state.channels,
-                [action.data.id]: channel,
+                [channel.code]: channel,
               }
             : state.channels,
       };

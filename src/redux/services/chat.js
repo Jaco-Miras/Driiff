@@ -491,11 +491,17 @@ export function getChatMsgsForFancy(payload) {
 }
 
 export function postChatMessageTranslate(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-channel-messages-translate";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

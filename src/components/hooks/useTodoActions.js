@@ -263,6 +263,7 @@ const useTodoActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
     };
 
     dispatch(addToModals(payload));

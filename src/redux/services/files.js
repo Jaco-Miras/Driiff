@@ -373,11 +373,17 @@ export function putFile(payload) {
  * @returns {Promise<*>}
  */
 export function deleteTrash(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-delete-all-trash-files?topic_id=${payload.topic_id}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -389,11 +395,17 @@ export function deleteTrash(payload) {
  * @returns {Promise<*>}
  */
 export function moveFile(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-file-move";
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

@@ -137,7 +137,7 @@ const PostCounters = (props) => {
               {readByUsers.map((u) => {
                 return (
                   <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id].profile_image_thumbnail_link} id={u.id} /> <span className="name">{u.name}</span>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id] ? users[u.id].profile_image_thumbnail_link : null} id={u.id} /> <span className="name">{u.name}</span>
                   </span>
                 );
               })}

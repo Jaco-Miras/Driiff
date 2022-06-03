@@ -82,7 +82,12 @@ const usePostActions = () => {
 
   const user = useSelector((state) => state.session.user);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const { slug } = useGetSlug();
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
@@ -875,6 +880,12 @@ const usePostActions = () => {
       must_reply: 0,
       is_approved: 0,
     };
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
 
     dispatch(postRequired(payload));
     //markAsRead(post);
@@ -888,6 +899,12 @@ const usePostActions = () => {
       is_approved: 0,
     };
 
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(postRequired(payload));
   };
 
@@ -992,10 +1009,22 @@ const usePostActions = () => {
   };
 
   const approve = (payload, callback) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(postApprove(payload, callback));
   };
 
   const approveComment = (payload = {}, callback) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(commentApprove(payload, callback));
   };
 

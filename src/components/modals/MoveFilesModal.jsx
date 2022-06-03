@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
@@ -41,8 +42,9 @@ const Wrapper = styled(Modal)`
 `;
 
 const MoveFilesModal = (props) => {
-  const { className = "", type, file, topic_id, folder_id, isLink = false, ...otherProps } = props;
+  const { className = "", type, file, topic_id, folder_id, isLink = false, params, ...otherProps } = props;
 
+  const history = useHistory();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { _t } = useTranslationActions();
@@ -52,8 +54,14 @@ const MoveFilesModal = (props) => {
   };
 
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [loading, setLoading] = useState(false);
+  let sharedPayload = null;
+  if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
 
   let options = Object.values(workspaceFiles[topic_id].folders)
     .filter((f) => {
@@ -122,6 +130,7 @@ const MoveFilesModal = (props) => {
           link: file.link,
           topic_id: topic_id,
           folder_id: selectedFolder.value,
+          sharedPayload: sharedPayload,
         };
         dispatch(putDriveLink(payload, cb));
       } else {
@@ -131,6 +140,7 @@ const MoveFilesModal = (props) => {
               file_id: file.id,
               topic_id: topic_id,
               folder_id: selectedFolder.value,
+              sharedPayload: sharedPayload,
             },
             cb
           )

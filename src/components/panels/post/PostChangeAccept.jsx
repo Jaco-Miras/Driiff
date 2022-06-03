@@ -49,7 +49,7 @@ const ApprovalBadgeWrapper = styled.div`
 `;
 
 const PostChangeAccept = (props) => {
-  const { fromNow, user, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers, isBotMessage = false } = props;
+  const { fromNow, user, userId = null, approving, usersApproval, handleApprove = () => {}, handleRequestChange = () => {}, postBody = false, post, isMultipleApprovers, isBotMessage = false } = props;
 
   const users = useSelector((state) => state.users.users);
   const { _t } = useTranslationActions();
@@ -67,9 +67,10 @@ const PostChangeAccept = (props) => {
     agree: _t("POST.AGREE", "Agree"),
     disagree: _t("POST.DISAGREE", "Disagree"),
   };
+  const uid = userId ? userId : user.id;
   const userApproved = usersApproval.find((u) => u.ip_address !== null && u.is_approved);
   const userRequestChange = usersApproval.find((u) => u.ip_address !== null && !u.is_approved);
-  const isApprover = usersApproval.some((ua) => ua.id === user.id);
+  const isApprover = usersApproval.some((ua) => ua.id === uid);
   const usersApproved = usersApproval.filter((u) => u.ip_address !== null && u.is_approved);
   const usersDisagreed = usersApproval.filter((u) => u.ip_address !== null && !u.is_approved);
   const usersPending = usersApproval.filter((u) => u.ip_address === null);
@@ -79,7 +80,7 @@ const PostChangeAccept = (props) => {
   const disagreedUsers = Object.values(users).filter((u) => userDisagreedIds.some((id) => id === u.id));
   const userPendingIds = usersPending.map((ua) => ua.id);
   const pendingUsers = Object.values(users).filter((u) => userPendingIds.some((id) => id === u.id));
-  const hasAnswered = usersApproval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  const hasAnswered = usersApproval.some((ua) => ua.id === uid && ua.ip_address !== null);
   const allUsersAgreed = usersApproval.filter((u) => u.ip_address !== null && u.is_approved).length === usersApproval.length;
 
   return (
