@@ -236,6 +236,7 @@ const ChatSidebarPanel = (props) => {
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
     withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
     withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
+    withShared: _t("CHANNEL.WITH_SHARED", "Shared"),
     team: _t("TEAM", "Team"),
     personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
     withShared: _t("CHANNEL.SHARED", "Shared"),

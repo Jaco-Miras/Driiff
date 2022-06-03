@@ -51,6 +51,10 @@ const Icon = styled(SvgIconFeather)`
   width: 15px;
   height: 15px;
 `;
+const RepeatIcon = styled(SvgIconFeather)`
+  width: 12px;
+  height: 12px;
+`;
 const Badge = styled.span`
   color: #fff !important;
   min-height: 18px;
@@ -69,11 +73,6 @@ const Badge = styled.span`
 const ChatHeaderBadgeContainer = styled.div`
   display: inline-block;
   align-items: center;
-`;
-
-const EyeIcon = styled(SvgIconFeather)`
-  width: 0.7rem;
-  height: 0.7rem;
 `;
 
 const StyledBadge = styled.div`
@@ -106,17 +105,29 @@ const ReplyPreview = (props) => {
   let lastReplyBody = "";
 
   const chatHeaderBadgeContainer = renderToString(
-    <ChatHeaderBadgeContainer className="chat-header-badge">
-      {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
-        <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
-      )}
-      {channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && (
-        <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-        {/*   <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} /> */}
-          {channel.team ? dictionary.withTeam : dictionary.withClient}
-        </StyledBadge>
-      )}
-    </ChatHeaderBadgeContainer>
+    channel.sharedSlug ? (
+      <ChatHeaderBadgeContainer className="chat-header-badge">
+        {channel.type === "TOPIC" && (
+          <StyledBadge className="badge badge-external mr-1">
+            <RepeatIcon className={"ml-1"} icon="repeat" strokeWidth="2" width={12} />
+            {dictionary.withShared}
+          </StyledBadge>
+        )}
+      </ChatHeaderBadgeContainer>
+    ) : (
+      <>
+        <ChatHeaderBadgeContainer className="chat-header-badge">
+          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
+            <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
+          )}
+          {channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && (
+            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+              {channel.team ? dictionary.withTeam : dictionary.withClient}
+            </StyledBadge>
+          )}
+        </ChatHeaderBadgeContainer>
+      </>
+    )
   );
 
   if (channel.last_reply && settings.preview_message) {

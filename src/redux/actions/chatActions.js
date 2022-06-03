@@ -530,3 +530,7 @@ export function setChannelInitialLoad(payload, callback) {
 export function createJitsiMeetMobile(payload, callback) {
   return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START_MOBILE", "CREATE_JITSI_MEET_SUCCESS_MOBILE", "CREATE_JITSI_MEET_FAIL_MOBILE", callback);
 }
+
+export function addCompanyNameOnMembers(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMPANY_NAME_ON_MEMBERS", payload, callback);
+}

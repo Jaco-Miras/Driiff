@@ -177,6 +177,7 @@ const ChatContentPanel = (props) => {
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
     removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    sharedClient: _t("PAGE.SHARED_CLIENT", "Shared"),
     teamChat: _t("PAGE.TEAM_CHAT", "Team Chat"),
     clientChat: _t("PAGE.CLIENT_CHAT", "Client Chat"),
     mute: _t("CHAT.MUTE", "Mute"),
