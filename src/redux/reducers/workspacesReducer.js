@@ -112,6 +112,7 @@ const INITIAL_STATE = {
   },
   sharedWorkspaces: {},
   sharedWorkspacesLoaded: false,
+  sharedPostLists: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -2958,22 +2959,24 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to review
     case "POST_LIST_CONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+        if (!Object.values(wp.posts).some((p) => p.id === action.data.post_id)) {
           newValue[topic_id] = wp;
         } else {
-          newValue[topic_id] = {
-            ...wp,
-            posts: {
-              ...wp.posts,
-              [action.data.post_id]: {
-                ...wp.posts[action.data.post_id],
-                post_list_connect: [{ id: action.data.link_id }],
+          const post = Object.values(wp.posts).find((p) => p.id === action.data.post_id);
+          if (post) {
+            newValue[topic_id] = {
+              ...wp,
+              posts: {
+                ...wp.posts,
+                [action.data.sharedSlug ? post.code : post.id]: {
+                  ...wp.posts[action.data.sharedSlug ? post.code : post.id],
+                  post_list_connect: [{ id: action.data.link_id }],
+                },
               },
-            },
-          };
+            };
+          }
         }
         return newValue;
       }, {});
@@ -2982,22 +2985,24 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
-    //to review
     case "POST_LIST_DISCONNECT": {
       const newWp = Object.entries(state.workspacePosts).reduce((newValue, [topic_id, wp]) => {
-        if (!wp.posts.hasOwnProperty(action.data.post_id)) {
+        if (!Object.values(wp.posts).some((p) => p.id === action.data.post_id)) {
           newValue[topic_id] = wp;
         } else {
-          newValue[topic_id] = {
-            ...wp,
-            posts: {
-              ...wp.posts,
-              [action.data.post_id]: {
-                ...wp.posts[action.data.post_id],
-                post_list_connect: [],
+          const post = Object.values(wp.posts).find((p) => p.id === action.data.post_id);
+          if (post) {
+            newValue[topic_id] = {
+              ...wp,
+              posts: {
+                ...wp.posts,
+                [action.data.sharedSlug ? post.code : post.id]: {
+                  ...wp.posts[action.data.sharedSlug ? post.code : post.id],
+                  post_list_connect: [],
+                },
               },
-            },
-          };
+            };
+          }
         }
         return newValue;
       }, {});
@@ -4427,6 +4432,19 @@ export default (state = INITIAL_STATE, action) => {
         sharedWorkspaces: action.data,
         sharedWorkspacesLoaded: true,
       };
+    }
+    case "POST_LIST_SUCCESS": {
+      if (action.isSharedSlug) {
+        return {
+          ...state,
+          sharedPostLists: {
+            ...state.sharedPostLists,
+            [action.slug]: [...action.data],
+          },
+        };
+      } else {
+        return state;
+      }
     }
     default:
       return state;

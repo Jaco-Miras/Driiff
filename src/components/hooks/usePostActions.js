@@ -741,6 +741,7 @@ const usePostActions = () => {
         payload = {
           type: "post_list",
           mode: "create",
+          params: params,
         };
         break;
       }
@@ -751,6 +752,7 @@ const usePostActions = () => {
           item: {
             post: post,
           },
+          params: params,
         };
         break;
       }
@@ -761,6 +763,7 @@ const usePostActions = () => {
           item: {
             post: post,
           },
+          params: params,
         };
         break;
       }

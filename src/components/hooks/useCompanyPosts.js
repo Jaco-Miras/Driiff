@@ -97,7 +97,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     if (unreadPosts.loaded) {
-      actions.fetchPostList();
+      actions.fetchPostList({});
     }
   }, [unreadPosts.loaded]);
 

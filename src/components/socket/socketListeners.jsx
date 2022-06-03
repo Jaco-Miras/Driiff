@@ -1333,11 +1333,20 @@ class SocketListeners extends Component {
         }
       })
       .listen(".post-list-notification", (e) => {
-        this.props.getPostList({}, (err, res) => {
+        let payload = {};
+        if (this.props.sharedSlug) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: this.props.activeTopic.slug, token: this.props.sharedWorkspaces[this.props.activeTopic.slug].access_token, is_shared: true },
+          };
+        }
+        this.props.getPostList(payload, (err, res) => {
           if (err) return;
           let post = {
             link_id: e.link_id,
             post_id: e.post_id,
+            slug: this.state.slug,
+            sharedSlug: this.props.sharedSlug,
           };
           switch (e.SOCKET_TYPE) {
             case "POST_LIST_CONNECTED": {
@@ -2489,7 +2498,7 @@ function mapStateToProps({
   session: { user },
   settings: { userSettings },
   chat: { channels, selectedChannel, isLastChatVisible, lastReceivedMessage, jitsi },
-  workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments },
+  workspaces: { workspaces, workspacePosts, folders, activeTopic, workspacesLoaded, postComments, sharedWorkspaces },
   global: { unreadCounter, todos, recipients, isIdle, isBrowserActive },
   users: { mentions, users },
   posts: {
@@ -2518,6 +2527,7 @@ function mapStateToProps({
     isBrowserActive,
     posts,
     jitsi,
+    sharedWorkspaces,
   };
 }
 
