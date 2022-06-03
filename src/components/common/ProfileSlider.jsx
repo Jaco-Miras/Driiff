@@ -90,11 +90,17 @@ const ProfileSlider = (props) => {
     history.push(`/workspace/search?user-id=${user.id}`);
   };
 
+  // this will attach an empty onclick function on the avatar if the user is shared
+  // this is to prevent the default behavior of the avatar component to redirect when the avatar is clicked
+  const sharedHandler = {
+    ...(sharedUser && { onClick: () => {} }),
+  };
+
   return (
     <ProfileWrapper className={`profile-slider ${classNames} ${orientation ? `${orientation.vertical} ${orientation.horizontal}` : ""}`} ref={sliderRef}>
       <SvgIconFeather onClick={handleClose} icon="x" />
       <div className="avatar-wrapper">
-        {user && <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />}
+        {user && <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} {...sharedHandler} />}
         <h5>{user?.name}</h5>
         <span className="text-muted small">{user?.designation}</span>
         <div style={{ display: "flex", gap: 8 }}>
@@ -117,14 +123,14 @@ const ProfileSlider = (props) => {
         {/* <div className="info-x">
           <span>{dictionary.information}</span>
         </div> */}
-        <div className="d-flex">
+        <div className="d-flex mt-2">
           <div className="labels-wrapper">
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
             {!sharedUser && <label>{dictionary.position}</label>}
             {!sharedUser && loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
-          <div className="info-details">
+          <div className="info-details ">
             <span>{sharedUser ? sharedUser.first_name : user?.first_name}</span>
             <span>{sharedUser ? sharedUser.last_name : user?.last_name}</span>
             <span>{sharedUser ? null : user?.role && user?.role.display_name}</span>

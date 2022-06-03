@@ -567,8 +567,21 @@ const ChatBubble = (props) => {
       }
     }
   };
-
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
+
+  const setChatBubbleBG = () => {
+    let bgClassName = "";
+
+    if (selectedChannel.sharedSlug && !isAuthor) {
+      bgClassName = "bg-warning";
+    }
+
+    if (reply.is_important) {
+      bgClassName = "important";
+    }
+    return bgClassName;
+  };
+
   //const theme = useTheme()
 
   return (
@@ -576,7 +589,7 @@ const ChatBubble = (props) => {
       ref={refs.container}
       tabIndex={reply.id}
       hasFiles={hasFiles}
-      className={`chat-bubble ql-editor ${reply.is_important && "important"} ${isExternalUser && "external-chat"}`}
+      className={`chat-bubble ql-editor ${setChatBubbleBG()}  ${isExternalUser && "external-chat"}`}
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
@@ -595,8 +608,14 @@ const ChatBubble = (props) => {
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
               {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
+                  <ChatNameNotAuthor
+                    isEmoticonOnly={isEmoticonOnly}
+                    hasFiles={hasFiles}
+                    isGifOnly={isGifOnly}
+                    className={`chat-name-not-author-mobile ${reply.is_important && "important"} ${selectedChannel.sharedSlug && "text-dark font-weight-bold"}`}
+                  >
                     {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
+                    {selectedChannel.sharedSlug && <SvgIconFeather icon="repeat" height={14} />}
                   </ChatNameNotAuthor>
                 </>
               )}
