@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { usePosts, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { useTranslationActions, useFetchWsCount } from "../../hooks";
 import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
@@ -25,7 +25,6 @@ const WorkspaceDashboardPanel = (props) => {
 
   const { params } = match;
   const { _t } = useTranslationActions();
-  const { recentPosts } = usePosts();
   const width = window.innerWidth;
 
   const handleEditClick = () => {
@@ -129,7 +128,7 @@ const WorkspaceDashboardPanel = (props) => {
 
                 <div className={"col-md-6"}>
                   <DashboardTeam workspace={workspace} actions={actions} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary} />
-                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} />
+                  {/* <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} /> */}
                 </div>
               </>
             ) : (
@@ -137,7 +136,7 @@ const WorkspaceDashboardPanel = (props) => {
                 <div className={"col-md-12"}>
                   <DashboardAboutWorkspace isMember={isMember} workspace={workspace} onEditClick={handleEditClick} isExternal={isExternal} dictionary={dictionary} />
                   <DashboardTeam workspace={workspace} onEditClick={handleEditClick} isMember={isMember} isExternal={isExternal} dictionary={dictionary} />
-                  <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} />
+                  {/* <RecentPosts posts={recentPosts} dictionary={dictionary} disableOptions={disableOptions} /> */}
                   <TimelinePanel workspaceTimeline={workspaceTimeline} actions={actions} params={params} dictionary={dictionary} />
                 </div>
               </>

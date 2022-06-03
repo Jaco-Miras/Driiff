@@ -53,6 +53,7 @@ const PostSearch = (props) => {
         topic_id: topic_id,
         search: "",
         search_result: [],
+        topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
       })
     );
   };
@@ -95,6 +96,7 @@ const PostSearch = (props) => {
               topic_id: topic_id,
               search: searchValue,
               search_result: res.data.posts,
+              topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
             })
           );
         })
@@ -114,6 +116,7 @@ const PostSearch = (props) => {
           topic_id: topic_id,
           search: "",
           search_result: [],
+          topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
         })
       );
     };

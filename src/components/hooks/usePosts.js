@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { addToWorkspacePosts } from "../../redux/actions/postActions";
 import { usePostActions } from "./index";
 
@@ -8,9 +8,10 @@ const usePosts = () => {
   const actions = usePostActions();
   const dispatch = useDispatch();
   const params = useParams();
+  const history = useHistory();
   const wsPosts = useSelector((state) => state.workspaces.workspacePosts);
   const flipper = useSelector((state) => state.workspaces.flipper);
-  const recentPosts = useSelector((state) => state.posts.recentPosts);
+  //const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
   const postsLists = useSelector((state) => state.posts.postsLists);
   const showUnread = useSelector((state) => state.posts.showUnread);
@@ -28,53 +29,98 @@ const usePosts = () => {
       let payload = {
         topic_id: params.workspaceId,
       };
-      if (workspace && workspace.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
-        };
-      }
-      actions.getUnreadWsPostsCount(payload, (err, res) => {
-        if (err) return;
-        if (res.data && res.data.result > 0) {
-          //fetch the unread post
-          let unreadCb = (err, res) => {
-            if (componentIsMounted.current) {
-              setFetchingPost(false);
-            }
+
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace")) {
+        if (workspace && workspace.sharedSlug) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+          };
+          actions.getUnreadWsPostsCount(payload, (err, res) => {
             if (err) return;
-            let files = res.data.posts.map((p) => p.files);
-            if (files.length) {
-              files = files.flat();
-            }
-            dispatch(
-              addToWorkspacePosts({
-                slug: res.slug,
-                isSharedSlug: res.isSharedSlug,
+            if (res.data && res.data.result > 0) {
+              //fetch the unread post
+              let unreadCb = (err, res) => {
+                if (componentIsMounted.current) {
+                  setFetchingPost(false);
+                }
+                if (err) return;
+                let files = res.data.posts.map((p) => p.files);
+                if (files.length) {
+                  files = files.flat();
+                }
+                dispatch(
+                  addToWorkspacePosts({
+                    slug: res.slug,
+                    isSharedSlug: res.isSharedSlug,
+                    topic_id: parseInt(params.workspaceId),
+                    posts: res.data.posts.map((p) => {
+                      return { ...p, slug: workspace.slug };
+                    }),
+                    filter: res.data.posts,
+                    files,
+                  })
+                );
+              };
+              let fetchPayload = {
+                filters: ["green_dot"],
                 topic_id: parseInt(params.workspaceId),
-                posts: res.data.posts.map((p) => {
-                  return { ...p, slug: workspace.slug };
-                }),
-                filter: res.data.posts,
-                files,
-              })
-            );
-          };
-          let fetchPayload = {
-            filters: ["green_dot"],
-            topic_id: parseInt(params.workspaceId),
-            skip: 0,
-            limit: res.data.result,
-          };
-          if (workspace && workspace.sharedSlug) {
-            fetchPayload = {
-              ...fetchPayload,
-              sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
-            };
-          }
-          actions.getPosts(fetchPayload, unreadCb);
+                skip: 0,
+                limit: res.data.result,
+              };
+              if (workspace && workspace.sharedSlug) {
+                fetchPayload = {
+                  ...fetchPayload,
+                  sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+                };
+              }
+              actions.getPosts(fetchPayload, unreadCb);
+            }
+          });
         }
-      });
+      } else {
+        actions.getUnreadWsPostsCount(payload, (err, res) => {
+          if (err) return;
+          if (res.data && res.data.result > 0) {
+            //fetch the unread post
+            let unreadCb = (err, res) => {
+              if (componentIsMounted.current) {
+                setFetchingPost(false);
+              }
+              if (err) return;
+              let files = res.data.posts.map((p) => p.files);
+              if (files.length) {
+                files = files.flat();
+              }
+              dispatch(
+                addToWorkspacePosts({
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
+                  topic_id: parseInt(params.workspaceId),
+                  posts: res.data.posts.map((p) => {
+                    return { ...p, slug: workspace.slug };
+                  }),
+                  filter: res.data.posts,
+                  files,
+                })
+              );
+            };
+            let fetchPayload = {
+              filters: ["green_dot"],
+              topic_id: parseInt(params.workspaceId),
+              skip: 0,
+              limit: res.data.result,
+            };
+            if (workspace && workspace.sharedSlug) {
+              fetchPayload = {
+                ...fetchPayload,
+                sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+              };
+            }
+            actions.getPosts(fetchPayload, unreadCb);
+          }
+        });
+      }
     }
     return () => {
       actions.setShowUnreadPosts(true);

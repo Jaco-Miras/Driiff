@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import {
   addCommentReact,
   addComment,
@@ -30,8 +30,14 @@ import { useToaster, useTodoActions, useTranslationActions } from "./index";
 const useCommentActions = () => {
   const dispatch = useDispatch();
   const params = useParams();
+  const history = useHistory();
   const todoActions = useTodoActions();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
   const toaster = useToaster();
   const { _t } = useTranslationActions();
 
@@ -199,10 +205,14 @@ const useCommentActions = () => {
   const setRequestForChangeComment = (payload, callback) => {
     dispatch(setChangeRequestedComment(payload, callback));
   };
-
+  // need update
   const fetchPostAndComments = (post, callback) => {
+    let payload = {
+      post_id: post.id,
+      sharedPayload: sharedPayload,
+    };
     dispatch(
-      fetchPost({ post_id: post.id }, (err, res) => {
+      fetchPost(payload, (err, res) => {
         if (err) return;
         if (res) {
           let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${res.data.reply_count}`;

@@ -214,7 +214,7 @@ const SharedBadge = styled.span`
 `;
 
 const PostBody = (props) => {
-  const { post, user, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead, workspace } = props;
+  const { post, user, userId, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead, workspace } = props;
 
   const isExternalUser = user.type === "external";
   const dispatch = useDispatch();
@@ -445,7 +445,9 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content ql-editor" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {(hasPendingAproval || isMultipleApprovers) && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} isMultipleApprovers={isMultipleApprovers} />}
+      {(hasPendingAproval || isMultipleApprovers) && (
+        <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} userId={userId} user={user} post={post} isMultipleApprovers={isMultipleApprovers} />
+      )}
     </Wrapper>
   );
 };

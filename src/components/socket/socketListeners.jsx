@@ -741,24 +741,24 @@ class SocketListeners extends Component {
         this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
-            this.props.incomingToDo({ ...e, user: e.user_id });
+            this.props.incomingToDo({ ...e, user: e.user_id, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "UPDATE_TODO": {
-            this.props.incomingUpdateToDo(e);
+            this.props.incomingUpdateToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "DONE_TODO": {
-            this.props.incomingDoneToDo(e);
+            this.props.incomingDoneToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "DELETE_TODO": {
-            this.props.incomingRemoveToDo(e);
+            this.props.incomingRemoveToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "REMIND_TODO": {
             //pushBrowserNotification(`${e.author.first_name} shared a post`, e.title, e.author.profile_image_link, null);
-            this.props.incomingUpdateToDo(e);
+            this.props.incomingUpdateToDo({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "ADVANCE_REMIND_TODO": {
@@ -792,7 +792,7 @@ class SocketListeners extends Component {
                 pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
               }
             }
-            this.props.incomingReminderNotification(e);
+            this.props.incomingReminderNotification({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -924,6 +924,7 @@ class SocketListeners extends Component {
       })
       .listen(".post-notification", (e) => {
         this.props.getFavoriteWorkspaceCounters();
+        console.log(e);
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -965,6 +966,7 @@ class SocketListeners extends Component {
             break;
           }
           case "ADD_RECIPIENTS": {
+            if (this.props.sharedSlug) return;
             this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
               if (err) return;
               let post = {
@@ -1181,15 +1183,19 @@ class SocketListeners extends Component {
               }
 
               e.workspaces.forEach((ws) => {
-                this.props.getUnreadWorkspacePostEntries({ topic_id: ws.topic_id }, (err, res) => {
-                  if (err) return;
-                  this.props.updateWorkspacePostCount({
-                    topic_id: ws.topic_id,
-                    count: res.data.result,
-                    slug: this.state.slug,
-                    sharedSlug: this.props.sharedSlug,
+                if (this.props.sharedSlug) {
+                  // update
+                } else {
+                  this.props.getUnreadWorkspacePostEntries({ topic_id: ws.topic_id }, (err, res) => {
+                    if (err) return;
+                    this.props.updateWorkspacePostCount({
+                      topic_id: ws.topic_id,
+                      count: res.data.result,
+                      slug: this.state.slug,
+                      sharedSlug: this.props.sharedSlug,
+                    });
                   });
-                });
+                }
               });
               if (hasMentioned || e.workspaces.length === 0) {
                 this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });

@@ -552,6 +552,7 @@ const PostDetail = (props) => {
         <PostBody
           post={post}
           user={user}
+          userId={userId}
           postActions={postActions}
           isAuthor={post.author && post.author.id === userId}
           dictionary={dictionary}

@@ -722,6 +722,7 @@ const useFileActions = () => {
       dispatch(
         deleteTrash({
           topic_id: params.workspaceId,
+          sharedPayload: sharedPayload,
         })
       );
     };
@@ -763,6 +764,7 @@ const useFileActions = () => {
       file: file,
       topic_id: params.workspaceId,
       folder_id: null,
+      params: params,
     };
 
     if (params.hasOwnProperty("fileFolderId")) {

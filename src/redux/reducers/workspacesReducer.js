@@ -750,8 +750,8 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          [action.data.topic_id]: {
-            ...state.workspacePosts[action.data.topic_id],
+          [action.data.topicKey]: {
+            ...state.workspacePosts[action.data.topicKey],
             search: action.data.search,
             searchResults: action.data.search_result,
             filter: "all",
@@ -1054,7 +1054,7 @@ export default (state = INITIAL_STATE, action) => {
           };
         });
       }
-      let key = action.data.isSharedSlug ? action.data.post_code : action.data.post_id;
+      let key = action.isSharedSlug ? action.data.post_code : action.data.post_id;
       postComments[key] = {
         ...(typeof postComments[key] !== "undefined" && postComments[key]),
         skip: action.data.next_skip,
@@ -1423,20 +1423,26 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //need review
-    //need post code
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
     case "INCOMING_REMOVE_TO_DO": {
-      if (action.data.sharedSlug) return state;
       let newWorkspacePosts = { ...state.workspacePosts };
       let postComments = { ...state.postComments };
+      let postKey = null;
+      let topicKey = null;
       if (action.data.link_type === "POST" && action.data.data) {
+        if (action.data.sharedSlug) {
+          postKey = action.data.data.post.post_code;
+        }
         action.data.data.workspaces.forEach((w) => {
-          if (typeof newWorkspacePosts[w.topic.id] !== "undefined" && typeof newWorkspacePosts[w.topic.id].posts[action.data.data.post.id] !== "undefined") {
-            newWorkspacePosts[w.topic.id].posts[action.data.data.post.id] = {
-              ...newWorkspacePosts[w.topic.id].posts[action.data.data.post.id],
+          topicKey = w.topic.id;
+          if (action.data.sharedSlug) {
+            topicKey = `${w.topic.id}-${action.data.slug}`;
+          }
+          if (typeof newWorkspacePosts[topicKey] !== "undefined" && typeof newWorkspacePosts[topicKey].posts[postKey] !== "undefined") {
+            newWorkspacePosts[topicKey].posts[postKey] = {
+              ...newWorkspacePosts[topicKey].posts[postKey],
               todo_reminder:
                 action.type === "INCOMING_REMOVE_TO_DO"
                   ? null
@@ -1450,29 +1456,30 @@ export default (state = INITIAL_STATE, action) => {
         });
       }
 
-      if (
-        action.data.link_type === "POST_COMMENT" &&
-        action.data.data &&
-        typeof postComments[action.data.data.post.id] !== "undefined" &&
-        typeof postComments[action.data.data.post.id].comments[action.data.data.comment.id] !== "undefined"
-      ) {
-        postComments[action.data.data.post.id] = {
-          ...postComments[action.data.data.post.id],
-          comments: {
-            ...postComments[action.data.data.post.id].comments,
-            [action.data.data.comment.id]: {
-              ...postComments[action.data.data.post.id].comments[action.data.data.comment.id],
-              todo_reminder:
-                action.type === "INCOMING_REMOVE_TO_DO"
-                  ? null
-                  : {
-                      id: action.data.id,
-                      remind_at: action.data.remind_at,
-                      status: action.data.status,
-                    },
+      if (action.data.link_type === "POST_COMMENT" && action.data.data) {
+        postKey = action.data.data.post.id;
+        if (action.data.sharedSlug) {
+          postKey = action.data.data.post.post_code;
+        }
+        if (typeof postComments[postKey] !== "undefined" && typeof postComments[postKey].comments[action.data.data.comment.id] !== "undefined") {
+          postComments[postKey] = {
+            ...postComments[postKey],
+            comments: {
+              ...postComments[postKey].comments,
+              [action.data.data.comment.id]: {
+                ...postComments[postKey].comments[action.data.data.comment.id],
+                todo_reminder:
+                  action.type === "INCOMING_REMOVE_TO_DO"
+                    ? null
+                    : {
+                        id: action.data.id,
+                        remind_at: action.data.remind_at,
+                        status: action.data.status,
+                      },
+              },
             },
-          },
-        };
+          };
+        }
       }
 
       return {
@@ -2479,7 +2486,7 @@ export default (state = INITIAL_STATE, action) => {
     //todo unique post ids
     //need post code on socket
     case "INCOMING_IMPORTANT_COMMENT": {
-      let postKey = action.data.sharedSlug && action.data.post.code ? action.data.post.code : action.data.post.id;
+      let postKey = action.data.sharedSlug && action.data.post.post_code ? action.data.post.post_code : action.data.post.id;
       return {
         ...state,
         ...(state.postComments[postKey] && {
@@ -2610,12 +2617,11 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //need post code
     case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       let postKey = action.data.post.id;
-      if (action.data.sharedSlug && action.data.post.code) {
-        postKey = action.data.post.code;
+      if ((action.data.sharedSlug || action.isSharedSlug) && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
       }
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
@@ -2676,8 +2682,8 @@ export default (state = INITIAL_STATE, action) => {
     //need post code
     case "INCOMING_COMMENT_APPROVAL": {
       let postKey = action.data.post.id;
-      if (action.data.sharedSlug && action.data.post.code) {
-        postKey = action.data.post.code;
+      if (action.data.sharedSlug && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
       }
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
@@ -2771,7 +2777,7 @@ export default (state = INITIAL_STATE, action) => {
                         ? "SPLIT"
                         : action.data.user_approved.id === state.user.id
                         ? null
-                        : state.workspacePosts[ws.topic.id].posts[postKey].post_approval_label,
+                        : state.workspacePosts[key].posts[postKey].post_approval_label,
                       //post_approval_label: action.data.user_approved.is_approved ? "ACCEPTED" : "REQUEST_UPDATE",
                     },
                   },
@@ -2811,11 +2817,10 @@ export default (state = INITIAL_STATE, action) => {
         workspaces: updatedWorkspaces,
       };
     }
-    //need post code
     case "INCOMING_CLOSE_POST": {
       let postKey = action.data.post.id;
-      if (action.data.sharedSlug && action.data.post.code) {
-        postKey = action.data.post.code;
+      if (action.data.sharedSlug && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
       }
       const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
       const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
@@ -3002,11 +3007,10 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: newWp,
       };
     }
-    //need post code
     case "INCOMING_POST_REQUIRED": {
       let postKey = action.data.post.id;
-      if (action.data.sharedSlug && action.data.post.code) {
-        postKey = action.data.post.code;
+      if (action.data.sharedSlug && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
       }
       return {
         ...state,

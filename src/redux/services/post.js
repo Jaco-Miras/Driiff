@@ -555,10 +555,16 @@ export function deleteComment(payload) {
  * @returns {Promise<*>}
  */
 export function fetchPost(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v1/posts/${payload.post_id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -701,18 +707,30 @@ export function getUnreadWorkspacePostEntries(payload) {
 }
 
 export function postApprove(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-approve",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function commentApprove(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-comment-approve",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -830,10 +848,16 @@ export function postListDisconnect(payload) {
  * @returns {Promise<*>}
  */
 export function postRequired(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-required",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

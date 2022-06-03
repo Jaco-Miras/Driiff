@@ -601,6 +601,7 @@ const Comment = (props) => {
                   fromNow={fromNow}
                   usersApproval={comment.users_approval}
                   user={user}
+                  userId={userId}
                   handleApprove={handleApprove}
                   handleRequestChange={handleRequestChange}
                   post={post}

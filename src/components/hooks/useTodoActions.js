@@ -265,6 +265,7 @@ const useTodoActions = () => {
         onSubmit: onConfirm,
       },
       videoMeeting: todo.link_type === "DRIFF_TALK",
+      params: params,
     };
 
     dispatch(addToModals(payload));
