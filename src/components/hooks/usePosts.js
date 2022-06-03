@@ -14,12 +14,14 @@ const usePosts = () => {
   //const recentPosts = useSelector((state) => state.posts.recentPosts);
   const user = useSelector((state) => state.session.user);
   const postsLists = useSelector((state) => state.posts.postsLists);
+  const sharedPostLists = useSelector((state) => state.workspaces.sharedPostLists);
   const showUnread = useSelector((state) => state.posts.showUnread);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const [fetchingPost, setFetchingPost] = useState(false);
 
   const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
+  const onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-workspace");
 
   const componentIsMounted = useRef(true);
   const workspaceRef = useRef(null);
@@ -134,94 +136,170 @@ const usePosts = () => {
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
-      if (workspaceRef.current && wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`)) return;
-      if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost && !isNaN(parseInt(params.workspaceId))) {
-        setFetchingPost(true);
-        let cb = (err, res) => {
-          if (componentIsMounted.current) {
-            setFetchingPost(false);
-          }
+      if (history.location.pathname.startsWith("/shared-workspace")) {
+        //if (workspaceRef.current && wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`)) return;
+        if (workspaceRef.current && !wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`) && !fetchingPost) {
+          setFetchingPost(true);
+          let cb = (err, res) => {
+            if (componentIsMounted.current) {
+              setFetchingPost(false);
+            }
 
-          if (err) return;
-          let files = res.data.posts.map((p) => p.files);
-          if (files.length) {
-            files = files.flat();
-          }
-          //actions.getTagsCount(parseInt(params.workspaceId));
-          dispatch(
-            addToWorkspacePosts({
-              slug: res.slug,
-              isSharedSlug: res.isSharedSlug,
-              topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts.map((p) => {
-                return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
-              }),
-              files,
-              filters: {
-                all: {
-                  active: true,
-                  skip: res.data.next_skip,
-                  hasMore: res.data.total_take === res.data.posts.length,
+            if (err) return;
+            let files = res.data.posts.map((p) => p.files);
+            if (files.length) {
+              files = files.flat();
+            }
+            //actions.getTagsCount(parseInt(params.workspaceId));
+            dispatch(
+              addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts.map((p) => {
+                  return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
+                }),
+                files,
+                filters: {
+                  all: {
+                    active: true,
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === res.data.posts.length,
+                  },
                 },
-              },
-            })
-          );
-        };
-
-        let payload = {
-          topic_id: parseInt(params.workspaceId),
-        };
-        if (workspaceRef.current && workspaceRef.current.sharedSlug) {
-          payload = {
-            ...payload,
-            sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+              })
+            );
           };
-        }
-        actions.getPosts(payload, cb);
-        actions.fetchPostList();
 
-        let unreadCb = (err, res) => {
-          if (componentIsMounted.current) {
-            setFetchingPost(false);
+          let payload = {
+            topic_id: parseInt(params.workspaceId),
+          };
+          if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+            payload = {
+              ...payload,
+              sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+            };
           }
-          if (err) return;
-          let files = res.data.posts.map((p) => p.files);
-          if (files.length) {
-            files = files.flat();
-          }
-          dispatch(
-            addToWorkspacePosts({
-              slug: res.slug,
-              isSharedSlug: res.isSharedSlug,
-              topic_id: parseInt(params.workspaceId),
-              posts: res.data.posts.map((p) => {
-                return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
-              }),
-              filter: res.data.posts,
-              files,
-              filters: {
-                unreadPosts: {
-                  skip: res.data.next_skip,
-                  hasMore: res.data.total_take === 15,
+          actions.getPosts(payload, cb);
+          actions.fetchPostList({ sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true } });
+
+          let unreadCb = (err, res) => {
+            if (componentIsMounted.current) {
+              setFetchingPost(false);
+            }
+            if (err) return;
+            let files = res.data.posts.map((p) => p.files);
+            if (files.length) {
+              files = files.flat();
+            }
+            dispatch(
+              addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts.map((p) => {
+                  return { ...p, slug: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.slug : null };
+                }),
+                filter: res.data.posts,
+                files,
+                filters: {
+                  unreadPosts: {
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === 15,
+                  },
                 },
-              },
-            })
-          );
-        };
-
-        let unreadPayload = {
-          filters: ["green_dot"],
-          topic_id: parseInt(params.workspaceId),
-          skip: 0,
-          limit: 15,
-        };
-        if (workspaceRef.current && workspaceRef.current.sharedSlug) {
-          unreadPayload = {
-            ...unreadPayload,
-            sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+              })
+            );
           };
+
+          let unreadPayload = {
+            filters: ["green_dot"],
+            topic_id: parseInt(params.workspaceId),
+            skip: 0,
+            limit: 15,
+          };
+          if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+            unreadPayload = {
+              ...unreadPayload,
+              sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+            };
+          }
+          actions.getPosts(unreadPayload, unreadCb);
         }
-        actions.getPosts(unreadPayload, unreadCb);
+      } else {
+        if (!wsPosts.hasOwnProperty(params.workspaceId) && !fetchingPost && !isNaN(parseInt(params.workspaceId))) {
+          setFetchingPost(true);
+          let cb = (err, res) => {
+            if (componentIsMounted.current) {
+              setFetchingPost(false);
+            }
+
+            if (err) return;
+            let files = res.data.posts.map((p) => p.files);
+            if (files.length) {
+              files = files.flat();
+            }
+            //actions.getTagsCount(parseInt(params.workspaceId));
+            dispatch(
+              addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts,
+                files,
+                filters: {
+                  all: {
+                    active: true,
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === res.data.posts.length,
+                  },
+                },
+              })
+            );
+          };
+
+          let payload = {
+            topic_id: parseInt(params.workspaceId),
+          };
+
+          actions.getPosts(payload, cb);
+          actions.fetchPostList({});
+
+          let unreadCb = (err, res) => {
+            if (componentIsMounted.current) {
+              setFetchingPost(false);
+            }
+            if (err) return;
+            let files = res.data.posts.map((p) => p.files);
+            if (files.length) {
+              files = files.flat();
+            }
+            dispatch(
+              addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
+                topic_id: parseInt(params.workspaceId),
+                posts: res.data.posts,
+                filter: res.data.posts,
+                files,
+                filters: {
+                  unreadPosts: {
+                    skip: res.data.next_skip,
+                    hasMore: res.data.total_take === 15,
+                  },
+                },
+              })
+            );
+          };
+
+          let unreadPayload = {
+            filters: ["green_dot"],
+            topic_id: parseInt(params.workspaceId),
+            skip: 0,
+            limit: 15,
+          };
+          actions.getPosts(unreadPayload, unreadCb);
+        }
       }
     }
   }, [params, sharedWs]);
@@ -375,7 +453,7 @@ const usePosts = () => {
     //count,
     counters: counters,
     filters: activeFilters,
-    postLists: postsLists,
+    postLists: onSharedWs && workspace ? sharedPostLists[workspace.slug] : postsLists,
     showLoader: !wsPosts.hasOwnProperty(params.workspaceId) && workspaceRef.current && !wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`),
     showUnread: showUnread,
     sharedWs: sharedWs,

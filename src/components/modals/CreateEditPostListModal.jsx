@@ -76,7 +76,7 @@ const SelectOption = styled.div`
 `;
 
 const CreateEditPostListModal = (props) => {
-  const { type, mode, item } = props.data;
+  const { type, mode, item, params } = props.data;
 
   //   const history = useHistory();
   //   const params = useParams();
@@ -84,6 +84,9 @@ const CreateEditPostListModal = (props) => {
   const dispatch = useDispatch();
   const { createNewPostList, updatePostsList, deletePostsList, connectPostList, fetchPostList, updatePostListConnect } = usePostActions();
   const postLists = useSelector((state) => state.posts.postsLists);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
   const [loading, setLoading] = useState(false);
 
   const [modal, setModal] = useState(true);
@@ -137,21 +140,22 @@ const CreateEditPostListModal = (props) => {
       setLoading(true);
       const payload = {
         name: form.name,
+        sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null,
       };
       createNewPostList(payload, (err, res) => {
         if (err) return;
         toggle();
-        fetchPostList();
+        fetchPostList({ sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
       });
     } else if (mode === "add") {
       if (!valid.link_id) return;
       setLoading(true);
-      const payload = { ...postListForm };
+      const payload = { ...postListForm, sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null };
       connectPostList(payload, (err, res) => {
         if (err) return;
-        fetchPostList({}, (error, response) => {
+        fetchPostList({ sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null }, (error, response) => {
           if (error) return;
-          updatePostListConnect(res.data);
+          updatePostListConnect({ ...res.data, slug: activeTopic.slug, sharedSlug: activeTopic.sharedSlug });
           toggle();
         });
       });
@@ -161,21 +165,22 @@ const CreateEditPostListModal = (props) => {
       const payload = {
         name: form.name,
         id: item.post.id,
+        sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null,
       };
       updatePostsList(payload, (err, res) => {
         if (err) return;
         toggle();
-        fetchPostList();
+        fetchPostList({ sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
       });
     }
   };
 
   const handleArchiveList = useCallback(() => {
     setLoading(true);
-    deletePostsList({ id: item.post.id }, (err, res) => {
+    deletePostsList({ id: item.post.id, sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null }, (err, res) => {
       if (err) return;
       toggle();
-      fetchPostList();
+      fetchPostList({ sharedPayload: isSharedWorkspace ? { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true } : null });
     });
   }, [form, item]);
 

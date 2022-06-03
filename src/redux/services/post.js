@@ -768,10 +768,16 @@ export function postClose(payload) {
 /**
  * @returns {Promise<*>}
  */
-export function getPostList() {
+export function getPostList(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: "/v2/user-post-list",
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -781,10 +787,16 @@ export function getPostList() {
  * @returns {Promise<*>}
  */
 export function createPostList(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/user-post-list",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -794,10 +806,16 @@ export function createPostList(payload) {
  * @returns {Promise<*>}
  */
 export function updatePostList(payload, id) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: `/v2/user-post-list/${id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -805,9 +823,15 @@ export function updatePostList(payload, id) {
  * @returns {Promise<*>}
  */
 export function deletePostList(payload, id) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v2/user-post-list/${id}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -818,10 +842,16 @@ export function deletePostList(payload, id) {
  * @returns {Promise<*>}
  */
 export function postListConnect(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-list-connect",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -832,10 +862,16 @@ export function postListConnect(payload) {
  * @returns {Promise<*>}
  */
 export function postListDisconnect(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: "/v2/post-list-disconnected",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

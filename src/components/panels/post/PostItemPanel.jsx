@@ -253,11 +253,12 @@ const PostItemPanel = (props) => {
       const payload = {
         link_id: post.post_list_connect[0].id,
         post_id: post.id,
+        sharedPayload: workspace && workspace.sharedSlug ? { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true } : null,
       };
       disconnectPostList(payload, (err, res) => {
         if (err) return;
         res.data["topic_id"] = workspace && workspace.id ? workspace.id : null;
-        updatePostListConnect(res.data);
+        updatePostListConnect({ ...res.data, slug: workspace.slug, sharedSlug: workspace.sharedSlug });
       });
     }
   };
