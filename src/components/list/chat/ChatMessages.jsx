@@ -20,6 +20,22 @@ import DriffTalkMessage from "./DriffTalkMessage";
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
 
+const setChatBubbleArrowBG = (props) => {
+  let bgColor = "#f0f0f0";
+
+  if (props.sharedSlug && !props.isAuthor) {
+    bgColor = "#fb3";
+  }
+
+  if (props.isImportant) {
+    bgColor = "#7B68EE";
+  }
+  if (props.isExternalChat) {
+    bgColor = props.theme.colors.fourth;
+  }
+  return bgColor;
+};
+
 const ChatReplyContainer = styled.div`
   background: transparent;
   background-repeat: repeat;
@@ -150,7 +166,7 @@ const ChatBubbleContainer = styled.div`
   &:before {
     ${(props) => props.showAvatar && "content: '';"};
     border: 10px solid transparent;
-    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? props.theme.colors.fourth : "#f0f0f0")};
+    border-right-color: ${(props) => setChatBubbleArrowBG(props)};
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "45px" : "8px")};
     left: 40px;
@@ -782,6 +798,7 @@ class ChatMessages extends React.PureComponent {
                                 isBot={isBot}
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
+                                sharedSlug={this.props.selectedChannel.sharedSlug}
                               >
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <ChatBubble
