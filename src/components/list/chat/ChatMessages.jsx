@@ -863,7 +863,7 @@ class ChatMessages extends React.PureComponent {
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
                                     showSlider={true}
-                                    sharedUser={this.props.selectedChannel.slug ? reply.user : null}
+                                    sharedUser={this.props.selectedChannel.sharedSlug && this.props.selectedChannel.members.find((m) => m.id === reply.user.id) ? this.props.selectedChannel.members.find((m) => m.id === reply.user.id) : null}
                                   />
                                 )}
                               </ChatBubbleContainer>

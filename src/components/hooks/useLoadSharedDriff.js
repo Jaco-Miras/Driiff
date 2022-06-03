@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 // import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, setChannelInitialLoad } from "../../redux/actions/chatActions";
 // import { getNotificationSettings, getSecuritySettings } from "../../redux/actions/adminActions";
 // import { useChannelActions } from "../hooks";
-import { getChannel } from "../../redux/actions/chatActions";
+import { getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
@@ -38,7 +38,12 @@ const useLoadSharedDriff = () => {
                 const channelCodes = [ws.topic_detail.channel.code, ws.topic_detail.team_channel.code];
                 channelCodes.forEach((code) => {
                   if (code) {
-                    dispatch(getChannel({ code: code, sharedPayload: sharedPayload }));
+                    dispatch(
+                      getChannel({ code: code, sharedPayload: sharedPayload }, (err, res) => {
+                        if (err) return;
+                        dispatch(addCompanyNameOnMembers({ code: code, members: ws.members }));
+                      })
+                    );
                   }
                 });
               }

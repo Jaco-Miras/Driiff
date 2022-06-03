@@ -2738,6 +2738,32 @@ export default function (state = INITIAL_STATE, action) {
         initialLoad: true,
       };
     }
+    case "ADD_COMPANY_NAME_ON_MEMBERS": {
+      return {
+        ...state,
+        channels: Object.values(state.channels).reduce((acc, channel) => {
+          if (action.data.code === channel.code) {
+            acc[channel.sharedSlug ? channel.code : channel.id] = {
+              ...channel,
+              members: channel.members.map((mem) => {
+                const member = action.data.members.find((m) => m.id === mem.id);
+                if (member) {
+                  return {
+                    ...mem,
+                    company_name: member.company_name,
+                  };
+                } else {
+                  return mem;
+                }
+              }),
+            };
+          } else {
+            acc[channel.sharedSlug ? channel.code : channel.id] = channel;
+          }
+          return acc;
+        }, {}),
+      };
+    }
     default:
       return state;
   }
