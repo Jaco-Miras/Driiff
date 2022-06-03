@@ -288,6 +288,11 @@ const Icon = styled(SvgIconFeather)`
     color: #64625c;
   }
 `;
+const RepeatIcon = styled(SvgIconFeather)`
+  height: 12px !important;
+  width: 12px !important;
+  margin-right: 5px;
+`;
 
 const StarIcon = styled(SvgIconFeather)`
   height: 14px !important;
@@ -391,6 +396,7 @@ const WorspaceHeaderPanel = (props) => {
     // }),
     joinWorkspace: _t("TOASTER.JOIN_WORKSPACE_SUCCESS", "You have joined #"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    sharedClient: _t("PAGE.SHARED_CLIENT", "Shared"),
     somethingWentWrong: _t("TOASTER.SOMETHING_WENT_WRONG", "Something went wrong!"),
     workspaces: _t("WORKSPACES", "Workspces"),
     buttonLeave: _t("BUTTON.LEAVE", "Leave"),
@@ -677,7 +683,16 @@ const WorspaceHeaderPanel = (props) => {
                       {((activeTopic.is_shared && !isExternal) || sharedWorkspace) && (
                         <li className="nav-item is-external">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                            {sharedWorkspace ? (
+                              <>
+                                <RepeatIcon className={"mr-1 text-dark"} icon="repeat" color="black" strokeWidth="2" />
+                                {dictionary.sharedClient}
+                              </>
+                            ) : (
+                              <>
+                                <Icon icon="eye" /> {dictionary.withClient}
+                              </>
+                            )}
                           </div>
                         </li>
                       )}
@@ -740,7 +755,13 @@ const WorspaceHeaderPanel = (props) => {
                       {((activeTopic.is_shared && !isExternal) || sharedWorkspace) && (
                         <li className="nav-item">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                            <Icon icon="eye" /> {dictionary.withClient}
+                            {sharedWorkspace ? (
+                              dictionary.sharedClient
+                            ) : (
+                              <>
+                                <Icon icon="eye" /> {dictionary.withClient}
+                              </>
+                            )}
                           </div>
                         </li>
                       )}
