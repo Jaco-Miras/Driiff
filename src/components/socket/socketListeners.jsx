@@ -309,7 +309,7 @@ class SocketListeners extends Component {
       //this.refetchOtherMessages();
       //this.refetchPosts();
       this.refetchPostComments();
-      this.props.getFavoriteWorkspaceCounters();
+      this.props.getFavoriteWorkspaceCounters({});
     });
     window[this.state.slug].connector.socket.on("reconnecting", function () {
       //console.log("socket reconnecting");
@@ -927,8 +927,6 @@ class SocketListeners extends Component {
         }
       })
       .listen(".unread-post", (e) => {
-        //need post code
-        console.log(e);
         this.props.incomingReadUnreadReducer({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".post-notification", (e) => {

@@ -410,7 +410,6 @@ const usePostActions = () => {
         };
       }
     }
-    console.log(post, params, sharedWs);
     let cb = (err, res) => {
       if (err) {
         toaster.error(<>Action failed.</>);

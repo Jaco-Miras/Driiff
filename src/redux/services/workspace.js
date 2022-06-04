@@ -422,7 +422,7 @@ export function getWorkspaceFilterCount(payload) {
  */
 export function getFavoriteWorkspaceCounters(payload) {
   let sharedPayload;
-  if (payload.sharedPayload) {
+  if (payload && payload.sharedPayload) {
     sharedPayload = payload.sharedPayload;
     delete payload.sharedPayload;
   }
