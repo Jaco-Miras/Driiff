@@ -381,6 +381,8 @@ const CreateEditWorkspaceModal = (props) => {
     textOnly: "",
     has_externals: false,
     selectedExternals: [],
+    is_shared_wp: false,
+    new_shared_workspace_members: [],
   });
 
   const [showDropzone, setShowDropzone] = useState(false);
@@ -524,6 +526,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
     disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
     uploadProfilePic: _t("BUTTON.UPLOAD_PROFILE_PIC", "Upload Profile Picture"),
+    shareWorkspace: _t("CHECKBOX.SHARE_WORKSPACE", "Share workspace"),
   };
 
   const _validateName = useCallback(() => {
@@ -946,6 +949,8 @@ const CreateEditWorkspaceModal = (props) => {
       file_ids: inlineImages.map((i) => i.id),
       new_team_member_ids: [],
       team_member_ids: team_ids,
+      is_shared_wp: form.is_shared_wp,
+      new_shared_workspace_members: form.is_shared_wp ? invitedExternals : [],
     };
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
@@ -1194,14 +1199,16 @@ const CreateEditWorkspaceModal = (props) => {
               });
 
               updateMembers(updatedMembers, res.data.id);
-
+              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: form.selectedFolder.value,
                   workspace_id: res.data.id,
                 });
+              } else if (form.is_shared_wp) {
+                history.push(`/shared-workspace`);
               } else {
-                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: null,
                   workspace_id: res.data.id,
                 });
@@ -1832,6 +1839,10 @@ const CreateEditWorkspaceModal = (props) => {
     setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
   }, [currentProfilePic]);
 
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, is_private: !form.is_shared_wp }));
+  }, [form.is_shared_wp]);
+
   return (
     <>
       {renderDropDocumentGuest()}
@@ -1969,6 +1980,11 @@ const CreateEditWorkspaceModal = (props) => {
                 {dictionary.workspaceWithExternals}
               </CheckBox>
             </div>
+            <div>
+              <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck}>
+                {dictionary.shareWorkspace}
+              </CheckBox>
+            </div>
             <div style={{ position: "relative" }}>
               <ToolTip
                 content={
@@ -2075,18 +2091,23 @@ const CreateEditWorkspaceModal = (props) => {
             </WrapperDiv>
           )}
           <WrapperDiv className="action-wrapper">
-            <RadioInputWrapper className="workspace-radio-input">
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
-                {dictionary.lockWorkspace}
-              </RadioInput>
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
-                {dictionary.publicWorkspace}
-              </RadioInput>
-            </RadioInputWrapper>
-            <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
-            <div className={"lock-workspace-text-container pb-3"}>
-              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
-            </div>
+            {item && !item.sharedSlug && (
+              <>
+                <RadioInputWrapper className="workspace-radio-input">
+                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
+                    {dictionary.lockWorkspace}
+                  </RadioInput>
+                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
+                    {dictionary.publicWorkspace}
+                  </RadioInput>
+                </RadioInputWrapper>
+
+                <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
+                <div className={"lock-workspace-text-container pb-3"}>
+                  <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+                </div>
+              </>
+            )}
             <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
