@@ -33,21 +33,29 @@ const useLoadSharedDriff = () => {
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, (err, res) => {
             if (err) return;
-            res.data.workspaces.forEach((ws) => {
-              if (ws.topic_detail) {
-                const channelCodes = [ws.topic_detail.channel.code, ws.topic_detail.team_channel.code];
-                channelCodes.forEach((code) => {
-                  if (code) {
-                    dispatch(
-                      getChannel({ code: code, sharedPayload: sharedPayload }, (err, res) => {
-                        if (err) return;
-                        dispatch(addCompanyNameOnMembers({ code: code, members: ws.members }));
-                      })
-                    );
-                  }
-                });
-              }
-            });
+
+            const channelCodes = res.data.workspaces
+              .map((ws) => {
+                if (ws.topic_detail) {
+                  return [
+                    { code: ws.topic_detail.channel.code, members: ws.members },
+                    { code: ws.topic_detail.team_channel.code, members: ws.members },
+                  ];
+                }
+              })
+              .flat();
+            if (channelCodes.length) {
+              channelCodes.forEach((c) => {
+                if (c.code) {
+                  dispatch(
+                    getChannel({ code: c.code, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
+                      if (err) return;
+                      dispatch(addCompanyNameOnMembers({ code: c.code, members: c.members }));
+                    })
+                  );
+                }
+              });
+            }
           })
         );
 
