@@ -1205,8 +1205,6 @@ const CreateEditWorkspaceModal = (props) => {
                   folder_id: form.selectedFolder.value,
                   workspace_id: res.data.id,
                 });
-              } else if (form.is_shared_wp) {
-                history.push(`/shared-workspace`);
               } else {
                 history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: null,
