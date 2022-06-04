@@ -149,27 +149,57 @@ const WorkspacePostsPanel = (props) => {
   useEffect(() => {
     if (params.postId && !post) {
       //need to update for shared workspace url
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
-        if (componentIsMounted.current) {
-          if (err) {
-            // set to all
-            let payload = {
-              topic_id: workspace.id,
-              filter: "inbox",
-              tag: null,
-              slug: res.slug,
-              isSharedSlug: res.isSharedSlug,
-            };
-            dispatch(updateWorkspacePostFilterSort(payload));
-            if (params.folderId) {
-              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
-            } else {
-              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+      if (history.location.pathname.startsWith("/shared-workspace")) {
+        if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+          let payload = {
+            post_id: params.postId,
+            sharedPayload: { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true },
+          };
+          actions.fetchPostDetail(payload, (err, res) => {
+            if (componentIsMounted.current) {
+              if (err) {
+                // set to all
+                let payload = {
+                  topic_id: workspace.id,
+                  filter: "inbox",
+                  tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
+                };
+                dispatch(updateWorkspacePostFilterSort(payload));
+                if (params.folderId) {
+                  history.push(`/shared-workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                } else {
+                  history.push(`/shared-workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                }
+                toaster.error(dictionary.errorLoadingPost);
+              }
             }
-            toaster.error(dictionary.errorLoadingPost);
-          }
+          });
         }
-      });
+      } else {
+        actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+          if (componentIsMounted.current) {
+            if (err) {
+              // set to all
+              let payload = {
+                topic_id: workspace.id,
+                filter: "inbox",
+                tag: null,
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
+              };
+              dispatch(updateWorkspacePostFilterSort(payload));
+              if (params.folderId) {
+                history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+              } else {
+                history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+              }
+              toaster.error(dictionary.errorLoadingPost);
+            }
+          }
+        });
+      }
     }
   }, [params.postId, post]);
 
