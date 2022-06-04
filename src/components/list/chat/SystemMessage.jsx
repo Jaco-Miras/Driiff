@@ -205,10 +205,10 @@ const SystemMessage = (props) => {
           if (ws) {
             if (ws.folder_id) {
               dispatch(setActiveTopic(ws));
-              history.push(`/workspace/posts/${ws.folder_id}/${ws.folder_name}/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+              history.push(`/shared-workspace/posts/${ws.folder_id}/${ws.folder_name}/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
             } else {
               dispatch(setActiveTopic(ws));
-              history.push(`/workspace/posts/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+              history.push(`/shared-workspace/posts/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
             }
           }
         } else {
