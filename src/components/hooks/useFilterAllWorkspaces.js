@@ -44,6 +44,8 @@ const useFilterAllWorkspaces = (props) => {
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && ws.topic.is_locked : ws.topic.is_locked;
         } else if (filterBy === "archived") {
           return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && ws.topic.is_archive : ws.topic.is_archive;
+        } else if (filterBy === "shared") {
+          return value !== "" ? ws.topic.name.toLowerCase().includes(value.toLowerCase()) && ws.slug : ws.slug;
         }
       }
     })

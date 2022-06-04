@@ -318,7 +318,7 @@ export default function (state = INITIAL_STATE, action) {
       } else {
         channel = { ...state.channels[action.data.id] };
       }
-      if (typeof channel === "undefined") {
+      if (!channel) {
         channel = {
           ...action.data,
           hasMore: true,
@@ -333,7 +333,9 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: {
           ...state.channels,
-          [sharedChannel ? action.data.code : action.data.id]: channel,
+          ...(channel && {
+            [sharedChannel ? channel.code : channel.id]: channel,
+          }),
         },
       };
     }
