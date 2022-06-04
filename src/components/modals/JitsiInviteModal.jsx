@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
@@ -36,7 +36,7 @@ const ButtonsContainer = styled.div`
 // `;
 
 const JitsiInviteModal = (props) => {
-  const { type, title, host, hideJoin, channel_id, channelType } = props.data;
+  const { type, title, host, hideJoin, channel_id, channelType, slug } = props.data;
   const dispatch = useDispatch();
   //   const isIdle = useSelector((state) => state.global.isIdle);
   //   const isBrowserActive = useSelector((state) => state.global.isBrowserActive);
@@ -50,6 +50,7 @@ const JitsiInviteModal = (props) => {
   };
   const [modal, setModal] = useState(true);
   const [startingMeet, setStartingMeet] = useState(false);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const toggle = () => {
     setModal(!modal);
@@ -72,11 +73,19 @@ const JitsiInviteModal = (props) => {
   };
   let stripTitle = title.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
   let parseChannel = channelType === "DIRECT" ? "Meeting_Room" : stripTitle;
-  const payload = {
+  let payload = {
     channel_id: channel_id,
     host: false,
-    room_name: getSlug() + "~" + parseChannel + "~" + channel_id,
+    room_name: slug + "~" + parseChannel + "~" + channel_id,
   };
+
+  if (slug !== getSlug() && sharedWs[slug]) {
+    const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+    payload = {
+      ...payload,
+      sharedPayload: sharedPayload,
+    };
+  }
 
   const handleJoin = () => {
     setStartingMeet(true);
