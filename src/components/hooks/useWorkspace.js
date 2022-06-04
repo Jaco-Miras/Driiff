@@ -67,59 +67,59 @@ const useWorkspace = () => {
     if (Object.keys(workspaces).length && activeTopic === null) {
       //check url if on workspace
       if (params.hasOwnProperty("workspaceId")) {
-        if (workspaces.hasOwnProperty(params.workspaceId)) {
+        if (workspaces.hasOwnProperty(params.workspaceId) && history.location.pathname.startsWith("/workspace")) {
           actions.selectWorkspace(workspaces[params.workspaceId]);
           //setGeneralSetting({ active_topic: workspaces[params.workspaceId] });
         } else {
           if (workspacesLoaded && activeTopicSettings) {
-            // fetch the detail
-            if (!fetchingRef.current) {
-              fetchingRef.current = true;
-              if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && sharedWsLoaded) {
-                const sws = Object.keys(workspaces).reduce((acc, cur) => {
-                  if (workspaces[cur].id == params.workspaceId) {
-                    return workspaces[cur];
-                  }
-                }, {});
-                actions.selectWorkspace(sws);
-                actions.redirectTo(sws);
-                return;
+            if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace")) {
+              if (sharedWsLoaded) {
+                const sws = Object.values(workspaces).find((ws) => ws.sharedSlug && ws.id === Number(params.workspaceId));
+                if (sws) {
+                  actions.selectWorkspace(sws);
+                  actions.redirectTo(sws);
+                }
               }
-              actions.fetchWorkspace(params.workspaceId, (err, res) => {
-                fetchingRef.current = null;
-                if (err) {
-                  toaster.warning("This workspace cannot be found or accessed.");
-                  if (parseInt(params.workspaceId) === activeTopicSettings.id) {
-                    let sortedWorkspaces = Object.values(workspaces)
-                      .filter((ws) => {
-                        return ws.folder_id === null;
-                      })
-                      .sort((a, b) => a.name.localeCompare(b.name));
-                    if (sortedWorkspaces.length) {
-                      //redirect to first direct workspace
-                      actions.selectWorkspace(sortedWorkspaces[0]);
-                      actions.redirectTo(sortedWorkspaces[0]);
+            } else {
+              // fetch the detail
+              if (!fetchingRef.current) {
+                fetchingRef.current = true;
+                actions.fetchWorkspace(params.workspaceId, (err, res) => {
+                  fetchingRef.current = null;
+                  if (err) {
+                    toaster.warning("This workspace cannot be found or accessed.");
+                    if (parseInt(params.workspaceId) === activeTopicSettings.id) {
+                      let sortedWorkspaces = Object.values(workspaces)
+                        .filter((ws) => {
+                          return ws.folder_id === null;
+                        })
+                        .sort((a, b) => a.name.localeCompare(b.name));
+                      if (sortedWorkspaces.length) {
+                        //redirect to first direct workspace
+                        actions.selectWorkspace(sortedWorkspaces[0]);
+                        actions.redirectTo(sortedWorkspaces[0]);
+                      }
+                    } else {
+                      if (workspaces.hasOwnProperty(activeTopicSettings.id)) {
+                        actions.selectWorkspace(workspaces[activeTopicSettings.id]);
+                        actions.redirectTo(workspaces[activeTopicSettings.id]);
+                      }
                     }
-                  } else {
-                    if (workspaces.hasOwnProperty(activeTopicSettings.id)) {
-                      actions.selectWorkspace(workspaces[activeTopicSettings.id]);
-                      actions.redirectTo(workspaces[activeTopicSettings.id]);
-                    }
+                    return;
                   }
-                  return;
-                }
-                if (res && res.data) {
-                  let ws = {
-                    ...res.data.workspace_data,
-                    channel: res.data.workspace_data.topic_detail.channel,
-                    unread_chats: res.data.workspace_data.topic_detail.unread_chats,
-                    unread_posts: res.data.workspace_data.topic_detail.unread_posts,
-                    folder_id: res.data.workspace_id,
-                    folder_name: res.data.workspace_name,
-                  };
-                  actions.redirectTo(ws);
-                }
-              });
+                  if (res && res.data) {
+                    let ws = {
+                      ...res.data.workspace_data,
+                      channel: res.data.workspace_data.topic_detail.channel,
+                      unread_chats: res.data.workspace_data.topic_detail.unread_chats,
+                      unread_posts: res.data.workspace_data.topic_detail.unread_posts,
+                      folder_id: res.data.workspace_id,
+                      folder_name: res.data.workspace_name,
+                    };
+                    actions.redirectTo(ws);
+                  }
+                });
+              }
             }
           }
         }

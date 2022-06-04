@@ -292,8 +292,42 @@ export default (state = INITIAL_STATE, action) => {
           delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
       });
+      let searchWs = [];
+      if (action.slug !== getSlug()) {
+        searchWs = action.data.workspaces
+          .map((ws) => {
+            if (ws.type === "FOLDER") {
+              return ws.topics.map((t) => {
+                return {
+                  ...t,
+                  timestamp: t.created_at.timestamp,
+                  search: t.name,
+                  topic: { ...t },
+                  workspace: { id: ws.id, name: ws.name },
+                  slug: action.slug,
+                };
+              });
+            } else {
+              return {
+                channel: ws.topic_detail.channel,
+                timestamp: ws.created_at.timestamp,
+                search: ws.name,
+                members: ws.members,
+                created_at: ws.created_at,
+                topic: { ...ws.topic_detail },
+                workspace: null,
+                slug: action.slug,
+              };
+            }
+          })
+          .flat();
+      }
       return {
         ...state,
+        search: {
+          ...state.search,
+          results: [...state.search.results, ...searchWs],
+        },
         connectedTeamIds: [...new Set(connectedTeamIds.flat().map((t) => t.id))],
         workspaces: updatedWorkspaces,
         workspacesLoaded: true,
