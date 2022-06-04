@@ -109,7 +109,19 @@ const Posts = (props) => {
     let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
 
     setCheckedPosts(postIds);
-    dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: !post.is_selected }));
+    let payload = {
+      workspaceKey: workspace.id,
+      postKey: post.id,
+      isSelected: !post.is_selected,
+    };
+    if (workspace.sharedSlug) {
+      payload = {
+        ...payload,
+        workspaceKey: workspace.key,
+        postKey: post.code,
+      };
+    }
+    dispatch(setPostIsSelected(payload));
   };
 
   const handleMarkAllAsRead = () => {
@@ -215,7 +227,19 @@ const Posts = (props) => {
   const clearCheckedPost = () => {
     setCheckedPosts([]);
     posts.map((post) => {
-      dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: false }));
+      let payload = {
+        workspaceKey: workspace.id,
+        postKey: post.id,
+        isSelected: false,
+      };
+      if (workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          workspaceKey: workspace.key,
+          postKey: post.code,
+        };
+      }
+      dispatch(setPostIsSelected(payload));
     });
   };
 

@@ -667,7 +667,14 @@ class SocketListeners extends Component {
       .listen(".workspace-todo-notification", (e) => {
         if (e.workspace) {
           if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
-            this.props.getFavoriteWorkspaceCounters();
+            let payload = {};
+            if (this.props.sharedSlug) {
+              payload = {
+                ...payload,
+                sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+              };
+            }
+            this.props.getFavoriteWorkspaceCounters(payload);
           }
         }
         this.props.getToDoDetail();
@@ -732,12 +739,14 @@ class SocketListeners extends Component {
         }
       })
       .listen(".todo-notification", (e) => {
-        // if (e.workspace) {
-        //   if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace.id === ws.id)) {
-        //     this.props.getFavoriteWorkspaceCounters();
-        //   }
-        // }
-        this.props.getFavoriteWorkspaceCounters();
+        let payload = {};
+        if (this.props.sharedSlug) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+          };
+        }
+        this.props.getFavoriteWorkspaceCounters(payload);
         this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
@@ -919,12 +928,18 @@ class SocketListeners extends Component {
       })
       .listen(".unread-post", (e) => {
         //need post code
+        console.log(e);
         this.props.incomingReadUnreadReducer({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
-        //this.props.getUnreadNotificationCounterEntries({ add_unread_comment: 1 });
       })
       .listen(".post-notification", (e) => {
-        this.props.getFavoriteWorkspaceCounters();
-        console.log(e);
+        let payload = {};
+        if (this.props.sharedSlug) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+          };
+        }
+        this.props.getFavoriteWorkspaceCounters(payload);
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -1101,10 +1116,10 @@ class SocketListeners extends Component {
             }
             break;
           }
-          case "MARKED_DONE": {
-            this.props.incomingPostMarkDone(e);
-            break;
-          }
+          // case "MARKED_DONE": {
+          //   this.props.incomingPostMarkDone(e);
+          //   break;
+          // }
           case "COMMENT_IMPORTANT": {
             this.props.incomingImportantComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
@@ -1122,10 +1137,6 @@ class SocketListeners extends Component {
                   count: 1,
                   entity_type: "WORKSPACE_POST",
                 });
-                // let topicRecipientIds = e.workspaces.map((r) => r.topic_id);
-                // if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && topicRecipientIds.some((id) => id === ws.id))) {
-                //   this.props.getFavoriteWorkspaceCounters();
-                // }
               }
             }
             if (e.author.id !== this.state.userId) {
@@ -1298,7 +1309,14 @@ class SocketListeners extends Component {
                   entity_type: "WORKSPACE_CHAT_MESSAGE",
                 });
                 if (Object.values(this.props.workspaces).some((ws) => ws.is_favourite && e.workspace_id === ws.id)) {
-                  this.props.getFavoriteWorkspaceCounters();
+                  let payload = {};
+                  if (this.props.sharedSlug) {
+                    payload = {
+                      ...payload,
+                      sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+                    };
+                  }
+                  this.props.getFavoriteWorkspaceCounters(payload);
                 }
               }
             }
@@ -1337,7 +1355,7 @@ class SocketListeners extends Component {
         if (this.props.sharedSlug) {
           payload = {
             ...payload,
-            sharedPayload: { slug: this.props.activeTopic.slug, token: this.props.sharedWorkspaces[this.props.activeTopic.slug].access_token, is_shared: true },
+            sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
           };
         }
         this.props.getPostList(payload, (err, res) => {
@@ -2324,9 +2342,6 @@ class SocketListeners extends Component {
         };
         this.props.incomingPostViewer(payload);
       })
-      .listen(".updated-post-visitors", (e) => {
-        //this.props.updatePostCommentViewers(e);
-      })
       .listen(".move-private-topic-workspace", (e) => {
         this.props.incomingMovedTopic(e);
       })
@@ -2471,7 +2486,14 @@ class SocketListeners extends Component {
             return ws.is_favourite && (ws.channel.id === parseInt(e.entity_id) || (ws.team_channel && ws.team_channel.id === parseInt(e.entity_id)));
           });
           if (workspace) {
-            this.props.getFavoriteWorkspaceCounters();
+            let payload = {};
+            if (this.props.sharedSlug) {
+              payload = {
+                ...payload,
+                sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+              };
+            }
+            this.props.getFavoriteWorkspaceCounters(payload);
           }
         }
         this.props.setUnreadNotificationCounterEntries(e);

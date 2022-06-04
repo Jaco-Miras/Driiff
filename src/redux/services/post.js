@@ -67,17 +67,17 @@ export function postArchive(payload) {
  * @returns {Promise<*>}
  */
 export function postToggleRead(payload) {
-  let sharedPayload;
-  if (payload.sharedPayload) {
-    sharedPayload = payload.sharedPayload;
-    delete payload.sharedPayload;
-  }
+  // let sharedPayload;
+  // // if (payload.sharedPayload) {
+  // //   sharedPayload = payload.sharedPayload;
+  // //   delete payload.sharedPayload;
+  // // }
   let url = "/v2/post-toggle-unread";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    sharedPayload: sharedPayload,
+    sharedPayload: payload.sharedPayload,
   });
 }
 

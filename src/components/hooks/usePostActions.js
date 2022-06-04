@@ -344,13 +344,21 @@ const usePostActions = () => {
     }
   };
 
-  const markAsRead = (post, showToaster = false, sharedPayload = null) => {
+  const markAsRead = (post, showToaster = false) => {
     let payload = {
       post_id: post.id,
       unread: 0,
       topic_id: parseInt(params.workspaceId),
-      sharedPayload: sharedPayload,
     };
+    if (params.workspaceId) {
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    }
     let count = post.unread_count;
     let cb = (err, res) => {
       if (err) {
@@ -365,7 +373,7 @@ const usePostActions = () => {
       if (res) {
         getUnreadNotificationEntries();
         if (post.recipients.some((r) => r.type === "TOPIC")) {
-          dispatch(getFavoriteWorkspaceCounters());
+          dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
         if (showToaster)
           toaster.success(
@@ -379,7 +387,7 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 0,
             user_id: user.id,
-            post_code: sharedPayload ? post.code : null,
+            post_code: payload.sharedPayload ? post.code : null,
           })
         );
       }
@@ -393,6 +401,16 @@ const usePostActions = () => {
       unread: 1,
       topic_id: params.workspaceId,
     };
+    if (params.workspaceId) {
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    }
+    console.log(post, params, sharedWs);
     let cb = (err, res) => {
       if (err) {
         toaster.error(<>Action failed.</>);
@@ -405,7 +423,7 @@ const usePostActions = () => {
 
       if (res) {
         if (post.recipients.some((r) => r.type === "TOPIC")) {
-          dispatch(getFavoriteWorkspaceCounters());
+          dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
         if (showToaster)
           toaster.success(
@@ -419,19 +437,12 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 1,
             user_id: user.id,
+            post_code: payload.sharedPayload ? post.code : null,
           })
         );
       }
     };
-    if (params.workspaceId) {
-      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
-        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
-        payload = {
-          ...payload,
-          sharedPayload: sharedPayload,
-        };
-      }
-    }
+
     dispatch(postToggleRead(payload, cb));
   };
 
@@ -533,9 +544,22 @@ const usePostActions = () => {
           topic_id: parseInt(params.workspaceId),
           filter: "inbox",
           tag: null,
+          isSharedSlug: post.slug && slug !== post.slug,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
-        history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        if (post.slug && slug !== post.slug) {
+          if (params.folderId) {
+            history.push(`/shared-workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          } else {
+            history.push(`/shared-workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          }
+        } else {
+          if (params.folderId) {
+            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          } else {
+            history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          }
+        }
       } else {
         let payload = {
           filter: "inbox",

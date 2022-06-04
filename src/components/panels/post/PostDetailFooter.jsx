@@ -605,13 +605,13 @@ const PostDetailFooter = (props) => {
       slug: workspace.slug,
       isSharedSlug: workspace.sharedSlug,
     };
+    const wsType = workspace.sharedSlug ? "shared-workspace" : "workspace";
     const path =
       workspace.folder_name && workspace.folder_id
-        ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-        : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+        ? `/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+        : `/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}`;
     dispatch(updateWorkspacePostFilterSort(payload));
     history.push(path);
-    console.log("go back to inbox");
   };
 
   const handleNextPost = () => {
@@ -621,7 +621,7 @@ const PostDetailFooter = (props) => {
     //   }
     //   return accumulator;
     // }, null);
-
+    const wsType = workspace.sharedSlug ? "shared-workspace" : "workspace";
     postActions.archivePost(post, () => {
       const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
       if (!nextUnreadPosts) {
@@ -629,8 +629,8 @@ const PostDetailFooter = (props) => {
       } else {
         const path =
           workspace.folder_name && workspace.folder_id
-            ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-            : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+            ? `/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+            : `/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}`;
         postActions.openPost(nextUnreadPosts, path);
       }
     });
