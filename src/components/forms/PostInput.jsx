@@ -258,8 +258,9 @@ const PostInput = forwardRef((props, ref) => {
     }
 
     if (!editMode) {
+      const messageUser = post.slug !== slug && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth : user;
       let commentObj = {
-        author: user,
+        author: messageUser,
         body: enlargeEmoji(text),
         clap_count: 0,
         claps: [],

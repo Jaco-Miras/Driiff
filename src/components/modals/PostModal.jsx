@@ -618,10 +618,14 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
+                let wsType = "workspace";
+                if (activeTopic.sharedSlug) {
+                  wsType = "shared-workspace";
+                }
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -832,10 +836,14 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
+                let wsType = "workspace";
+                if (activeTopic.sharedSlug) {
+                  wsType = "shared-workspace";
+                }
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {

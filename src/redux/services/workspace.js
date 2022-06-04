@@ -421,11 +421,17 @@ export function getWorkspaceFilterCount(payload) {
  * @returns {Promise<*>}
  */
 export function getFavoriteWorkspaceCounters(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-favourite-entries";
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

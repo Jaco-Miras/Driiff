@@ -45,6 +45,10 @@ const PostSearch = (props) => {
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   };
+  const workspaceRef = useRef(null);
+  useEffect(() => {
+    if (workspace) workspaceRef.current = workspace;
+  }, [workspace]);
 
   const handleClearSearchPosts = () => {
     setSearchValue("");
@@ -53,7 +57,7 @@ const PostSearch = (props) => {
         topic_id: topic_id,
         search: "",
         search_result: [],
-        topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
+        topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
       })
     );
   };
@@ -80,8 +84,8 @@ const PostSearch = (props) => {
         cancelToken: cancelToken.current.token,
         topic_id: topic_id,
       };
-      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
-        const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspace.slug]) {
+        const sharedPayload = { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true };
         payload = {
           ...payload,
           sharedPayload: sharedPayload,
@@ -96,7 +100,7 @@ const PostSearch = (props) => {
               topic_id: topic_id,
               search: searchValue,
               search_result: res.data.posts,
-              topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
+              topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
             })
           );
         })
@@ -116,7 +120,7 @@ const PostSearch = (props) => {
           topic_id: topic_id,
           search: "",
           search_result: [],
-          topicKey: workspace && workspace.sharedSlug ? workspace.key : topic_id,
+          topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
         })
       );
     };
