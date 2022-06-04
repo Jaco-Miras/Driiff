@@ -332,6 +332,8 @@ export default (state = INITIAL_STATE, action) => {
               is_favourite: true,
               is_active: t.is_active,
               type: "WORKSPACE",
+              sharedSlug: false,
+              key: t.id,
             };
           });
           delete updatedFolders[ws.id].topics;
@@ -350,6 +352,8 @@ export default (state = INITIAL_STATE, action) => {
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+            sharedSlug: false,
+            key: ws.id,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -361,7 +365,6 @@ export default (state = INITIAL_STATE, action) => {
         favoriteWorkspacesLoaded: true,
       };
     }
-    //for checking
     case "GET_WORKSPACE_SET_TO_FAV_SUCCESS": {
       let ws = {
         ...action.data.workspace_data,
@@ -412,6 +415,8 @@ export default (state = INITIAL_STATE, action) => {
           active: action.data.workspace_data.topic_detail.active,
           is_favourite: action.data.workspace_data.topic_detail.is_favourite,
           is_active: action.data.workspace_data.topic_detail.is_active,
+          key: action.data.workspace_data.topic_detail.id,
+          sharedSlug: false,
         };
         return {
           ...state,
@@ -448,7 +453,9 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
+      if (action.data.sharedSlug) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
@@ -485,6 +492,8 @@ export default (state = INITIAL_STATE, action) => {
           updated_at: action.data.topic.created_at,
           primary_files: [],
           is_shared: action.data.members.filter((m) => m.type === "external").length > 0,
+          key: action.data.id,
+          sharedSlug: false,
         };
         if (action.data.workspace !== null && updatedFolders[action.data.workspace.id]) {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];

@@ -255,6 +255,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST": {
+      if (action.data.sharedSlug) return state;
       return {
         ...state,
         companyPosts: {
@@ -294,6 +295,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_UPDATED_POST": {
+      if (action.data.sharedSlug) return state;
       let posts = { ...state.companyPosts.posts };
       if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
         delete posts[action.data.id];

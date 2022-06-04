@@ -1725,6 +1725,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
+                  slug: this.state.slug,
+                  sharedSlug: this.props.sharedSlug,
                 });
               });
             } else {
@@ -1734,6 +1736,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
+                slug: this.state.slug,
+                sharedSlug: this.props.sharedSlug,
               });
             }
           } else {
@@ -1743,6 +1747,8 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
+              slug: this.state.slug,
+              sharedSlug: this.props.sharedSlug,
             });
           }
 
@@ -1790,7 +1796,7 @@ class SocketListeners extends Component {
           is_shared: e.is_shared,
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
-        if (e.type === "WORKSPACE") {
+        if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
           this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.state.userId);
@@ -1817,23 +1823,6 @@ class SocketListeners extends Component {
           if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
             if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.state.userId)) {
               this.props.history.push("/workspace/search");
-              //redirect to first favorite workspace
-              // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
-              // if (favoriteWorkspaces.length) {
-              //   let workspace = favoriteWorkspaces[0];
-              //   this.props.setActiveTopic(workspace);
-              //   if (workspace.folder_id) {
-              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
-              //   } else {
-              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
-              //   }
-              //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
-              //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
-              //       this.props.setSelectedChannel(this.props.channels[workspace.channel.id]);
-              //       this.props.history.push(`/chat/${workspace.channel.code}`);
-              //     }
-              //   }
-              // }
             }
           }
         }
@@ -2018,6 +2007,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
+                  slug: this.state.slug,
+                  sharedSlug: this.props.sharedSlug,
                 });
               });
             } else {
@@ -2027,6 +2018,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
+                slug: this.state.slug,
+                sharedSlug: this.props.sharedSlug,
               });
             }
           } else {
@@ -2036,6 +2029,8 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
+              slug: this.state.slug,
+              sharedSlug: this.props.sharedSlug,
             });
           }
 
@@ -2089,6 +2084,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
+                  slug: this.state.slug,
+                  sharedSlug: this.props.sharedSlug,
                 });
               });
             } else {
@@ -2098,6 +2095,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
+                slug: this.state.slug,
+                sharedSlug: this.props.sharedSlug,
               });
             }
           } else {
@@ -2107,6 +2106,8 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
+              slug: this.state.slug,
+              sharedSlug: this.props.sharedSlug,
             });
           }
           if (e.channel.code) {
@@ -2164,7 +2165,7 @@ class SocketListeners extends Component {
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
         });
         //get the updated members
-        if (e.type === "WORKSPACE") {
+        if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
           this.props.getAllWorkspaceFolders();
           if (e.new_member_ids.length > 0) {
             const isMember = e.new_member_ids.some((id) => id === this.state.userId);
@@ -2333,7 +2334,7 @@ class SocketListeners extends Component {
               this.props.addToChannels(channel);
             });
             if (e.workspace_data) {
-              if (e.workspace_data.workspace && !this.props.folders.hasOwnProperty(e.workspace_data.workspace.id)) {
+              if (e.workspace_data.workspace && !this.props.folders.hasOwnProperty(e.workspace_data.workspace.id) && !this.props.sharedSlug) {
                 this.props.getWorkspaceFolder({ folder_id: e.workspace_data.workspace.id }, (err, res) => {
                   if (err) return;
                   if (this.props.user.type === "external") {
