@@ -2103,7 +2103,7 @@ const CreateEditWorkspaceModal = (props) => {
             </WrapperDiv>
           )}
           <WrapperDiv className="action-wrapper">
-            {item && !item.sharedSlug && (
+            {!form.is_shared_wp && (
               <>
                 <RadioInputWrapper className="workspace-radio-input">
                   <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
