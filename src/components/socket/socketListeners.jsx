@@ -409,6 +409,7 @@ class SocketListeners extends Component {
             channel_id: e.channel_id,
             hideJoin: this.props.jitsi !== null,
             room_name: room_name,
+            slug: this.state.slug,
           });
         }
 
