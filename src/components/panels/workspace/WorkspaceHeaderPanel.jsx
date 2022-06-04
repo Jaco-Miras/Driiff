@@ -670,7 +670,7 @@ const WorspaceHeaderPanel = (props) => {
                             onClick={handleRedirectToWorkspace}
                             forceThumbnail={false}
                             type={activeTopic.type}
-                            imageLink={activeTopic.team_channel.icon_link}
+                            imageLink={activeTopic.team_channel?.icon_link}
                             id={`ws_${activeTopic.id}`}
                             name={activeTopic.name}
                             noDefaultClick={false}
@@ -734,7 +734,7 @@ const WorspaceHeaderPanel = (props) => {
                           <Avatar
                             forceThumbnail={false}
                             type={activeTopic.type}
-                            imageLink={activeTopic.team_channel.icon_link}
+                            imageLink={activeTopic.team_channel?.icon_link}
                             id={`ws_${activeTopic.id}`}
                             name={activeTopic.name}
                             noDefaultClick={false}

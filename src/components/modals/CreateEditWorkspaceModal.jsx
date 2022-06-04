@@ -1265,7 +1265,7 @@ const CreateEditWorkspaceModal = (props) => {
                 team_channel: {
                   code: res.data.team_channel.code,
                   id: res.data.team_channel.id,
-                  icon_link: res.data.team_channel.icon_link,
+                  icon_link: res.data.team_channel && res.data.team_channel.icon_link ? res.data.team_channel.icon_link : null,
                 },
                 created_at: res.data.topic.created_at,
                 updated_at: res.data.topic.created_at,
@@ -1711,8 +1711,6 @@ const CreateEditWorkspaceModal = (props) => {
     });
     setUserOptions([...teamOptions, ...userOptions]);
   }, [Object.values(users).length, Object.values(teams).length]);
-
-  console.log(item, userOptions, form.selectedUsers);
 
   useEffect(() => {
     if (externalUsers.length) {
