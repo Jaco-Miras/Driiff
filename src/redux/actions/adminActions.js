@@ -3,6 +3,7 @@ import {
   getLoginSettings as getLoginSettingsService,
   putLoginSettings as putLoginSettingsService,
   getGoogleAuthSettings as getGoogleAuthSettingsService,
+  postRevokeGoogleToken as postRevokeGoogleTokenService,
   getGoogleAuth as getGoogleAuthService,
   putQuickLinks as putQuickLinksService,
   postQuickLinks as postQuickLinksService,
@@ -51,6 +52,10 @@ export function getGoogleAuthSettings(payload, callback) {
 
 export function getGoogleAuth(payload, callback) {
   return dispatchActionToReducer(getGoogleAuthService(payload), "GET_GOOGLE_AUTH_START", "GET_GOOGLE_AUTH_SUCCESS", "GET_GOOGLE_AUTH_FAILURE", callback);
+}
+
+export function postRevokeGoogleToken(callback) {
+  return dispatchActionToReducer(postRevokeGoogleTokenService(), "POST_GOOGLE_REVOKE_TOKEN_START", "POST_GOOGLE_REVOKE_TOKEN_SUCCESS", "POST_GOOGLE_REVOKE_TOKEN_FAILURE", callback);
 }
 
 export function setFilter(payload, callback) {

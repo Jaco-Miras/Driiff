@@ -1313,7 +1313,8 @@ export const SvgIcon = React.memo(
     const { className = "", width = 24, height = 24, fill = "none", stroke = "currentColor", strokeWidth = "1", strokeLinecap = "round", strokeLinejoin = "round", icon, ...rest } = props;
 
     if (icon === "gripp-logo") return <img alt="gripp logo" className={`icon-${icon} ${className}`} width={width} height={height} src={require("../../assets/icon/gripp-logo.svg")} />;
-
+    if (icon === "google-label") return <img alt="google label" className={`icon-${icon} ${className}`} width={width} height={height} src={require("../../assets/icon/google-label.svg")} />;
+     
     let content = "";
     let viewBox = "";
 

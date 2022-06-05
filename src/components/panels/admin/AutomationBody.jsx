@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions } from "../../hooks";
 import { Route, Switch, useHistory } from "react-router-dom";
 import AdminBotBody from "./AdminBotBody";
 import GrippBotBody from "./GrippBotBody";
+import GoogleConnectBody from "./GoogleConnectBody";
 //import BitrixBody from "./BitrixBody";
 import { SvgIcon, SvgIconFeather } from "../../common";
 //import BitrixIcon from "../../../assets/img/bitrix.png";
@@ -18,15 +19,16 @@ const Wrapper = styled.div`
     height: 125px;
     cursor: pointer;
     .icon-gripp-logo,
+    .icon-google-label,
     .bitrix-icon {
       width: 100%;
-      height: 100%;
+      height: 100%;      
     }
     .feather-admin-bot {
       width: 48px;
       height: 48px;
       margin-right: 5px;
-    }
+    }    
   }
   .card-body.admin-bot {
     display: flex;
@@ -81,17 +83,25 @@ const AutomationBody = () => {
             </div>
           </div>
         </div>
+        <div className="col-12 col-md-4">
+          <div className="card border" onClick={() => handleRedirect("google")}>
+            <div className="card-body">
+              <SvgIcon icon="google-label"/>
+            </div>
+          </div>
+        </div>
         {/* <div className="col-12 col-md-4">
           <div className="card border" onClick={() => handleRedirect("bitrix")}>
             <div className="card-body">
               <img className="bitrix-icon" src={BitrixIcon} alt="bitrix" />
-            </div>
+            </div
           </div>
         </div> */}
       </div>
       <Switch>
         <Route component={AdminBotBody} path={["/admin-settings/automation/admin-bot"]} />
         <Route component={GrippBotBody} path={["/admin-settings/automation/gripp"]} />
+        <Route component={GoogleConnectBody} path={["/admin-settings/automation/google"]} />
         {/* <Route component={BitrixBody} path={["/admin-settings/automation/bitrix"]} /> */}
       </Switch>
     </Wrapper>

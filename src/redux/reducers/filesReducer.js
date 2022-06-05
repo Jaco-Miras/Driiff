@@ -2136,6 +2136,37 @@ export default (state = INITIAL_STATE, action) => {
         };
       }
     }
+
+    case "ADD_GOOGLE_DRIVE_FILE_SUCCESS": {
+      if (action.data.data.link_id) {
+        return {
+          ...state,
+          workspaceFiles: {
+            ...state.workspaceFiles,
+            ...(state.workspaceFiles[action.data.data.link_id] && {
+              [action.data.data.link_id]: {
+                ...state.workspaceFiles[action.data.data.link_id],
+                driveLinks: {
+                  ...state.workspaceFiles[action.data.data.link_id].driveLinks,
+                  [action.data.data.id]: action.data.data,
+                },
+              },
+            }),
+          },
+        };
+      } else {
+        return {
+          ...state,
+          companyFiles: {
+            ...state.companyFiles,
+            driveLinks: {
+              ...state.companyFiles.driveLinks,
+              [action.data.data.id]: action.data.data,
+            },
+          },
+        };
+      }
+    }
     case "INCOMING_DELETED_DRIVE_LINK": {
       if (action.data.data.topic_id) {
         return {

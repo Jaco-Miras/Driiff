@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { FormGroup, Input, Label, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
-import { useTranslationActions, useOutsideClick } from "../hooks";
+import { useTranslationActions, useOutsideClick, useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { putCompanyFolders, postCompanyFolders, addFolder, putFolder, addGoogleDriveFile } from "../../redux/actions/fileActions";
@@ -59,22 +59,22 @@ const defaultColors = ["#D9E3F0", "#F47373", "#697689", "#37D67A", "#2CCCE4", "#
 
 const CreateFilesModal = (props) => {
   const { type, folder = null, mode = "create", params, topic_id = null, parentFolder = null } = props.data;
-  console.log("create files modal===>", type);
   const theme = useSelector((state) => state.settings.driff.theme);
   const folderName = parentFolder ? parentFolder.search : "";
   const history = useHistory();
   const { _t } = useTranslationActions();
-
+  const doc_type = params.doc_type;
   const dictionary = {
-    folderDescription: _t("FILE_MODAL.DESCRIPTION", "A file can only be connected to one folder."),
-    fileName: _t("FILE_MODAL.FOLDER_NAME", "File name"),
+    folderDescription: _t("FILE_MODAL.DESCRIPTION", "Share a google or office 365 file of any other kind of link to Driff drive."),
+    fileName: _t("FILE_MODAL.FOLDER_NAME", "Google file name"),
     cancel: _t("BUTTON.CANCEL", "Cancel"),
     update: _t("BUTTON.UPDATE", "Update"),
-    createFile: _t("FILE.CREATE_FILE", "Create file"),
-    create: _t("FILE.CREATE", "Create"),
+    createFile: _t("FILE.CREATE_FILE", "What is the name of this ::docType::", { docType: doc_type }),
+    create: _t("FILE.SAVE_EDIT", "Save name & edit ::docType::", { docType: doc_type }),
     updateFile: _t("FILE.UPDATE_FILE", "Update file"),
     altText: _t("ALT_TEXT_FILE_COLOR", "Select file color"),
     postInputLabel: _t("FILE_MODAL.PARENT_FOLDER_LABEL", "The file will be created inside ::folderName::", { folderName: folderName }),
+    fileAddToaster: _t("TOASTER.DRIVE_FILE_ADD", "File is successfully added to Driff Google drive!")
   };
 
 
@@ -88,6 +88,7 @@ const CreateFilesModal = (props) => {
   const pickerRef = useRef(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [color, setColor] = useState(folder ? folder.bg_color : "");
+  const toaster = useToaster();
 
   const [inputValue, setInputValue] = useState(folder ? folder.search : "");
 
@@ -106,8 +107,17 @@ const CreateFilesModal = (props) => {
   };
 
   const handleCreateFile = () => {
-    let cb = (err, res) => {
+    let cb = (err, res) => {      
       if (err) return;
+      if (res.data.data.link && res.data.data.link != '') {
+        toaster.success(dictionary.fileAddToaster);
+        setTimeout(() => {
+          window.open(res.data.data.link, '_blank');
+        }, 1000);
+        
+      } else {          
+        toaster.error(res.data.error_message);
+      }
       if (topic_id) {
         if (params.hasOwnProperty("folderId")) {
           history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
@@ -120,7 +130,7 @@ const CreateFilesModal = (props) => {
     };
     let payload = {
       title: inputValue,
-      doc_type: params.doc_type,
+      type: "google_" + params.doc_type,
     };
     if (params.hasOwnProperty("folderId") && topic_id === null) {
       payload = {
@@ -133,8 +143,8 @@ const CreateFilesModal = (props) => {
         ...payload,
         folder_id: params.fileFolderId,
       };
-    }    
-    if (topic_id) {     
+    }
+    if (topic_id) {
       dispatch(addGoogleDriveFile({ ...payload, topic_id: topic_id }, cb));
     }
   };
@@ -179,11 +189,11 @@ const CreateFilesModal = (props) => {
     }
   };
 
-  const handleShowColorPicker = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setShowColorPicker(!showColorPicker);
-  };
+  // const handleShowColorPicker = (e) => {
+  //   e.stopPropagation();
+  //   e.preventDefault();
+  //   setShowColorPicker(!showColorPicker);
+  // };
 
   const handleColorChange = (color, e) => {
     e.stopPropagation();
@@ -201,7 +211,7 @@ const CreateFilesModal = (props) => {
           <Label className={"modal-label"}>{dictionary.fileName}</Label>
           <div className="d-flex align-items-center mb-2">
             <Input innerRef={inputRef} autoFocus defaultValue={mode === "create" ? "" : folder.search} onChange={handleInputChange} />
-            <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt={dictionary.altText} onClick={handleShowColorPicker} />
+            {/* <ColorWheelIcon className="color-picker ml-2" src={colorWheel} alt={dictionary.altText} onClick={handleShowColorPicker} /> */}
           </div>
           {parentFolder && <span>{dictionary.postInputLabel}</span>}
         </WrapperDiv>
