@@ -984,21 +984,23 @@ const CreateEditWorkspaceModal = (props) => {
           is_external: 1,
         };
       } else {
-        payload = {
-          ...payload,
-          external_emails: invitedExternals
-            .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
-            .map((ex) => {
-              return {
-                ...ex,
-                first_name: ex.first_name.trim(),
-                middle_name: ex.middle_name.trim(),
-                last_name: ex.last_name.trim(),
-                company: ex.company.trim(),
-              };
-            }),
-          is_external: 1,
-        };
+        if (!form.is_shared_wp) {
+          payload = {
+            ...payload,
+            external_emails: invitedExternals
+              .filter((ex) => form.selectedExternals.some((e) => e.email === ex.email))
+              .map((ex) => {
+                return {
+                  ...ex,
+                  first_name: ex.first_name.trim(),
+                  middle_name: ex.middle_name.trim(),
+                  last_name: ex.last_name.trim(),
+                  company: ex.company.trim(),
+                };
+              }),
+            is_external: 1,
+          };
+        }
       }
     }
 

@@ -726,3 +726,19 @@ export function impersonationLists(payload) {
     url: `/impersonation/lists?page=${payload.page}&limit=${payload.limit}`,
   });
 }
+
+export function getSharedUserInfo(payload) {
+  return apiNoTokenCall({
+    method: "POST",
+    url: "/v2/shared-workspace-invite",
+    data: payload,
+  });
+}
+
+export function acceptSharedUserInvite(payload) {
+  return apiNoTokenCall({
+    method: "PUT",
+    url: "/v2/shared-workspace-invite-accept",
+    data: payload,
+  });
+}
