@@ -45,6 +45,8 @@ import {
   getCurrentUserImpersonation as getCurrentUserImpersonationService,
   impersonationLogout as impersonationLogoutService,
   impersonationLists as impersonationListsService,
+  getSharedUserInfo as getSharedUserInfoService,
+  acceptSharedUserInvite as acceptSharedUserInviteService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -288,4 +290,12 @@ export function impersonationLogout(payload, callback) {
 }
 export function impersonationLists(payload, callback) {
   return dispatchActionToReducer(impersonationListsService(payload), "IMPERSONATION_LIST_START", "IMPERSONATION_LIST_SUCCESS", "IMPERSONATION_LIST_FAILURE", callback);
+}
+
+export function getSharedUserInfo(payload, callback) {
+  return dispatchActionToReducer(getSharedUserInfoService(payload), "GET_SHARED_USER_INFO_START", "GET_SHARED_USER_INFO_SUCCESS", "GET_SHARED_USER_INFO_FAILURE", callback);
+}
+
+export function acceptSharedUserInvite(payload, callback) {
+  return dispatchActionToReducer(acceptSharedUserInviteService(payload), "ACCEPT_SHARED_USER_INVITE_START", "ACCEPT_SHARED_USER_INVITE_SUCCESS", "ACCEPT_SHARED_USER_INVITE_FAILURE", callback);
 }

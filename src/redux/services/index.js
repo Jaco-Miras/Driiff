@@ -133,6 +133,8 @@ export {
   getCurrentUserImpersonation,
   impersonationLogout,
   impersonationLists,
+  getSharedUserInfo,
+  acceptSharedUserInvite,
 } from "./user";
 
 export {

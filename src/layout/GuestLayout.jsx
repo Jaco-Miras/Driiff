@@ -6,7 +6,7 @@ import { useSettings, useTranslationActions } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 import { $_GET } from "../helpers/commonFunctions";
 import LoginLogo from "../components/panels/main/LoginLogo";
-
+import SharedWorkspaceInvite from "../components/panels/SharedWorkspaceInvite";
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
 const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
@@ -266,6 +266,7 @@ const GuestLayout = (props) => {
                 <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
                 <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
                 <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+                <Route path={"/shared-workspace-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
                 <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
               </Switch>
             </Suspense>
