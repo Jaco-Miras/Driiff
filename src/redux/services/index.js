@@ -6,6 +6,7 @@ export {
   getLoginSettings,
   putLoginSettings,
   getGoogleAuthSettings,
+  postRevokeGoogleToken,
   getGoogleAuth,
   postQuickLinks,
   putQuickLinks,

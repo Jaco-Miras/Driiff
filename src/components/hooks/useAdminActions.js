@@ -3,6 +3,7 @@ import {
   getLoginSettings,
   putLoginSettings,
   getGoogleAuthSettings,
+  postRevokeGoogleToken,
   setFilter,
   putQuickLinks,
   postQuickLinks,
@@ -55,6 +56,14 @@ const useAdminActions = () => {
   const fetchGoogleAuthSettings = (payload, callback) => {
     dispatch(
       getGoogleAuthSettings(payload, (err, res) => {
+        if (callback) callback(err, res);
+      })
+    )
+  }
+
+  const revokeGoogleToken = (callback) => {
+    dispatch(
+      postRevokeGoogleToken((err, res) => {
         if (callback) callback(err, res);
       })
     )
@@ -288,6 +297,7 @@ const useAdminActions = () => {
   return {
     fetchLoginSettings,
     fetchGoogleAuthSettings,
+    revokeGoogleToken,
     updateLoginSettings,
     setAdminFilter,
     updateQuickLinks,

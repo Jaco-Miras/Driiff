@@ -23,6 +23,13 @@ export function getGoogleAuthSettings(payload) {
   });
 }
 
+export function postRevokeGoogleToken() {
+  return apiCall({
+    method: "POST",
+    url: "/google-drive/revoke-token"    
+  });
+}
+
 export function getGoogleAuth(payload) {
   return apiCall({
     method: "POST",

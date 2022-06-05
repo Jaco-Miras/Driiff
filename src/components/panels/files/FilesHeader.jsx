@@ -118,11 +118,11 @@ const FilesHeader = (props) => {
         label: dictionary.googleDocument,
         onClick: () => handleAddEditFile(null, "create", "document"),
       },
-      {
-        value: "drawing",
-        label: dictionary.googleDrawing,
-        onClick: () => handleAddEditFile(null, "create", "drawing"),
-      },
+      // {
+      //   value: "drawing",
+      //   label: dictionary.googleDrawing,
+      //   onClick: () => handleAddEditFile(null, "create", "drawing"),
+      // },
       {
         value: "slides",
         label: dictionary.googleSlides,
@@ -131,13 +131,13 @@ const FilesHeader = (props) => {
       {
         value: "sheets",
         label: dictionary.googleSheets,
-        onClick: () => handleAddEditFile(null, "create", "sheets"),
+        onClick: () => handleAddEditFile(null, "create", "spreadsheet"),
       },
-      {
-        value: "folder",
-        label: dictionary.googleFolder,
-        onClick: () => handleAddEditFolder(null, "create", ),
-      },
+      // {
+      //   value: "folder",
+      //   label: dictionary.googleFolder,
+      //   onClick: () => handleAddEditFolder(null, "create", ),
+      // },
     ],
 
   };

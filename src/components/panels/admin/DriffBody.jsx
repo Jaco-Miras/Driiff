@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
-import { getGoogleAuthSettings, putLoginSettings, putMeetingSettings, getGoogleAuth } from "../../../redux/actions/adminActions";
+import { putLoginSettings, putMeetingSettings } from "../../../redux/actions/adminActions";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import Flag from "../../common/Flag";
@@ -149,44 +149,18 @@ function DriffBody() {
   const [meetingSettings, setMeetingSettings] = useState(meeting);
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
-  const [googleAuth, setGoogleAuth] = useState("");
   const location = useLocation();
-  const history = useHistory()
-  const { REACT_APP_google_redirect_uri } = process.env
+  const history = useHistory() 
 
   useEffect(() => {
 
     if (!loginFetched) {
-      fetchLoginSettings({});      
+      fetchLoginSettings({});
     }
-
-    // const queryParams = new URLSearchParams(location.search);    
-    // if (queryParams.has("code")) {
-    //   let code = queryParams.get('code');
-    //   console.log("code====", code);
-    //   // handleGoogleAuth(code);
-    //   queryParams.delete("code");
-    //   history.replace({
-    //     search: queryParams.toString(),
-    //   });
-    // }
-    // if (queryParams.has("state")) {
-    //   queryParams.delete("state");
-    //   history.replace({
-    //     search: queryParams.toString(),
-    //   });
-    // }
-    // if (queryParams.has("scope")) {
-    //   queryParams.delete("scope");
-    //   history.replace({
-    //     search: queryParams.toString(),
-    //   });
-    // }
   }, []);
-  
+
   useEffect(() => {
     setSettings(loginSettings);
-    fetchGoogleAuthURL();
   }, [loginSettings]);
 
   useEffect(() => {
@@ -214,21 +188,7 @@ function DriffBody() {
         toast.success(dictionary.settingsUpdated);
       })
     );
-  };
-
-  const fetchGoogleAuthURL = () => {
-    const param =  REACT_APP_google_redirect_uri;
-    const payload = {      
-      redirect_url: REACT_APP_google_redirect_uri
-    }
-
-    dispatch(
-      getGoogleAuthSettings(payload, (err, res) => {        
-        if (err) return;
-        setGoogleAuth(res.data.auth_url);
-      })
-    );
-  };
+  }; 
 
   const handleSelectLanguage = (e) => {
     setSettings({ ...settings, language: e.value });
@@ -236,12 +196,7 @@ function DriffBody() {
 
   const handleSelectMeeting = (e) => {
     setMeetingSettings(e.value);
-  };
-
-  const handleConnectGoogle = (e) => {    
-    if (googleAuth != "")
-    window.location.href = googleAuth;
-  }
+  };  
 
   return (
     <Wrapper theme={theme}>
@@ -287,16 +242,10 @@ function DriffBody() {
               {dictionary.updateSettings}
             </SubmitButton>
           </div>
-          
+
           <LabelInfoWrapper className="mt-2" style={{ marginTop: "40px" }}>
             <label>{dictionary.connectGoogleDrive}</label>
           </LabelInfoWrapper>         
-         
-          <div className="d-flex align-items-center mt-2">
-            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleConnectGoogle}>
-              {dictionary.connectGoogleDrive}
-            </SubmitButton>
-          </div>         
         </>
       )}
     </Wrapper>

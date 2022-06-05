@@ -89,7 +89,7 @@ const WorkspaceFilesPanel = (props) => {
     googleDrawing: _t("CREATE GOOGLE DRAWING", "Create Google Drawing"),
     googleSlides: _t("CREATE_GOOGLE_SLIDES", "Create Google Slides"),
     googleSheets: _t("CREATE_GOOGLE_SHEETS", "Create Google Sheets"),
-    googleFolder: _t("CREATE_GOOGLE_FOLDER", "Create Google Folder"),
+    // googleFolder: _t("CREATE_GOOGLE_FOLDER", "Create Google Folder"),
   };
 
   const handleAddEditFolder = (f, mode = "create") => {    
