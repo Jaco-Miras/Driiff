@@ -67,7 +67,7 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token", "/shared-workspace/chat", "/shared-workspace/:page"]}>
             {children}
           </Route>
-          <Route {...props} component={VideoMeeting} path={"/video-meeting"}>
+          <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"}>
             {children}
           </Route>
           <Redirect
