@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useToaster, useUserActions, useTranslationActions } from "../hooks";
+import { useToaster, useUserActions, useTranslationActions, useGetSlug } from "../hooks";
 import { useHistory } from "react-router-dom";
-import { FormInput, PasswordInput } from "../forms";
+import { FormInput, PasswordInput, InputFeedback } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
+import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { patchCheckDriff } from "../../redux/actions/driffActions";
+import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 
 const Wrapper = styled.form``;
 
@@ -28,7 +31,8 @@ const SharedWorkspaceInvite = (props) => {
   const userAction = useUserActions();
   const toaster = useToaster();
   const [loading, setLoading] = useState(false);
-
+  const [responseData, setResponseData] = useState(null);
+  const { slug } = useGetSlug();
   const refs = {
     first_name: useRef(),
   };
@@ -46,6 +50,8 @@ const SharedWorkspaceInvite = (props) => {
     responsible_user_id: null,
     slug: "",
   });
+  const [showDriffInput, setShowDriffInput] = useState(false);
+  const [driffInput, setDriffInput] = useState("");
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -126,182 +132,156 @@ const SharedWorkspaceInvite = (props) => {
     }));
   }, []);
 
-  const _validateForm = () => {
-    let valid = {};
-    let message = {};
-
-    if (form.email === "") {
-      valid.email = false;
-      message.email = dictionary.emailRequired;
-    } else if (!EmailRegex.test(form.email)) {
-      valid.email = false;
-      message.email = dictionary.invalidEmail;
-    } else {
-      valid.email = true;
-    }
-
-    if (form.first_name === "") {
-      valid.first_name = false;
-      message.first_name = dictionary.firstNameRequired;
-    } else {
-      valid.first_name = true;
-    }
-
-    if (form.middle_name !== "") {
-      valid.middle_name = true;
-    }
-
-    if (form.last_name === "") {
-      valid.last_name = false;
-      message.last_name = dictionary.lastNameRequired;
-    } else {
-      valid.last_name = true;
-    }
-
-    if (typeof form.password === "undefined" || form.password === "") {
-      valid.password = false;
-      message.password = dictionary.passwordRequired;
-    } else if (typeof form.password !== "undefined" && form.password !== "") {
-      const specialChar = /[ -/:-@[-`{-~]/;
-      const hasNum = /\d/;
-      if (specialChar.test(form.password) && hasNum.test(form.password) && form.password.length >= 6) {
-        valid.password = true;
-      } else {
-        message.password = dictionary.invalidPassword;
-        valid.password = false;
-      }
-    } else {
-      valid.password = true;
-    }
-    /* TODO: CONFIRMED PASSWORD */
-    if (form.confirmPassword !== form.password) {
-      valid.confirmPassword = false;
-      message.confirmPassword = dictionary.confirmPasswordRequired;
-    } else {
-      valid.confirmPassword = true;
-    }
-    setFormResponse({
-      valid: valid,
-      message: message,
+  const handleCreateDriff = () => {
+    history.push("/driff-register", {
+      sharedWs: {
+        code: form.state_code,
+        responseData: responseData,
+        slug: slug,
+      },
     });
-
-    return !Object.values(valid).some((v) => v === false);
+    localStorage.removeItem("slug");
   };
 
+  const handleShowDriffInput = () => {
+    setShowDriffInput(true);
+  };
   const handleAccept = (e) => {
     e.preventDefault();
-
-    // if (!_validateForm() || loading) {
-    //   return;
-    // }
-
-    // setLoading(true);
-    // userAction.updateExternalUser(form, (err, res) => {
-    //   setLoading(false);
-    //   if (res) {
-    //     toaster.success("Login successful!");
-    //     localStorage.setItem("fromRegister", true);
-    //     const returnUrl =
-    //       typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
-    //         ? props.location.state.from.pathname + props.location.state.from.search
-    //         : "/workspace/chat";
-    //     userAction.login(res.data.auth_login, returnUrl);
-    //   }
-    // });
+    let driff = driffInput.trim();
+    // dispatch(
+    //   patchCheckDriff(driff, (err, res) => {
+    //     if (err) return;
+    //     if (res) {
+    //       let payload = {
+    //         url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+    //         state_code: form.state_code,
+    //         slug: driff,
+    //       };
+    //       dispatch(
+    //         acceptSharedUserInvite(payload, () => {
+    //           history.replace({ state: {} });
+    //         })
+    //       );
+    //     }
+    //   })
+    // );
   };
 
   useEffect(() => {
     dispatch(
       getSharedUserInfo({ state_code: $_GET("state_code") }, (err, res) => {
-        console.log(err, res);
         if (err) {
           history.push("/login");
         }
-
         if (res) {
-          if (res.data.auth_login) {
-            toaster.success("Activation successful!");
-
-            const returnUrl =
-              typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
-                ? props.location.state.from.pathname + props.location.state.from.search
-                : "/workspace/chat";
-            userAction.storeLoginToken(res.data.auth_login);
-            userAction.processBackendLogin(res.data.auth_login, returnUrl);
-          } else {
-            setForm((prevState) => ({
-              ...prevState,
-              user_id: res.data.user.id,
-              topic_id: res.data.topic.id,
-              email: res.data.user.email,
-              responsible_user_id: res.data.responsible_user_id,
-              last_name: res.data.user.last_name,
-              first_name: res.data.user.first_name,
-              middle_name: res.data.user.middle_name,
-              company_name: res.data.user.company ? res.data.user.company : "",
-            }));
-            setLocale(res.data.user.language, setLanguageLoaded(true));
-            setTimeout(() => {
-              setLanguageLoaded(false);
-            }, 1000);
-            localStorage.setItem("i18n_lang", res.data.user.language);
-
-            refs.first_name.current.focus();
-          }
+          setResponseData(res.data);
+          setForm((prevState) => ({
+            ...prevState,
+            user_id: res.data.user.id,
+            topic_id: res.data.topic.id,
+            email: res.data.user.email,
+            responsible_user_id: res.data.responsible_user_id,
+            last_name: res.data.user.last_name,
+            first_name: res.data.user.first_name,
+            middle_name: res.data.user.middle_name,
+            company_name: res.data.user.company ? res.data.user.company : "",
+            state_code: $_GET("state_code"),
+          }));
+          setLocale(res.data.user.language, setLanguageLoaded(true));
+          setTimeout(() => {
+            setLanguageLoaded(false);
+          }, 1000);
+          localStorage.setItem("i18n_lang", res.data.user.language);
+          refs.first_name.current.focus();
         }
       })
     );
-
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  const { REACT_APP_localDNSName } = process.env;
   return (
     <Wrapper>
-      <FormGroup className="form-group">
-        <FormInput
-          innerRef={refs.first_name}
-          value={form.first_name}
-          onChange={handleInputChange}
-          name="first_name"
-          placeholder={dictionary.firstName}
-          isValid={formResponse.valid.first_name}
-          feedback={formResponse.message.first_name}
-          required
-          autoFocus
-        />
-      </FormGroup>
-      <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} value={form.middle_name} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} />
-      </FormGroup>
-      <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} />
-      </FormGroup>
-      <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} />
-      </FormGroup>
-      <FormGroup className="form-group text-left">
-        <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
-      </FormGroup>
-      <FormGroup className="form-group">
-        <FormInput onChange={handleInputChange} value={form.slug} name="slug" placeholder={"Driff name"} />
-      </FormGroup>
-      {/* <FormGroup className="form-group">
-        <PasswordInput innerRef={refs.password} name="password" onChange={handleInputChange} placeholder={dictionary.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} required />
-      </FormGroup>
-      <FormGroup className="form-group">
-        <PasswordInput
-          innerRef={refs.confirmPassword}
-          name="confirmPassword"
-          onChange={handleInputChange}
-          placeholder={dictionary.confirmPassword}
-          isValid={formResponse.valid.confirmPassword}
-          feedback={formResponse.message.confirmPassword}
-          required
-        />
-      </FormGroup> */}
-      <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
-        {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.accept}
-      </button>
+      {responseData && (
+        <div>
+          <div>
+            {responseData.invited_by.name} invited you to join <b>{responseData.topic.name}</b>
+          </div>
+        </div>
+      )}
+      {showDriffInput && (
+        <>
+          <FormGroup>
+            <InputGroup className="driff-name">
+              <Input
+                ref={refs.slug}
+                onChange={handleInputChange}
+                name="slug"
+                type="text"
+                placeholder="Driff"
+                autoCapitalize="none"
+                valid={formResponse.valid.slug}
+                invalid={typeof formResponse.valid.slug !== "undefined" ? !formResponse.valid.slug : formResponse.valid.slug}
+                readOnly={loading}
+                required
+                autoFocus
+              />
+              <InputGroupAddon addonType="append">
+                <InputGroupText>.{REACT_APP_localDNSName}</InputGroupText>
+              </InputGroupAddon>
+              <InputFeedback valid={formResponse.valid.slug}>{formResponse.message.slug}</InputFeedback>
+            </InputGroup>
+          </FormGroup>
+          <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login to driff
+          </button>
+        </>
+      )}
+      {!showDriffInput && (
+        <>
+          <FormGroup className="form-group">
+            <FormInput
+              innerRef={refs.first_name}
+              value={form.first_name}
+              onChange={handleInputChange}
+              name="first_name"
+              placeholder={dictionary.firstName}
+              isValid={formResponse.valid.first_name}
+              feedback={formResponse.message.first_name}
+              required
+              autoFocus
+              readOnly
+            />
+          </FormGroup>
+          <FormGroup className="form-group">
+            <FormInput onChange={handleInputChange} value={form.middle_name} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} readOnly />
+          </FormGroup>
+          <FormGroup className="form-group">
+            <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} readOnly />
+          </FormGroup>
+          <FormGroup className="form-group">
+            <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
+          </FormGroup>
+          <FormGroup className="form-group text-left">
+            <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
+          </FormGroup>
+          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleCreateDriff}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Create your own Driff
+          </button>
+
+          <div>Or</div>
+
+          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleShowDriffInput}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.accept}
+          </button>
+
+          <div>Or</div>
+
+          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleAccept}>
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login as guest
+          </button>
+        </>
+      )}
     </Wrapper>
   );
 };

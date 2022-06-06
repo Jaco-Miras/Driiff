@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { TodoCheckBox } from "../forms";
 import ReCAPTCHA from "react-google-recaptcha";
+import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
@@ -207,6 +208,18 @@ const DriffCreatePanel = (props) => {
           });
         } else {
           driffActions.create({ ...form, token: captcha }, (err, res) => {
+            if (history.location.state && history.location.state.sharedWs) {
+              let payload = {
+                url: `https://${form.from_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+                state_code: form.state_code,
+                slug: form.slug,
+              };
+              dispatch(
+                acceptSharedUserInvite(payload, () => {
+                  history.replace({ state: {} });
+                })
+              );
+            }
             setLoading(false);
             if (res) {
               setRegistered(true);
@@ -225,6 +238,16 @@ const DriffCreatePanel = (props) => {
   };
 
   useEffect(() => {
+    if (history.location.state && history.location.state.sharedWs) {
+      setForm({
+        ...form,
+        email: history.location.state.sharedWs.responseData.user.email,
+        company_name: history.location.state.sharedWs.responseData.user.company,
+        user_name: history.location.state.sharedWs.responseData.user.first_name + " " + history.location.state.sharedWs.responseData.user.last_name,
+        state_code: history.location.state.sharedWs.code,
+        from_slug: history.location.state.sharedWs.slug,
+      });
+    }
     if (refs.company_name.current) refs.company_name.current.focus();
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -274,6 +297,7 @@ const DriffCreatePanel = (props) => {
             //ref={refs.company_name}
             onChange={handleInputChange}
             name="company_name"
+            value={form.company_name ? form.company_name : ""}
             isValid={formResponse.valid.company_name}
             feedback={formResponse.message.company_name}
             placeholder={dictionary.companyName}
@@ -302,8 +326,26 @@ const DriffCreatePanel = (props) => {
               <InputFeedback valid={formResponse.valid.slug}>{formResponse.message.slug}</InputFeedback>
             </InputGroup>
           </StyledFormGroup>
-          <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email" readOnly={loading} />
-          <FormInput onChange={handleInputChange} name="user_name" isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name} readOnly={loading} />
+          <FormInput
+            onChange={handleInputChange}
+            value={form.email ? form.email : ""}
+            name="email"
+            isValid={formResponse.valid.email}
+            feedback={formResponse.message.email}
+            placeholder={dictionary.yourEmail}
+            type="email"
+            readOnly={loading}
+          />
+          <FormInput
+            onChange={handleInputChange}
+            name="user_name"
+            value={form.user_name ? form.user_name : ""}
+            isValid={formResponse.valid.user_name}
+            feedback={formResponse.message.user_name}
+            placeholder={dictionary.yourName}
+            innerRef={refs.user_name}
+            readOnly={loading}
+          />
           <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
 
           <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>

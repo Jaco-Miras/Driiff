@@ -738,7 +738,7 @@ export function getSharedUserInfo(payload) {
 export function acceptSharedUserInvite(payload) {
   return apiNoTokenCall({
     method: "PUT",
-    url: "/v2/shared-workspace-invite-accept",
+    actualUrl: payload.url,
     data: payload,
   });
 }
