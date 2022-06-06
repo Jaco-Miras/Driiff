@@ -68,6 +68,17 @@ const VideoMeeting = (props) => {
     x: 0,
     y: 0,
   });
+  const handleMinimize = () => {
+    const x = window.innerWidth / 2 - 175;
+    setControlledPosition({ x: x, y: -275 });
+    if (size === "minimize") return;
+    setSize("minimize");
+  };
+  const handleMaximize = () => {
+    setControlledPosition({ x: 0, y: 0 });
+    if (size === "maximize") return;
+    setSize("maximize");
+  };
 
   const onStart = () => {
     setIsDragging(true);
@@ -100,7 +111,6 @@ const VideoMeeting = (props) => {
               interfaceConfigOverwrite={{
                 DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
               }}
-
               onApiReady={(externalApi) => {
                 // here you can attach custom event listeners to the Jitsi Meet External API
                 // you can also store it locally to execute commands
