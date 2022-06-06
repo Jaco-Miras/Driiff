@@ -61,7 +61,7 @@ const Wrapper = styled.div`
 const VideoMeeting = (props) => {
   const domain = 'meet.jit.si';
   const params = useParams()
-  const [size, setSize] = useState("maximize");
+
   //const [activeDrags, setActiveDrags] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [controlledPosition, setControlledPosition] = useState({
@@ -86,7 +86,7 @@ const VideoMeeting = (props) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
       <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition} onStart={onStart} onStop={onStop}>
-        <Wrapper className={`jitsi-container ${size}`}>
+        <Wrapper className={`jitsi-container`}>
           <div className="j-container" style={{ position: "relative" }}>
             <JitsiMeeting
               domain={domain}
