@@ -59,7 +59,7 @@ const Wrapper = styled.div`
 
 
 const VideoMeeting = (props) => {
-  const domain = 'meet.jit.si';
+  const domain = '8x8.vc';
   const params = useParams()
 
   //const [activeDrags, setActiveDrags] = useState(0);
