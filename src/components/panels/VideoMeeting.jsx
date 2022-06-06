@@ -8,6 +8,7 @@ import { clearJitsi } from "../../redux/actions/chatActions";
 import { JitsiMeeting } from "@jitsi/react-sdk";
 
 import Draggable from "react-draggable";
+import { useParams } from "react-router-dom";
 
 const Wrapper = styled.div`
   position: absolute;
@@ -59,9 +60,7 @@ const Wrapper = styled.div`
 
 const VideoMeeting = (props) => {
   const domain = 'meet.jit.si';
-  const jitsi = useSelector((state) => state.chat.jitsi);
-  const [jwt, setJwt] = useState('')
-  const [username, setUsername] = useState('')
+  const params = useParams()
   const [size, setSize] = useState("maximize");
   //const [activeDrags, setActiveDrags] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -69,17 +68,6 @@ const VideoMeeting = (props) => {
     x: 0,
     y: 0,
   });
-  const handleMinimize = () => {
-    const x = window.innerWidth / 2 - 175;
-    setControlledPosition({ x: x, y: -275 });
-    if (size === "minimize") return;
-    setSize("minimize");
-  };
-  const handleMaximize = () => {
-    setControlledPosition({ x: 0, y: 0 });
-    if (size === "maximize") return;
-    setSize("maximize");
-  };
 
   const onStart = () => {
     setIsDragging(true);
@@ -94,22 +82,15 @@ const VideoMeeting = (props) => {
     setControlledPosition({ x, y });
   };
 
-  const handleJwt = (e) => {
-    setJwt(e.target.value)
-  }
-  const handleUserName = (e) => {
-    setUsername(e.target.value)
-  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <input placeholder="Enter room name" onChange={handleUserName} style={{ display: 'flex', alignSelf: 'center', border: "3px solid red" }} />
-      <input placeholder="Enter JWT" onChange={handleJwt} style={{ display: 'flex', alignSelf: 'center', border: "3px solid red" }} />
-      {jwt && <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition} onStart={onStart} onStop={onStop}>
+      <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition} onStart={onStart} onStop={onStop}>
         <Wrapper className={`jitsi-container ${size}`}>
           <div className="j-container" style={{ position: "relative" }}>
             <JitsiMeeting
               domain={domain}
-              roomName="PleaseUseAGoodRoomName"
+              roomName={params?.room_name}
               configOverwrite={{
                 startWithAudioMuted: true,
                 disableModeratorIndicator: true,
@@ -119,20 +100,18 @@ const VideoMeeting = (props) => {
               interfaceConfigOverwrite={{
                 DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
               }}
-              userInfo={{
-                displayName: username
-              }}
+
               onApiReady={(externalApi) => {
                 // here you can attach custom event listeners to the Jitsi Meet External API
                 // you can also store it locally to execute commands
               }}
 
-              jwt={jwt}
+              jwt={params?.jwt_token}
             />
             {isDragging && <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, top: 0, zIndex: 9999 }}></div>}
           </div>
         </Wrapper>
-      </Draggable>}
+      </Draggable>
 
 
     </div>
