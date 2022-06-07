@@ -29,6 +29,7 @@ import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import JitsiContainer from "../components/panels/chat/JitsiContainer";
 import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
 import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar";
+import { acceptSharedUserInvite } from "../redux/actions/userAction";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -133,6 +134,19 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   useEffect(() => {
+    if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
+      let payload = {
+        url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        state_code: history.location.state.state_code,
+        slug: slug,
+      };
+      dispatch(
+        acceptSharedUserInvite(payload, (err, res) => {
+          if (err) return;
+          history.replace({ state: {} });
+        })
+      );
+    }
     const modalTimer = setTimeout(() => {
       if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
         uploadModal(() => {
