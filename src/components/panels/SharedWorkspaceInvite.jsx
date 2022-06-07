@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useToaster, useUserActions, useTranslationActions, useGetSlug } from "../hooks";
+import { useTranslationActions, useGetSlug } from "../hooks";
 import { useHistory } from "react-router-dom";
 import { FormInput, InputFeedback } from "../forms";
 import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
 import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import { patchCheckDriff } from "../../redux/actions/driffActions";
-import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 
 const Wrapper = styled.form``;
 
@@ -51,6 +50,7 @@ const SharedWorkspaceInvite = (props) => {
   });
   const [showDriffInput, setShowDriffInput] = useState(false);
   const [driffInput, setDriffInput] = useState("");
+  const [checkingSlug, setCheckingSlug] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -131,6 +131,21 @@ const SharedWorkspaceInvite = (props) => {
     }));
   }, []);
 
+  const handleDriffInputChange = (e) => {
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        slug: undefined,
+      },
+      message: {
+        ...prevState.message,
+        slug: undefined,
+      },
+    }));
+    setDriffInput(e.target.value);
+  };
+
   const handleCreateDriff = () => {
     history.push("/driff-register", {
       sharedWs: {
@@ -147,13 +162,29 @@ const SharedWorkspaceInvite = (props) => {
   };
   const handleAccept = (e) => {
     e.preventDefault();
-    let driff = driffInput.trim();
+    let driffName = driffInput.trim();
+    if (checkingSlug) return;
+    setCheckingSlug(true);
     dispatch(
-      patchCheckDriff(driff, (err, res) => {
-        if (err) return;
+      patchCheckDriff(driffName, (err, res) => {
+        setCheckingSlug(false);
+        if (err) {
+          setFormResponse((prevState) => ({
+            ...prevState,
+            valid: {
+              ...prevState.valid,
+              slug: false,
+            },
+            message: {
+              ...prevState.message,
+              slug: "Invalid slug",
+            },
+          }));
+          return;
+        }
         if (res) {
           localStorage.removeItem(slug);
-          window.location.href = `${process.env.REACT_APP_apiProtocol}${driff}.${process.env.REACT_APP_localDNSName}/login?state_code=${form.state_code}&invite_slug=${slug}`;
+          window.location.href = `${process.env.REACT_APP_apiProtocol}${driffName}.${process.env.REACT_APP_localDNSName}/login?state_code=${form.state_code}&invite_slug=${slug}`;
           //   let payload = {
           //     url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
           //     state_code: form.state_code,
@@ -217,7 +248,7 @@ const SharedWorkspaceInvite = (props) => {
             <InputGroup className="driff-name">
               <Input
                 ref={refs.slug}
-                onChange={handleInputChange}
+                onChange={handleDriffInputChange}
                 name="slug"
                 type="text"
                 placeholder="Driff"

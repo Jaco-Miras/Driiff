@@ -38,7 +38,7 @@ export function postRegisterDriff(data) {
 export function patchCheckDriff(driffName) {
   return apiNoTokenCall({
     method: "PATCH",
-    actualUrl: `${getAPIUrl({noSlug: true})}/check-slug?slug=${driffName}`,
+    actualUrl: `${getAPIUrl({ noSlug: true })}/check-slug/?slug=${driffName}`,
   });
 }
 
