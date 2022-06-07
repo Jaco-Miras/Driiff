@@ -429,10 +429,16 @@ export function getOnlineUsers(payload) {
 }
 
 export function getUsers(payload = {}) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/users?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
+    sharedPayload: sharedPayload,
   });
 }
 

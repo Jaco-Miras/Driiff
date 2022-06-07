@@ -299,3 +299,6 @@ export function getSharedUserInfo(payload, callback) {
 export function acceptSharedUserInvite(payload, callback) {
   return dispatchActionToReducer(acceptSharedUserInviteService(payload), "ACCEPT_SHARED_USER_INVITE_START", "ACCEPT_SHARED_USER_INVITE_SUCCESS", "ACCEPT_SHARED_USER_INVITE_FAILURE", callback);
 }
+export function getSharedUsers(payload, callback) {
+  return dispatchActionToReducer(getUsersService(payload), "GET_SHARED_USERS_START", "GET_SHARED_USERS_SUCCESS", "GET_SHARED_USERS_FAIL", callback);
+}

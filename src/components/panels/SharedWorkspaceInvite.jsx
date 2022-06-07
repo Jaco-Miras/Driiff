@@ -3,8 +3,7 @@ import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { useToaster, useUserActions, useTranslationActions, useGetSlug } from "../hooks";
 import { useHistory } from "react-router-dom";
-import { FormInput, PasswordInput, InputFeedback } from "../forms";
-import { EmailRegex } from "../../helpers/stringFormatter";
+import { FormInput, InputFeedback } from "../forms";
 import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
 import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
@@ -28,8 +27,8 @@ const FormGroup = styled.div`
 const SharedWorkspaceInvite = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userAction = useUserActions();
-  const toaster = useToaster();
+  //   const userAction = useUserActions();
+  //   const toaster = useToaster();
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const { slug } = useGetSlug();
@@ -149,23 +148,26 @@ const SharedWorkspaceInvite = (props) => {
   const handleAccept = (e) => {
     e.preventDefault();
     let driff = driffInput.trim();
-    // dispatch(
-    //   patchCheckDriff(driff, (err, res) => {
-    //     if (err) return;
-    //     if (res) {
-    //       let payload = {
-    //         url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
-    //         state_code: form.state_code,
-    //         slug: driff,
-    //       };
-    //       dispatch(
-    //         acceptSharedUserInvite(payload, () => {
-    //           history.replace({ state: {} });
-    //         })
-    //       );
-    //     }
-    //   })
-    // );
+    dispatch(
+      patchCheckDriff(driff, (err, res) => {
+        if (err) return;
+        if (res) {
+          localStorage.removeItem(slug);
+          window.location.href = `${process.env.REACT_APP_apiProtocol}${driff}.${process.env.REACT_APP_localDNSName}/login?state_code=${form.state_code}&invite_slug=${slug}`;
+          //   let payload = {
+          //     url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+          //     state_code: form.state_code,
+          //     slug: driff,
+          //   };
+          //   dispatch(
+          //     acceptSharedUserInvite(payload, (err, res) => {
+          //       if (err) return;
+          //       history.replace({ state: {} });
+          //     })
+          //   );
+        }
+      })
+    );
   };
 
   useEffect(() => {

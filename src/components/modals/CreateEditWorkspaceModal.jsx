@@ -331,6 +331,7 @@ const CreateEditWorkspaceModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const users = useSelector((state) => state.users.users);
   const teams = useSelector((state) => state.users.teams);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
@@ -341,9 +342,11 @@ const CreateEditWorkspaceModal = (props) => {
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
+  const [sharedUserOptions, setSharedUserOptions] = useState([]);
   const [inputValue, setInputValue] = useState("");
   //const [invitedEmails, setInvitedEmails] = useState([]);
   const [externalInput, setExternalInput] = useState("");
+  const [sharedUserInput, setSharedInput] = useState("");
   const [folderInput, setFolderInput] = useState("");
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [folderOptions, setFolderOptions] = useState(
@@ -385,6 +388,7 @@ const CreateEditWorkspaceModal = (props) => {
     selectedExternals: [],
     is_shared_wp: false,
     new_shared_workspace_members: [],
+    selectedSharedUsers: [],
   });
 
   const [showDropzone, setShowDropzone] = useState(false);
@@ -399,6 +403,7 @@ const CreateEditWorkspaceModal = (props) => {
     has_folder: null,
     team: null,
     external: true,
+    sharedUser: true,
   });
   const [feedback, setFeedback] = useState({
     name: "",
@@ -406,6 +411,7 @@ const CreateEditWorkspaceModal = (props) => {
     folder: "",
     team: "",
     external: "",
+    sharedUser: "",
   });
   const refs = {
     container: useRef(null),
@@ -427,6 +433,18 @@ const CreateEditWorkspaceModal = (props) => {
     send_by_email: true,
     profile_pic: null,
   });
+  const [invitedSharedUsers, setInvitedSharedUsers] = useState([]);
+  const [invitedSharedUser, setInvitedSharedUser] = useState({
+    email: "",
+    first_name: "",
+    middle_name: "",
+    last_name: "",
+    company: "",
+    language: "en",
+    send_by_email: true,
+    profile_pic: null,
+  });
+  const [externalNestedMode, setExternalNestedMode] = useState(true);
 
   const [inactiveMembers, setInactiveMembers] = useState([]);
 
@@ -676,6 +694,7 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleSelectExternalUser = (e) => {
+    setExternalNestedMode(true);
     if (e && e.some((data) => data.label.startsWith("Add ") && !data.hasOwnProperty("id"))) {
       setShowNestedModal(true);
       const email = e.find((d) => d.label.startsWith("Add "));
@@ -729,7 +748,8 @@ const CreateEditWorkspaceModal = (props) => {
     const external = invitedExternals.find((ex) => ex.email === inputValue);
     if (external) setInvitedExternal(external);
     else setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
-    toggleNested(true);
+    toggleNested();
+    setExternalNestedMode(true);
     setForm((prevState) => ({
       ...prevState,
       selectedExternals: [
@@ -964,7 +984,6 @@ const CreateEditWorkspaceModal = (props) => {
       new_team_member_ids: [],
       team_member_ids: team_ids,
       is_shared_wp: form.is_shared_wp,
-      new_shared_workspace_members: form.is_shared_wp ? invitedExternals : [],
     };
     if (invitedExternals.length && form.has_externals) {
       if (mode === "edit") {
@@ -1001,6 +1020,39 @@ const CreateEditWorkspaceModal = (props) => {
             is_external: 1,
           };
         }
+      }
+    }
+    if (form.is_shared_wp) {
+      if (mode === "create") {
+        payload = {
+          ...payload,
+          new_shared_workspace_members: [
+            ...form.selectedSharedUsers.map((ex) => {
+              return {
+                email: ex.email,
+                first_name: ex.first_name ? ex.first_name.trim() : ex.email,
+                middle_name: ex.middle_name ? ex.middle_name.trim() : "",
+                last_name: ex.last_name ? ex.last_name.trim() : "",
+                company: ex.company ? ex.company.trim() : "",
+                language: "en",
+                send_by_email: true,
+              };
+            }),
+            ...invitedSharedUsers
+              .filter((ex) => form.selectedSharedUsers.some((e) => e.email === ex.email))
+              .map((ex) => {
+                return {
+                  email: ex.email,
+                  first_name: ex.first_name ? ex.first_name.trim() : ex.email,
+                  middle_name: ex.middle_name ? ex.middle_name.trim() : "",
+                  last_name: ex.last_name ? ex.last_name.trim() : "",
+                  company: ex.company ? ex.company.trim() : "",
+                  language: "en",
+                  send_by_email: true,
+                };
+              }),
+          ],
+        };
       }
     }
 
@@ -1260,8 +1312,8 @@ const CreateEditWorkspaceModal = (props) => {
                 members: updatedMembers,
                 is_active: true,
                 channel: {
-                  code: res.data.channel.code,
-                  id: res.data.channel.id,
+                  code: res.data.channel && res.data.channel.code ? res.data.channel.code : null,
+                  id: res.data.channel && res.data.channel.id ? res.data.channel.id : null,
                   loaded: false,
                 },
                 team_channel: {
@@ -1711,8 +1763,12 @@ const CreateEditWorkspaceModal = (props) => {
         type: "TEAM",
       };
     });
-    setUserOptions([...teamOptions, ...userOptions]);
-  }, [Object.values(users).length, Object.values(teams).length]);
+    if (form.is_shared_wp) {
+      setUserOptions([...userOptions]);
+    } else {
+      setUserOptions([...teamOptions, ...userOptions]);
+    }
+  }, [Object.values(users).length, Object.values(teams).length, form.is_shared_wp]);
 
   useEffect(() => {
     if (externalUsers.length) {
@@ -1730,6 +1786,28 @@ const CreateEditWorkspaceModal = (props) => {
       setExternalUserOptions(externalUserOptions);
     }
   }, [externalUsers.length]);
+
+  const allSharedUsers = Object.keys(sharedUsers).reduce((acc, slugKey) => {
+    acc = [...acc, ...sharedUsers[slugKey].users];
+    return acc;
+  }, []);
+
+  useEffect(() => {
+    if (allSharedUsers.length) {
+      const allSharedUsersOptions = allSharedUsers.map((u) => {
+        return {
+          ...u,
+          value: u.id,
+          label: u.has_accepted ? `${u.email} | ${u.first_name} ${u.last_name} - ${u.external_company_name}` : `${u.email} `,
+          dictionary: {
+            peopleExternal: _t("PEOPLE.EXTERNAL", "External"),
+            peopleInvited: _t("PEOPLE.INVITED", "Invited"),
+          },
+        };
+      });
+      setSharedUserOptions(allSharedUsersOptions);
+    }
+  }, [sharedUsers]);
 
   const onOpened = () => {
     if (refs.workspace_name && refs.workspace_name.current) {
@@ -1763,6 +1841,165 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
+  const validateSharedUserEmail = useCallback(
+    debounce((valid, invalidEmail) => {
+      if (valid) {
+        setFeedback((prevState) => {
+          return { ...prevState, sharedUser: "" };
+        });
+        setValid((prevState) => {
+          return { ...prevState, sharedUser: null };
+        });
+      } else if (valid === false && invalidEmail === false) {
+        setFeedback((prevState) => {
+          return { ...prevState, sharedUser: dictionary.emailExists };
+        });
+        setValid((prevState) => {
+          return { ...prevState, sharedUser: false };
+        });
+      } else if (valid === false && invalidEmail === true) {
+        setFeedback((prevState) => {
+          return { ...prevState, sharedUser: dictionary.invalidEmail };
+        });
+        setValid((prevState) => {
+          return { ...prevState, sharedUser: false };
+        });
+      } else {
+        setFeedback((prevState) => {
+          return { ...prevState, sharedUser: "" };
+        });
+        setValid((prevState) => {
+          return { ...prevState, external: true };
+        });
+      }
+    }, 300),
+    []
+  );
+
+  const handleSelectSharedUser = (e) => {
+    setExternalNestedMode(false);
+    if (e && e.some((data) => data.label.startsWith("Add ") && !data.hasOwnProperty("id"))) {
+      setShowNestedModal(true);
+      const email = e.find((d) => d.label.startsWith("Add "));
+      setInvitedSharedUser({
+        email: email.value,
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        company: "",
+        language: "en",
+        send_by_email: true,
+      });
+    }
+    if (e === null) {
+      setForm((prevState) => ({
+        ...prevState,
+        selectedSharedUsers: [],
+      }));
+      //setInvitedEmails([]);
+      setInvitedSharedUsers([]);
+    } else {
+      const sharedUsers = e.map((e) => {
+        if (e.id) {
+          return e;
+        } else {
+          return {
+            ...e,
+            id: require("shortid").generate(),
+            label: e.value,
+            value: e.value,
+            name: e.value,
+            first_name: e.value,
+            email: e.value,
+            has_accepted: false,
+          };
+        }
+      });
+      setForm((prevState) => ({
+        ...prevState,
+        selectedSharedUsers: sharedUsers,
+      }));
+      setInvitedSharedUsers(invitedSharedUsers.filter((ex) => e.some((e) => e.email === ex.email)));
+    }
+  };
+
+  const handleSharedInputChange = (e) => {
+    setSharedInput(e);
+    const isExistingOption = sharedUserOptions.some((o) => o.email === e);
+    const isSelectedOption = form.selectedSharedUsers.some((o) => o.email === e);
+    if (!isExistingOption && !isSelectedOption && e !== "") {
+      if (EmailRegex.test(e)) {
+        const userExists = allSharedUsers.some((uo) => uo.email === e);
+        if (!userExists) {
+          validateSharedUserEmail(true);
+        } else {
+          validateSharedUserEmail(false, false);
+        }
+      } else {
+        //invalid email
+        validateSharedUserEmail(false, true);
+      }
+    } else {
+      //reset to default
+      validateSharedUserEmail(null);
+    }
+  };
+
+  const handleSharedUserValidation = (inputValue, selectValue, selectOptions) => {
+    const isExistingOption = selectOptions.some((o) => o.email === inputValue);
+    const isSelectedOption = selectValue.some((o) => o.email === inputValue);
+    if (!isExistingOption && !isSelectedOption && inputValue !== "") {
+      if (EmailRegex.test(inputValue)) {
+        const userExists = allSharedUsers.some((uo) => uo.email === inputValue);
+        if (!userExists) {
+          // validateExternalEmail(true);
+          return true;
+        } else {
+          //validateExternalEmail(false, false);
+          return false;
+        }
+      } else {
+        //invalid email
+        //validateExternalEmail(false, true);
+        return false;
+      }
+    } else {
+      //reset to default
+      //validateExternalEmail(null);
+      return false;
+    }
+  };
+
+  const handleCreateSharedUserOption = (inputValue) => {
+    setExternalNestedMode(false);
+    const sharedUser = invitedSharedUsers.find((ex) => ex.email === inputValue);
+    if (sharedUser) setInvitedSharedUser(sharedUser);
+    else setInvitedSharedUser({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    toggleNested();
+    setForm((prevState) => ({
+      ...prevState,
+      selectedSharedUsers: [
+        ...prevState.selectedSharedUsers,
+        {
+          id: require("shortid").generate(),
+          label: inputValue,
+          value: inputValue,
+          name: inputValue,
+          first_name: inputValue,
+          email: inputValue,
+          has_accepted: false,
+        },
+      ],
+    }));
+  };
+
+  const handleSharedEmailClick = (data) => {
+    setExternalNestedMode(false);
+    const sharedUser = invitedSharedUsers.find((ex) => ex.email === data.email);
+    if (sharedUser) setInvitedSharedUser(sharedUser);
+    toggleNested();
+  };
+
   const filterOptions = (candidate, input) => {
     if (input) {
       return candidate.label.toLowerCase().search(input.toLowerCase()) !== -1 || (candidate.data.email && candidate.data.email.toLowerCase().search(input.toLowerCase()) !== -1);
@@ -1779,38 +2016,74 @@ const CreateEditWorkspaceModal = (props) => {
   };
 
   const handleSaveExternalFields = () => {
-    toggleNested();
-    if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
-      setInvitedExternals(
-        invitedExternals.map((ex) => {
-          if (ex.email === invitedExternal.email) {
-            return invitedExternal;
-          } else return ex;
-        })
-      );
+    if (externalNestedMode) {
+      toggleNested();
+      setExternalNestedMode(true);
+      if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
+        setInvitedExternals(
+          invitedExternals.map((ex) => {
+            if (ex.email === invitedExternal.email) {
+              return invitedExternal;
+            } else return ex;
+          })
+        );
+      } else {
+        setInvitedExternals([...invitedExternals, invitedExternal]);
+      }
+      setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
     } else {
-      setInvitedExternals([...invitedExternals, invitedExternal]);
+      toggleNested();
+      setExternalNestedMode(true);
+      if (invitedSharedUsers.some((ex) => ex.email === invitedSharedUser.email)) {
+        setInvitedSharedUsers(
+          invitedSharedUsers.map((ex) => {
+            if (ex.email === invitedSharedUser.email) {
+              return invitedSharedUser;
+            } else return ex;
+          })
+        );
+      } else {
+        setInvitedSharedUser([...invitedSharedUsers, invitedSharedUser]);
+      }
+      setInvitedSharedUser({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
     }
-    setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
   };
 
   const handleExternalFieldChange = (e) => {
     e.persist();
-    setInvitedExternal((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name]: e.target.value,
-      };
-    });
+    if (externalNestedMode) {
+      setInvitedExternal((prevState) => {
+        return {
+          ...prevState,
+          [e.target.name]: e.target.value,
+        };
+      });
+    } else {
+      setInvitedSharedUser((prevState) => {
+        return {
+          ...prevState,
+          [e.target.name]: e.target.value,
+        };
+      });
+    }
   };
 
   const handleLanguageChange = (e) => {
-    setInvitedExternal((prevState) => {
-      return {
-        ...prevState,
-        language: e.value,
-      };
-    });
+    if (externalNestedMode) {
+      setInvitedExternal((prevState) => {
+        return {
+          ...prevState,
+          language: e.value,
+        };
+      });
+    } else {
+      setInvitedSharedUser((prevState) => {
+        return {
+          ...prevState,
+          language: e.value,
+        };
+      });
+    }
   };
 
   const handleSetSignupLink = (e, type) => {
@@ -1823,7 +2096,8 @@ const CreateEditWorkspaceModal = (props) => {
   const handleEmailClick = (data) => {
     const external = invitedExternals.find((ex) => ex.email === data.email);
     if (external) setInvitedExternal(external);
-    toggleNested(true);
+    toggleNested();
+    setExternalNestedMode(true);
   };
 
   const onOpenedNested = () => {
@@ -1866,7 +2140,7 @@ const CreateEditWorkspaceModal = (props) => {
             <ModalBody>
               <NestedModalWrapper className="mt-2">
                 <span className="modal-info">{dictionary.newExternalInfo1}</span>
-                <strong>({invitedExternal.email}).</strong>
+                <strong>({externalNestedMode ? invitedExternal.email : invitedSharedUser.email}).</strong>
                 <span className={"modal-info"}>{dictionary.newExternalInfo2}</span>
                 <div className="d-flex justify-content-center mt-2 mb-2">
                   <div className="image-container">
@@ -1879,46 +2153,51 @@ const CreateEditWorkspaceModal = (props) => {
               </NestedModalWrapper>
               <NestedModalWrapper>
                 <Label className={"modal-label"}>{dictionary.firstName}</Label>
-                <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
+                <Input className="mb-2" name="first_name" value={externalNestedMode ? invitedExternal.first_name : invitedSharedUser.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
                 <Label className={"modal-label"}>{dictionary.middleName}</Label>
-                <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
+                <Input className="mb-2" name="middle_name" value={externalNestedMode ? invitedExternal.middle_name : invitedSharedUser.middle_name} onChange={handleExternalFieldChange} />
                 <Label className={"modal-label"}>{dictionary.lastName}</Label>
-                <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
+                <Input className="mb-2" name="last_name" value={externalNestedMode ? invitedExternal.last_name : invitedSharedUser.last_name} onChange={handleExternalFieldChange} />
                 <Label className={"modal-label"}>{dictionary.companyName}</Label>
-                <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
-                <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
-                <Select
-                  styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme}
-                  className={"react-select-container"}
-                  classNamePrefix="react-select"
-                  value={languageOptions.find((o) => o.value === invitedExternal.language)}
-                  onChange={handleLanguageChange}
-                  options={languageOptions}
-                />
-                <RadioInputWrapper className="mt-3">
-                  <RadioInput
-                    readOnly
-                    onClick={(e) => {
-                      handleSetSignupLink(e, "myself");
-                    }}
-                    checked={!invitedExternal.send_by_email}
-                    value={"myself"}
-                    name={"myself"}
-                  >
-                    {dictionary.sendMyself}
-                  </RadioInput>
-                  <RadioInput
-                    readOnly
-                    onClick={(e) => {
-                      handleSetSignupLink(e, "driff");
-                    }}
-                    checked={invitedExternal.send_by_email}
-                    value={"driff"}
-                    name={"driff"}
-                  >
-                    {dictionary.sendTruDriff}
-                  </RadioInput>
-                </RadioInputWrapper>
+                <Input className="mb-2" name="company" value={externalNestedMode ? invitedExternal.company : invitedSharedUser.company} onChange={handleExternalFieldChange} />
+
+                {externalNestedMode && (
+                  <>
+                    <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
+                    <Select
+                      styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme}
+                      className={"react-select-container"}
+                      classNamePrefix="react-select"
+                      value={languageOptions.find((o) => (externalNestedMode ? o.value === invitedExternal.language : o.value === invitedSharedUser.language))}
+                      onChange={handleLanguageChange}
+                      options={languageOptions}
+                    />
+                    <RadioInputWrapper className="mt-3">
+                      <RadioInput
+                        readOnly
+                        onClick={(e) => {
+                          handleSetSignupLink(e, "myself");
+                        }}
+                        checked={!invitedExternal.send_by_email}
+                        value={"myself"}
+                        name={"myself"}
+                      >
+                        {dictionary.sendMyself}
+                      </RadioInput>
+                      <RadioInput
+                        readOnly
+                        onClick={(e) => {
+                          handleSetSignupLink(e, "driff");
+                        }}
+                        checked={invitedExternal.send_by_email}
+                        value={"driff"}
+                        name={"driff"}
+                      >
+                        {dictionary.sendTruDriff}
+                      </RadioInput>
+                    </RadioInputWrapper>
+                  </>
+                )}
               </NestedModalWrapper>
             </ModalBody>
             <ModalFooter>
@@ -2075,6 +2354,33 @@ const CreateEditWorkspaceModal = (props) => {
                 onMenuClose={handleMenuClose}
                 onEmailClick={handleEmailClick}
                 isDisabled={!hasGuestAccess}
+              />
+            </WrapperDiv>
+          )}
+          {form.is_shared_wp && (
+            <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
+              <LabelWrapper className="mb-1">
+                <Label for="people">Shared users</Label>
+                <ToolTip content={hasGuestAccess ? dictionary.guestTooltip : dictionary.disabledWorkspaceExternalsInfo}>
+                  <SvgIconFeather icon="info" width="16" height="16" />
+                </ToolTip>
+              </LabelWrapper>
+              <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
+              <SelectPeople
+                creatable={true}
+                options={sharedUserOptions}
+                value={form.selectedSharedUsers}
+                inputValue={sharedUserInput}
+                isValidNewOption={handleSharedUserValidation}
+                onCreateOption={handleCreateSharedUserOption}
+                onChange={handleSelectSharedUser}
+                onInputChange={handleSharedInputChange}
+                filterOption={filterOptions}
+                formatCreateLabel={formatCreateLabel}
+                isSearchable
+                onMenuClose={handleMenuClose}
+                onEmailClick={handleSharedEmailClick}
+                isDisabled={false}
               />
             </WrapperDiv>
           )}
