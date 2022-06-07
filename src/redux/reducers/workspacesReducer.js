@@ -4399,11 +4399,13 @@ export default (state = INITIAL_STATE, action) => {
         },
         workspaces: {
           ...state.workspaces,
-          [workspaceId]: {
-            ...state.workspaces[workspaceId],
-            members: action.data.members,
-            member_ids: action.data.members.map((m) => m.id),
-          },
+          ...(state.workspaces[workspaceId] && {
+            [workspaceId]: {
+              ...state.workspaces[workspaceId],
+              members: action.data.members,
+              member_ids: action.data.members.map((m) => m.id),
+            },
+          }),
         },
       };
     }
