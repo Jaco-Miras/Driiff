@@ -1,15 +1,10 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
-// import { getUsers, getExternalUsers, getTeams } from "../../redux/actions/userAction";
-// import { getUnreadNotificationCounterEntries, getToDoDetail, getAllRecipients } from "../../redux/actions/globalActions";
-// import { getGlobalRecipients, getHuddleChatbot, getCompanyChannel, setChannelInitialLoad } from "../../redux/actions/chatActions";
-// import { getNotificationSettings, getSecuritySettings } from "../../redux/actions/adminActions";
-// import { useChannelActions } from "../hooks";
 import { getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
+import { getSharedUsers } from "../../redux/actions/userAction";
 
 const useLoadSharedDriff = () => {
   const dispatch = useDispatch();
@@ -58,6 +53,12 @@ const useLoadSharedDriff = () => {
             }
           })
         );
+        let sharedUserPayload = {
+          skip: 0,
+          limit: 1000,
+          sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true },
+        };
+        dispatch(getSharedUsers(sharedUserPayload));
 
         let myToken = `Bearer ${sharedWs[ws].access_token}`;
         let accessBroadcastToken = sharedWs[ws].access_broadcast_token;

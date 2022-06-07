@@ -7,8 +7,9 @@ import { $_GET, getThisDeviceInfo } from "../../helpers/commonFunctions";
 import { EmailRegex } from "../../helpers/stringFormatter";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { CheckBox, PasswordInput, EmailPhoneInput } from "../forms";
-import { useSettings, useUserActions, useToaster } from "../hooks";
+import { useSettings, useUserActions, useToaster, useGetSlug } from "../hooks";
 import GoogleIcon from "../../assets/icons/btn_google_signin_light_normal_web.png";
+import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 
 const { REACT_APP_apiProtocol, REACT_APP_localDNSName } = process.env;
 
@@ -35,7 +36,7 @@ const LoginPanel = (props) => {
   const dispatch = useDispatch();
   const { driffSettings } = useSettings();
   //const subscriptions = useSelector((state) => state.admin.subscriptions);
-
+  const { slug } = useGetSlug();
   const userActions = useUserActions();
   const toaster = useToaster();
   const refs = {
@@ -48,6 +49,9 @@ const LoginPanel = (props) => {
     password: "",
     remember_me: true,
   });
+
+  const [stateCode, setStateCode] = useState(null);
+  const [inviteSlug, setInviteSlug] = useState(null);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -188,6 +192,18 @@ const LoginPanel = (props) => {
                 typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
                   ? props.location.state.from.pathname + props.location.state.from.search
                   : "/dashboard";
+              if (stateCode && inviteSlug) {
+                let payload = {
+                  url: `https://${inviteSlug}.driff.network/api/v2/shared-workspace-invite-accept`,
+                  state_code: stateCode,
+                  slug: slug,
+                };
+                dispatch(
+                  acceptSharedUserInvite(payload, (err, res) => {
+                    if (err) return;
+                  })
+                );
+              }
               userActions.login(res.data, returnUrl);
             }
 
@@ -237,6 +253,14 @@ const LoginPanel = (props) => {
       },
     }));
   };
+
+  useEffect(() => {
+    if ($_GET("state_code") && $_GET("invite_slug")) {
+      setStateCode($_GET("state_code"));
+      setInviteSlug($_GET("invite_slug"));
+      history.push("/login", { state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
+    }
+  }, []);
 
   useEffect(() => {
     handleEmailNumberChange(registerMode === "email" ? "" : undefined);

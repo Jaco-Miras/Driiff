@@ -26,6 +26,7 @@ const INITIAL_STATE = {
       lastPage: 0,
     },
   },
+  sharedUsers: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -544,6 +545,19 @@ export default (state = INITIAL_STATE, action) => {
             ...state.impersonation.logs,
             data: action.data.data,
             lastPage: action.data.last_page,
+          },
+        },
+      };
+    }
+    case "GET_SHARED_USERS_SUCCESS": {
+      return {
+        ...state,
+        sharedUsers: {
+          ...state.sharedUsers,
+          [action.slug]: {
+            users: action.data.users.map((u) => {
+              return { ...u, slug: action.slug };
+            }),
           },
         },
       };
