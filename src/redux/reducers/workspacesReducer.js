@@ -4392,11 +4392,13 @@ export default (state = INITIAL_STATE, action) => {
       const workspaceId = action.data.workspaceId;
       return {
         ...state,
-        activeTopic: {
-          ...state.activeTopic,
-          members: action.data.members,
-          member_ids: action.data.members.map((m) => m.id),
-        },
+        activeTopic: state.activeTopic
+          ? {
+              ...state.activeTopic,
+              members: action.data.members,
+              member_ids: action.data.members.map((m) => m.id),
+            }
+          : state.activeTopic,
         workspaces: {
           ...state.workspaces,
           ...(state.workspaces[workspaceId] && {
