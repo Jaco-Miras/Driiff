@@ -484,6 +484,7 @@ const ChatInput = (props) => {
 
     // textOnly.trim() === "" ? onActive(false) : onActive(true);
 
+    console.log(content)
     setQuillData({
       text: content,
       textOnly: editor.getText(content),
@@ -697,6 +698,7 @@ const ChatInput = (props) => {
       setQuillData({
         ...quillData,
         text: draft.text,
+        textOnly: draft.text
       });
     }
   };
@@ -840,14 +842,14 @@ const ChatInput = (props) => {
       user.type === "external"
         ? selectedChannel.members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
-              return true;
-            } else {
-              return false;
-            }
-          }),
+          if (u.id === user.id) {
+            return false;
+          } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            return true;
+          } else {
+            return false;
+          }
+        }),
     prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
   });
 
