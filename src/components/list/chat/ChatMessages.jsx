@@ -25,7 +25,7 @@ import VideoReminderMessage from "./VideoReminderMessage";
 const setChatBubbleArrowBG = (props) => {
   let bgColor = "#f0f0f0";
 
-  if (props.sharedSlug && !props.isAuthor) {
+  if (props.sharedSlug && !props.isAuthor && props.isNotSameDriff) {
     bgColor = "#fb3";
   }
 
@@ -816,6 +816,7 @@ class ChatMessages extends React.PureComponent {
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
                                 sharedSlug={this.props.selectedChannel.sharedSlug}
+                                isNotSameDriff={this.props.selectedChannel.members.find((mem) => mem.id === reply.user.id).slug !== this.props.selectedChannel.slug.slice(0, -7)}
                               >
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <ChatBubble
