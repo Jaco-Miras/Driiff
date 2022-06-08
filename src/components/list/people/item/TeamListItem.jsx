@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { Avatar, Badge } from "../../../common";
+import { Avatar, Badge, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { addToModals } from "../../../../redux/actions/globalActions";
@@ -37,7 +37,7 @@ const Wrapper = styled.li`
   .name-designation-badge {
     display: flex;
     flex-flow: column;
-    max-width: calc(100% - 65px);
+    max-width: calc(100% - 50px);
     .badge {
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -301,6 +301,8 @@ const TeamListItem = (props) => {
 
   const isUser = member.type === "internal" || member.type === "external";
 
+  const isNotSameDriff = workspace?.members.find((mem) => mem.id === member.id).slug !== workspace?.slug?.slice(0, -7);
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className} ${(showMoreButton || showLessButton) && "mb-3"}`}>
       <div className="d-flex align-items-center">
@@ -319,9 +321,12 @@ const TeamListItem = (props) => {
         </div>
         <div className="name-designation-badge">
           {isUser && (
-            <h6 className="profile-name" onClick={handleClickName}>
-              {!member.has_accepted && member.name === "" ? member.email : member.name}
-            </h6>
+            <div className="d-flex">
+              <h6 className="profile-name mr-2" onClick={handleClickName}>
+                {!member.has_accepted && member.name === "" ? member.email : member.name}
+              </h6>
+              {isNotSameDriff && <SvgIconFeather icon="repeat" />}
+            </div>
           )}
           {!isUser && (
             <div

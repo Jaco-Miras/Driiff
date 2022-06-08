@@ -4,7 +4,7 @@ const useChatTranslate = (props) => {
   const { message, isAuthor, translate, chat_language, actions, channel } = props;
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   let sharedPayload = null;
-  if (channel.sharedSlug) {
+  if (channel && channel.sharedSlug) {
     sharedPayload = { slug: channel.slug, token: sharedWs[channel.slug].access_token, is_shared: true };
   }
   function fetchTrans(message) {

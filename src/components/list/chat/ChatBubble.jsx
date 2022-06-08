@@ -569,10 +569,12 @@ const ChatBubble = (props) => {
   };
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
 
+  const isNotSameDriff = selectedChannel.members.find((mem) => mem.id === reply.user.id).slug !== selectedChannel.slug.slice(0, -7);
+
   const setChatBubbleBG = () => {
     let bgClassName = "";
 
-    if (selectedChannel.sharedSlug && !isAuthor) {
+    if (selectedChannel.sharedSlug && !isAuthor && isNotSameDriff) {
       bgClassName = "bg-warning";
     }
 
@@ -615,7 +617,7 @@ const ChatBubble = (props) => {
                     className={`chat-name-not-author-mobile ${reply.is_important && "important"} ${selectedChannel.sharedSlug && "text-dark font-weight-bold"}`}
                   >
                     {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
-                    {selectedChannel.sharedSlug && <SvgIconFeather icon="repeat" height={14} />}
+                    {selectedChannel.sharedSlug && isNotSameDriff && <SvgIconFeather icon="repeat" height={14} />}
                   </ChatNameNotAuthor>
                 </>
               )}
