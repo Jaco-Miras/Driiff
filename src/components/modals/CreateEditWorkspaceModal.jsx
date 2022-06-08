@@ -20,6 +20,7 @@ import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getExistingFolder } from "../../redux/services/workspace";
+import { uniqBy } from "lodash";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -1013,19 +1014,8 @@ const CreateEditWorkspaceModal = (props) => {
         payload = {
           ...payload,
           new_shared_workspace_members: [
-            ...form.selectedSharedUsers.map((ex) => {
-              return {
-                email: ex.email,
-                first_name: ex.first_name ? ex.first_name.trim() : ex.email,
-                middle_name: ex.middle_name ? ex.middle_name.trim() : "",
-                last_name: ex.last_name ? ex.last_name.trim() : "",
-                company: ex.company ? ex.company.trim() : "",
-                language: "en",
-                send_by_email: true,
-              };
-            }),
-            ...invitedSharedUsers
-              .filter((ex) => form.selectedSharedUsers.some((e) => e.email === ex.email))
+            ...form.selectedSharedUsers
+              .filter((ex) => !invitedSharedUsers.some((e) => e.email === ex.email))
               .map((ex) => {
                 return {
                   email: ex.email,
@@ -1037,6 +1027,17 @@ const CreateEditWorkspaceModal = (props) => {
                   send_by_email: true,
                 };
               }),
+            ...invitedSharedUsers.map((ex) => {
+              return {
+                email: ex.email,
+                first_name: ex.first_name ? ex.first_name.trim() : ex.email,
+                middle_name: ex.middle_name ? ex.middle_name.trim() : "",
+                last_name: ex.last_name ? ex.last_name.trim() : "",
+                company: ex.company ? ex.company.trim() : "",
+                language: "en",
+                send_by_email: true,
+              };
+            }),
           ],
         };
       }
@@ -1791,7 +1792,8 @@ const CreateEditWorkspaceModal = (props) => {
           },
         };
       });
-      setSharedUserOptions(allSharedUsersOptions);
+      const filteredSharedUsers = uniqBy(allSharedUsersOptions, "email");
+      setSharedUserOptions(filteredSharedUsers);
     }
   }, [sharedUsers]);
 
@@ -2029,7 +2031,7 @@ const CreateEditWorkspaceModal = (props) => {
           })
         );
       } else {
-        setInvitedSharedUser([...invitedSharedUsers, invitedSharedUser]);
+        setInvitedSharedUsers([...invitedSharedUsers, invitedSharedUser]);
       }
       setInvitedSharedUser({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
     }
