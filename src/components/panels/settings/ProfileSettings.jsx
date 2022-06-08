@@ -158,8 +158,8 @@ const ProfileSettings = (props) => {
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
     emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
-    emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always"),
-    emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Never"),
+    emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always, i prefer mostly email"),
+    emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Only on mention, I will use Driff mostly"),
   };
 
   const notificationSoundOptions = [
