@@ -59,8 +59,10 @@ const Wrapper = styled.div`
 
 
 const VideoMeeting = (props) => {
-  const domain = '8x8.vc';
-  const params = useParams()
+  const params = useParams();
+  const appId = "vpaas-magic-cookie-c0cc9d62fd3340d58d783df7885be71c";
+  const dispatch = useDispatch();
+  const apiRef = useRef(null);
 
   //const [activeDrags, setActiveDrags] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -82,38 +84,71 @@ const VideoMeeting = (props) => {
     setControlledPosition({ x, y });
   };
 
+  const handleClearJitsi = () => {
+    dispatch(clearJitsi());
+  };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <Draggable positionOffset={{ x: "-50%", y: "-50%" }} onDrag={onControlledDrag} position={controlledPosition} onStart={onStart} onStop={onStop}>
-        <Wrapper className={`jitsi-container`}>
-          <div className="j-container" style={{ position: "relative" }}>
-            <JitsiMeeting
-              domain={domain}
-              roomName={params?.room_name}
-              configOverwrite={{
-                startWithAudioMuted: true,
-                disableModeratorIndicator: true,
-                startScreenSharing: true,
-                enableEmailInStats: false
-              }}
-              interfaceConfigOverwrite={{
-                DISABLE_JOIN_LEAVE_NOTIFICATIONS: true
-              }}
-              onApiReady={(externalApi) => {
-                // here you can attach custom event listeners to the Jitsi Meet External API
-                // you can also store it locally to execute commands
-              }}
+    <JaaSMeeting
+      appId={appId}
+      jwt={params?.jwt_token}
+      roomName={params?.room_name}
+      configOverwrite={{
+        startWithAudioMuted: true,
+        hiddenPremeetingButtons: ["microphone"],
+        enableLobbyChat: false,
+        disableInviteFunctions: true,
+        disableDeepLinking: isMobile,
+        liveStreamingEnabled: false,
+        transcribingEnabled: false,
+        // Configs for prejoin page.
+        prejoinConfig: {
+          // When 'true', it shows an intermediate page before joining, where the user can configure their devices.
+          // This replaces `prejoinPageEnabled`.
+          enabled: false,
+          // List of buttons to hide from the extra join options dropdown.
+          hideExtraJoinButtons: ["no-audio", "by-phone"],
+        },
+        toolbarButtons: [
+          "camera",
+          "desktop",
+          "download",
+          "embedmeeting",
+          "etherpad",
+          "feedback",
+          "filmstrip",
+          "fullscreen",
+          "hangup",
+          "help",
+          "highlight",
+          "microphone",
+          "mute-everyone",
+          "mute-video-everyone",
+          "participants-pane",
+          "profile",
+          "raisehand",
+          "recording",
+          "security",
+          "select-background",
+          "settings",
+          "sharedvideo",
+          "shortcuts",
+          "stats",
+          "tileview",
+          "toggle-camera",
+          "__end",
+        ],
+      }}
+      onReadyToClose={handleClearJitsi}
+      onApiReady={(externalApi) => {
+        console.log(externalApi, "jitsi api");
+        apiRef.current = externalApi;
+      }}
+      getIFrameRef={node => node.style.height = '100vh'}
+    />
 
-              jwt={params?.jwt_token}
-            />
-            {isDragging && <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, top: 0, zIndex: 9999 }}></div>}
-          </div>
-        </Wrapper>
-      </Draggable>
 
 
-    </div>
   );
 };
 
