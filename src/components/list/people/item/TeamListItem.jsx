@@ -301,7 +301,7 @@ const TeamListItem = (props) => {
 
   const isUser = member.type === "internal" || member.type === "external";
 
-  const isNotSameDriff = workspace && workspace.members.find((mem) => mem.id === member.id).slug !== workspace?.slug?.slice(0, -7);
+  const isNotSameDriff = workspace && workspace.members.find((mem) => mem.id === member.id)?.slug !== workspace?.slug?.slice(0, -7);
 
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className} ${(showMoreButton || showLessButton) && "mb-3"}`}>

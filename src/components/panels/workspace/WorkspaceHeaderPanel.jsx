@@ -625,7 +625,7 @@ const WorspaceHeaderPanel = (props) => {
 
   const sharedWorkspace = activeTopic && activeTopic.slug ? activeTopic.slug !== getSlug() : false;
 
-  const isNotSameDriff = activeTopic && activeTopic.members.find((mem) => mem.id === user.id).slug !== activeTopic?.slug.slice(0, -7);
+  const isNotSameDriff = activeTopic && activeTopic.members.find((mem) => mem.id === user.id)?.slug !== activeTopic?.slug.slice(0, -7);
 
   return (
     <>
