@@ -483,8 +483,6 @@ const ChatInput = (props) => {
     // setQuillContents(editor.getContents());
 
     // textOnly.trim() === "" ? onActive(false) : onActive(true);
-
-    console.log(content)
     setQuillData({
       text: content,
       textOnly: editor.getText(content),
