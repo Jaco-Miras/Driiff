@@ -1341,7 +1341,8 @@ const CreateEditWorkspaceModal = (props) => {
                       })
                     );
                   }
-                } else if (res.data.channel && res.data.channel.code) {
+                }
+                if (res.data.channel && res.data.channel.code) {
                   if (sharedWs[newWorkspace.slug]) {
                     dispatch(
                       getChannel({ code: res.data.channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
