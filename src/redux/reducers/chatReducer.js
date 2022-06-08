@@ -2753,6 +2753,7 @@ export default function (state = INITIAL_STATE, action) {
                   return {
                     ...mem,
                     company_name: member.company_name,
+                    slug: member.slug,
                   };
                 } else {
                   return mem;
