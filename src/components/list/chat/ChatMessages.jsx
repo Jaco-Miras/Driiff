@@ -799,8 +799,9 @@ class ChatMessages extends React.PureComponent {
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
                                 sharedSlug={this.props.selectedChannel.sharedSlug}
-                                isNotSameDriff={false}
-                                //isNotSameDriff={this.props.selectedChannel.members.find((mem) => mem.id === reply.user.id).slug !== this.props.selectedChannel.slug.slice(0, -7)}
+                                isNotSameDriff={
+                                  this.props.selectedChannel.sharedSlug && this.props.selectedChannel.slug && this.props.selectedChannel.members.find((mem) => mem.id === reply.user.id)?.slug !== this.props.selectedChannel.slug.slice(0, -7)
+                                }
                               >
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <ChatBubble
