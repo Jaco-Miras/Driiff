@@ -11,9 +11,9 @@ import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, RadioInput } from "../forms";
-import { useFileActions, useProfilePicUpload, useToaster, useTranslationActions } from "../hooks";
+import { useFileActions, useProfilePicUpload, useToaster, useTranslationActions, useGetSlug } from "../hooks";
 import { ModalHeaderSection } from "./index";
-import { putChannel } from "../../redux/actions/chatActions";
+import { putChannel, getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
 import { getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
 import Select from "react-select";
@@ -319,6 +319,7 @@ const NestedModalWrapper = styled.div`
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
+  const { slug } = useGetSlug();
   const { uploadFiles } = useFileActions();
   const { _t } = useTranslationActions();
   const history = useHistory();
@@ -1311,7 +1312,32 @@ const CreateEditWorkspaceModal = (props) => {
                 created_at: res.data.topic.created_at,
                 updated_at: res.data.topic.created_at,
                 is_shared: form.has_externals,
+                sharedSlug: form.is_shared_wp,
+                slug: form.is_shared_wp ? `${slug}-shared` : slug,
+                key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
               };
+
+              if (form.is_shared_wp) {
+                if (res.data.team_channel && res.data.team_channel.code) {
+                  if (sharedWs[newWorkspace.slug]) {
+                    dispatch(
+                      getChannel({ code: res.data.team_channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                        if (err) return;
+                        dispatch(addCompanyNameOnMembers({ code: res.data.team_channel.code, members: newWorkspace.members }));
+                      })
+                    );
+                  }
+                } else if (res.data.channel && res.data.channel.code) {
+                  if (sharedWs[newWorkspace.slug]) {
+                    dispatch(
+                      getChannel({ code: res.data.channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                        if (err) return;
+                        dispatch(addCompanyNameOnMembers({ code: res.data.channel.code, members: newWorkspace.members }));
+                      })
+                    );
+                  }
+                }
+              }
 
               const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
               if (sendByMyselfEmail) {
