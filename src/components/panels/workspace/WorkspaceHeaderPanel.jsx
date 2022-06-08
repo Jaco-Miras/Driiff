@@ -620,6 +620,8 @@ const WorspaceHeaderPanel = (props) => {
 
   const sharedWorkspace = activeTopic && activeTopic.slug ? activeTopic.slug !== getSlug() : false;
 
+  const isNotSameDriff = activeTopic && activeTopic.members.find((mem) => mem.id === user.id).slug !== activeTopic.slug.slice(0, -7);
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -788,10 +790,12 @@ const WorspaceHeaderPanel = (props) => {
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>
                           {isMember && !isExternal ? (
                             <>
-                              <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                                <SvgIconFeather icon="user-plus" />
-                                {dictionary.actionWorkspaceInvite}
-                              </button>
+                              {!isNotSameDriff && (
+                                <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                                  <SvgIconFeather icon="user-plus" />
+                                  {dictionary.actionWorkspaceInvite}
+                                </button>
+                              )}
                               <button style={{ margin: 0 }} onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
                                 {dictionary.buttonLeave}
                               </button>
@@ -845,10 +849,12 @@ const WorspaceHeaderPanel = (props) => {
                   </div>
                   {isMember && !isExternal ? (
                     <>
-                      <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                        <SvgIconFeather icon="user-plus" />
-                        {dictionary.actionWorkspaceInvite}
-                      </button>
+                      {!isNotSameDriff && (
+                        <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                          <SvgIconFeather icon="user-plus" />
+                          {dictionary.actionWorkspaceInvite}
+                        </button>
+                      )}
                       <button onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
                         {dictionary.buttonLeave}
                       </button>
