@@ -489,7 +489,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
-      if (action.data.sharedSlug) return state;
+      if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
@@ -705,6 +705,9 @@ export default (state = INITIAL_STATE, action) => {
       }
       if (state.folderToDelete) {
         delete updatedFolders[state.folderToDelete];
+      }
+      if (!updatedWorkspaces[action.data.key] && action.data.sharedSlug) {
+        updatedWorkspaces[action.data.key] = action.data;
       }
       return {
         ...state,
