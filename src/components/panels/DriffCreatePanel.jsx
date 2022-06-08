@@ -207,7 +207,14 @@ const DriffCreatePanel = (props) => {
             },
           });
         } else {
-          driffActions.create({ ...form, token: captcha }, (err, res) => {
+          let extraPayload = {};
+          if (history.location.state && history.location.state.sharedWs) {
+            extraPayload = {
+              state_code: form.state_code,
+              driff_from: form.from_slug,
+            };
+          }
+          driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
             if (history.location.state && history.location.state.sharedWs) {
               let payload = {
                 url: `https://${form.from_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
