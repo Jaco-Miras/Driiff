@@ -569,8 +569,7 @@ const ChatBubble = (props) => {
   };
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
 
-  //const isNotSameDriff = selectedChannel.members.find((mem) => mem.id === reply.user.id).slug !== selectedChannel.slug.slice(0, -7);
-  const isNotSameDriff = false;
+  const isNotSameDriff = selectedChannel && selectedChannel.members.find((mem) => mem.id === reply.user.id).slug !== selectedChannel.slug.slice(0, -7);
 
   const setChatBubbleBG = () => {
     let bgClassName = "";
