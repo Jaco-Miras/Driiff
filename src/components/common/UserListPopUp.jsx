@@ -137,7 +137,7 @@ const UserListPopUp = (props) => {
                 onClick={(e) => handleUserClick(e, u)}
               />
               <span className={"user-list-name"} onClick={(e) => handleUserClick(e, u)}>
-                {u.name ? u.name : u.email} {workspace.sharedSlug && workspace.members.find((mem) => mem.id === u.id).slug !== workspace.slug.slice(0, -7) && <SvgIconFeather icon="repeat" height={14} />}
+                {u.name ? u.name : u.email} {workspace.sharedSlug && workspace.slug && workspace.members.find((mem) => mem.id === u.id)?.slug !== workspace.slug.slice(0, -7) && <SvgIconFeather icon="repeat" height={14} />}
               </span>
             </li>
           );
