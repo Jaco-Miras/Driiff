@@ -114,6 +114,7 @@ const GuestLayout = (props) => {
   const { setRegisteredDriff } = props;
 
   const dictionary = {
+    passwordLoginDisableLabel: _t("LOGIN.PASSWORD_LOGIN_DISABLED_LABEL", "Password Login is disabled"),
     magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),
     rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
     resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
