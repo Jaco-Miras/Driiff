@@ -140,6 +140,7 @@ const MainLayout = (props) => {
         url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
         state_code: history.location.state.state_code,
         slug: slug,
+        as_guest: false,
       };
       dispatch(
         acceptSharedUserInvite(payload, (err, res) => {
