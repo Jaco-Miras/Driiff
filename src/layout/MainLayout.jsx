@@ -30,6 +30,8 @@ import JitsiContainer from "../components/panels/chat/JitsiContainer";
 import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
 import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar";
 import { acceptSharedUserInvite } from "../redux/actions/userAction";
+import { getSharedWorkspaces } from "../redux/actions/workspaceActions";
+import { sessionService } from "redux-react-session";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -134,7 +136,8 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   useEffect(() => {
-    console.log(history);
+    let invite_slug = localStorage.getItem("inviteSlug");
+    let state_code = localStorage.getItem("stateCode");
     if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
       let payload = {
         url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
@@ -146,6 +149,30 @@ const MainLayout = (props) => {
         acceptSharedUserInvite(payload, (err, res) => {
           if (err) return;
           history.replace({ state: {} });
+        })
+      );
+    }
+    console.log(history, invite_slug, state_code);
+    if (invite_slug && state_code) {
+      let payload = {
+        url: `https://${invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        state_code: state_code,
+        slug: slug,
+        as_guest: false,
+      };
+      dispatch(
+        acceptSharedUserInvite(payload, (err, res) => {
+          if (err) return;
+          localStorage.removeItem("inviteSlug");
+          localStorage.removeItem("stateCode");
+          dispatch(
+            getSharedWorkspaces({}, (err, res) => {
+              if (err) return;
+              sessionService.loadSession().then((current) => {
+                sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
+              });
+            })
+          );
         })
       );
     }

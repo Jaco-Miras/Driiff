@@ -287,8 +287,12 @@ const LoginPanel = (props) => {
 
   useEffect(() => {
     if ($_GET("state_code") && $_GET("invite_slug")) {
+      const state_code = $_GET("state_code");
+      const invite_slug = $_GET("invite_slug");
       setStateCode($_GET("state_code"));
       setInviteSlug($_GET("invite_slug"));
+      localStorage.setItem("stateCode", state_code);
+      localStorage.setItem("inviteSlug", invite_slug);
       history.replace({ state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
     }
   }, []);
