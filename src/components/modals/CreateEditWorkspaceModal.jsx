@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
-import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace, getAllWorkspaceFolders } from "../../redux/actions/workspaceActions";
+import { createWorkspace, leaveWorkspace, setActiveTopic, updateWorkspace, getAllWorkspaceFolders, getSharedWorkspaces } from "../../redux/actions/workspaceActions";
 import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
@@ -21,6 +21,7 @@ import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import { getExistingFolder } from "../../redux/services/workspace";
 import { uniqBy } from "lodash";
+import { sessionService } from "redux-react-session";
 
 const WrapperDiv = styled(InputGroup)`
   display: flex;
@@ -339,6 +340,7 @@ const CreateEditWorkspaceModal = (props) => {
   const folders = useSelector((state) => state.workspaces.allFolders);
   const securitySettings = useSelector((state) => state.admin.security);
   const allFoldersLoaded = useSelector((state) => state.workspaces.allFoldersLoaded);
+  const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
 
   const [userOptions, setUserOptions] = useState([]);
   const [externalUserOptions, setExternalUserOptions] = useState([]);
@@ -1226,7 +1228,6 @@ const CreateEditWorkspaceModal = (props) => {
         setLoading(true);
         dispatch(
           createWorkspace(payload, (err, res) => {
-            toggle();
             if (err) {
               setLoading(false);
               toaster.warning(
@@ -1255,18 +1256,7 @@ const CreateEditWorkspaceModal = (props) => {
               });
 
               updateMembers(updatedMembers, res.data.id);
-              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
-              if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
-                  folder_id: form.selectedFolder.value,
-                  workspace_id: res.data.id,
-                });
-              } else {
-                history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
-                  folder_id: null,
-                  workspace_id: res.data.id,
-                });
-              }
+
               if (attachedFiles.length) {
                 let formData = new FormData();
                 for (const i in attachedFiles) {
@@ -1317,27 +1307,98 @@ const CreateEditWorkspaceModal = (props) => {
                 key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
               };
 
+              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
+
               if (form.is_shared_wp) {
-                if (res.data.team_channel && res.data.team_channel.code) {
-                  if (sharedWs[newWorkspace.slug]) {
-                    dispatch(
-                      getChannel({ code: res.data.team_channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
-                        if (err) return;
-                        dispatch(addCompanyNameOnMembers({ code: res.data.team_channel.code, members: newWorkspace.members }));
-                      })
-                    );
+                // check if user has shared-auth loaded
+                if (sharedWsLoaded) {
+                  if (res.data.team_channel && res.data.team_channel.code) {
+                    if (sharedWs[newWorkspace.slug]) {
+                      dispatch(
+                        getChannel({ code: res.data.team_channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                          if (err) return;
+                          dispatch(addCompanyNameOnMembers({ code: res.data.team_channel.code, members: newWorkspace.members }));
+                        })
+                      );
+                    }
                   }
-                }
-                if (res.data.channel && res.data.channel.code) {
-                  if (sharedWs[newWorkspace.slug]) {
-                    dispatch(
-                      getChannel({ code: res.data.channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
-                        if (err) return;
-                        dispatch(addCompanyNameOnMembers({ code: res.data.channel.code, members: newWorkspace.members }));
-                      })
-                    );
+                  if (res.data.channel && res.data.channel.code) {
+                    if (sharedWs[newWorkspace.slug]) {
+                      dispatch(
+                        getChannel({ code: res.data.channel.code, sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                          if (err) return;
+                          dispatch(addCompanyNameOnMembers({ code: res.data.channel.code, members: newWorkspace.members }));
+                        })
+                      );
+                    }
                   }
+                  if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                    history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                      folder_id: form.selectedFolder.value,
+                      workspace_id: res.data.id,
+                    });
+                  } else {
+                    history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                      folder_id: null,
+                      workspace_id: res.data.id,
+                    });
+                  }
+                  toggle();
+                } else {
+                  //fetch shared-auth before redirect
+                  dispatch(
+                    getSharedWorkspaces({}, (err, response) => {
+                      if (err) return;
+                      if (res.data.team_channel && res.data.team_channel.code) {
+                        if (response.data[newWorkspace.slug]) {
+                          dispatch(
+                            getChannel({ code: res.data.team_channel.code, sharedPayload: { slug: newWorkspace.slug, token: response.data[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                              if (err) return;
+                              dispatch(addCompanyNameOnMembers({ code: res.data.team_channel.code, members: newWorkspace.members }));
+                            })
+                          );
+                        }
+                      }
+                      if (res.data.channel && res.data.channel.code) {
+                        if (response.data[newWorkspace.slug]) {
+                          dispatch(
+                            getChannel({ code: res.data.channel.code, sharedPayload: { slug: newWorkspace.slug, token: response.data[newWorkspace.slug].access_token, is_shared: true } }, (err, res) => {
+                              if (err) return;
+                              dispatch(addCompanyNameOnMembers({ code: res.data.channel.code, members: newWorkspace.members }));
+                            })
+                          );
+                        }
+                      }
+                      sessionService.loadSession().then((current) => {
+                        sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
+                      });
+                      if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                        history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                          folder_id: form.selectedFolder.value,
+                          workspace_id: res.data.id,
+                        });
+                      } else {
+                        history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                          folder_id: null,
+                          workspace_id: res.data.id,
+                        });
+                      }
+                    })
+                  );
                 }
+              } else {
+                if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                  history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                    folder_id: form.selectedFolder.value,
+                    workspace_id: res.data.id,
+                  });
+                } else {
+                  history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                    folder_id: null,
+                    workspace_id: res.data.id,
+                  });
+                }
+                toggle();
               }
 
               const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);

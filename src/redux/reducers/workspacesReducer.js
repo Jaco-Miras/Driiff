@@ -4375,8 +4375,8 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_SHARED_WORKSPACES_SUCCESS": {
       return {
         ...state,
-        sharedWorkspaces: action.data,
-        sharedWorkspacesLoaded: true,
+        sharedWorkspaces: action.data.length === 0 ? state.sharedWorkspaces : action.data,
+        sharedWorkspacesLoaded: action.data.length === 0 ? false : true,
       };
     }
     case "POST_LIST_SUCCESS": {
