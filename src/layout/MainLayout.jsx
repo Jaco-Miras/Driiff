@@ -264,7 +264,7 @@ const MainLayout = (props) => {
       {sharedWsLoaded &&
         Object.keys(sharedWs).length > 0 &&
         Object.keys(sharedWs).map((ws) => {
-          if (window[ws]) {
+          if (window[ws] && sharedWs[ws].user_auth) {
             return (
               <SocketListeners
                 key={ws}
