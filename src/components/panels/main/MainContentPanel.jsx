@@ -68,7 +68,7 @@ const MainContentPanel = (props) => {
           <Redirect
             from="*"
             to={{
-              pathname: isExternal ? "/workspace/chat" : "/dashboard",
+              pathname: isExternal ? "/workspace/search" : "/dashboard",
               state: { from: props.location },
             }}
           />

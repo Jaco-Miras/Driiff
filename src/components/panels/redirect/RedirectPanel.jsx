@@ -70,11 +70,11 @@ const RedirectPanel = (props) => {
                 });
                 history.push(link);
               } else {
-                history.push("/workspace/chat");
+                history.push("/workspace/search");
               }
             }
           } else {
-            history.push("/workspace/chat");
+            history.push("/workspace/search");
           }
         }
       });
