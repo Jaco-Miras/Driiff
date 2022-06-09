@@ -152,7 +152,6 @@ const MainLayout = (props) => {
         })
       );
     }
-    console.log(history, invite_slug, state_code);
     if (invite_slug && state_code) {
       let payload = {
         url: `https://${invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
@@ -162,9 +161,9 @@ const MainLayout = (props) => {
       };
       dispatch(
         acceptSharedUserInvite(payload, (err, res) => {
-          if (err) return;
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
+          if (err) return;
           dispatch(
             getSharedWorkspaces({}, (err, res) => {
               if (err) return;
