@@ -288,7 +288,7 @@ const LoginPanel = (props) => {
     if ($_GET("state_code") && $_GET("invite_slug")) {
       setStateCode($_GET("state_code"));
       setInviteSlug($_GET("invite_slug"));
-      history.push("/login", { state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
+      history.replace({ state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
     }
   }, []);
   console.log(history, "login panel");
