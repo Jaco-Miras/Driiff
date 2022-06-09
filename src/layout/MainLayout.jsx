@@ -134,6 +134,7 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   useEffect(() => {
+    console.log(history);
     if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
       let payload = {
         url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
