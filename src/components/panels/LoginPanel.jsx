@@ -262,7 +262,7 @@ const LoginPanel = (props) => {
       history.replace({ state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
     }
   }, []);
-  console.log(history, "login panel");
+
   useEffect(() => {
     handleEmailNumberChange(registerMode === "email" ? "" : undefined);
   }, [registerMode]);

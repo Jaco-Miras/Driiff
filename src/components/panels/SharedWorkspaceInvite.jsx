@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useTranslationActions, useGetSlug } from "../hooks";
+import { useTranslationActions, useGetSlug, useUserActions } from "../hooks";
 import { useHistory } from "react-router-dom";
 import { FormInput, InputFeedback } from "../forms";
 import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
 import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import { patchCheckDriff } from "../../redux/actions/driffActions";
+import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 
 const Wrapper = styled.form``;
 
@@ -26,9 +27,10 @@ const FormGroup = styled.div`
 const SharedWorkspaceInvite = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  //   const userAction = useUserActions();
+  const userAction = useUserActions();
   //   const toaster = useToaster();
   const [loading, setLoading] = useState(false);
+  const [loginGuestLoading, setLoginGuestLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const { slug } = useGetSlug();
   const refs = {
@@ -201,6 +203,25 @@ const SharedWorkspaceInvite = (props) => {
     );
   };
 
+  const handleLoginAsGuest = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setLoginGuestLoading(true);
+    if (loginGuestLoading) return;
+    let payload = {
+      url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+      state_code: form.state_code,
+      slug: slug,
+      as_guest: true,
+    };
+    dispatch(
+      acceptSharedUserInvite(payload, (err, res) => {
+        if (err) return;
+        userAction.login(res.data.user_auth, "/dashboard");
+      })
+    );
+  };
+
   useEffect(() => {
     dispatch(
       getSharedUserInfo({ state_code: $_GET("state_code") }, (err, res) => {
@@ -310,8 +331,8 @@ const SharedWorkspaceInvite = (props) => {
 
           <div>Or</div>
 
-          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleAccept}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login as guest
+          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleLoginAsGuest}>
+            {loginGuestLoading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login as guest
           </button>
         </>
       )}
