@@ -220,6 +220,7 @@ const DriffCreatePanel = (props) => {
                 url: `https://${form.from_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
                 state_code: form.state_code,
                 slug: form.slug,
+                as_guest: false,
               };
               dispatch(
                 acceptSharedUserInvite(payload, () => {
