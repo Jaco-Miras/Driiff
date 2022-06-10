@@ -1235,15 +1235,6 @@ export const SvgIconFeather = React.memo(
             <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
           </>
         );
-      case "repeat":
-        content = (
-          <>
-            <polyline points="17 1 21 5 17 9"></polyline>
-            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
-            <polyline points="7 23 3 19 7 15"></polyline>
-            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
-          </>
-        );
         break;
       case "repeat":
         content = (
@@ -1269,20 +1260,20 @@ export const SvgIconFeather = React.memo(
         );
         break;
 
-      case "clipboard":
-        viewBox = "0 0 24 24";
-        fill = "none";
-        stroke = "currentColor";
-        strokeWidth = "2";
-        strokeLinecap = "round";
-        strokeLinejoin = "round";
-        content = (
-          <>
-            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
-          </>
-        );
-        break;
+      // case "clipboard":
+      //   viewBox = "0 0 24 24";
+      //   fill = "none";
+      //   stroke = "currentColor";
+      //   strokeWidth = "2";
+      //   strokeLinecap = "round";
+      //   strokeLinejoin = "round";
+      //   content = (
+      //     <>
+      //       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+      //       <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+      //     </>
+      //   );
+      //   break;
       default:
         console.log(`${icon} not found`);
     }
@@ -1314,7 +1305,7 @@ export const SvgIcon = React.memo(
 
     if (icon === "gripp-logo") return <img alt="gripp logo" className={`icon-${icon} ${className}`} width={width} height={height} src={require("../../assets/icon/gripp-logo.svg")} />;
     if (icon === "google-label") return <img alt="google label" className={`icon-${icon} ${className}`} width={width} height={height} src={require("../../assets/icon/google-label.svg")} />;
-     
+
     let content = "";
     let viewBox = "";
 
