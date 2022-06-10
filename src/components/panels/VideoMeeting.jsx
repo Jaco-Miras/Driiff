@@ -20,9 +20,7 @@ const VideoMeeting = (props) => {
 
   useEffect(() => {
     if (params?.room_name || params?.jwt_token) {
-      if (deviceType === "mobile" && browserName === "WebKit") {
-        window.webkit.messageHandlers.startDriffTalk.postMessage({ room: params?.room_name, token: params?.jwt_token });
-      }
+      window.webkit.messageHandlers.startDriffTalk.postMessage({ room: params?.room_name, token: params?.jwt_token });
     }
   }, [params?.room_name, params?.jwt_token]);
   return (
