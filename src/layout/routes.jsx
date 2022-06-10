@@ -23,7 +23,6 @@ export const AppRoute = ({ children, ...props }) => {
   //const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
   useEffect(() => {
-    console.log(session.checked, session.authenticated, history.location, "route");
     if ($_GET("state_code") && $_GET("invite_slug")) {
       const state_code = $_GET("state_code");
       const invite_slug = $_GET("invite_slug");
@@ -44,7 +43,6 @@ export const AppRoute = ({ children, ...props }) => {
 
   useEffect(() => {
     if (session.user.id) {
-      console.log(history.location, "user useEffect");
       dispatch(
         addUserToReducers({
           id: session.user.id,
