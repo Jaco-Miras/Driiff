@@ -220,9 +220,9 @@ const SharedWorkspaceInvite = (props) => {
         if (err) return;
         let redirectLink = "/dashboard";
         if (res.data.data.current_workspace) {
-          redirectLink = `/shared-workspace/dasboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          redirectLink = `/shared-workspace/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
         } else {
-          redirectLink = `/shared-workspace/dasboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          redirectLink = `/shared-workspace/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
         }
         userAction.login(res.data.user_auth, redirectLink);
       })

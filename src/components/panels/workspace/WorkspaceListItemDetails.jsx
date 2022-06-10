@@ -47,6 +47,11 @@ const CheckIconContainer = styled.span`
   border-radius: 50%;
   margin-right: 3px;
 `;
+const RepeatIcon = styled(SvgIconFeather)`
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 3px;
+`;
 
 const WorkspaceListItemDetails = (props) => {
   const { dictionary, isExternal, isMember, item, onRedirect, members } = props;
@@ -57,6 +62,22 @@ const WorkspaceListItemDetails = (props) => {
           {item.topic.name}
         </span>
         {item.topic.is_locked && <Icon icon="lock" />}
+        {item.topic.is_shared && !isExternal && (
+          <>
+            <span className={"badge badge-external ml-1 align-items-center"}>
+              <Icon icon="eye" /> {dictionary.withClient}
+            </span>
+            <Icon icon="eye" className="mobile-icon" />
+          </>
+        )}
+        {item.slug && (
+          <>
+            <span className={"badge badge-external ml-1 align-items-center"}>
+              <RepeatIcon icon="repeat" /> {dictionary.sharedClient}
+            </span>
+            <Icon icon="eye" className="mobile-icon" />
+          </>
+        )}
       </div>
       <div className="labels">
         {isMember && (
