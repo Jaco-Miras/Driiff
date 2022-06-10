@@ -798,7 +798,7 @@ class ChatMessages extends React.PureComponent {
                                 isBot={isBot}
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
-                                sharedSlug={this.props.selectedChannel.sharedSlug}
+                                sharedSlug={this.props.selectedChannel.hasOwnProperty("sharedSlug") ? this.props.selectedChannel.sharedSlug : false}
                                 isNotSameDriff={
                                   this.props.selectedChannel.sharedSlug && this.props.selectedChannel.slug && this.props.selectedChannel.members.find((mem) => mem.id === reply.user.id)?.slug !== this.props.selectedChannel.slug.slice(0, -7)
                                 }
