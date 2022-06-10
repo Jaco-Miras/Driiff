@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, ProfileSlider, SvgIconFeather } from "../common";
-import { useOutsideClick, useWorkspace } from "../hooks";
+import { useOutsideClick } from "../hooks";
 //import { useHistory } from "react-router-dom";
 //import { replaceChar } from "../../helpers/stringFormatter";
 import { CSSTransition } from "react-transition-group";
@@ -98,7 +99,7 @@ const UserListPopUp = (props) => {
   const [showSlider, setShowSlider] = useState(false);
   const [user, setUser] = useState(null);
 
-  const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
   const handleShowList = () => {
     if (onShowList) onShowList();
@@ -138,7 +139,9 @@ const UserListPopUp = (props) => {
               />
               <span className={"user-list-name"} onClick={(e) => handleUserClick(e, u)}>
                 {u.name ? u.name : u.email}{" "}
-                {workspace.hasOwnProperty("sharedSlug") && workspace.sharedSlug && workspace.slug && workspace.members.find((mem) => mem.id === u.id)?.slug !== workspace.slug.slice(0, -7) && <SvgIconFeather icon="repeat" height={14} />}
+                {workspace && workspace.hasOwnProperty("sharedSlug") && workspace.sharedSlug && workspace.slug && workspace.members.find((mem) => mem.id === u.id)?.slug !== workspace.slug.slice(0, -7) && (
+                  <SvgIconFeather icon="repeat" height={14} />
+                )}
               </span>
             </li>
           );
