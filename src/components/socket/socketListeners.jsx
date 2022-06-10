@@ -309,7 +309,7 @@ class SocketListeners extends Component {
       //this.refetchOtherMessages();
       //this.refetchPosts();
       this.refetchPostComments();
-      this.props.getFavoriteWorkspaceCounters({});
+      //this.props.getFavoriteWorkspaceCounters({});
     });
     window[this.state.slug].connector.socket.on("reconnecting", function () {
       //console.log("socket reconnecting");
@@ -675,10 +675,10 @@ class SocketListeners extends Component {
                 sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
               };
             }
-            this.props.getFavoriteWorkspaceCounters(payload);
+            //this.props.getFavoriteWorkspaceCounters(payload);
           }
         }
-        this.props.getToDoDetail();
+        //this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_WORKSPACE_TODO": {
             this.props.incomingToDo({ ...e, user: e.user_id, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -747,8 +747,8 @@ class SocketListeners extends Component {
             sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
           };
         }
-        this.props.getFavoriteWorkspaceCounters(payload);
-        this.props.getToDoDetail();
+        //this.props.getFavoriteWorkspaceCounters(payload);
+        //this.props.getToDoDetail();
         switch (e.SOCKET_TYPE) {
           case "CREATE_TODO": {
             this.props.incomingToDo({ ...e, user: e.user_id, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -938,7 +938,7 @@ class SocketListeners extends Component {
             sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
           };
         }
-        this.props.getFavoriteWorkspaceCounters(payload);
+        //this.props.getFavoriteWorkspaceCounters(payload);
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
             this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -1315,7 +1315,7 @@ class SocketListeners extends Component {
                       sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
                     };
                   }
-                  this.props.getFavoriteWorkspaceCounters(payload);
+                  //this.props.getFavoriteWorkspaceCounters(payload);
                 }
               }
             }
@@ -2493,7 +2493,7 @@ class SocketListeners extends Component {
                 sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
               };
             }
-            this.props.getFavoriteWorkspaceCounters(payload);
+            //this.props.getFavoriteWorkspaceCounters(payload);
           }
         }
         this.props.setUnreadNotificationCounterEntries(e);
