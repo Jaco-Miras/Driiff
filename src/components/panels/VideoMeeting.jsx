@@ -1,9 +1,10 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
 import { isMobile } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
+import { browserName, deviceType } from "react-device-detect";
 
 const VideoMeeting = (props) => {
   const params = useParams();
@@ -15,6 +16,13 @@ const VideoMeeting = (props) => {
     dispatch(clearJitsi());
   };
 
+  useEffect(() => {
+    if (params?.room_name || params?.jwt_token) {
+      if (deviceType === "mobile" && browserName === "WebKit") {
+        window.webkit.messageHandlers.startDriffTalk.postMessage({ room: params?.room_name, token: params?.jwt_token });
+      }
+    }
+  }, [params?.room_name, params?.jwt_token]);
   return (
     <JaaSMeeting
       appId={appId}
