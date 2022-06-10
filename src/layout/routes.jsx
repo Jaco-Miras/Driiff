@@ -22,6 +22,10 @@ export const AppRoute = ({ children, ...props }) => {
   //const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
   useEffect(() => {
+    console.log(session.authenticated, history.location, "route");
+  }, []);
+
+  useEffect(() => {
     if (session.checked) {
       if (session.authenticated) {
         fetch();
@@ -70,7 +74,11 @@ export const AppRoute = ({ children, ...props }) => {
             path="*"
             to={{
               pathname: session.user.type === "external" ? "/workspace/search" : "/dashboard",
-              state: { from: history.location },
+              state: {
+                from: history.location,
+                state_code: history.location.state && history.location.state.state_code ? history.location.state.state_code : null,
+                invite_slug: history.location.state && history.location.state.invite_slug ? history.location.state.invite_slug : null,
+              },
             }}
           />
         </Switch>
