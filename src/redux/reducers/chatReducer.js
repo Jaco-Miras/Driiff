@@ -1647,10 +1647,12 @@ export default function (state = INITIAL_STATE, action) {
           skip: action.data.replies.length,
           selected: true,
           isFetching: false,
+          slug: action.slug,
+          sharedSlug: action.isSharedSlug,
         };
         channels = {
           ...channels,
-          [channel.id]: channel,
+          [action.isSharedSlug ? channel.code : channel.id]: channel,
         };
         return {
           ...state,

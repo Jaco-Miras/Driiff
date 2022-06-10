@@ -149,10 +149,10 @@ const MainLayout = (props) => {
           dispatch(
             getSharedWorkspaces({}, (err, res) => {
               let redirectLink = "/dashboard";
-              if (res.data.current_workspace) {
-                redirectLink = `/shared-workspace/dasboard/${res.data.current_workspace.id}/${replaceChar(res.data.current_workspace.name)}/${res.data.current_topic.id}/${replaceChar(res.data.current_topic.name)}`;
+              if (res.data.data.current_workspace) {
+                redirectLink = `/shared-workspace/dasboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
               } else {
-                redirectLink = `/shared-workspace/dasboard/${res.data.current_topic.id}/${replaceChar(res.data.current_topic.name)}`;
+                redirectLink = `/shared-workspace/dasboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
               }
               history.push(redirectLink);
               if (err) return;

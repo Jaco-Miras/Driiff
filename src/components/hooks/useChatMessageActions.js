@@ -71,7 +71,7 @@ const useChatMessageActions = () => {
       limit: limit,
       //...getSharedPayload(channel),
     };
-    if (channel.slug) {
+    if (channel.slug && channel.sharedSlug && sharedWs[channel.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: channel.slug, token: sharedWs[channel.slug].access_token, is_shared: true },
@@ -159,7 +159,7 @@ const useChatMessageActions = () => {
       message_id: messageId,
       react_type: reactType,
     };
-    if (selectedChannel.slug) {
+    if (selectedChannel.slug && selectedChannel.sharedSlug && sharedWs[selectedChannel.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
@@ -176,7 +176,7 @@ const useChatMessageActions = () => {
     let payload = {
       message_id: messageId,
     };
-    if (selectedChannel.slug) {
+    if (selectedChannel.slug && selectedChannel.sharedSlug && sharedWs[selectedChannel.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
@@ -302,7 +302,7 @@ const useChatMessageActions = () => {
       message_id: chat.id,
       is_important: chat.is_important ? 0 : 1,
     };
-    if (selectedChannel.slug) {
+    if (selectedChannel.slug && selectedChannel.sharedSlug && sharedWs[selectedChannel.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
