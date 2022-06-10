@@ -145,19 +145,19 @@ const MainLayout = (props) => {
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
           history.replace({ state: {} });
+          let redirectLink = "/dashboard";
+          if (res.data.data.current_workspace) {
+            redirectLink = `/shared-workspace/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          } else {
+            redirectLink = `/shared-workspace/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          }
+          history.push(redirectLink);
           if (err) return;
           dispatch(
-            getSharedWorkspaces({}, (err, res) => {
-              let redirectLink = "/dashboard";
-              if (res.data.data.current_workspace) {
-                redirectLink = `/shared-workspace/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-              } else {
-                redirectLink = `/shared-workspace/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-              }
-              history.push(redirectLink);
+            getSharedWorkspaces({}, (err, response) => {
               if (err) return;
               sessionService.loadSession().then((current) => {
-                sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
+                sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
               });
             })
           );
