@@ -9,6 +9,7 @@ import { getSharedUserInfo } from "../../redux/actions/userAction";
 import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import { patchCheckDriff } from "../../redux/actions/driffActions";
 import { acceptSharedUserInvite } from "../../redux/actions/userAction";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const Wrapper = styled.form``;
 
@@ -217,7 +218,13 @@ const SharedWorkspaceInvite = (props) => {
     dispatch(
       acceptSharedUserInvite(payload, (err, res) => {
         if (err) return;
-        userAction.login(res.data.user_auth, "/dashboard");
+        let redirectLink = "/dashboard";
+        if (res.data.workspace) {
+          redirectLink = `/shared-workspace/dasboard/${res.data.workspace.id}/${replaceChar(res.data.workspace.name)}/${res.data.topic.id}/${replaceChar(res.data.topic.name)}`;
+        } else {
+          redirectLink = `/shared-workspace/dasboard/${res.data.topic.id}/${replaceChar(res.data.topic.name)}`;
+        }
+        userAction.login(res.data.user_auth, redirectLink);
       })
     );
   };

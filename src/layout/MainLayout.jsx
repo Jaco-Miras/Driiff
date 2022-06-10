@@ -32,6 +32,7 @@ import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar
 import { acceptSharedUserInvite } from "../redux/actions/userAction";
 import { getSharedWorkspaces } from "../redux/actions/workspaceActions";
 import { sessionService } from "redux-react-session";
+import { replaceChar } from "../helpers/stringFormatter";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -138,34 +139,22 @@ const MainLayout = (props) => {
   useEffect(() => {
     let invite_slug = localStorage.getItem("inviteSlug");
     let state_code = localStorage.getItem("stateCode");
-    if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
-      let payload = {
-        url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
-        state_code: history.location.state.state_code,
-        slug: slug,
-        as_guest: false,
-      };
-      dispatch(
-        acceptSharedUserInvite(payload, (err, res) => {
-          if (err) return;
-          history.replace({ state: {} });
-        })
-      );
-    }
-    if (invite_slug && state_code) {
-      let payload = {
-        url: `https://${invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
-        state_code: state_code,
-        slug: slug,
-        as_guest: false,
-      };
+    const handleAcceptInvite = (payload) => {
       dispatch(
         acceptSharedUserInvite(payload, (err, res) => {
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
+          history.replace({ state: {} });
           if (err) return;
           dispatch(
             getSharedWorkspaces({}, (err, res) => {
+              let redirectLink = "/dashboard";
+              if (res.data.workspace) {
+                redirectLink = `/shared-workspace/dasboard/${res.data.workspace.id}/${replaceChar(res.data.workspace.name)}/${res.data.topic.id}/${replaceChar(res.data.topic.name)}`;
+              } else {
+                redirectLink = `/shared-workspace/dasboard/${res.data.topic.id}/${replaceChar(res.data.topic.name)}`;
+              }
+              history.push(redirectLink);
               if (err) return;
               sessionService.loadSession().then((current) => {
                 sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
@@ -174,6 +163,23 @@ const MainLayout = (props) => {
           );
         })
       );
+    };
+    if (invite_slug && state_code) {
+      let payload = {
+        url: `https://${invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        state_code: state_code,
+        slug: slug,
+        as_guest: false,
+      };
+      handleAcceptInvite(payload);
+    } else if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
+      let payload = {
+        url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        state_code: history.location.state.state_code,
+        slug: slug,
+        as_guest: false,
+      };
+      handleAcceptInvite(payload);
     }
     const modalTimer = setTimeout(() => {
       if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
