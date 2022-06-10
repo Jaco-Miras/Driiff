@@ -7,6 +7,7 @@ import { useSettings } from "../components/hooks";
 //import GuestLayout from "./GuestLayout";
 //import MainLayout from "./MainLayout";
 import { addUserToReducers } from "../redux/actions/globalActions";
+import { $_GET } from "../helpers/commonFunctions";
 
 const MainLayout = lazy(() => import("./MainLayout"));
 const GuestLayout = lazy(() => import("./GuestLayout"));
@@ -22,7 +23,14 @@ export const AppRoute = ({ children, ...props }) => {
   //const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
 
   useEffect(() => {
-    console.log(session.authenticated, history.location, "route");
+    console.log(session.checked, session.authenticated, history.location, "route");
+    if ($_GET("state_code") && $_GET("invite_slug")) {
+      const state_code = $_GET("state_code");
+      const invite_slug = $_GET("invite_slug");
+      localStorage.setItem("stateCode", state_code);
+      localStorage.setItem("inviteSlug", invite_slug);
+      history.replace({ state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
+    }
   }, []);
 
   useEffect(() => {
@@ -36,6 +44,7 @@ export const AppRoute = ({ children, ...props }) => {
 
   useEffect(() => {
     if (session.user.id) {
+      console.log(history.location, "user useEffect");
       dispatch(
         addUserToReducers({
           id: session.user.id,
