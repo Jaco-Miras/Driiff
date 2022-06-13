@@ -79,7 +79,7 @@ const DriffTalkMessage = (props) => {
           if (err) {
             return;
           }
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: "24", status: "OK", token: res.data._token, room: res.data.room_name });
         })
       );
     } else {
