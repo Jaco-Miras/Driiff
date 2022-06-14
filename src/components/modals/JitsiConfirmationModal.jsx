@@ -7,6 +7,7 @@ import { ModalHeaderSection } from "./index";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
+import { getCurrentDriffUrl } from "../../helpers/slugHelper";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {
@@ -61,6 +62,7 @@ const JitsiConfirmationModal = (props) => {
   };
 
   const [modal, setModal] = useState(true);
+  const driffUrl = getCurrentDriffUrl();
 
   const toggle = () => {
     setModal(!modal);
@@ -98,8 +100,7 @@ const JitsiConfirmationModal = (props) => {
             toggle();
             return;
           }
-          const host = window.location.host.split(".");
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: host, status: "OK", token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: driffUrl, status: "OK", token: res.data._token, room: res.data.room_name });
           toggle();
         })
       );

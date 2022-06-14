@@ -6,6 +6,7 @@ import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
+import { getCurrentDriffUrl } from "../../../helpers/slugHelper";
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,6 +56,8 @@ const DriffTalkMessage = (props) => {
   const [startingMeet, setStartingMeet] = useState(false);
   let author;
   const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
+  const driffUrl = getCurrentDriffUrl();
+
   if (isCreateMessage) {
     const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
     author = data.author;
@@ -81,7 +84,7 @@ const DriffTalkMessage = (props) => {
           }
           const host = window.location.host.split(".");
 
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: host, status: "OK", token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: driffUrl, status: "OK", token: res.data._token, room: res.data.room_name });
         })
       );
     } else {
