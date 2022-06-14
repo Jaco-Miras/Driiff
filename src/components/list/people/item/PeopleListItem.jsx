@@ -124,6 +124,7 @@ const PeopleListItem = (props) => {
     onAddUserToTeam = null,
     onDeleteTeamMember = null,
     sharedUser = false,
+    isSharedWorkspace = false,
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -307,6 +308,8 @@ const PeopleListItem = (props) => {
 
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />}
+                        {isSharedWorkspace && user.is_creator && <StyledBadge role={user.workspace_role} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
+                        {user.type === "external" && loggedUser.type !== "external" && user.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
