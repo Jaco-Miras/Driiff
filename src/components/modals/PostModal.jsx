@@ -511,22 +511,22 @@ const PostModal = (props) => {
     const rawMentionIds =
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
-            .filter((id) => {
-              return id.insert.mention ? id : null;
-            })
-            .map((mid) => Number(mid.insert.mention.user_id))
+          .filter((id) => {
+            return id.insert.mention ? id : null;
+          })
+          .map((mid) => Number(mid.insert.mention.user_id))
         : [];
     const mentionedIds =
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
-            .filter((m) => {
-              if (form.shared_with_client && hasExternal) {
-                return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
-              } else {
-                return m.insert.mention && m.insert.mention.type === "internal";
-              }
-            })
-            .map((i) => parseInt(i.insert.mention.type_id))
+          .filter((m) => {
+            if (form.shared_with_client && hasExternal) {
+              return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
+            } else {
+              return m.insert.mention && m.insert.mention.type === "internal";
+            }
+          })
+          .map((i) => parseInt(i.insert.mention.type_id))
         : [];
     let payload = {
       title: form.title,
@@ -910,60 +910,60 @@ const PostModal = (props) => {
         approvers:
           item.post.users_approval.length > 0
             ? item.post.users_approval.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name,
+                type: "USER",
+                ip_address: hasRequestedChange ? null : u.ip_address,
+                is_approved: hasRequestedChange ? false : u.is_approved,
+              };
+            })
+            : [],
+        mustReadUsers:
+          item.post.must_read_users.length > 0
+            ? isAllSelectedMustRead
+              ? [
+                {
+                  id: "all",
+                  value: "all",
+                  label: "All users",
+                  icon: "users",
+                  all_ids: allUserIds,
+                },
+              ]
+              : item.post.must_read_users.map((u) => {
                 return {
                   ...u,
                   icon: "user-avatar",
                   value: u.id,
                   label: u.name,
                   type: "USER",
-                  ip_address: hasRequestedChange ? null : u.ip_address,
-                  is_approved: hasRequestedChange ? false : u.is_approved,
                 };
               })
-            : [],
-        mustReadUsers:
-          item.post.must_read_users.length > 0
-            ? isAllSelectedMustRead
-              ? [
-                  {
-                    id: "all",
-                    value: "all",
-                    label: "All users",
-                    icon: "users",
-                    all_ids: allUserIds,
-                  },
-                ]
-              : item.post.must_read_users.map((u) => {
-                  return {
-                    ...u,
-                    icon: "user-avatar",
-                    value: u.id,
-                    label: u.name,
-                    type: "USER",
-                  };
-                })
             : [],
         mustReplyUsers:
           item.post.must_reply_users.length > 0
             ? isAllSelectedMustReply
               ? [
-                  {
-                    id: "all",
-                    value: "all",
-                    label: "All users",
-                    icon: "users",
-                    all_ids: allUserIds,
-                  },
-                ]
+                {
+                  id: "all",
+                  value: "all",
+                  label: "All users",
+                  icon: "users",
+                  all_ids: allUserIds,
+                },
+              ]
               : item.post.must_reply_users.map((u) => {
-                  return {
-                    ...u,
-                    icon: "user-avatar",
-                    value: u.id,
-                    label: u.name,
-                    type: "USER",
-                  };
-                })
+                return {
+                  ...u,
+                  icon: "user-avatar",
+                  value: u.id,
+                  label: u.name,
+                  type: "USER",
+                };
+              })
             : [],
         // requiredUsers:
         //   item.post.required_users.length > 0
@@ -1184,22 +1184,20 @@ const PostModal = (props) => {
             }
           })}
         />
-        {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
-          <WrapperDiv className="file-attachment-wrapper">
-            <div className={"mb-2"}>
-              <Label className={"modal-label"} for="workspace">
-                {dictionary.fileAttachments}
-              </Label>
-            </div>
-            <div className={"mb-2"}>
-              <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
-              {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
-            </div>
-            <div>
-              <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-            </div>
-          </WrapperDiv>
-        )}
+        <WrapperDiv className="file-attachment-wrapper">
+          <div className={"mb-2"}>
+            <Label className={"modal-label"} for="workspace">
+              {dictionary.fileAttachments}
+            </Label>
+          </div>
+          <div className={"mb-2"}>
+            <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+            {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
+          </div>
+          <div>
+            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+          </div>
+        </WrapperDiv>
         <WrapperDiv className="modal-label more-option">
           <MoreOption className="mb-1">{dictionary.moreOptions}</MoreOption>
           <PostSettings
