@@ -290,6 +290,8 @@ export default (state = INITIAL_STATE, action) => {
             sharedSlug: action.slug !== getSlug(),
             key: ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id,
             is_shared_wp: ws.isSharedWs,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
@@ -390,6 +392,8 @@ export default (state = INITIAL_STATE, action) => {
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             sharedSlug: false,
             key: ws.id,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -415,6 +419,8 @@ export default (state = INITIAL_STATE, action) => {
         is_favourite: true,
         show_about: action.data.workspace_data.topic_detail.show_about,
         active: action.data.workspace_data.topic_detail.active,
+        team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+        channel_bot: action.data.workspace_data.topic_detail.channel_bot,
       };
       return {
         ...state,
@@ -453,6 +459,8 @@ export default (state = INITIAL_STATE, action) => {
           is_active: action.data.workspace_data.topic_detail.is_active,
           key: action.data.workspace_data.topic_detail.id,
           sharedSlug: false,
+          team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+          channel_bot: action.data.workspace_data.topic_detail.channel_bot,
         };
         return {
           ...state,

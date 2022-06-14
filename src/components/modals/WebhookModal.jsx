@@ -50,16 +50,32 @@ const WebhookModal = (props) => {
   };
 
   const handleTeamCopy = () => {
-    navigator.clipboard.writeText(workspace.topic_detail.team_channel_bot.url_webhook).then(() => {
-      toast.info(dictionary.chatWebhooksClipboardCopy);
-      toggle();
-    });
+    navigator.clipboard
+      .writeText(workspace.team_channel_bot.url_webhook)
+      .then(() => {
+        toast.info(dictionary.chatWebhooksClipboardCopy);
+        toggle();
+        setModal(false);
+      })
+      .catch(() => {
+        toast.error("Something went wrong.");
+        toggle();
+        setModal(false);
+      });
   };
   const handleGuestCopy = () => {
-    navigator.clipboard.writeText(workspace.topic_detail.channel_bot.url_webhook).then(() => {
-      toast.info(dictionary.chatWebhooksClipboardCopy);
-      toggle();
-    });
+    navigator.clipboard
+      .writeText(workspace.channel_bot.url_webhook)
+      .then(() => {
+        toast.info(dictionary.chatWebhooksClipboardCopy);
+        toggle();
+        setModal(false);
+      })
+      .catch(() => {
+        toast.error("Something went wrong.");
+        toggle();
+        setModal(false);
+      });
   };
 
   return (
