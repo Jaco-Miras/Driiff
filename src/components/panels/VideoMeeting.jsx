@@ -6,7 +6,7 @@ import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
 import { browserName, deviceType } from "react-device-detect";
 
-const VideoMeeting = (props) => {
+const VideoMeeting = () => {
   const params = useParams();
   const appId = "vpaas-magic-cookie-c0cc9d62fd3340d58d783df7885be71c";
   const dispatch = useDispatch();
@@ -81,9 +81,6 @@ const VideoMeeting = (props) => {
       }}
       getIFrameRef={node => node.style.height = '100vh'}
     />
-
-
-
   );
 };
 

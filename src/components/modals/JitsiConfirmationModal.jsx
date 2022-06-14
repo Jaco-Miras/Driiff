@@ -98,7 +98,8 @@ const JitsiConfirmationModal = (props) => {
             toggle();
             return;
           }
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: "24", status: "OK", token: res.data._token, room: res.data.room_name });
+          const host = window.location.host.split(".");
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: host, status: "OK", token: res.data._token, room: res.data.room_name });
           toggle();
         })
       );
