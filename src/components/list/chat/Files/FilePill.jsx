@@ -4,6 +4,7 @@ import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
+import { isMacOs, isMobileSafari, isSafari } from "react-device-detect";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -159,10 +160,10 @@ const FilePill = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}?playsinline=1`;
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
     } else if (e.currentTarget.dataset.attempt === "1") {
       e.currentTarget.dataset.attempt = 2;
-      e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?playsinline=1`;
+      e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?=1`;
     }
   };
 
@@ -206,6 +207,12 @@ const FilePill = (props) => {
 
   const isFileRemoved = file.file_type === "trashed";
 
+  const handlePlayVideo = (url) => {
+    if (isMacOs && !isMobileSafari && isSafari) {
+      window.webkit.messageHandlers.showVideo.postMessage({ url });
+    }
+  };
+
   return (
     <FilePillContainer onClick={handleViewFile} className={`file-pill ${className}`} {...otherProps}>
       {isFileRemoved ? (
@@ -235,8 +242,8 @@ const FilePill = (props) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          <FileVideo muted data-attempt={0} width="320" height="240" playsInline={1} controls onError={handleVideoOnError}>
-            <source src={`${file.view_link}&playsinline=1`} type={file.type} />
+          <FileVideo muted data-attempt={0} width="320" height="240" playsInline={1} controls onError={handleVideoOnError} onClick={() => handlePlayVideo(file.view_link)}>
+            <source src={`${file.view_link}`} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
         </>
