@@ -363,6 +363,7 @@ const CreateEditWorkspaceModal = (props) => {
         };
       })
   );
+
   const [form, setForm] = useState({
     is_private: null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
@@ -388,7 +389,7 @@ const CreateEditWorkspaceModal = (props) => {
     textOnly: "",
     has_externals: false,
     selectedExternals: [],
-    is_shared_wp: false,
+    is_shared_wp: item ? item.is_shared_wp : false,
     new_shared_workspace_members: [],
     selectedSharedUsers: [],
   });
@@ -1043,6 +1044,26 @@ const CreateEditWorkspaceModal = (props) => {
             }),
           ],
         };
+      } else {
+        payload = {
+          ...payload,
+          shared_workspace_member_ids: form.selectedSharedUsers.filter((ex) => !isNaN(ex.id)).map((ex) => ex.id),
+          new_shared_workspace_members: [
+            ...form.selectedSharedUsers
+              .filter((ex) => isNaN(ex.id))
+              .map((ex) => {
+                return {
+                  email: ex.email,
+                  first_name: ex.first_name ? ex.first_name.trim() : ex.email,
+                  middle_name: ex.middle_name ? ex.middle_name.trim() : "",
+                  last_name: ex.last_name ? ex.last_name.trim() : "",
+                  company: ex.company ? ex.company.trim() : "",
+                  language: "en",
+                  send_by_email: true,
+                };
+              }),
+          ],
+        };
       }
     }
 
@@ -1052,7 +1073,9 @@ const CreateEditWorkspaceModal = (props) => {
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
+      const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
+      const notSharedMembersId = notSharedMembers.map((m) => m.id);
+      const removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
@@ -1705,6 +1728,7 @@ const CreateEditWorkspaceModal = (props) => {
       let members = [];
       let externalMembers = [];
       let teamMembers = [];
+      let sharedMembers = [];
       let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
         teamMembers = item.members
@@ -1719,7 +1743,7 @@ const CreateEditWorkspaceModal = (props) => {
             };
           });
         members = item.members
-          .filter((m) => m.active === 1 && m.type === "internal")
+          .filter((m) => m.active === 1 && m.type === "internal" && m.slug && m.slug === slug)
           .map((m) => {
             return {
               value: m.id,
@@ -1736,7 +1760,26 @@ const CreateEditWorkspaceModal = (props) => {
             };
           });
         externalMembers = item.members
-          .filter((m) => m.type === "external")
+          .filter((m) => m.type === "external" && m.slug)
+          .map((m) => {
+            return {
+              value: m.id,
+              label: m.name !== "" ? m.name : m.first_name !== "" ? m.first_name : m.email,
+              name: m.name,
+              id: m.id,
+              first_name: m.first_name === "" ? m.email : m.first_name,
+              middle_name: item.sharedSlug ? "" : users[m.id] ? users[m.id].middle_name : "",
+              last_name: item.sharedSlug ? m.last_name : users[m.id] ? users[m.id].last_name : "",
+              profile_image_link: m.profile_image_link,
+              profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
+              email: m.email,
+              has_accepted: m.has_accepted,
+            };
+          });
+        sharedMembers = item.members
+          .filter((m) => {
+            return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
+          })
           .map((m) => {
             return {
               value: m.id,
@@ -1770,6 +1813,7 @@ const CreateEditWorkspaceModal = (props) => {
         is_private: is_private,
         has_externals: externalMembers.length > 0,
         selectedExternals: externalMembers,
+        selectedSharedUsers: sharedMembers,
       });
       setValid({
         name: true,
