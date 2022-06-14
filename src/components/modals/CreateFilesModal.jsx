@@ -74,9 +74,8 @@ const CreateFilesModal = (props) => {
     updateFile: _t("FILE.UPDATE_FILE", "Update file"),
     altText: _t("ALT_TEXT_FILE_COLOR", "Select file color"),
     postInputLabel: _t("FILE_MODAL.PARENT_FOLDER_LABEL", "The file will be created inside ::folderName::", { folderName: folderName }),
-    fileAddToaster: _t("TOASTER.DRIVE_FILE_ADD", "File is successfully added to Driff Google drive!")
+    fileAddToaster: _t("TOASTER.DRIVE_FILE_ADD", "File is successfully added to Driff Google drive!"),
   };
-
 
   const dispatch = useDispatch();
 
@@ -107,22 +106,21 @@ const CreateFilesModal = (props) => {
   };
 
   const handleCreateFile = () => {
-    let cb = (err, res) => {      
+    let cb = (err, res) => {
       if (err) return;
-      if (res.data.data.link && res.data.data.link != '') {
+      if (res.data.data.link && res.data.data.link != "") {
         toaster.success(dictionary.fileAddToaster);
         setTimeout(() => {
-          window.open(res.data.data.link, '_blank');
+          window.open(res.data.data.link, "_blank");
         }, 1000);
-        
-      } else {          
+      } else {
         toaster.error(res.data.error_message);
       }
       if (topic_id) {
         if (params.hasOwnProperty("folderId")) {
-          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         } else {
-          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
       } else {
         history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
@@ -154,9 +152,9 @@ const CreateFilesModal = (props) => {
       if (err) return;
       if (topic_id) {
         if (params.hasOwnProperty("folderId")) {
-          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         } else {
-          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
       } else {
         history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);

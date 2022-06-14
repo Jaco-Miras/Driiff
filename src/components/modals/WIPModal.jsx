@@ -362,7 +362,7 @@ const WIPModal = (props) => {
     ":before": {
       backgroundColor: color,
       borderRadius: 10,
-      content: "\" \"",
+      content: '" "',
       display: "block",
       marginRight: 8,
       height: 10,
@@ -469,9 +469,9 @@ const WIPModal = (props) => {
               if (toasterRef.current) toaster.dismiss(toasterRef.current);
               if (err) return;
               if (activeTopic.folder_id) {
-                history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+                history.push(`/hub/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
               } else {
-                history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+                history.push(`/hub/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
               }
             })
           );
@@ -485,9 +485,9 @@ const WIPModal = (props) => {
               if (toasterRef.current) toaster.dismiss(toasterRef.current);
               if (err) return;
               if (activeTopic.folder_id) {
-                history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+                history.push(`/hub/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
               } else {
-                history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+                history.push(`/hub/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
               }
             })
           );
@@ -520,9 +520,9 @@ const WIPModal = (props) => {
             if (toasterRef.current) toaster.dismiss(toasterRef.current);
             if (err) return;
             if (activeTopic.folder_id) {
-              history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              history.push(`/hub/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
             } else {
-              history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              history.push(`/hub/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
             }
           })
         );
@@ -559,9 +559,9 @@ const WIPModal = (props) => {
             if (toasterRef.current) toaster.dismiss(toasterRef.current);
             if (err) return;
             if (activeTopic.folder_id) {
-              history.push(`/workspace/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              history.push(`/hub/wip/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
             } else {
-              history.push(`/workspace/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
+              history.push(`/hub/wip/${activeTopic.id}/${replaceChar(activeTopic.name)}/wip/${res.data.id}/${replaceChar(res.data.title)}`);
             }
           })
         );

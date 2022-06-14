@@ -57,15 +57,15 @@ const useWIPActions = () => {
   const goBack = () => {
     if (params.hasOwnProperty("wipFileId")) {
       if (params.hasOwnProperty("folderId")) {
-        history.push(`/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
+        history.push(`/hub/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
       } else {
-        history.push(`/workspace/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
+        history.push(`/hub/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${params.wipId}/${replaceChar(params.wipTitle)}`);
       }
     } else if (params.hasOwnProperty("wipId")) {
       if (params.hasOwnProperty("folderId")) {
-        history.push(`/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        history.push(`/hub/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       } else {
-        history.push(`/workspace/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        history.push(`/hub/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       }
     }
   };
@@ -112,9 +112,9 @@ const useWIPActions = () => {
   const share = (wip) => {
     let link = "";
     if (params.folderId) {
-      link = `${getBaseUrl()}/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`;
+      link = `${getBaseUrl()}/hub/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`;
     } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/workspace/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`;
+      link = `${getBaseUrl()}/hub/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`;
     }
     copyTextToClipboard(toaster, link);
   };
@@ -167,9 +167,9 @@ const useWIPActions = () => {
         )
       );
       if (params.folderId) {
-        history.push(`${getBaseUrl()}/workspace/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`);
+        history.push(`${getBaseUrl()}/hub/wip/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`);
       } else if (params.workspaceId) {
-        history.push(`${getBaseUrl()}/workspace/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`);
+        history.push(`${getBaseUrl()}/hub/wip/${params.workspaceId}/${replaceChar(params.workspaceName)}/wip/${wip.id}/${replaceChar(wip.title)}`);
       }
     };
 

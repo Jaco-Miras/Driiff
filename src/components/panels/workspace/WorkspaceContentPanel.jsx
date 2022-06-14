@@ -223,20 +223,17 @@ const WorkspaceContentPanel = (props) => {
                     exact={true}
                     render={() => <WorkspaceWorkInProgressPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
-                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
-                      "/workspace/wip/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
-                      "/workspace/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
-                      "/workspace/wip/:workspaceId/:workspaceName",
-                      "/workspace/wip",
+                      "/hub/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/hub/wip/:folderId/:folderName/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/hub/wip/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle/file/:wipFileId/:wipFileVersion",
+                      "/hub/wip/:workspaceId/:workspaceName/wip/:wipId/:wipTitle",
+                      "/hub/wip/:workspaceId/:workspaceName",
+                      "/hub/wip",
                     ]}
                   />
-                  <Route
-                    render={() => <MeetingPanel {...props} isWorkspace={true} />}
-                    path={["/workspace/meetings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/meetings/:workspaceId/:workspaceName", "/workspace/meetings"]}
-                  />
-                  <Route {...props} component={WorkspaceSettingsPanel} path={["/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/workspace/settings/:workspaceId/:workspaceName", "/workspace/settings"]} />
+                  <Route render={() => <MeetingPanel {...props} isWorkspace={true} />} path={["/hub/meetings/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/meetings/:workspaceId/:workspaceName", "/hub/meetings"]} />
+                  <Route {...props} component={WorkspaceSettingsPanel} path={["/hub/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/settings/:workspaceId/:workspaceName", "/hub/settings"]} />
                   <Redirect
                     from="*"
                     to={{
