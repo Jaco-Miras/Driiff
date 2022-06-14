@@ -261,6 +261,7 @@ export default (state = INITIAL_STATE, action) => {
                 slug: action.slug,
                 sharedSlug: action.slug !== getSlug(),
                 key: ws.isSharedWs ? `${t.id}-${action.slug}` : t.id,
+                is_shared_wp: ws.isSharedWs,
               };
             }
           });
@@ -288,6 +289,7 @@ export default (state = INITIAL_STATE, action) => {
             slug: action.slug,
             sharedSlug: action.slug !== getSlug(),
             key: ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id,
+            is_shared_wp: ws.isSharedWs,
           };
           delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
