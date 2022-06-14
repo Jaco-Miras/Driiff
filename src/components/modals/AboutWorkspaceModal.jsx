@@ -231,9 +231,9 @@ const AboutWorkspaceModal = (props) => {
     toggle();
 
     if (workspace.folder_id) {
-      history.push(`/workspace/${type}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+      history.push(`/hub/${type}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
     } else {
-      history.push(`/workspace/${type}/${workspace.id}/${replaceChar(workspace.name)}`);
+      history.push(`/hub/${type}/${workspace.id}/${replaceChar(workspace.name)}`);
     }
   };
 
@@ -271,9 +271,9 @@ const AboutWorkspaceModal = (props) => {
     //setShowAll(!showAll);
     toggle();
     if (workspace.folder_id) {
-      history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+      history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
     } else {
-      history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+      history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
     }
   };
 

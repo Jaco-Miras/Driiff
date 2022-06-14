@@ -141,7 +141,7 @@ const useWorkspaceActions = () => {
   };
 
   const redirectTo = (workspace) => {
-    let ws_type = workspace.sharedSlug ? "shared-workspace" : "workspace";
+    let ws_type = workspace.sharedSlug ? "shared-hub" : "hub";
     if (workspace.folder_id) {
       history.push(`/${ws_type}/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
     } else {

@@ -146,7 +146,7 @@ const useQuillModules = ({
     if (Object.keys(workspaces).length && !sharedSlug) {
       newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
-          let ws_type = workspace.sharedSlug ? "shared-workspace" : "workspace";
+          let ws_type = workspace.sharedSlug ? "shared-hub" : "hub";
           return Object.assign({}, workspace, {
             ...workspace,
             value: workspace.name,

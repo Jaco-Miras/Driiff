@@ -35,7 +35,7 @@ const useCommentActions = () => {
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   let sharedPayload = null;
-  if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
     sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
   }
   const toaster = useToaster();

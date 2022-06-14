@@ -621,11 +621,11 @@ class SocketListeners extends Component {
                     if (e.link_type === "POST_COMMENT" || e.link_type === "POST") {
                       if (e.data.workspaces.length) {
                         if (e.data.workspaces[0].workspace) {
-                          link = `/workspace/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
+                          link = `/hub/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
                             e.data.post.id
                           }/${replaceChar(e.data.post.title)}`;
                         } else {
-                          link = `/workspace/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                          link = `/hub/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
                         }
                       } else {
                         link = `/posts/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
@@ -691,11 +691,11 @@ class SocketListeners extends Component {
                     if (e.link_type === "POST_COMMENT" || e.link_type === "POST") {
                       if (e.data.workspaces.length) {
                         if (e.data.workspaces[0].workspace) {
-                          link = `/workspace/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
+                          link = `/hub/posts/${e.data.workspaces[0].workspace.id}/${replaceChar(e.data.workspaces[0].workspace.name)}/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${
                             e.data.post.id
                           }/${replaceChar(e.data.post.title)}`;
                         } else {
-                          link = `/workspace/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
+                          link = `/hub/posts/${e.data.workspaces[0].topic.id}/${replaceChar(e.data.workspaces[0].topic.name)}/post/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
                         }
                       } else {
                         link = `/posts/${e.data.post.id}/${replaceChar(e.data.post.title)}`;
@@ -749,7 +749,7 @@ class SocketListeners extends Component {
           }
           case "FOLDER_DELETE": {
             this.props.incomingDeletedFolder(e);
-            if (this.props.match.url === "/workspace/files") {
+            if (this.props.match.url === "/hub/files") {
               if (this.props.location.pathname.includes(e.folder.id) && this.props.location.pathname.includes(e.topic_id)) {
                 let pathname = this.props.location.pathname.split("/folder/")[0];
                 this.props.history.push(pathname);
@@ -1087,11 +1087,9 @@ class SocketListeners extends Component {
                   let link = "";
                   if (e.workspaces.length) {
                     if (e.workspaces[0].workspace_id) {
-                      link = `/workspace/posts/${e.workspaces[0].workspace_id}/${replaceChar(e.workspaces[0].workspace_name)}/${e.workspaces[0].topic_id}/${replaceChar(e.workspaces[0].topic_name)}/post/${e.post_id}/${replaceChar(
-                        e.post_title
-                      )}`;
+                      link = `/hub/posts/${e.workspaces[0].workspace_id}/${replaceChar(e.workspaces[0].workspace_name)}/${e.workspaces[0].topic_id}/${replaceChar(e.workspaces[0].topic_name)}/post/${e.post_id}/${replaceChar(e.post_title)}`;
                     } else {
-                      link = `/workspace/posts/${e.workspaces[0].topic_id}/${replaceChar(e.workspaces[0].topic_name)}/post/${e.post_id}/${replaceChar(e.post_title)}`;
+                      link = `/hub/posts/${e.workspaces[0].topic_id}/${replaceChar(e.workspaces[0].topic_name)}/post/${e.post_id}/${replaceChar(e.post_title)}`;
                     }
                   } else {
                     link = `/posts/${e.post_id}/${replaceChar(e.post_title)}`;
@@ -1821,25 +1819,25 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/hub/search") {
             if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.state.userId)) {
-              this.props.history.push("/workspace/search");
+              this.props.history.push("/hub/search");
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/hub") && this.props.match.url !== "/hub/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
             //direct workspace
             if (e.original_workspace_id !== 0) {
               //now direct workspace url
-              this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+              this.props.history.push(`/hub/${currentPage}/${e.id}/${replaceChar(e.name)}`);
             }
           } else {
             //moved workspace to another folder
             if (e.original_workspace_id !== e.workspace_id) {
-              this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+              this.props.history.push(`/hub/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
             }
           }
         }
@@ -2190,18 +2188,18 @@ class SocketListeners extends Component {
               // get the folder if the workspace folder does not exists yet
             }
           }
-          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/workspace/search") {
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/hub/search") {
             if (e.remove_member_ids.some((id) => id === this.state.userId) && !members.some((m) => m.id === this.state.userId)) {
-              this.props.history.push("/workspace/search");
+              this.props.history.push("/hub/search");
               //redirect to first favorite workspace
               // let favoriteWorkspaces = Object.values(this.props.workspaces).filter((ws) => ws.id !== e.id && ws.is_favourite && ws.channel && ws.channel.code);
               // if (favoriteWorkspaces.length) {
               //   let workspace = favoriteWorkspaces[0];
               //   this.props.setActiveTopic(workspace);
               //   if (workspace.folder_id) {
-              //     this.props.history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+              //     this.props.history.push(`/hub/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
               //   } else {
-              //     this.props.history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+              //     this.props.history.push(`/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`);
               //   }
               //   if (this.props.selectedChannel && e.system_message && this.props.selectedChannel.id === e.system_message.channel_id) {
               //     if (this.props.selectedChannel.code === e.channel.code && this.props.location.pathname === `/chat/${this.props.selectedChannel.code}` && this.props.channels[workspace.channel.id]) {
@@ -2213,22 +2211,22 @@ class SocketListeners extends Component {
             }
           }
         }
-        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/workspace") && this.props.match.url !== "/workspace/search") {
+        if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/hub") && this.props.match.url !== "/hub/search") {
           let currentPage = this.props.location.pathname;
           currentPage = currentPage.split("/")[2];
           if (e.workspace_id === 0) {
             //direct workspace
             if (e.original_workspace_id !== 0) {
               //now direct workspace url
-              this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+              this.props.history.push(`/hub/${currentPage}/${e.id}/${replaceChar(e.name)}`);
             }
           } else {
             //moved workspace to another folder
             if (e.original_workspace_id !== e.workspace_id) {
               if (e.current_workspace_folder_name) {
-                this.props.history.push(`/workspace/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
+                this.props.history.push(`/hub/${currentPage}/${e.workspace_id}/${replaceChar(e.current_workspace_folder_name)}/${e.id}/${replaceChar(e.name)}`);
               } else {
-                this.props.history.push(`/workspace/${currentPage}/${e.id}/${replaceChar(e.name)}`);
+                this.props.history.push(`/hub/${currentPage}/${e.id}/${replaceChar(e.name)}`);
               }
             }
           }

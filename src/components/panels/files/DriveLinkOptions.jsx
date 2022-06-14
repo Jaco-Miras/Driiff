@@ -86,7 +86,7 @@ const DriveLinkOptions = (props) => {
   const handleDelete = () => {
     const handleDeleteLink = () => {
       let sharedPayload = null;
-      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
         sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
       }
       dispatch(
@@ -119,7 +119,7 @@ const DriveLinkOptions = (props) => {
   const handleMoveTo = () => {
     if (params.workspaceId) {
       let sharedPayload = null;
-      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
         sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
       }
       let payload = {
@@ -148,7 +148,7 @@ const DriveLinkOptions = (props) => {
         };
         if (params.workspaceId) {
           let sharedPayload = null;
-          if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+          if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
             sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
           }
           linkPayload = {
