@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { useTranslationActions, useGetSlug, useUserActions } from "../hooks";
+import { useTranslationActions, useGetSlug, useUserActions, useToaster } from "../hooks";
 import { useHistory } from "react-router-dom";
 import { FormInput, InputFeedback } from "../forms";
 import { $_GET } from "../../helpers/commonFunctions";
@@ -11,7 +11,11 @@ import { patchCheckDriff } from "../../redux/actions/driffActions";
 import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 import { replaceChar } from "../../helpers/stringFormatter";
 
-const Wrapper = styled.form``;
+const Wrapper = styled.form`
+  p {
+    margin-bottom: 0.25rem;
+  }
+`;
 
 const FormGroup = styled.div`
   .form-control {
@@ -29,10 +33,11 @@ const SharedWorkspaceInvite = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const userAction = useUserActions();
-  //   const toaster = useToaster();
+  const toaster = useToaster();
   const [loading, setLoading] = useState(false);
   const [loginGuestLoading, setLoginGuestLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
+  const [errorResponse, setErrorResponse] = useState(null);
   const { slug } = useGetSlug();
   const refs = {
     first_name: useRef(),
@@ -112,6 +117,12 @@ const SharedWorkspaceInvite = (props) => {
     email: _t("LOGIN.EMAIL", "Email"),
     invitedUsers: _t("DRIFF.INVITED_USERS", "Invited users"),
     acceptInvite: _t("REGISTER.ACCEPT_INVITE", "Accept your invitation to"),
+    invalidCode: _t("INVALID_INVITE_CODE", "Invite code is invalid."),
+    codeAlreadyAccepted: _t("CODE_ALREADY_ACCEPTED", "Invite code already used."),
+    connectWithMyDriff: _t("INVITE.CONNECT_WITH_MY_DRIFF", "Connect with my Driff"),
+    createYourOwnDriff: _t("INVITE.CREATE_YOUR_OWN_DRIFF", "Create your own Driff"),
+    backToLogin: _t("INVITE.BACK_TO_LOGIN_PAGE", "Go back to login page"),
+    loginToDriff: _t("INVITE.LOGIN_TO_DRIFF", "Login to Driff"),
   };
 
   const handleInputChange = useCallback((e) => {
@@ -233,7 +244,12 @@ const SharedWorkspaceInvite = (props) => {
     dispatch(
       getSharedUserInfo({ state_code: $_GET("state_code") }, (err, res) => {
         if (err) {
-          history.push("/login");
+          if (err && err.response) {
+            setErrorResponse(err.response.data);
+            if (err.response.data.errors) {
+              toaster.error(err.response.data.errors.error_message[0]);
+            }
+          }
         }
         if (res) {
           setResponseData(res.data);
@@ -260,13 +276,28 @@ const SharedWorkspaceInvite = (props) => {
     );
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleGoBackToLogin = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    history.push("/login");
+  };
   const { REACT_APP_localDNSName } = process.env;
+
   return (
     <Wrapper>
+      {errorResponse && errorResponse.errors && (
+        <div>
+          <div>{errorResponse.errors.error_message.includes("INVALID_CODE") ? dictionary.invalidCode : errorResponse.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED") ? dictionary.codeAlreadyAccepted : null}</div>
+        </div>
+      )}
       {responseData && (
         <div>
           <div>
-            {responseData.invited_by.name} invited you to join <b>{responseData.topic.name}</b>
+            <p>{responseData.invited_by.name} invited you to join</p>
+            <p>
+              <b>{responseData.topic.name}</b>
+            </p>
           </div>
         </div>
       )}
@@ -294,53 +325,76 @@ const SharedWorkspaceInvite = (props) => {
             </InputGroup>
           </FormGroup>
           <button className="btn btn-primary btn-block mt-2" onClick={handleAccept}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login to driff
+            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.loginToDriff}
           </button>
         </>
       )}
       {!showDriffInput && (
         <>
-          <FormGroup className="form-group">
-            <FormInput
-              innerRef={refs.first_name}
-              value={form.first_name}
-              onChange={handleInputChange}
-              name="first_name"
-              placeholder={dictionary.firstName}
-              isValid={formResponse.valid.first_name}
-              feedback={formResponse.message.first_name}
-              required
-              autoFocus
-              readOnly
-            />
-          </FormGroup>
-          <FormGroup className="form-group">
-            <FormInput onChange={handleInputChange} value={form.middle_name} name="middle_name" type="text" placeholder={dictionary.middleName} isValid={formResponse.valid.middle_name} feedback={formResponse.message.middle_name} readOnly />
-          </FormGroup>
-          <FormGroup className="form-group">
-            <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} readOnly />
-          </FormGroup>
-          <FormGroup className="form-group">
-            <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
-          </FormGroup>
-          <FormGroup className="form-group text-left">
-            <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
-          </FormGroup>
-          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleCreateDriff}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Create your own Driff
-          </button>
+          {responseData && (
+            <>
+              <FormGroup className="form-group">
+                <FormInput
+                  innerRef={refs.first_name}
+                  value={form.first_name}
+                  onChange={handleInputChange}
+                  name="first_name"
+                  placeholder={dictionary.firstName}
+                  isValid={formResponse.valid.first_name}
+                  feedback={formResponse.message.first_name}
+                  required
+                  autoFocus
+                  readOnly
+                />
+              </FormGroup>
+              <FormGroup className="form-group">
+                <FormInput
+                  onChange={handleInputChange}
+                  value={form.middle_name}
+                  name="middle_name"
+                  type="text"
+                  placeholder={dictionary.middleName}
+                  isValid={formResponse.valid.middle_name}
+                  feedback={formResponse.message.middle_name}
+                  readOnly
+                />
+              </FormGroup>
+              <FormGroup className="form-group">
+                <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} readOnly />
+              </FormGroup>
+              <FormGroup className="form-group">
+                <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
+              </FormGroup>
+              <FormGroup className="form-group text-left">
+                <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
+              </FormGroup>
+            </>
+          )}
 
-          <div>Or</div>
+          {errorResponse && (
+            <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleGoBackToLogin}>
+              {dictionary.backToLogin}
+            </button>
+          )}
+          {responseData && (
+            <>
+              <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleCreateDriff}>
+                {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.createYourOwnDriff}
+              </button>
 
-          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleShowDriffInput}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.accept}
-          </button>
+              <div>Or</div>
 
-          <div>Or</div>
+              <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleShowDriffInput}>
+                {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.connectWithMyDriff}
+              </button>
 
-          <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleLoginAsGuest}>
-            {loginGuestLoading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login as guest
-          </button>
+              {/* <div>Or</div>
+
+              <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleLoginAsGuest}>
+                {loginGuestLoading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} Login as guest
+              </button> */}
+            </>
+          )}
         </>
       )}
     </Wrapper>
