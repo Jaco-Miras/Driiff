@@ -4,6 +4,7 @@ import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
+import { isMacOs, isMobileSafari, isSafari } from "react-device-detect";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -202,7 +203,9 @@ const FilePill = (props) => {
   const isFileRemoved = file.file_type === "trashed";
 
   const handlePlayVideo = (url) => {
-    window.webkit.messageHandlers.showVideo.postMessage({ url });
+    if (isMacOs && !isMobileSafari && isSafari) {
+      window.webkit.messageHandlers.showVideo.postMessage({ url });
+    }
   };
 
   return (
