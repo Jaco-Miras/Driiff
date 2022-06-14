@@ -175,7 +175,7 @@ const WorkspacePageHeaderPanel = (props) => {
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/wip${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/wip${pathname}`}>
               W.I.P.
             </MainNavLink>
           </li>
