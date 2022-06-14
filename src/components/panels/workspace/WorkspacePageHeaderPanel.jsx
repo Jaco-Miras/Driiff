@@ -82,7 +82,7 @@ const WorkspacePageHeaderPanel = (props) => {
 
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 
-  let ws_type = workspace && workspace.sharedSlug ? "shared-workspace" : "workspace";
+  let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
 
   let pathname = props.match.url;
   if (

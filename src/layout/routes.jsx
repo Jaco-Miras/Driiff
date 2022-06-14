@@ -66,7 +66,7 @@ export const AppRoute = ({ children, ...props }) => {
       <Suspense fallback={<div></div>}>
         <Switch>
           <Route {...props} component={GuestLayout} path={["/logged-out", "/force-logout"]} exact={true} />
-          {/* <Route {...props} component={TestFiles} path={["/test/files/workspace/:workspaceId"]}>
+          {/* <Route {...props} component={TestFiles} path={["/test/files/hub/:workspaceId"]}>
             {children}
           </Route>
           <Route {...props} component={TestChat} path={["/test/chat"]}>
@@ -75,7 +75,7 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/releases", "/admin-settings", "/meetings"]}>
             {children}
           </Route>
-          <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token", "/shared-workspace/chat", "/shared-workspace/:page"]}>
+          <Route {...props} component={MainLayout} path={["/hub/chat", "/hub/:page", "/magic-link/:token", "/shared-hub/chat", "/shared-hub/:page"]}>
             {children}
           </Route>
           <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"}>
@@ -84,7 +84,7 @@ export const AppRoute = ({ children, ...props }) => {
           <Redirect
             path="*"
             to={{
-              pathname: session.user.type === "external" ? "/workspace/search" : "/dashboard",
+              pathname: session.user.type === "external" ? "/hub/search" : "/dashboard",
               state: {
                 from: history.location,
                 state_code: history.location.state && history.location.state.state_code ? history.location.state.state_code : null,

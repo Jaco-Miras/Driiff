@@ -99,7 +99,7 @@ const ExternalWorkspaceList = (props) => {
     actions.redirectTo(workspace);
     if (activeTopic && activeTopic.id === workspace.id) return;
     actions.selectWorkspace(workspace);
-    //history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+    //history.push(`/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`);
   };
 
   let unread_count = workspace.unread_chats + workspace.unread_posts + workspace.team_unread_chats;

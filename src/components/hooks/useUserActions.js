@@ -351,7 +351,7 @@ const useUserActions = () => {
 
         if (res) {
           toaster.success(<>Password is successfully updated. You are being logged in!</>);
-          const redirectUrl = res.data.user_auth.type === "internal" ? "/chat" : "/workspace/chat";
+          const redirectUrl = res.data.user_auth.type === "internal" ? "/chat" : "/hub/chat";
           login(res.data, redirectUrl);
         }
       })

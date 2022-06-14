@@ -634,9 +634,9 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
-                let wsType = "workspace";
+                let wsType = "hub";
                 if (activeTopic.sharedSlug) {
-                  wsType = "shared-workspace";
+                  wsType = "shared-hub";
                 }
                 if (activeTopic.folder_id) {
                   history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
@@ -852,9 +852,9 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
-                let wsType = "workspace";
+                let wsType = "hub";
                 if (activeTopic.sharedSlug) {
-                  wsType = "shared-workspace";
+                  wsType = "shared-hub";
                 }
                 if (activeTopic.folder_id) {
                   history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);

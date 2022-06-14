@@ -59,7 +59,7 @@ const MoveFilesModal = (props) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [loading, setLoading] = useState(false);
   let sharedPayload = null;
-  if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+  if (params && params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
     sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
   }
 

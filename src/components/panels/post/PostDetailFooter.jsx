@@ -605,7 +605,7 @@ const PostDetailFooter = (props) => {
       slug: workspace.slug,
       isSharedSlug: workspace.sharedSlug,
     };
-    const wsType = workspace.sharedSlug ? "shared-workspace" : "workspace";
+    const wsType = workspace.sharedSlug ? "shared-hub" : "hub";
     const path =
       workspace.folder_name && workspace.folder_id
         ? `/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
@@ -621,7 +621,7 @@ const PostDetailFooter = (props) => {
     //   }
     //   return accumulator;
     // }, null);
-    const wsType = workspace.sharedSlug ? "shared-workspace" : "workspace";
+    const wsType = workspace.sharedSlug ? "shared-hub" : "hub";
     postActions.archivePost(post, () => {
       const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
       if (!nextUnreadPosts) {

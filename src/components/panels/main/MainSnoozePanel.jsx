@@ -343,9 +343,9 @@ const MainSnooze = (props) => {
       }
       if (n.type === "WORKSPACE_ADD_MEMBER") {
         if (n.data.workspace_folder_id) {
-          history.push(`/workspace/chat/${n.data.workspace_folder_id}/${replaceChar(n.data.workspace_folder_name)}/${n.data.id}/${replaceChar(n.data.title)}`);
+          history.push(`/hub/chat/${n.data.workspace_folder_id}/${replaceChar(n.data.workspace_folder_name)}/${n.data.id}/${replaceChar(n.data.title)}`);
         } else {
-          history.push(`/workspace/chat/${n.data.id}/${replaceChar(n.data.title)}`);
+          history.push(`/hub/chat/${n.data.id}/${replaceChar(n.data.title)}`);
         }
       } else {
         redirect.toPost({ workspace, post }, focusOnMessage);

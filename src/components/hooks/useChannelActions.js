@@ -606,7 +606,7 @@ const useChannelActions = () => {
   };
 
   const getChannelLink = (channel) => {
-    let ws_type = channel.slug ? "shared-workspace" : "workspace";
+    let ws_type = channel.slug ? "shared-hub" : "hub";
     if (channel.workspace_folder) {
       return `/${ws_type}/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
     } else {

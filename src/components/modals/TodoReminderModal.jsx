@@ -418,7 +418,7 @@ const TodoReminderModal = (props) => {
     if (mode === "edit" && item && item.workspace) {
       if (Object.values(workspaces).some((ws) => ws.id === item.workspace.id)) {
         let ws;
-        if (history.location.pathname.startsWith("/shared-workspace")) {
+        if (history.location.pathname.startsWith("/shared-hub")) {
           if (activeTopic) {
             ws = { ...workspaces[activeTopic.key] };
           }

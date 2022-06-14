@@ -18,7 +18,7 @@ const useWorkspaceReminders = () => {
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
-  const onSharedWsURL = history.location.pathname.startsWith("/shared-workspace");
+  const onSharedWsURL = history.location.pathname.startsWith("/shared-hub");
   const wsKey = activeTopic && onSharedWsURL ? activeTopic.key : params.workspaceId;
 
   const isLoaded = typeof workspaceReminders[wsKey] !== "undefined";

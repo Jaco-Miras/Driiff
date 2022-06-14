@@ -1194,9 +1194,9 @@ const CreateEditWorkspaceModal = (props) => {
             );
           }
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 
@@ -1344,7 +1344,7 @@ const CreateEditWorkspaceModal = (props) => {
                 key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
               };
 
-              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
+              let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
 
               if (form.is_shared_wp) {
                 // check if user has shared-auth loaded

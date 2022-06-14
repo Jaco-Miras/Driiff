@@ -170,7 +170,7 @@ const MainSidebarLinks = (props) => {
           </NavIconContainer>
         </li> */}
         <li onClick={closeLeftNav}>
-          <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(location.pathname)}>
+          <NavIconContainer to={"/hub/search"} active={["/hub/search"].includes(location.pathname)}>
             <NavIcon icon={"compass"} />
             <div>{dictionary.allWorkspaces}</div>
           </NavIconContainer>

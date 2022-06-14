@@ -19,7 +19,7 @@ const useComments = (post) => {
   const componentIsMounted = useRef(true);
   const workspaceRef = useRef(null);
   const sharedWsRef = useRef(null);
-  let onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-workspace");
+  let onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-hub");
   let postKey = post.id;
   if (onSharedWs) {
     postKey = post.code;

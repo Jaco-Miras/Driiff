@@ -92,14 +92,14 @@ const getLink = (t) => {
     }
     case "POST": {
       if (t.data.workspaces.length) {
-        return `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+        return `/hub/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
       } else {
         return `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
       }
     }
     case "POST_COMMENT": {
       if (t.data.workspaces.length) {
-        return `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+        return `/hub/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
       } else {
         return `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
       }
@@ -321,7 +321,7 @@ export default (state = INITIAL_STATE, action) => {
           }
           case "POST": {
             if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
+              items[t.id].link = `/hub/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
             } else {
               items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}`;
             }
@@ -329,7 +329,7 @@ export default (state = INITIAL_STATE, action) => {
           }
           case "POST_COMMENT": {
             if (t.data.workspaces.length) {
-              items[t.id].link = `/workspace/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
+              items[t.id].link = `/hub/posts/${t.data.workspaces[0].topic.id}/${t.data.workspaces[0].topic.name}/post/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
             } else {
               items[t.id].link = `/posts/${t.data.post.id}/${t.data.post.title.toLowerCase().replace(" ", "-")}/${t.data.comment.code}`;
             }
@@ -490,9 +490,7 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "POST": {
           if (action.data.data.workspaces.length) {
-            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title
-              .toLowerCase()
-              .replace(" ", "-")}`;
+            items[action.data.id].link = `/hub/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
           } else {
             items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}`;
           }
@@ -500,9 +498,9 @@ export default (state = INITIAL_STATE, action) => {
         }
         case "POST_COMMENT": {
           if (action.data.data.workspaces.length) {
-            items[action.data.id].link = `/workspace/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title
-              .toLowerCase()
-              .replace(" ", "-")}/${action.data.data.comment.code}`;
+            items[action.data.id].link = `/hub/posts/${action.data.data.workspaces[0].topic.id}/${action.data.data.workspaces[0].topic.name}/post/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}/${
+              action.data.data.comment.code
+            }`;
           } else {
             items[action.data.id].link = `/posts/${action.data.data.post.id}/${action.data.data.post.title.toLowerCase().replace(" ", "-")}/${action.data.data.comment.code}`;
           }
