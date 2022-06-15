@@ -534,3 +534,7 @@ export function createJitsiMeetMobile(payload, callback) {
 export function addCompanyNameOnMembers(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_COMPANY_NAME_ON_MEMBERS", payload, callback);
 }
+
+export function getSharedChannels(payload, callback) {
+  return dispatchActionToReducer(getChannelsService(payload), "GET_SHARED_CHANNELS_START", "GET_SHARED_CHANNELS_SUCCESS", "GET_SHARED_CHANNELS_FAIL", callback);
+}

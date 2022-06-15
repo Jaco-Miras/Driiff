@@ -3,7 +3,7 @@ import { apiCall } from "./index";
 
 export function getChannels(payload) {
   payload = {
-    order_by: "channel_name",
+    order_by: "updated_at",
     sort_by: "desc",
     ...payload,
   };
@@ -14,10 +14,16 @@ export function getChannels(payload) {
       order_by: "updated_at",
     };
   }
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
 
   return apiCall({
     method: "GET",
     url: `/v2/post-channels?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
