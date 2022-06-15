@@ -42,6 +42,7 @@ const ProfileSlider = (props) => {
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
+    slugName: _t("PROFILE.SLUG_NAME", "Slug"),
     // information: _t("PROFILE.INFORMATION", "Information"),
     firstName: _t("PROFILE.FIRST_NAME", "First name:"),
     middleName: _t("PROFILE.MIDDLE_NAME", "Middle name:"),
@@ -128,6 +129,7 @@ const ProfileSlider = (props) => {
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
             {sharedUser && <label>{dictionary.companyName}</label>}
+            {sharedUser && <label>{dictionary.slugName}</label>}
             {!sharedUser && <label>{dictionary.position}</label>}
             {!sharedUser && loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
@@ -135,6 +137,7 @@ const ProfileSlider = (props) => {
             <span>{sharedUser ? sharedUser.first_name : user?.first_name}</span>
             <span>{sharedUser ? sharedUser.last_name : user?.last_name}</span>
             {sharedUser && <label>{sharedUser.company_name}</label>}
+            {sharedUser && <label>{sharedUser.slug}</label>}
             <span>{!sharedUser ? null : user?.role && user?.role.display_name}</span>
             {!sharedUser && loggedUser.type === "internal" && <span>{user?.email}</span>}
           </div>
