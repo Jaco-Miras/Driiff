@@ -708,7 +708,7 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "SET_ACTIVE_TOPIC": {
-      let updatedWorkspaces = { ...state.workspaces, [action.data.id]: action.data };
+      let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspaceToDelete) {
         delete updatedWorkspaces[state.workspaceToDelete];
