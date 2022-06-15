@@ -85,10 +85,10 @@ const FolderListItem = (props) => {
     if (folder.hasOwnProperty("payload")) {
       window.open(folder.payload.url, "_blank");
     } else {
-      if (path.startsWith("/workspace/dashboard")) {
+      if (path.startsWith("/hub/dashboard")) {
         history.push(url.replace("/dashboard", "/files") + `/folder/${folder.id}/${replaceChar(folder.search)}`);
       } else {
-        if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+        if (path === "/hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
           let pathname = url.split("/folder/")[0];
           history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
         } else {

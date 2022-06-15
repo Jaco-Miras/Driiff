@@ -107,45 +107,45 @@ const WorkspaceContentPanel = (props) => {
             <>
               <Suspense fallback={<div></div>}>
                 <Switch>
-                  <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/workspace/search", "/shared-workspace/search"]} />
-                  {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/workspace/search"]} /> */}
+                  <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/hub/search", "/shared-hub/search"]} />
+                  {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/hub/search"]} /> */}
                   <Route
                     render={() => <WsDashboardPanel {...props} />}
                     path={[
-                      "/workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/dashboard/:workspaceId/:workspaceName",
-                      "/workspace/dashboard",
-                      "/shared-workspace/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/dashboard/:workspaceId/:workspaceName",
-                      "/shared-workspace/dashboard",
+                      "/hub/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/dashboard/:workspaceId/:workspaceName",
+                      "/hub/dashboard",
+                      "/shared-hub/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/dashboard/:workspaceId/:workspaceName",
+                      "/shared-hub/dashboard",
                     ]}
                   />
                   <Route
                     exact={true}
                     render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                      "/workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/workspace/posts/:workspaceId/:workspaceName",
-                      "/workspace/posts",
-                      "/shared-workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
-                      "/shared-workspace/posts/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/shared-workspace/posts/:workspaceId/:workspaceName",
-                      "/shared-workspace/posts",
+                      "/hub/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/hub/posts/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/hub/posts/:workspaceId/:workspaceName",
+                      "/hub/posts",
+                      "/shared-hub/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/shared-hub/posts/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-hub/posts/:workspaceId/:workspaceName",
+                      "/shared-hub/posts",
                     ]}
                   />
                   <Route
                     exact={true}
                     render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
                     path={[
-                      "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/chat/:workspaceId/:workspaceName",
-                      "/workspace/chat",
-                      "/shared-workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/chat/:workspaceId/:workspaceName",
-                      "/shared-workspace/chat",
+                      "/hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/chat/:workspaceId/:workspaceName",
+                      "/hub/chat",
+                      "/shared-hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/chat/:workspaceId/:workspaceName",
+                      "/shared-hub/chat",
                     ]}
                   />
                   {!isExternal && (
@@ -153,16 +153,16 @@ const WorkspaceContentPanel = (props) => {
                       exact={true}
                       render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
                       path={[
-                        "/workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/chat/:workspaceId/:workspaceName",
-                        "/workspace/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/workspace/team-chat/:workspaceId/:workspaceName",
-                        "/workspace/chat",
-                        "/shared-workspace/chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/shared-workspace/chat/:workspaceId/:workspaceName",
-                        "/shared-workspace/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
-                        "/shared-workspace/team-chat/:workspaceId/:workspaceName",
-                        "/shared-workspace/chat",
+                        "/hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/hub/chat/:workspaceId/:workspaceName",
+                        "/hub/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/hub/team-chat/:workspaceId/:workspaceName",
+                        "/hub/chat",
+                        "/shared-hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/shared-hub/chat/:workspaceId/:workspaceName",
+                        "/shared-hub/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/shared-hub/team-chat/:workspaceId/:workspaceName",
+                        "/shared-hub/chat",
                       ]}
                     />
                   )}
@@ -171,56 +171,56 @@ const WorkspaceContentPanel = (props) => {
                     {...props}
                     render={(props) => <WorkspaceFilesPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/files/:workspaceId/:workspaceName",
-                      "/workspace/files",
-                      "/shared-workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/shared-workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/shared-workspace/files/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/files/:workspaceId/:workspaceName",
-                      "/shared-workspace/files",
+                      "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/files/:workspaceId/:workspaceName",
+                      "/hub/files",
+                      "/shared-hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/files/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/files/:workspaceId/:workspaceName",
+                      "/shared-hub/files",
                     ]}
                   />
                   <Route
                     render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/people/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/people/:workspaceId/:workspaceName",
-                      "/workspace/people",
-                      "/shared-workspace/people/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/people/:workspaceId/:workspaceName",
-                      "/shared-workspace/people",
+                      "/hub/people/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/people/:workspaceId/:workspaceName",
+                      "/hub/people",
+                      "/shared-hub/people/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/people/:workspaceId/:workspaceName",
+                      "/shared-hub/people",
                     ]}
                   />
                   <Route
                     render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
                     path={[
-                      "/workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/reminders/:workspaceId/:workspaceName",
-                      "/workspace/reminders",
-                      "/shared-workspace/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/reminders/:workspaceId/:workspaceName",
-                      "/shared-workspace/reminders",
+                      "/hub/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/reminders/:workspaceId/:workspaceName",
+                      "/hub/reminders",
+                      "/shared-hub/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/reminders/:workspaceId/:workspaceName",
+                      "/shared-hub/reminders",
                     ]}
                   />
                   <Route
                     {...props}
                     component={WorkspaceSettingsPanel}
                     path={[
-                      "/workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/settings/:workspaceId/:workspaceName",
-                      "/workspace/settings",
-                      "/shared-workspace/settings/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/settings/:workspaceId/:workspaceName",
-                      "/shared-workspace/settings",
+                      "/hub/settings/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/settings/:workspaceId/:workspaceName",
+                      "/hub/settings",
+                      "/shared-hub/settings/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/settings/:workspaceId/:workspaceName",
+                      "/shared-hub/settings",
                     ]}
                   />
                   <Redirect
                     from="*"
                     to={{
-                      pathname: "/workspace/search",
+                      pathname: "/hub/search",
                       state: { from: props.location },
                     }}
                   />

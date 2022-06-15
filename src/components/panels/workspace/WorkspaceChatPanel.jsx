@@ -59,7 +59,7 @@ const WorkspaceChatPanel = (props) => {
     };
   }, []);
 
-  let ws_type = workspace && workspace.sharedSlug ? "shared-workspace" : "workspace";
+  let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
 
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>

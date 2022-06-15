@@ -822,22 +822,22 @@ const WorspaceHeaderPanel = (props) => {
                     exact={true}
                     render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/workspace/:page/:workspaceId/:workspaceName",
-                      "/workspace/:workspaceId/:workspaceName",
-                      "/workspace/:page",
-                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/shared-workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/shared-workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/shared-workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/shared-workspace/:page/:workspaceId/:workspaceName",
-                      "/shared-workspace/:workspaceId/:workspaceName",
-                      "/shared-workspace/:page",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/hub/:page/:workspaceId/:workspaceName",
+                      "/hub/:workspaceId/:workspaceName",
+                      "/hub/:page",
+                      "/shared-hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-hub/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-hub/:page/:workspaceId/:workspaceName",
+                      "/shared-hub/:workspaceId/:workspaceName",
+                      "/shared-hub/:page",
                     ]}
                   />
                 </div>

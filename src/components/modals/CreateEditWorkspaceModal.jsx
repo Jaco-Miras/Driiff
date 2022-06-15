@@ -317,6 +317,8 @@ const NestedModalWrapper = styled.div`
   }
 `;
 
+const MAX_NAME_CHAR = 25;
+
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
 
@@ -503,6 +505,7 @@ const CreateEditWorkspaceModal = (props) => {
     lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
     lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
     feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
+    feedbackWorkspaceNameIsTooLong: _t("FEEDBACK.WORKSPACE_NAME_IS_TOO_LONG", `Workspace name is too long (Maximum of ${MAX_NAME_CHAR} characters only)`),
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
     feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
@@ -557,6 +560,17 @@ const CreateEditWorkspaceModal = (props) => {
       setFeedback((prevState) => ({
         ...prevState,
         name: dictionary.feedbackWorkspaceNameIsRequired,
+      }));
+      setValid((prevState) => ({
+        ...prevState,
+        name: false,
+      }));
+      return false;
+    }
+    if (form.name.length > MAX_NAME_CHAR) {
+      setFeedback((prevState) => ({
+        ...prevState,
+        name: dictionary.feedbackWorkspaceNameIsTooLong,
       }));
       setValid((prevState) => ({
         ...prevState,
@@ -1180,9 +1194,9 @@ const CreateEditWorkspaceModal = (props) => {
             );
           }
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 

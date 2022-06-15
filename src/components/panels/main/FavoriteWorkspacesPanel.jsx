@@ -201,7 +201,7 @@ const FavoriteWorkspacesPanel = (props) => {
   };
 
   const handleBrowseAll = () => {
-    history.push("/workspace/search");
+    history.push("/hub/search");
   };
 
   const EmptyWorkspaces = () => {

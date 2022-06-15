@@ -76,7 +76,7 @@ const CountCard = (props) => {
   }, []);
 
   const handleRedirect = () => {
-    let ws_type = workspace && workspace.sharedSlug ? "shared-workspace" : "workspace";
+    let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
     if (isWorkspace) {
       if (!workspace) return;
       if (type === "chat") {

@@ -41,10 +41,10 @@ const RedirectPanel = (props) => {
                 const isExternal = res.data.user_auth.type === "external";
                 if (isExternal) {
                   if (ws.workspace_id) {
-                    let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    let link = `/hub/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                     history.push(link);
                   } else {
-                    let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    let link = `/hub/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                     history.push(link);
                   }
                 } else {
@@ -55,7 +55,7 @@ const RedirectPanel = (props) => {
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
-                let ws_type = wsFolder.sharedSlug ? "shared-workspace" : "workspace";
+                let ws_type = wsFolder.sharedSlug ? "shared-hub" : "hub";
                 if (wsFolder) {
                   let link = `/${ws_type}/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
@@ -70,11 +70,11 @@ const RedirectPanel = (props) => {
                 });
                 history.push(link);
               } else {
-                history.push("/workspace/search");
+                history.push("/hub/search");
               }
             }
           } else {
-            history.push("/workspace/search");
+            history.push("/hub/search");
           }
         }
       });
