@@ -133,7 +133,7 @@ const CreateFilesFolderModal = (props) => {
         folder_id: params.fileFolderId,
       };
     }
-    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
@@ -165,7 +165,7 @@ const CreateFilesFolderModal = (props) => {
       is_archived: true,
       bg_color: color,
     };
-    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+    if (params && params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },

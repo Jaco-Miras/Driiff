@@ -241,7 +241,7 @@ const MainLayout = (props) => {
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub", "/shared-workspace"]} />
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub", "/shared-hub"]} />
             <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
           <MainSnoozePanel />

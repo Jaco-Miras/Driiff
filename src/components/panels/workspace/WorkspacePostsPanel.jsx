@@ -191,9 +191,9 @@ const WorkspacePostsPanel = (props) => {
               };
               dispatch(updateWorkspacePostFilterSort(payload));
               if (params.folderId) {
-                history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                history.push(`/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
               } else {
-                history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
               }
               toaster.error(dictionary.errorLoadingPost);
             }

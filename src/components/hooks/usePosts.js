@@ -21,7 +21,7 @@ const usePosts = () => {
   const [fetchingPost, setFetchingPost] = useState(false);
 
   const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
-  const onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-workspace");
+  const onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-hub");
 
   const componentIsMounted = useRef(true);
   const workspaceRef = useRef(null);
@@ -32,7 +32,7 @@ const usePosts = () => {
         topic_id: params.workspaceId,
       };
 
-      if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace")) {
+      if (params.workspaceId && history.location.pathname.startsWith("/shared-hub")) {
         if (workspace && workspace.sharedSlug) {
           payload = {
             ...payload,
@@ -136,7 +136,7 @@ const usePosts = () => {
 
   useEffect(() => {
     if (params.workspaceId !== undefined) {
-      if (history.location.pathname.startsWith("/shared-workspace")) {
+      if (history.location.pathname.startsWith("/shared-hub")) {
         //if (workspaceRef.current && wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`)) return;
         if (workspaceRef.current && !wsPosts.hasOwnProperty(`${workspaceRef.current.id}-${workspaceRef.current.slug}`) && !fetchingPost) {
           setFetchingPost(true);

@@ -266,7 +266,7 @@ const GuestLayout = (props) => {
                 <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
                 <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
                 <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
-                <Route path={"/shared-workspace-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
+                <Route path={"/shared-hub-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
                 <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
               </Switch>
             </Suspense>
