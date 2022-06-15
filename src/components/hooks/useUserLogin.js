@@ -130,7 +130,6 @@ export const useUserLogin = (props) => {
           });
       }
     }
-    debugger;
     if (history.location.pathname.startsWith("/authenticate-ios/") && !checkingRef.current) {
       const data = getUrlParams(`${getBaseUrl()}/authenticate-ios?auth_token=${params.tokens}`);
       checkingRef.current = true;
