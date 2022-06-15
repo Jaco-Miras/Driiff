@@ -76,7 +76,7 @@ const PostTimeline = (props) => {
 
   const handleLinkClick = (e) => {
     e.preventDefault();
-    history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${data.id}/${replaceChar(data.title)}`);
+    history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${data.id}/${replaceChar(data.title)}`);
   };
 
   return (

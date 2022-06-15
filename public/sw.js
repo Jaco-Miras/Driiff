@@ -33,9 +33,9 @@ function receivePushNotification(event) {
         notification_title = push_title;
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
-            link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+            link = `/hub/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
           } else {
-            link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
+            link = `/hub/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${post_id}/${replaceChar(post_title)}`;
           }
         } else {
           link = `/posts/${post_id}/${replaceChar(post_title)}`;
@@ -52,9 +52,9 @@ function receivePushNotification(event) {
         notification_title = `${author.name} shared a post`;
         if (workspaces.length) {
           if (workspaces[0].workspace_id){
-            link = `/workspace/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
+            link = `/hub/posts/${workspaces[0].workspace_id}/${replaceChar(workspaces[0].workspace_name)}/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
           } else {
-            link = `/workspace/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
+            link = `/hub/posts/${workspaces[0].topic_id}/${replaceChar(workspaces[0].topic_name)}/post/${id}/${replaceChar(title)}`;
           }
         } else {
           link = `/posts/${id}/${replaceChar(title)}`;
@@ -74,9 +74,9 @@ function receivePushNotification(event) {
           if (link_type === "POST_COMMENT" || link_type === "POST") {
             if (data.workspaces.length) {
               if (data.workspaces[0].workspace){
-                link = `/workspace/posts/${data.workspaces[0].workspace.id}/${replaceChar(data.workspaces[0].workspace.name)}/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
+                link = `/hub/posts/${data.workspaces[0].workspace.id}/${replaceChar(data.workspaces[0].workspace.name)}/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
               } else {
-                link = `/workspace/posts/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
+                link = `/hub/posts/${data.workspaces[0].topic.id}/${replaceChar(data.workspaces[0].topic.name)}/post/${data.post.id}/${replaceChar(data.post.title)}`;
               }
             } else {
               link = `/posts/${data.post.id}/${replaceChar(data.post.title)}`;

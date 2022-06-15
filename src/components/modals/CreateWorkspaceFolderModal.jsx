@@ -306,7 +306,7 @@ const CreateWorkspaceFolderModal = (props) => {
         (err, res) => {
           if (err) return;
           if (activeTopic && activeTopic.folder_id === item.id) {
-            history.push(`/workspace/chat/${activeTopic.id}/${replaceChar(activeTopic.name)}`);
+            history.push(`/hub/chat/${activeTopic.id}/${replaceChar(activeTopic.name)}`);
           }
         }
       )

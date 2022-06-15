@@ -194,9 +194,9 @@ const SystemMessage = (props) => {
         let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
         if (params && params.workspaceId) {
           if (params.folderId) {
-            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           } else {
-            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            history.push(`/hub/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           }
         } else {
           history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);

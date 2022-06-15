@@ -35,7 +35,7 @@ const useRedirect = () => {
         let ws = Object.values(workspaces).find((ws) => ws.channel.id === cnl.id || (ws.team_channel && ws.team_channel.id === cnl.id));
         if (ws) {
           history.push({
-            pathname: ws.folder_id ? `/workspace/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/workspace/chat/${ws.id}/${ws.name}`,
+            pathname: ws.folder_id ? `/hub/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/hub/chat/${ws.id}/${ws.name}`,
             state: { focusOn: message.code },
           });
         }
@@ -75,9 +75,9 @@ const useRedirect = () => {
       };
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/workspace/files/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/files/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/workspace/files/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/files/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
       history.push("/files");
@@ -93,9 +93,9 @@ const useRedirect = () => {
     if (workspace && workspaces[workspace.id]) {
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       } else {
-        history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       }
     } else if (workspace && typeof workspaces[workspace.id] === "undefined") {
       fetchWorkspaceAndRedirect(workspace, post);
@@ -109,9 +109,9 @@ const useRedirect = () => {
       let workspace = { ...workspaces[ws.id] };
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/workspace/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/workspace/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
       fetchWorkspaceAndRedirect(ws);
@@ -129,15 +129,15 @@ const useRedirect = () => {
         dispatch(setWorkspaceToDelete(workspace.id));
         if (post) {
           if (workspace.folder_id) {
-            history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           } else {
-            history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           }
         } else {
           if (workspace.folder_id) {
-            history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
           }
         }
       })

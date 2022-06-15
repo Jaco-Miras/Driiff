@@ -405,9 +405,9 @@ const usePostActions = () => {
   const sharePost = (post) => {
     let link = "";
     if (params.folderId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else {
       link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
     }
@@ -491,7 +491,7 @@ const usePostActions = () => {
           tag: null,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
-        history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       } else {
         let payload = {
           filter: "inbox",

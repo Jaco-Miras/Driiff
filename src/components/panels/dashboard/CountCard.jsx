@@ -51,21 +51,21 @@ const CountCard = (props) => {
       if (!workspace) return;
       if (type === "chat") {
         if (workspace.folder_id) {
-          history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else if (type === "posts") {
         if (workspace.folder_id) {
-          history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else {
         if (workspace.folder_id) {
-          history.push(`/workspace/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/workspace/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/hub/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       }
     } else {
