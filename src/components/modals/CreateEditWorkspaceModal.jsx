@@ -1087,9 +1087,14 @@ const CreateEditWorkspaceModal = (props) => {
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
-      const notSharedMembersId = notSharedMembers.map((m) => m.id);
-      const removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      let removed_members = [];
+      if (item.is_shared_wp) {
+        const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
+        const notSharedMembersId = notSharedMembers.map((m) => m.id);
+        removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      } else {
+        removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
+      }
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
@@ -1757,7 +1762,13 @@ const CreateEditWorkspaceModal = (props) => {
             };
           });
         members = item.members
-          .filter((m) => m.active === 1 && m.type === "internal" && m.slug && m.slug === slug)
+          .filter((m) => {
+            if (item && item.is_shared_wp) {
+              return m.active === 1 && m.type === "internal" && m.slug && m.slug === slug;
+            } else {
+              return m.active === 1 && m.type === "internal";
+            }
+          })
           .map((m) => {
             return {
               value: m.id,
