@@ -1115,12 +1115,6 @@ const CreateEditWorkspaceModal = (props) => {
         remove_team_member_ids: removed_teams.map((t) => t.id),
         team_member_ids: activeTeams.map((t) => t.id),
       };
-      if (item && item.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true },
-        };
-      }
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
         payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
