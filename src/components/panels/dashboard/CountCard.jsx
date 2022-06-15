@@ -34,12 +34,12 @@ const CountCard = (props) => {
   const todosCount = useSelector((state) => state.global.todos.count);
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
-  const onSharedWsURL = history.location.pathname.startsWith("/shared-workspace");
+  const onSharedWsURL = history.location.pathname.startsWith("/shared-hub");
   const wsKey = workspace && onSharedWsURL ? workspace.key : params.workspaceId;
   const wsReminders = workspaceReminders[workspace && onSharedWsURL ? workspace.key : params.workspaceId];
 
   useEffect(() => {
-    if (history.location.pathname.startsWith("/shared-workspace")) {
+    if (history.location.pathname.startsWith("/shared-hub")) {
       if (params.workspaceId && workspace && !workspaceReminders[workspace.key]) {
         //fetch the workspace reminders count
         let payload = {
@@ -76,7 +76,7 @@ const CountCard = (props) => {
   }, []);
 
   const handleRedirect = () => {
-    let ws_type = workspace && workspace.sharedSlug ? "shared-workspace" : "workspace";
+    let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
     if (isWorkspace) {
       if (!workspace) return;
       if (type === "chat") {

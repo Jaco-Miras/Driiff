@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount } from "../../hooks";
+import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount, useGetSlug } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { SvgIconFeather } from "../../common";
@@ -98,6 +98,7 @@ const WorkspacePeoplePanel = (props) => {
   };
 
   const { _t } = useTranslationActions();
+  const slug = useGetSlug();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
@@ -122,6 +123,7 @@ const WorkspacePeoplePanel = (props) => {
   };
 
   useFocusInput(refs.search.current);
+  const sharedWorkspace = workspace && workspace.slug ? workspace.slug !== slug : false;
 
   return (
     <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
@@ -139,7 +141,19 @@ const WorkspacePeoplePanel = (props) => {
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} showWorkspaceRole={true} sharedUser={workspace.sharedSlug} />;
+              return (
+                <PeopleListItem
+                  key={user.id}
+                  loggedUser={loggedUser}
+                  user={user}
+                  onNameClick={handleUserNameClick}
+                  onChatClick={handleUserChat}
+                  dictionary={dictionary}
+                  showWorkspaceRole={true}
+                  sharedUser={workspace.sharedSlug}
+                  isSharedWorkspace={sharedWorkspace}
+                />
+              );
             })}
           </div>
         </div>

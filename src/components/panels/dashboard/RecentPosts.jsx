@@ -74,7 +74,7 @@ const RecentPosts = (props) => {
   // };
 
   const handleOpenPost = (post) => {
-    postActions.openPost(post, match.url.replace("/workspace/dashboard/", "/workspace/posts/"));
+    postActions.openPost(post, match.url.replace("/hub/dashboard/", "/hub/posts/"));
   };
 
   const handleRefetchPosts = () => {

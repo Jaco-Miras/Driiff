@@ -145,19 +145,19 @@ const MainLayout = (props) => {
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
           history.replace({ state: {} });
+          let redirectLink = "/dashboard";
+          if (res.data.data.current_workspace) {
+            redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          } else {
+            redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          }
+          history.push(redirectLink);
           if (err) return;
           dispatch(
-            getSharedWorkspaces({}, (err, res) => {
-              let redirectLink = "/dashboard";
-              if (res.data.data.current_workspace) {
-                redirectLink = `/shared-workspace/dasboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-              } else {
-                redirectLink = `/shared-workspace/dasboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-              }
-              history.push(redirectLink);
+            getSharedWorkspaces({}, (err, response) => {
               if (err) return;
               sessionService.loadSession().then((current) => {
-                sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
+                sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
               });
             })
           );
@@ -241,7 +241,7 @@ const MainLayout = (props) => {
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace", "/shared-workspace"]} />
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub", "/shared-hub"]} />
             <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
           <MainSnoozePanel />
@@ -254,7 +254,7 @@ const MainLayout = (props) => {
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
             <Switch>
-              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
               <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
             </Switch>
           )}

@@ -85,7 +85,7 @@ const usePostActions = () => {
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const { slug } = useGetSlug();
   let sharedPayload = null;
-  if (params.workspaceId && history.location.pathname.startsWith("/shared-workspace") && workspace) {
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
     sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
   }
 
@@ -446,9 +446,9 @@ const usePostActions = () => {
   const sharePost = (post) => {
     let link = "";
     if (params.folderId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else {
       link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
     }
@@ -546,15 +546,15 @@ const usePostActions = () => {
         dispatch(updateWorkspacePostFilterSort(payload));
         if (post.slug && slug !== post.slug) {
           if (params.folderId) {
-            history.push(`/shared-workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            history.push(`/shared-hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
           } else {
-            history.push(`/shared-workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            history.push(`/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
           }
         } else {
           if (params.folderId) {
-            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
           } else {
-            history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+            history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
           }
         }
       } else {

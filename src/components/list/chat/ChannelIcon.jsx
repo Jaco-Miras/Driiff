@@ -125,12 +125,12 @@ const ChannelIcon = (props) => {
         ))}
       {channel && channel.type === "COMPANY" && <Icon icon="home" alt={channel.title} />}
       {channel && channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
-      {channel && channel.type === "PERSONAL_BOT" && <Icon icon="user" alt={channel.title} />}
+      {channel && channel.type === "PERSONAL_BOT" && <Icon icon="clipboard" alt={channel.title} />}
       {channel && channel.type === "TOPIC" && (
         <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />
       )}
-      {channel && channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye-off" />}
-      {channel && !channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && <EyeIcon icon="eye" />}
+      {channel && channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared}
+      {channel && !channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared}
       {children}
     </Wrapper>
   );

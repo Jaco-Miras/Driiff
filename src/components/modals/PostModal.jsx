@@ -378,7 +378,18 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
     isSharedWorkspace: isSharedWorkspace,
   });
@@ -618,9 +629,9 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
-                let wsType = "workspace";
+                let wsType = "hub";
                 if (activeTopic.sharedSlug) {
-                  wsType = "shared-workspace";
+                  wsType = "shared-hub";
                 }
                 if (activeTopic.folder_id) {
                   history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
@@ -836,9 +847,9 @@ const PostModal = (props) => {
                   isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
-                let wsType = "workspace";
+                let wsType = "hub";
                 if (activeTopic.sharedSlug) {
-                  wsType = "shared-workspace";
+                  wsType = "shared-hub";
                 }
                 if (activeTopic.folder_id) {
                   history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);

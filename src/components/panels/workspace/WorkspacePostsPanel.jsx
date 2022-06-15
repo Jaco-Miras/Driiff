@@ -149,7 +149,7 @@ const WorkspacePostsPanel = (props) => {
   useEffect(() => {
     if (params.postId && !post) {
       //need to update for shared workspace url
-      if (history.location.pathname.startsWith("/shared-workspace")) {
+      if (history.location.pathname.startsWith("/shared-hub")) {
         if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
           let payload = {
             post_id: params.postId,
@@ -168,9 +168,9 @@ const WorkspacePostsPanel = (props) => {
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (params.folderId) {
-                  history.push(`/shared-workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                  history.push(`/shared-hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
                 } else {
-                  history.push(`/shared-workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                  history.push(`/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
                 }
                 toaster.error(dictionary.errorLoadingPost);
               }
@@ -191,9 +191,9 @@ const WorkspacePostsPanel = (props) => {
               };
               dispatch(updateWorkspacePostFilterSort(payload));
               if (params.folderId) {
-                history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                history.push(`/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
               } else {
-                history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+                history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
               }
               toaster.error(dictionary.errorLoadingPost);
             }

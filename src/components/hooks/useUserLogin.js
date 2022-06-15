@@ -44,10 +44,10 @@ export const useUserLogin = (props) => {
                 const isExternal = res.data.user_auth.type === "external";
                 if (isExternal) {
                   if (ws.workspace_id) {
-                    let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    let link = `/hub/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                     userActions.login(res.data, link);
                   } else {
-                    let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    let link = `/hub/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
                     userActions.login(res.data, link);
                   }
                 } else {
@@ -59,10 +59,10 @@ export const useUserLogin = (props) => {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
                 if (wsFolder) {
-                  let link = `/workspace/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/hub/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
                   userActions.login(res.data, link);
                 } else {
-                  let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/hub/chat/${topic.id}/${replaceChar(topic.name)}`;
                   userActions.login(res.data, link);
                 }
               } else if (res.data.additional_data.data) {
@@ -132,7 +132,6 @@ export const useUserLogin = (props) => {
     }
     if (history.location.pathname.startsWith("/authenticate-ios/") && !checkingRef.current) {
       const data = getUrlParams(`${getBaseUrl()}/authenticate-ios?auth_token=${params.tokens}`);
-
       checkingRef.current = true;
       if (data.id && data.auth_token && data.redirect_url) {
         fetch(`${getAPIUrl()}/users/${data.id}`, {
@@ -159,11 +158,23 @@ export const useUserLogin = (props) => {
                 download_token: `${data.download_token}`,
               })
               .then(() => {
-                sessionService.saveUser({
-                  ...res,
-                });
-                window.location.href = data.redirect_url;
+                sessionService
+                  .saveUser({
+                    ...res,
+                  })
+                  .then(() => {
+                    window.location.href = data.redirect_url;
+                  })
+                  .catch(() => {
+                    history.push("/login");
+                  });
+              })
+              .catch((err) => {
+                history.push("/login");
               });
+          })
+          .catch((error) => {
+            history.push("/login");
           });
       }
     }

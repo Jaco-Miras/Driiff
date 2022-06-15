@@ -44,7 +44,7 @@ const TopicList = (props) => {
   const history = useHistory();
   const route = useRouteMatch();
   const { params } = route;
-  const onWorkspace = route.url.startsWith("/workspace");
+  const onWorkspace = route.url.startsWith("/hub");
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectTopic = () => {
@@ -89,7 +89,7 @@ const TopicList = (props) => {
   }, [workspaceRef, showTopics, triggerFocus, topic]);
 
   let unread_count = topic.unread_chats + topic.unread_posts + topic.team_unread_chats;
-  let ws_type = topic.sharedSlug ? "shared-workspace" : "workspace";
+  let ws_type = topic.sharedSlug ? "shared-hub" : "hub";
   return (
     <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
       <div className={"topic-text-container"}>

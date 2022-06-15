@@ -11,7 +11,7 @@ const useShowDashboardModal = () => {
   const dontShowIds = useSelector((state) => state.global.dontShowIds);
   const user = useSelector((state) => state.session.user);
   useEffect(() => {
-    if (!location.pathname.startsWith("/workspace/search") && workspaceId) {
+    if (!location.pathname.startsWith("/hub/search") && workspaceId) {
       if (showAboutModal) {
         if (dontShowIds.some((id) => id === workspaceId)) return;
         if (user.dontShowIds) {

@@ -31,7 +31,7 @@ const MainContentPanel = (props) => {
   const isAdmin = loggedUser.role && loggedUser.role.id <= 1;
 
   return (
-    <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "workspace"}>
+    <Wrapper className={`main-content ${className}`} isOnWorkspace={props.match.params.page === "hub"}>
       <Suspense fallback={<div></div>}>
         <Switch>
           <Route {...props} component={UserProfilePanel} path={["/profile/:id/:name/:mode", "/profile/:id/:name", "/profile", "/profile/:id"]} exact={true} />
@@ -68,7 +68,7 @@ const MainContentPanel = (props) => {
           <Redirect
             from="*"
             to={{
-              pathname: isExternal ? "/workspace/search" : "/dashboard",
+              pathname: isExternal ? "/hub/chat" : "/dashboard",
               state: { from: props.location },
             }}
           />

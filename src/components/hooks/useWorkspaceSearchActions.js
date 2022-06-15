@@ -202,7 +202,7 @@ const useWorkspaceSearchActions = () => {
 
   const toWorkspace = (workspace) => {
     let wsKey = workspace.slug ? `${workspace.id}-${workspace.slug}` : workspace.id;
-    let wsType = workspace.slug ? "shared-workspace" : "workspace";
+    let wsType = workspace.slug ? "shared-hub" : "hub";
     if (workspaces[wsKey]) {
       dispatch(setActiveTopic(workspaces[wsKey]));
       if (workspace.folder_id) {
@@ -226,15 +226,15 @@ const useWorkspaceSearchActions = () => {
         dispatch(setWorkspaceToDelete(workspace.id));
         if (post) {
           if (workspace.folder_id) {
-            history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           } else {
-            history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           }
         } else {
           if (workspace.folder_id) {
-            history.push(`/workspace/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
           }
         }
       })

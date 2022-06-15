@@ -83,7 +83,7 @@ const AboutCard = (props) => {
       <div className="card-title">
         <h5 className="card-title mb-0">{isWorkspace ? dictionary.aboutThisWorkspace : dictionary.aboutThisCompany}</h5>
 
-        {((!isWorkspace && companyWs && user.role.id <= 2) || workspaceMember) && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
+        {((!isWorkspace && companyWs && user && user.role && user.role.id <= 2) || workspaceMember) && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
       </div>
       <DashboardDescriptionContainer>
         {!isWorkspace && companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}

@@ -88,7 +88,7 @@ const ProfileSlider = (props) => {
   useOutsideClick(sliderRef, onShowPopup, true);
 
   const handleWorkspaceClick = () => {
-    history.push(`/workspace/search?user-id=${user.id}`);
+    history.push(`/hub/search?user-id=${user.id}`);
   };
 
   // this will attach an empty onclick function on the avatar if the user is shared
