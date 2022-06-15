@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
+import { getChannel, addCompanyNameOnMembers, getSharedChannels } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
@@ -26,31 +26,36 @@ const useLoadSharedDriff = () => {
       Object.keys(sharedWs).forEach((ws) => {
         const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
         dispatch(
+          getSharedChannels({ skip: 0, limit: 30, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
+            if (err) return;
+          })
+        );
+        dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, (err, res) => {
             if (err) return;
 
-            const channelCodes = res.data.workspaces
-              .map((ws) => {
-                if (ws.topic_detail) {
-                  return [
-                    { code: ws.topic_detail.channel.code, members: ws.members },
-                    { code: ws.topic_detail.team_channel.code, members: ws.members },
-                  ];
-                }
-              })
-              .flat();
-            if (channelCodes.length) {
-              channelCodes.forEach((c) => {
-                if (c.code) {
-                  dispatch(
-                    getChannel({ code: c.code, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
-                      if (err) return;
-                      dispatch(addCompanyNameOnMembers({ code: c.code, members: c.members }));
-                    })
-                  );
-                }
-              });
-            }
+            // const channelCodes = res.data.workspaces
+            //   .map((ws) => {
+            //     if (ws.topic_detail) {
+            //       return [
+            //         { code: ws.topic_detail.channel.code, members: ws.members },
+            //         { code: ws.topic_detail.team_channel.code, members: ws.members },
+            //       ];
+            //     }
+            //   })
+            //   .flat();
+            // if (channelCodes.length) {
+            //   channelCodes.forEach((c) => {
+            //     if (c.code) {
+            //       dispatch(
+            //         getChannel({ code: c.code, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
+            //           if (err) return;
+            //           dispatch(addCompanyNameOnMembers({ code: c.code, members: c.members }));
+            //         })
+            //       );
+            //     }
+            //   });
+            // }
           })
         );
         let sharedUserPayload = {

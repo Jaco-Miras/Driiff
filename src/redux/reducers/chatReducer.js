@@ -2769,6 +2769,25 @@ export default function (state = INITIAL_STATE, action) {
         }, {}),
       };
     }
+    case "GET_SHARED_CHANNELS_SUCCESS": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...Object.values(action.data.results).reduce((acc, channel) => {
+            acc[channel.code] = {
+              ...channel,
+              hasMore: true,
+              skip: 0,
+              isFetching: false,
+              slug: action.slug,
+              sharedSlug: true,
+            };
+            return acc;
+          }, {}),
+        },
+      };
+    }
     default:
       return state;
   }
