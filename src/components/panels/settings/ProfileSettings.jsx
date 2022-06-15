@@ -11,6 +11,7 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
+import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
   .card {
@@ -160,6 +161,8 @@ const ProfileSettings = (props) => {
     emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
     emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always, i prefer mostly email"),
     emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Only on mention, I will use Driff mostly"),
+    emailToggleToolTip: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP", `By selecting 'Always', you will receive all notifications through email.
+    By selecting 'Only on mention', you will receive email notifications when you are mentioned on Chat or Post`)
   };
 
   const notificationSoundOptions = [
@@ -845,7 +848,14 @@ const ProfileSettings = (props) => {
                 </div>
               </div>
               <div className="row mb-2">
-                <div className="col-5 text-muted">{dictionary.emailToggle}</div>
+                <div className="col-5 text-muted" style={{ display: "flex" }}>
+                  {dictionary.emailToggle}
+                  &nbsp;
+                  <ToolTip content={dictionary.emailToggleToolTip}>
+                    <SvgIconFeather icon="info" />
+                  </ToolTip>
+                </div>
+
                 <div className="col-7">
                   <Select
                     className={"react-select-container"}
