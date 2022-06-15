@@ -108,7 +108,7 @@ export const AppRoute = ({ children, ...props }) => {
             "/request-form",
             "/magic-link/:token",
             "/authenticate-ios/:tokens",
-            "/shared-workspace-invite",
+            "/shared-hub-invite",
           ]}
           exact
         >
