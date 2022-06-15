@@ -1192,10 +1192,11 @@ const CreateEditWorkspaceModal = (props) => {
               })
             );
           }
+          let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 

@@ -1883,6 +1883,8 @@ class SocketListeners extends Component {
           ...e,
           is_shared: e.is_shared,
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
+          slug: this.state.slug,
+          sharedSlug: this.props.sharedSlug,
         });
         if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
           this.props.getAllWorkspaceFolders();
@@ -2251,6 +2253,8 @@ class SocketListeners extends Component {
           ...e,
           is_shared: e.is_shared,
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
+          slug: this.state.slug,
+          sharedSlug: this.props.sharedSlug,
         });
         //get the updated members
         if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
