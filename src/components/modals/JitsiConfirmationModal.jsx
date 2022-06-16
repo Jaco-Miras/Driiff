@@ -6,6 +6,8 @@ import { clearModal, addToModals, postToDo } from "../../redux/actions/globalAct
 import { ModalHeaderSection } from "./index";
 import { useTranslationActions, useToaster } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
+import { browserName, deviceType } from "react-device-detect";
+import { getDriffName } from "../hooks/useDriff";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {
@@ -72,6 +74,7 @@ const JitsiConfirmationModal = (props) => {
   };
 
   const [modal, setModal] = useState(true);
+  const slugName = getDriffName();
 
   const toggle = () => {
     setModal(!modal);
@@ -103,14 +106,28 @@ const JitsiConfirmationModal = (props) => {
       host: true,
       room_name: getSlug() + "~" + parseChannel + "~" + selectedChannel.id,
     };
-    if (selectedChannel.slug && sharedWs[slug]) {
-      const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
-      payload = {
-        ...payload,
-        sharedPayload: sharedPayload,
-      };
+
+    if (deviceType === "mobile" && browserName === "WebKit") {
+      dispatch(
+        createJitsiMeet(payload, (err, res) => {
+          if (err) {
+            toggle();
+            return;
+          }
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: slug, status: "OK", token: res.data._token, room: res.data.room_name });
+          toggle();
+        })
+      );
+    } else {
+      if (selectedChannel.slug && sharedWs[slug]) {
+        const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+      dispatch(createJitsiMeet(payload, () => toggle()));
     }
-    dispatch(createJitsiMeet(payload, () => toggle()));
   };
 
   const handleScheduleCall = () => {

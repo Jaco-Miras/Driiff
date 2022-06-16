@@ -6,6 +6,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
+import { getDriffName } from "../hooks/useDriff";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -52,6 +53,7 @@ const JitsiInviteModal = (props) => {
   const [startingMeet, setStartingMeet] = useState(false);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
+  const slugName = getDriffName();
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
@@ -96,7 +98,7 @@ const JitsiInviteModal = (props) => {
             toggle();
             return;
           }
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: slugName, status: "OK", token: res.data._token, room: res.data.room_name });
           toggle();
         })
       );
