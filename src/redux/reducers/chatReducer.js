@@ -450,43 +450,46 @@ export default function (state = INITIAL_STATE, action) {
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel;
       if (action.isSharedSlug) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.sharedSlug && c.slug && c.slug === action.slug);
       } else {
         channel = { ...state.channels[action.data.channel_id] };
       }
-      let messages = [
-        ...action.data.results.map((r) => {
-          return {
-            ...r,
-            is_read: true,
-            body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
-            channel_id: action.data.channel_id,
-            flagged: true,
-          };
-        }),
-        ...channel.replies,
-      ];
-      let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
-      channel = {
-        ...channel,
-        replies: uniqMessages,
-        read_only: action.data.read_only,
-        hasMore: action.data.results.length === 20,
-        skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
-        isFetching: false,
-        replyCount: action.data.total,
-      };
-      return {
-        ...state,
-        channels: {
-          ...state.channels,
-          [action.isSharedSlug ? channel.code : action.data.channel_id]: channel,
-        },
-        ...(channel &&
-          state.selectedChannel && {
-            selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+      if (channel) {
+        let messages = [
+          ...action.data.results.map((r) => {
+            return {
+              ...r,
+              is_read: true,
+              body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
+              channel_id: action.data.channel_id,
+            };
           }),
-      };
+          ...channel.replies,
+        ];
+        let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
+        channel = {
+          ...channel,
+          replies: uniqMessages,
+          read_only: action.data.read_only,
+          hasMore: action.data.results.length === 20,
+          skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
+          isFetching: false,
+          replyCount: action.data.total,
+        };
+        return {
+          ...state,
+          channels: {
+            ...state.channels,
+            [action.isSharedSlug ? channel.code : action.data.channel_id]: channel,
+          },
+          ...(channel &&
+            state.selectedChannel && {
+              selectedChannel: channel.code === state.selectedChannel.code ? channel : state.selectedChannel,
+            }),
+        };
+      } else {
+        return state;
+      }
     }
     case "ADD_CHAT_MESSAGE": {
       let channel;
