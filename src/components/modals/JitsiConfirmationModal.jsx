@@ -7,7 +7,6 @@ import { ModalHeaderSection } from "./index";
 import { useDriff, useTranslationActions } from "../hooks";
 import { createJitsiMeet } from "../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
-import { getCurrentDriffUrl } from "../../helpers/slugHelper";
 
 const ModalWrapper = styled(Modal)`
   .btn.btn-primary {

@@ -6,7 +6,6 @@ import { useDriff, useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
-import { getCurrentDriffUrl } from "../../../helpers/slugHelper";
 
 const Wrapper = styled.div`
   display: flex;

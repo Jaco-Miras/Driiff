@@ -6,7 +6,6 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { useDriff, useTranslationActions } from "../hooks";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
-import { getCurrentDriffUrl } from "../../helpers/slugHelper";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
