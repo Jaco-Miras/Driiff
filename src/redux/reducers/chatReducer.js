@@ -74,6 +74,7 @@ const INITIAL_STATE = {
   },
   jitsi: null,
   initialLoad: false,
+  sharedDriff: {},
 };
 
 const date = new Date();
@@ -3145,16 +3146,26 @@ export default function (state = INITIAL_STATE, action) {
         channels: {
           ...state.channels,
           ...Object.values(action.data.results).reduce((acc, channel) => {
-            acc[channel.code] = {
-              ...channel,
-              hasMore: true,
-              skip: 0,
-              isFetching: false,
-              slug: action.slug,
-              sharedSlug: true,
-            };
+            if (channel.type === "TOPIC") {
+              acc[channel.code] = {
+                ...channel,
+                hasMore: true,
+                skip: 0,
+                isFetching: false,
+                slug: action.slug,
+                sharedSlug: true,
+              };
+            }
             return acc;
           }, {}),
+        },
+        sharedDriff: {
+          ...state.sharedDriff,
+          [action.slug]: {
+            hasMore: action.data.results.length === 15,
+            skip: state.sharedDriff[action.slug] ? action.data.results.length + state.sharedDriff[action.slug].skip : 15,
+            channels: action.data.results.map((c) => c.code),
+          },
         },
       };
     }
