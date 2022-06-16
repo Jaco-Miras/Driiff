@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
-import { useDriff, useTranslationActions } from "../../hooks";
+import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
+import { getDriffName } from "../../hooks/useDriff";
 
 const Wrapper = styled.div`
   display: flex;
@@ -55,7 +56,7 @@ const DriffTalkMessage = (props) => {
   const [startingMeet, setStartingMeet] = useState(false);
   let author;
   const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
-  const getDriffName = useDriff();
+  const slugName = getDriffName();
   if (isCreateMessage) {
     const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
     author = data.author;
@@ -80,9 +81,8 @@ const DriffTalkMessage = (props) => {
           if (err) {
             return;
           }
-          const host = window.location.host.split(".");
 
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: getDriffName.registeredDriff, status: "OK", token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: slugName, status: "OK", token: res.data._token, room: res.data.room_name });
         })
       );
     } else {
