@@ -559,7 +559,7 @@ const WorspaceHeaderPanel = (props) => {
         .flat()
     : [];
 
-  const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
+  //const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
 
   const handleLeaveWorkspace = () => {
     const leaveWorkspace = () => {
@@ -623,9 +623,15 @@ const WorspaceHeaderPanel = (props) => {
     redirect.toWorkspace(activeTopic, "dashboard");
   };
 
-  const sharedWorkspace = activeTopic && activeTopic.slug ? activeTopic.slug !== getSlug() : false;
+  const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
 
-  const isNotSameDriff = activeTopic && activeTopic.slug && activeTopic.members.find((mem) => mem.id === user.id)?.slug !== activeTopic?.slug.slice(0, -7);
+  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id;
+  const isTeamMember =
+    (activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id)) ||
+    (activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.some((mem) => mem.id === sharedWs[activeTopic.slug].user_auth.id));
+
+  const showInviteButton = (isCreator || isTeamMember) && !isExternal;
+  //const isNotSameDriff = activeTopic && activeTopic.slug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.id === user.id)?.slug !== activeTopic?.slug.slice(0, -7);
 
   return (
     <>
@@ -780,28 +786,23 @@ const WorspaceHeaderPanel = (props) => {
                         <MemberLists members={activeTopic.members} size={3} sharedUsers={sharedWorkspace} />
                         <StyledDivider />
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>
-                          {isMember && !isExternal ? (
+                          {showInviteButton && (
                             <>
-                              {!isNotSameDriff && (
-                                <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                                  <SvgIconFeather icon="user-plus" />
-                                  {dictionary.actionWorkspaceInvite}
-                                </button>
-                              )}
-                              <button style={{ margin: 0 }} onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
+                              <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                                <SvgIconFeather icon="user-plus" />
+                                {dictionary.actionWorkspaceInvite}
+                              </button>
+                              <button style={{ margin: 0 }} onClick={handleLeaveWorkspace} className="btn btn-danger ml-1" disabled={activeTopic.active === 0}>
                                 {dictionary.buttonLeave}
                               </button>
                             </>
-                          ) : !isExternal ? (
-                            <>
-                              {!sharedWorkspace && (
-                                <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                                  <SvgIconFeather icon="user-plus" />
-                                  {dictionary.actionWorkspaceJoin}
-                                </button>
-                              )}
-                            </>
-                          ) : null}
+                          )}
+                          {!sharedWorkspace && !isExternal && !isTeamMember && (
+                            <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                              <SvgIconFeather icon="user-plus" />
+                              {dictionary.actionWorkspaceJoin}
+                            </button>
+                          )}
                         </div>
                       </MoreOptions>
                     )}
@@ -843,26 +844,23 @@ const WorspaceHeaderPanel = (props) => {
                   <div className="nav-item-avatars-wrap">
                     <MemberLists members={activeTopic.members} sharedUsers={sharedWorkspace} />
                   </div>
-                  {isMember && !isExternal ? (
+                  {showInviteButton && (
                     <>
-                      {!isNotSameDriff && (
-                        <button onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                          <SvgIconFeather icon="user-plus" />
-                          {dictionary.actionWorkspaceInvite}
-                        </button>
-                      )}
-                      <button onClick={handleLeaveWorkspace} className="btn btn-danger" disabled={activeTopic.active === 0}>
+                      <button style={{ margin: 0 }} onClick={handleEditWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                        <SvgIconFeather icon="user-plus" />
+                        {dictionary.actionWorkspaceInvite}
+                      </button>
+                      <button style={{ margin: 0 }} onClick={handleLeaveWorkspace} className="btn btn-danger ml-1" disabled={activeTopic.active === 0}>
                         {dictionary.buttonLeave}
                       </button>
                     </>
-                  ) : !isExternal ? (
-                    !sharedWorkspace && (
-                      <button onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
-                        <SvgIconFeather icon="user-plus" />
-                        {dictionary.actionWorkspaceJoin}
-                      </button>
-                    )
-                  ) : null}
+                  )}
+                  {!sharedWorkspace && !isExternal && !isTeamMember && (
+                    <button style={{ margin: 0 }} onClick={handleJoinWorkspace} className="btn btn-primary" disabled={activeTopic.active === 0}>
+                      <SvgIconFeather icon="user-plus" />
+                      {dictionary.actionWorkspaceJoin}
+                    </button>
+                  )}
                 </>
               )}
             </>
