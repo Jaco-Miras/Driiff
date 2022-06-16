@@ -1344,6 +1344,7 @@ const CreateEditWorkspaceModal = (props) => {
                 sharedSlug: form.is_shared_wp,
                 slug: form.is_shared_wp ? `${slug}-shared` : slug,
                 key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
+                is_shared_wp: form.is_shared_wp,
               };
 
               let ws_type = form.is_shared_wp ? "shared-hub" : "hub";

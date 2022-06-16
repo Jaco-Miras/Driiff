@@ -113,6 +113,7 @@ const INITIAL_STATE = {
   sharedWorkspaces: {},
   sharedWorkspacesLoaded: false,
   sharedPostLists: {},
+  sharedWorkspaceInitialFetch: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -4386,6 +4387,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         sharedWorkspaces: action.data.length === 0 ? state.sharedWorkspaces : action.data,
         sharedWorkspacesLoaded: action.data.length === 0 ? false : true,
+        sharedWorkspaceInitialFetch: true,
       };
     }
     case "POST_LIST_SUCCESS": {

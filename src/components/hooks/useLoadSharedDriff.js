@@ -1,15 +1,18 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
+import { getChannel, addCompanyNameOnMembers, getSharedChannels } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
 import { getSharedUsers } from "../../redux/actions/userAction";
+import { useGetSlug } from ".";
 
 const useLoadSharedDriff = () => {
   const dispatch = useDispatch();
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
+  const sharedDriff = useSelector((state) => state.chat.sharedDriff);
+  const { slug } = useGetSlug();
   useEffect(() => {
     dispatch(
       getSharedWorkspaces({}, (err, res) => {
@@ -23,34 +26,45 @@ const useLoadSharedDriff = () => {
 
   useEffect(() => {
     if (sharedWsLoaded) {
+      Object.keys(sharedDriff).forEach((driff) => {
+        if (sharedDriff[driff] && sharedDriff[driff].hasMore) {
+          dispatch(getSharedChannels({ skip: sharedDriff[driff].skip, limit: 15, sharedPayload: { slug: driff, token: sharedWs[driff].access_token, is_shared: true } }));
+        }
+      });
+    }
+  }, [sharedWsLoaded, sharedDriff]);
+
+  useEffect(() => {
+    if (sharedWsLoaded) {
       Object.keys(sharedWs).forEach((ws) => {
         const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
+        dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, (err, res) => {
             if (err) return;
 
-            const channelCodes = res.data.workspaces
-              .map((ws) => {
-                if (ws.topic_detail) {
-                  return [
-                    { code: ws.topic_detail.channel.code, members: ws.members },
-                    { code: ws.topic_detail.team_channel.code, members: ws.members },
-                  ];
-                }
-              })
-              .flat();
-            if (channelCodes.length) {
-              channelCodes.forEach((c) => {
-                if (c.code) {
-                  dispatch(
-                    getChannel({ code: c.code, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
-                      if (err) return;
-                      dispatch(addCompanyNameOnMembers({ code: c.code, members: c.members }));
-                    })
-                  );
-                }
-              });
-            }
+            // const channelCodes = res.data.workspaces
+            //   .map((ws) => {
+            //     if (ws.topic_detail) {
+            //       return [
+            //         { code: ws.topic_detail.channel.code, members: ws.members },
+            //         { code: ws.topic_detail.team_channel.code, members: ws.members },
+            //       ];
+            //     }
+            //   })
+            //   .flat();
+            // if (channelCodes.length) {
+            //   channelCodes.forEach((c) => {
+            //     if (c.code) {
+            //       dispatch(
+            //         getChannel({ code: c.code, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
+            //           if (err) return;
+            //           dispatch(addCompanyNameOnMembers({ code: c.code, members: c.members }));
+            //         })
+            //       );
+            //     }
+            //   });
+            // }
           })
         );
         let sharedUserPayload = {
@@ -58,7 +72,9 @@ const useLoadSharedDriff = () => {
           limit: 1000,
           sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true },
         };
-        dispatch(getSharedUsers(sharedUserPayload));
+        if (ws.slice(0, -7) === slug) {
+          dispatch(getSharedUsers(sharedUserPayload));
+        }
 
         let myToken = `Bearer ${sharedWs[ws].access_token}`;
         let accessBroadcastToken = sharedWs[ws].access_broadcast_token;
