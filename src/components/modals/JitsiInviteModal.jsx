@@ -52,7 +52,7 @@ const JitsiInviteModal = (props) => {
   const [modal, setModal] = useState(true);
   const [startingMeet, setStartingMeet] = useState(false);
 
-  const slugName = getDriffName;
+  const slugName = getDriffName();
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
