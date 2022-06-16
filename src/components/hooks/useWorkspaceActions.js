@@ -109,6 +109,11 @@ const useWorkspaceActions = () => {
   const selectWorkspace = (workspace, callback = () => {}) => {
     if (slug && workspace && workspace.slug && workspace.slug !== slug) {
       dispatch(setActiveTopic(workspace));
+      if (workspace.id) {
+        setGeneralSetting({
+          active_topic: workspace,
+        });
+      }
     } else {
       let members = [];
       if (workspace.members) {
