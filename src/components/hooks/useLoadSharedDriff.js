@@ -11,6 +11,7 @@ const useLoadSharedDriff = () => {
   const dispatch = useDispatch();
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
+  const sharedDriff = useSelector((state) => state.chat.sharedDriff);
   const { slug } = useGetSlug();
   useEffect(() => {
     dispatch(
@@ -25,13 +26,24 @@ const useLoadSharedDriff = () => {
 
   useEffect(() => {
     if (sharedWsLoaded) {
+      console.log(sharedDriff);
+      Object.keys(sharedDriff).forEach((driff) => {
+        if (sharedDriff[driff] && sharedDriff[driff].hasMore) {
+          dispatch(getSharedChannels({ skip: sharedDriff[driff].skip, limit: 15, sharedPayload: { slug: driff, token: sharedWs[driff].access_token, is_shared: true } }));
+        }
+      });
+      // Object.keys(sharedWs).forEach((ws) => {
+      //   const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
+      //   dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+      // });
+    }
+  }, [sharedWsLoaded, sharedDriff]);
+
+  useEffect(() => {
+    if (sharedWsLoaded) {
       Object.keys(sharedWs).forEach((ws) => {
         const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
-        dispatch(
-          getSharedChannels({ skip: 0, limit: 30, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, (err, res) => {
-            if (err) return;
-          })
-        );
+        dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, (err, res) => {
             if (err) return;
