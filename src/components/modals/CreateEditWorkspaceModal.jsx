@@ -509,6 +509,7 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
     feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
+    feedbackWorkspaceTypeIsInviteOnly: _t("FEEDBACK.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are always invite only."),
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
       workspace_name: `<b>${form.name}</b>`,
     }),
@@ -552,7 +553,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
     disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
     uploadProfilePic: _t("BUTTON.UPLOAD_PROFILE_PIC", "Upload Profile Picture"),
-    shareWorkspace: _t("CHECKBOX.SHARE_WORKSPACE", "Share workspace"),
+    shareWorkspace: _t("CHECKBOX.SHARE_WORKSPACE", "Share hub"),
   };
 
   const _validateName = useCallback(() => {
@@ -2289,10 +2290,6 @@ const CreateEditWorkspaceModal = (props) => {
     }
   }, [currentProfilePic, form.is_shared_wp]);
 
-  useEffect(() => {
-    setForm((prev) => ({ ...prev, is_private: !form.is_shared_wp }));
-  }, [form.is_shared_wp]);
-
   return (
     <>
       {renderDropDocumentGuest()}
@@ -2573,24 +2570,28 @@ const CreateEditWorkspaceModal = (props) => {
             </WrapperDiv>
           )}
           <WrapperDiv className="action-wrapper">
-            {!form.is_shared_wp && (
-              <>
-                <RadioInputWrapper className="workspace-radio-input">
-                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
-                    {dictionary.lockWorkspace}
-                  </RadioInput>
-                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
-                    {dictionary.publicWorkspace}
-                  </RadioInput>
-                </RadioInputWrapper>
+            <RadioInputWrapper className="workspace-radio-input">
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
+                {dictionary.lockWorkspace}
+              </RadioInput>
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
+                {dictionary.publicWorkspace}
+              </RadioInput>
+            </RadioInputWrapper>
 
-                <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
-                <div className={"lock-workspace-text-container pb-3"}>
-                  <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
-                </div>
-              </>
-            )}
-            <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
+            {form.is_shared_wp && <InputFeedback valid={form.is_shared_wp && form.is_private}>{dictionary.feedbackWorkspaceTypeIsInviteOnly}</InputFeedback>}
+
+            <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
+
+            <div className={"lock-workspace-text-container pb-3"}>
+              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+            </div>
+
+            <button
+              className="btn btn-primary"
+              onClick={handleConfirm}
+              disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder || (form.is_shared_wp && !form.is_private)}
+            >
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
             </button>
