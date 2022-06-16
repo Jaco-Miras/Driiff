@@ -200,7 +200,7 @@ const DescriptionInput = (props) => {
   const {
     className = "",
     onChange,
-    showFileButton = false,
+    showFileButton = true,
     onOpenFileDialog,
     defaultValue = "",
     //mode = "",
@@ -219,7 +219,6 @@ const DescriptionInput = (props) => {
     setImageLoading = null,
     prioMentionIds = [],
     readOnly = false,
-    inlineImageType = "private",
     ...otherProps
   } = props;
 
@@ -281,7 +280,6 @@ const DescriptionInput = (props) => {
     setInlineImages,
     setImageLoading,
     prioMentionIds: [...new Set(prioMentionIds)],
-    inlineImageType,
   });
 
   useEffect(() => {
