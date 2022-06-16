@@ -367,7 +367,7 @@ const CreateEditWorkspaceModal = (props) => {
   );
 
   const [form, setForm] = useState({
-    is_private: null,
+    is_private: item && item.is_shared_wp ? true : null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
     icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
@@ -986,7 +986,7 @@ const CreateEditWorkspaceModal = (props) => {
       description: form.description,
       is_external: 0,
       member_ids: member_ids,
-      is_lock: form.is_private ? 1 : 0,
+      is_lock: form.is_shared_wp ? 1 : form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
       new_team_member_ids: [],
@@ -1167,7 +1167,7 @@ const CreateEditWorkspaceModal = (props) => {
               return found ? found : member;
             });
 
-            updateMembers(updatedMembers, res.data.id);
+            if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
 
             const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
             if (sendByMyselfEmail) {
@@ -1295,7 +1295,7 @@ const CreateEditWorkspaceModal = (props) => {
                 return found ? found : member;
               });
 
-              updateMembers(updatedMembers, res.data.id);
+              if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
 
               if (attachedFiles.length) {
                 let formData = new FormData();
@@ -1747,7 +1747,7 @@ const CreateEditWorkspaceModal = (props) => {
       let externalMembers = [];
       let teamMembers = [];
       let sharedMembers = [];
-      let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
+      let is_private = item.is_shared_wp ? true : item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
         teamMembers = item.members
           .filter((m) => m.type !== "internal" && m.type !== "external")
