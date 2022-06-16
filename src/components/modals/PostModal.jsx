@@ -1184,20 +1184,22 @@ const PostModal = (props) => {
             }
           })}
         />
-        <WrapperDiv className="file-attachment-wrapper">
-          <div className={"mb-2"}>
-            <Label className={"modal-label"} for="workspace">
-              {dictionary.fileAttachments}
-            </Label>
-          </div>
-          <div className={"mb-2"}>
-            <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
-            {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
-          </div>
-          <div>
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-          </div>
-        </WrapperDiv>
+        {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+          <WrapperDiv className="file-attachment-wrapper">
+            <div className={"mb-2"}>
+              <Label className={"modal-label"} for="workspace">
+                {dictionary.fileAttachments}
+              </Label>
+            </div>
+            <div className={"mb-2"}>
+              <FolderSelect options={fileOptions} value={fileOption} onChange={handleSelectFileUploadOption} isClearable={true} maxMenuHeight={250} menuPlacement="top" placeholder={"File options"} />
+              {hasExternalWs && !isExternalUser && <span className="file-label ml-2">{dictionary.fileUploadLabel}</span>}
+            </div>
+            <div>
+              <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            </div>
+          </WrapperDiv>
+        )}
         <WrapperDiv className="modal-label more-option">
           <MoreOption className="mb-1">{dictionary.moreOptions}</MoreOption>
           <PostSettings
