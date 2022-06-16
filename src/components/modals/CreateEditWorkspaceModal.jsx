@@ -453,7 +453,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const [inactiveMembers, setInactiveMembers] = useState([]);
 
-  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage } = useProfilePicUpload();
+  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage, resetPreview, setPreviewImage } = useProfilePicUpload();
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -753,7 +753,9 @@ const CreateEditWorkspaceModal = (props) => {
   const handleCreateOption = (inputValue) => {
     const external = invitedExternals.find((ex) => ex.email === inputValue);
     if (external) setInvitedExternal(external);
-    else setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    else {
+      setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    }
     toggleNested();
     setExternalNestedMode(true);
     setForm((prevState) => ({
@@ -1088,9 +1090,14 @@ const CreateEditWorkspaceModal = (props) => {
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
-      const notSharedMembersId = notSharedMembers.map((m) => m.id);
-      const removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      let removed_members = [];
+      if (item.is_shared_wp) {
+        const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
+        const notSharedMembersId = notSharedMembers.map((m) => m.id);
+        removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      } else {
+        removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
+      }
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
@@ -1111,12 +1118,6 @@ const CreateEditWorkspaceModal = (props) => {
         remove_team_member_ids: removed_teams.map((t) => t.id),
         team_member_ids: activeTeams.map((t) => t.id),
       };
-      if (item && item.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true },
-        };
-      }
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
         payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
@@ -1194,10 +1195,11 @@ const CreateEditWorkspaceModal = (props) => {
               })
             );
           }
+          let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 
@@ -1343,9 +1345,10 @@ const CreateEditWorkspaceModal = (props) => {
                 sharedSlug: form.is_shared_wp,
                 slug: form.is_shared_wp ? `${slug}-shared` : slug,
                 key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
+                is_shared_wp: form.is_shared_wp,
               };
 
-              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
+              let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
 
               if (form.is_shared_wp) {
                 // check if user has shared-auth loaded
@@ -1758,7 +1761,13 @@ const CreateEditWorkspaceModal = (props) => {
             };
           });
         members = item.members
-          .filter((m) => m.active === 1 && m.type === "internal" && m.slug && m.slug === slug)
+          .filter((m) => {
+            if (item && item.is_shared_wp) {
+              return m.active === 1 && m.type === "internal" && m.slug && m.slug === slug;
+            } else {
+              return m.active === 1 && m.type === "internal";
+            }
+          })
           .map((m) => {
             return {
               value: m.id,
@@ -1954,7 +1963,7 @@ const CreateEditWorkspaceModal = (props) => {
     setInputValue(e);
   };
 
-  const handleExternalInputChange = (e) => {
+  const handleExternalInputChange = (e, args) => {
     setExternalInput(e);
     const isExistingOption = externalUserOptions.some((o) => o.email === e);
     const isSelectedOption = form.selectedExternals.some((o) => o.email === e);
@@ -2131,7 +2140,12 @@ const CreateEditWorkspaceModal = (props) => {
   const handleSharedEmailClick = (data) => {
     setExternalNestedMode(false);
     const sharedUser = invitedSharedUsers.find((ex) => ex.email === data.email);
-    if (sharedUser) setInvitedSharedUser(sharedUser);
+    if (sharedUser) {
+      setInvitedSharedUser(sharedUser);
+      if (sharedUser.profile_pic) {
+        setPreviewImage(URL.createObjectURL(sharedUser.profile_pic));
+      }
+    }
     toggleNested();
   };
 
@@ -2152,6 +2166,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleSaveExternalFields = () => {
     if (externalNestedMode) {
+      resetPreview();
       toggleNested();
       setExternalNestedMode(true);
       if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
@@ -2167,6 +2182,7 @@ const CreateEditWorkspaceModal = (props) => {
       }
       setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
     } else {
+      resetPreview();
       toggleNested();
       setExternalNestedMode(true);
       if (invitedSharedUsers.some((ex) => ex.email === invitedSharedUser.email)) {
@@ -2230,7 +2246,12 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleEmailClick = (data) => {
     const external = invitedExternals.find((ex) => ex.email === data.email);
-    if (external) setInvitedExternal(external);
+    if (external) {
+      setInvitedExternal(external);
+      if (external.profile_pic) {
+        setPreviewImage(URL.createObjectURL(external.profile_pic));
+      }
+    }
     toggleNested();
     setExternalNestedMode(true);
   };
@@ -2239,6 +2260,11 @@ const CreateEditWorkspaceModal = (props) => {
     if (refs.first_name && refs.first_name.current) {
       refs.first_name.current.focus();
     }
+  };
+
+  const handleCancelExternalInvite = () => {
+    resetPreview();
+    toggleNested();
   };
 
   useEffect(() => {
@@ -2257,8 +2283,12 @@ const CreateEditWorkspaceModal = (props) => {
   }, [Object.values(folders).length]);
 
   useEffect(() => {
-    setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
-  }, [currentProfilePic]);
+    if (form.is_shared_wp) {
+      setInvitedSharedUser((prev) => ({ ...prev, profile_pic: currentProfilePic }));
+    } else {
+      setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
+    }
+  }, [currentProfilePic, form.is_shared_wp]);
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
@@ -2337,7 +2367,7 @@ const CreateEditWorkspaceModal = (props) => {
             </ModalBody>
             <ModalFooter>
               <NestedModalWrapper>
-                <button className="btn btn-link text-dark" onClick={toggleNested}>
+                <button className="btn btn-link text-dark" onClick={handleCancelExternalInvite}>
                   {dictionary.cancel}
                 </button>
                 <Button color="primary" onClick={handleSaveExternalFields}>
