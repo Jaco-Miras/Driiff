@@ -200,7 +200,7 @@ const DescriptionInput = (props) => {
   const {
     className = "",
     onChange,
-    showFileButton = false,
+    showFileButton = true,
     onOpenFileDialog,
     defaultValue = "",
     //mode = "",
