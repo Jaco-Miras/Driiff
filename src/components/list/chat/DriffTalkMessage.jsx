@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
 import { SvgIconFeather } from "../../common";
-import { useTranslationActions } from "../../hooks";
+import { useDriff, useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
 import { browserName, deviceType } from "react-device-detect";
@@ -56,8 +56,7 @@ const DriffTalkMessage = (props) => {
   const [startingMeet, setStartingMeet] = useState(false);
   let author;
   const isCreateMessage = reply.body.startsWith("DRIFF_TALK::");
-  const driffUrl = getCurrentDriffUrl();
-
+  const getDriffName = useDriff();
   if (isCreateMessage) {
     const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
     author = data.author;
@@ -84,7 +83,7 @@ const DriffTalkMessage = (props) => {
           }
           const host = window.location.host.split(".");
 
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: driffUrl, status: "OK", token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: getDriffName.registeredDriff, status: "OK", token: res.data._token, room: res.data.room_name });
         })
       );
     } else {
