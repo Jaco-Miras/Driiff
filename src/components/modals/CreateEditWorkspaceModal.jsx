@@ -2290,10 +2290,6 @@ const CreateEditWorkspaceModal = (props) => {
     }
   }, [currentProfilePic, form.is_shared_wp]);
 
-  useEffect(() => {
-    setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
-  }, [form.is_shared_wp]);
-
   return (
     <>
       {renderDropDocumentGuest()}
