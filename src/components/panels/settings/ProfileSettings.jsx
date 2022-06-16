@@ -161,8 +161,8 @@ const ProfileSettings = (props) => {
     emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
     emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always, i prefer mostly email"),
     emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Only on mention, I will use Driff mostly"),
-    emailToggleToolTip: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP", `By selecting 'Always', you will receive all notifications through email.
-    By selecting 'Only on mention', you will receive email notifications when you are mentioned on Chat or Post`)
+    emailToggleToolTip1: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP_ONE", "By selecting 'Always', you will receive all notifications through email."),
+    emailToggleToolTip2: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP_TWO", "By selecting 'Only on mention', you will receive email notifications when you are mentioned on Chat or Post."),
   };
 
   const notificationSoundOptions = [
@@ -851,7 +851,15 @@ const ProfileSettings = (props) => {
                 <div className="col-5 text-muted" style={{ display: "flex" }}>
                   {dictionary.emailToggle}
                   &nbsp;
-                  <ToolTip content={dictionary.emailToggleToolTip}>
+                  <ToolTip
+                    content={
+                      <>
+                        {dictionary.emailToggleToolTip1}
+                        <br />
+                        {dictionary.emailToggleToolTip2}
+                      </>
+                    }
+                  >
                     <SvgIconFeather icon="info" />
                   </ToolTip>
                 </div>
