@@ -489,6 +489,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
     lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
     lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
+    workspaceTypeIsInviteOnly: _t("WORKSPACE.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are always invite only."),
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
     unArchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -509,7 +510,6 @@ const CreateEditWorkspaceModal = (props) => {
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
     feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
-    feedbackWorkspaceTypeIsInviteOnly: _t("FEEDBACK.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are always invite only."),
     toasterWorkspaceIsCreated: _t("TOASTER.WORKSPACE_IS_CREATED", "::workspace_name:: workspace is created.", {
       workspace_name: `<b>${form.name}</b>`,
     }),
@@ -2290,6 +2290,12 @@ const CreateEditWorkspaceModal = (props) => {
     }
   }, [currentProfilePic, form.is_shared_wp]);
 
+  useEffect(() => {
+    if (form.is_shared_wp) {
+      setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
+    }
+  }, [form.is_shared_wp]);
+
   return (
     <>
       {renderDropDocumentGuest()}
@@ -2571,27 +2577,22 @@ const CreateEditWorkspaceModal = (props) => {
           )}
           <WrapperDiv className="action-wrapper">
             <RadioInputWrapper className="workspace-radio-input">
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"} disabled={form.is_shared_wp}>
                 {dictionary.lockWorkspace}
               </RadioInput>
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"} disabled={form.is_shared_wp}>
                 {dictionary.publicWorkspace}
               </RadioInput>
             </RadioInputWrapper>
 
-            {form.is_shared_wp && <InputFeedback valid={form.is_shared_wp && form.is_private}>{dictionary.feedbackWorkspaceTypeIsInviteOnly}</InputFeedback>}
-
             <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
 
             <div className={"lock-workspace-text-container pb-3"}>
+              {form.is_shared_wp && <Label className={"lock-workspace-text"}>{dictionary.workspaceTypeIsInviteOnly}</Label>}
               <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
             </div>
 
-            <button
-              className="btn btn-primary"
-              onClick={handleConfirm}
-              disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder || (form.is_shared_wp && !form.is_private)}
-            >
+            <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
             </button>
