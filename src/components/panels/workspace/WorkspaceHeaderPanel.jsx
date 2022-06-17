@@ -621,9 +621,7 @@ const WorspaceHeaderPanel = (props) => {
   const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
 
   const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id;
-  const isTeamMember =
-    (activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id)) ||
-    (activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.some((mem) => mem.id === sharedWs[activeTopic.slug].user_auth.id));
+  const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id);
 
   const showInviteButton = (isCreator || isTeamMember) && !isExternal;
   //const isNotSameDriff = activeTopic && activeTopic.slug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.id === user.id)?.slug !== activeTopic?.slug.slice(0, -7);
