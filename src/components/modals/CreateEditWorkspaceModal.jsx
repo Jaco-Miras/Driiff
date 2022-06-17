@@ -2293,6 +2293,8 @@ const CreateEditWorkspaceModal = (props) => {
   useEffect(() => {
     if (form.is_shared_wp) {
       setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
+    } else {
+      setForm((prev) => ({ ...prev, is_private: null }));
     }
   }, [form.is_shared_wp]);
 
