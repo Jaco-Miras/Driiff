@@ -95,6 +95,7 @@ const FilePill = (props) => {
   }
 
   const dispatch = useDispatch();
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[sharedSlug]);
   //const refImageLoader = useRef();
   const refImage = useRef();
 
@@ -160,7 +161,7 @@ const FilePill = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: sharedSlug })}/file-view-attempt/${file.file_id}/${sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken")}`;
     } else if (e.currentTarget.dataset.attempt === "1") {
       e.currentTarget.dataset.attempt = 2;
       e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?=1`;
