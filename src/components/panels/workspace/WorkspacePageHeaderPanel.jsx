@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
-import { useTranslationActions } from "../../hooks";
+import { useTranslationActions, useGetSlug } from "../../hooks";
 
 const Wrapper = styled.div``;
 
@@ -79,6 +79,7 @@ const WorkspacePageHeaderPanel = (props) => {
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const params = useParams();
+  const { slug } = useGetSlug();
 
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 
@@ -124,6 +125,11 @@ const WorkspacePageHeaderPanel = (props) => {
     pageTitleMeetings: _t("PAGE_TITLE.MEETINGS", "Meetings"),
   };
 
+  const isSameSlug = useMemo(() => {
+    const channelSlug = workspace?.slug?.slice(0, -7); //slice removes the '-share' suffix
+    return slug === channelSlug;
+  }, [workspace, slug]);
+
   return (
     <>
       <Wrapper className={`${className}`}>
@@ -133,9 +139,9 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
-          {((workspace && user.type === "internal" && workspace.is_shared) ||
-            (workspace && user.type === "internal" && workspace.team_channel.code && workspace.is_shared) ||
-            (workspace && workspace.sharedSlug && workspace.team_channel.code)) && (
+          {((workspace && user.type === "internal" && workspace.is_shared && !workspace.sharedSlug) ||
+            (workspace && user.type === "internal" && workspace.team_channel.code && workspace.is_shared && !workspace.sharedSlug) ||
+            (workspace && workspace.sharedSlug && workspace.team_channel.code && isSameSlug)) && (
             <li className="nav-item">
               <MainNavLink isSub={true} to={`/${ws_type}/team-chat${pathname}`}>
                 {dictionary.pageTitleTeamChat}
