@@ -177,7 +177,7 @@ const FileWrapper = styled.figure`
 
 const StyledFileRender = styled.div`
   text-align: center;
-  height: ${({ isLoaded }) => (isLoaded ? "60vh" : "initial")};
+  max-height: 60vh;
 
   .spinner-border {
     border-width: 3px;
@@ -247,7 +247,7 @@ const FileRender = (props) => {
   } = useFiles();
 
   const [isLoaded, setIsLoaded] = useState(false);
-
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[viewFiles.slug]);
   let refFiles = {};
 
   const handlePdfOnLoad = (e) => {
@@ -276,7 +276,7 @@ const FileRender = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug })}/file-view-attempt/${file.file_id}/${viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken")}`;
     } else {
       let img = document.querySelector(`.file-item[data-index="${e.currentTarget.dataset.index}"] img`);
       img.classList.remove("d-none");
