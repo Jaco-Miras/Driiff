@@ -177,7 +177,7 @@ const FileWrapper = styled.figure`
 
 const StyledFileRender = styled.div`
   text-align: center;
-  height: ${({ isLoaded }) => (isLoaded ? "60vh" : "initial")};
+  max-height: 60vh;
 
   .spinner-border {
     border-width: 3px;
