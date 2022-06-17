@@ -8,8 +8,8 @@ import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
 import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import { patchCheckDriff } from "../../redux/actions/driffActions";
-import { acceptSharedUserInvite } from "../../redux/actions/userAction";
-import { replaceChar } from "../../helpers/stringFormatter";
+// import { acceptSharedUserInvite } from "../../redux/actions/userAction";
+// import { replaceChar } from "../../helpers/stringFormatter";
 
 const Wrapper = styled.form`
   p {
@@ -32,10 +32,10 @@ const FormGroup = styled.div`
 const SharedWorkspaceInvite = (props) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const userAction = useUserActions();
+  //const userAction = useUserActions();
   const toaster = useToaster();
   const [loading, setLoading] = useState(false);
-  const [loginGuestLoading, setLoginGuestLoading] = useState(false);
+  //const [loginGuestLoading, setLoginGuestLoading] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [errorResponse, setErrorResponse] = useState(null);
   const { slug } = useGetSlug();
@@ -215,30 +215,30 @@ const SharedWorkspaceInvite = (props) => {
     );
   };
 
-  const handleLoginAsGuest = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setLoginGuestLoading(true);
-    if (loginGuestLoading) return;
-    let payload = {
-      url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
-      state_code: form.state_code,
-      slug: slug,
-      as_guest: true,
-    };
-    dispatch(
-      acceptSharedUserInvite(payload, (err, res) => {
-        if (err) return;
-        let redirectLink = "/dashboard";
-        if (res.data.data.current_workspace) {
-          redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-        } else {
-          redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
-        }
-        userAction.login(res.data.user_auth, redirectLink);
-      })
-    );
-  };
+  // const handleLoginAsGuest = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   setLoginGuestLoading(true);
+  //   if (loginGuestLoading) return;
+  //   let payload = {
+  //     url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+  //     state_code: form.state_code,
+  //     slug: slug,
+  //     as_guest: true,
+  //   };
+  //   dispatch(
+  //     acceptSharedUserInvite(payload, (err, res) => {
+  //       if (err) return;
+  //       let redirectLink = "/dashboard";
+  //       if (res.data.data.current_workspace) {
+  //         redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+  //       } else {
+  //         redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+  //       }
+  //       userAction.login(res.data.user_auth, redirectLink);
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     dispatch(
@@ -247,7 +247,12 @@ const SharedWorkspaceInvite = (props) => {
           if (err && err.response) {
             setErrorResponse(err.response.data);
             if (err.response.data.errors) {
-              toaster.error(err.response.data.errors.error_message[0]);
+              let errorMessage = err.response.data.errors.error_message.includes("INVALID_CODE")
+                ? dictionary.invalidCode
+                : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
+                ? dictionary.codeAlreadyAccepted
+                : null;
+              toaster.error(errorMessage);
             }
           }
         }
