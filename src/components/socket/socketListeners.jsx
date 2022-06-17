@@ -1600,7 +1600,7 @@ class SocketListeners extends Component {
         if (e.user_id === this.state.userId) {
           this.props.getUser({ id: this.state.userId }, (err, res) => {
             if (err) return;
-            sessionService.saveUser({ ...res.data });
+            sessionService.saveUser({ ...this.props.user, ...res.data });
           });
         }
       })
@@ -1720,7 +1720,7 @@ class SocketListeners extends Component {
             if (e.id === this.state.userId || e.user_id === this.state.userId) {
               this.props.getUser({ id: this.state.userId }, (err, res) => {
                 if (err) return;
-                sessionService.saveUser({ ...res.data });
+                sessionService.saveUser({ ...this.props.user, ...res.data });
               });
             }
             break;
