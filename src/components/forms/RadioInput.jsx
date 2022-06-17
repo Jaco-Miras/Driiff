@@ -6,7 +6,7 @@ const RadioInputContainer = styled.div`
   display: flex;
   align-items: center;
   position: relative;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   font-size: 1rem;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -17,7 +17,7 @@ const RadioInputContainer = styled.div`
   input {
     position: absolute;
     opacity: 0;
-    cursor: pointer;
+    cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
     width: 100%;
     left: 0px;
     height: 100%;
@@ -79,7 +79,7 @@ const RadioInputContainer = styled.div`
 `;
 
 const RadioInput = forwardRef((props, ref) => {
-  const { className = "", checked = false, onClick, name, value, readOnly = null, children, ...otherProps } = props;
+  const { className = "", checked = false, onClick, name, value, readOnly = null, disabled = false, children, ...otherProps } = props;
 
   const [radioElement, setRadioElement] = useState("");
 
@@ -92,8 +92,12 @@ const RadioInput = forwardRef((props, ref) => {
   };
 
   return (
-    <RadioInputContainer ref={ref} className={`component-radio-input ${className}`} onClick={(e) => handleOnClick(e)}>
-      {readOnly ? <input readOnly checked={checked} name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} /> : <input name={name} value={value} ref={setRadioElement} type="radio" {...otherProps} />}
+    <RadioInputContainer ref={ref} className={`component-radio-input ${className}`} onClick={(e) => handleOnClick(e)} disabled={disabled}>
+      {readOnly ? (
+        <input readOnly checked={checked} name={name} value={value} ref={setRadioElement} type="radio" disabled={disabled} {...otherProps} />
+      ) : (
+        <input name={name} value={value} ref={setRadioElement} type="radio" disabled={disabled} {...otherProps} />
+      )}
       <span className={"checkmark"} />
       {children}
     </RadioInputContainer>
