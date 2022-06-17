@@ -1107,20 +1107,20 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         user: action.data,
-        channels: {
-          ...Object.values(state.channels)
-            .map((channel) => {
-              return {
-                ...channel,
-                isFetching: false,
-              };
-            })
-            .reduce((channels, channel) => {
-              channels[channel.id] = channel;
-              return channels;
-            }, {}),
-        },
-        selectedChannel: state.selectedChannel ? { ...state.selectedChannel, isFetching: false } : state.selectedChannel,
+        // channels: {
+        //   ...Object.values(state.channels)
+        //     .map((channel) => {
+        //       return {
+        //         ...channel,
+        //         isFetching: false,
+        //       };
+        //     })
+        //     .reduce((channels, channel) => {
+        //       channels[channel.id] = channel;
+        //       return channels;
+        //     }, {}),
+        // },
+        //selectedChannel: state.selectedChannel ? { ...state.selectedChannel, isFetching: false } : state.selectedChannel,
       };
     }
     case "UPDATE_CHAT_MESSAGE_REMINDER_COMPLETE": {
