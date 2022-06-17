@@ -108,7 +108,7 @@ const useLoadSharedDriff = () => {
           });
         }
       });
-      sessionService.saveUser({ ...session.user, sharedWorkspaces: sharedWs });
+      //sessionService.saveUser({ ...session.user, sharedWorkspaces: sharedWs });
     }
   }, [newSharedWs, sharedWsLoaded]);
 

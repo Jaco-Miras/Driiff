@@ -258,7 +258,7 @@ const useUserActions = () => {
 
         if (res) {
           if (loggedUser.id === res.data.id) {
-            sessionService.saveUser({ ...res.data });
+            sessionService.saveUser({ ...loggedUser, ...res.data });
           }
           toaster.success("Profile information saved.");
         }
