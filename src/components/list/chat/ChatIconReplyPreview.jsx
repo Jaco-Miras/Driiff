@@ -259,7 +259,7 @@ const ReplyPreview = (props) => {
 
     if (typeof drafts[channel.id] !== "undefined") {
       if (drafts[channel.id].text && drafts[channel.id].text !== "<div><br></div>") {
-        previewText = chatHeaderBadgeContainer + `DRAFT:&nbsp;${renderToString(<DraftContent dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/(<([^>]+)>)/gi, " ") }} />)}`;
+        previewText = chatHeaderBadgeContainer + `DRAFT:&nbsp;${renderToString(<DraftContent style={{ display: "inline-flex" }} dangerouslySetInnerHTML={{ __html: drafts[channel.id].text.replace(/[!-/:-@[-`{-~]$|<[^>]*$/gi, " ") }} />)}`;
       } else if (drafts[channel.id].reply_quote) {
         previewText = chatHeaderBadgeContainer + `QUOTE:&nbsp;${drafts[channel.id].reply_quote.body}&nbsp;~${drafts[channel.id].reply_quote.user.name}`;
       }
