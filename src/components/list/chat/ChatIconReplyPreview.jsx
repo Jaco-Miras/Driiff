@@ -105,10 +105,10 @@ const ReplyPreview = (props) => {
   let previewText = "";
   let lastReplyBody = "";
 
-  const isSameSlug = useMemo(() => {
-    const channelSlug = channel?.slug?.slice(0, -7); //slice removes the '-share' suffix
-    return slug === channelSlug;
-  }, [channel, slug]);
+  // const isSameSlug = useMemo(() => {
+  //   const channelSlug = channel?.slug?.slice(0, -7); //slice removes the '-share' suffix
+  //   return slug === channelSlug;
+  // }, [channel, slug]);
 
   const chatHeaderBadgeContainer = renderToString(
     <>
@@ -123,10 +123,9 @@ const ReplyPreview = (props) => {
           {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
             <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
           )}
-          {channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && isSameSlug && (
-            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-              {/* <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} /> */}
-              {channel.team ? dictionary.withTeam : dictionary.withClient}
+          {channel.type === "TOPIC" && channel.team && (
+            <StyledBadge className={"badge badge-external mr-1"} isTeam={true}>
+              {dictionary.withTeam}
             </StyledBadge>
           )}
         </ChatHeaderBadgeContainer>
