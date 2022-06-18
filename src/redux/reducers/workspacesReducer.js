@@ -4409,7 +4409,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "UPDATE_WORKSPACE_MEMBERS": {
-      debugger;
       const workspaceId = action.data.workspaceId;
       return {
         ...state,
