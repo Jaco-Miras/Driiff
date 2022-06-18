@@ -253,32 +253,36 @@ const LoginPanel = (props) => {
 
   return (
     <Wrapper className="fadeIn">
-      <>
-        <EmailPhoneInput
-          onChange={handleEmailNumberChange}
-          name="email_phone"
-          isValid={formResponse.valid.email}
-          feedback={formResponse.message.email}
-          placeholder={dictionary.emailOnly}
-          registerMode={registerMode}
-          setRegisterMode={setRegisterMode}
-          value={form.email}
-          defaultCountry={countryCode}
-          autoFocus={true}
-          innerRef={refs.email}
-        />
-        {/* <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus /> */}
-        <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
-        <div className="form-group d-flex justify-content-between">
-          <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
-            {dictionary.rememberMe}
-          </CheckBox>
-          <Link to="/reset-password">{dictionary.resetPassword}</Link>
-        </div>
-        <button className="btn btn-primary btn-block" onClick={handleSignIn}>
-          {dictionary.signIn}
-        </button>
-      </>
+      {driffSettings.settings.password_login ? (
+        <>
+          <EmailPhoneInput
+            onChange={handleEmailNumberChange}
+            name="email_phone"
+            isValid={formResponse.valid.email}
+            feedback={formResponse.message.email}
+            placeholder={dictionary.emailOnly}
+            registerMode={registerMode}
+            setRegisterMode={setRegisterMode}
+            value={form.email}
+            defaultCountry={countryCode}
+            autoFocus={true}
+            innerRef={refs.email}
+          />
+          {/* <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.email} innerRef={refs.email} type="email" autoFocus /> */}
+          <PasswordInput ref={refs.password} onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} placeholder={dictionary.password} />
+          <div className="form-group d-flex justify-content-between">
+            <CheckBox name="remember_me" checked={form.remember_me} onClick={toggleCheck}>
+              {dictionary.rememberMe}
+            </CheckBox>
+            <Link to="/reset-password">{dictionary.resetPassword}</Link>
+          </div>
+          <button className="btn btn-primary btn-block" onClick={handleSignIn}>
+            {dictionary.signIn}
+          </button>
+        </>
+      ) : (
+        <h4>{dictionary.passwordLoginDisableLabel}</h4>
+      )}
 
       {(driffSettings.settings.google_login || driffSettings.settings.magic_link) && (
         <>
