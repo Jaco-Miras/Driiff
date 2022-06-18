@@ -19,6 +19,13 @@ const INITIAL_STATE = {
   teams: {},
   teamsLoaded: false,
   archivedUsersLoaded: false,
+  impersonation: {
+    loading: false,
+    logs: {
+      data: [],
+      lastPage: 0,
+    },
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -457,12 +464,87 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         users: {
           ...state.users,
-          ...Object.values(action.data.users).reduce((acc, user) => {
-            if (!state.users[user.id]) {
-              acc[user.id] = user;
-            }
-            return acc;
-          }, {}),
+          ...(action.data.users && {
+            ...Object.values(action.data.users).reduce((acc, user) => {
+              if (!state.users[user.id]) {
+                acc[user.id] = user;
+              }
+              return acc;
+            }, {}),
+          }),
+        },
+      };
+    }
+    case "BATCH_UPDATE_PROFILE_IMAGE_SUCCESS": {
+      const updatedUser = action.data.reduce((acc, user) => {
+        acc[user.id] = { ...user };
+        return acc;
+      }, {});
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          ...updatedUser,
+        },
+      };
+    }
+
+    case "IMPERSONATION_LOGIN_START": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: true,
+        },
+      };
+    }
+    case "IMPERSONATION_LOGIN_FAILURE": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+        },
+      };
+    }
+    case "GET_CURRENT_IMPERSONATION_USER_SUCCESS": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+        },
+      };
+    }
+    case "GET_CURRENT_IMPERSONATION_USER_FAILURE": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+        },
+      };
+    }
+    case "IMPERSONATION_LIST_START": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: true,
+        },
+      };
+    }
+    case "IMPERSONATION_LIST_SUCCESS": {
+      return {
+        ...state,
+        impersonation: {
+          ...state.impersonation,
+          loading: false,
+          logs: {
+            ...state.impersonation.logs,
+            data: action.data.data,
+            lastPage: action.data.last_page,
+          },
         },
       };
     }

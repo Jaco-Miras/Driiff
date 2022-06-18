@@ -20,6 +20,7 @@ import {
   postPasswordReset as postPasswordResetService,
   postRequest as postRequestService,
   postUploadProfileImage as postUploadProfileImageService,
+  batchUploadProfileImage as batchUploadProfileImageService,
   putExternalUserUpdate as putExternalUserUpdateService,
   putMagicLink as putMagicLinkService,
   putUser as putUserService,
@@ -40,6 +41,10 @@ import {
   removeTeamMember as removeTeamMemberService,
   createTeamChannel as createTeamChannelService,
   searchUsers as searchUsersService,
+  impersonationLogin as impersonationLoginService,
+  getCurrentUserImpersonation as getCurrentUserImpersonationService,
+  impersonationLogout as impersonationLogoutService,
+  impersonationLists as impersonationListsService,
 } from "../services";
 
 export const postRequest = (payload, callback) => {
@@ -96,6 +101,12 @@ export function putUser(payload, callback) {
 
 export function postUploadProfileImage(payload, callback) {
   return dispatchActionToReducer(postUploadProfileImageService(payload), "UPDATE_PROFILE_IMAGE_START", "UPDATE_PROFILE_IMAGE_SUCCESS", "UPDATE_PROFILE_IMAGE_FAILURE", callback);
+}
+export function batchUploadProfileImage(payload, callback) {
+  return dispatchActionToReducer(batchUploadProfileImageService(payload), "BATCH_UPDATE_PROFILE_IMAGE_START", "BATCH_UPDATE_PROFILE_IMAGE_SUCCESS", "BATCH_UPDATE_PROFILE_IMAGE_FAILURE", callback);
+}
+export function batchEditUploadProfileImage(payload, callback) {
+  return dispatchActionToReducer(batchUploadProfileImageService(payload), "BATCH_EDIT_UPDATE_PROFILE_IMAGE_START", "BATCH_EDIT_UPDATE_PROFILE_IMAGE_SUCCESS", "BATCH_EDIT_UPDATE_PROFILE_IMAGE_FAILURE", callback);
 }
 
 export function incomingUpdatedUser(payload, callback) {
@@ -264,4 +275,17 @@ export function incomingRemovedTeamMember(payload, callback) {
 
 export function searchUsers(payload, callback) {
   return dispatchActionToReducer(searchUsersService(payload), "SEARCH_USERS_START", "SEARCH_USERS_SUCCESS", "SEARCH_USERS_FAILURE", callback);
+}
+
+export function impersonationLogin(payload, callback) {
+  return dispatchActionToReducer(impersonationLoginService(payload), "IMPERSONATION_LOGIN_START", "IMPERSONATION_LOGIN_SUCCESS", "IMPERSONATION_LOGIN_FAILURE", callback);
+}
+export function getCurrentUserImpersonation(payload, callback) {
+  return dispatchActionToReducer(getCurrentUserImpersonationService(payload), "GET_CURRENT_IMPERSONATION_USER_START", "GET_CURRENT_IMPERSONATION_USER_SUCCESS", "GET_CURRENT_IMPERSONATION_USER_FAILURE", callback);
+}
+export function impersonationLogout(payload, callback) {
+  return dispatchActionToReducer(impersonationLogoutService(payload), "IMPERSONATION_LOGOUT_START", "IMPERSONATION_LOGOUT_SUCCESS", "IMPERSONATION_LOGOUT_FAILURE", callback);
+}
+export function impersonationLists(payload, callback) {
+  return dispatchActionToReducer(impersonationListsService(payload), "IMPERSONATION_LIST_START", "IMPERSONATION_LIST_SUCCESS", "IMPERSONATION_LIST_FAILURE", callback);
 }

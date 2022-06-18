@@ -6,6 +6,7 @@ import { SearchDropDown } from "../dropdown";
 import UserProfileDropDown from "../dropdown/UserProfileDropdown";
 import { useHistory, useLocation } from "react-router-dom";
 import { sessionService } from "redux-react-session";
+import { useSelector } from "react-redux";
 
 const Wrapper = styled.ul`
   padding-left: 5px;
@@ -88,6 +89,31 @@ const Wrapper = styled.ul`
       display: inline-block;
     }
   }
+  .online-wrapper {
+    cursor: pointer;
+    position: relative;
+  }
+  .nowrap {
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+  .online-dot {
+    :before {
+      content: "";
+      position: absolute;
+      display: block;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      top: 3px;
+      left: -20px;
+      border: 3px solid #fff;
+      background-color: green;
+      color: #00c851;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
 `;
 
 const NotificationBadge = styled.span`
@@ -130,6 +156,8 @@ const HomeProfileNavigation = (props) => {
     driffSettings,
     userSettings,
   } = useSettings();
+  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const uniqueOnlineUsers = [...new Set(onlineUsers.map((ou) => ou.user_id))];
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
   const [form, setForm] = useState({});
@@ -237,6 +265,14 @@ const HomeProfileNavigation = (props) => {
 
   return (
     <Wrapper ref={refs.container} className={`header-profile-navigation navbar-nav ${className}`}>
+      {/* {loggedUser.role.id === 1 && (
+        <span className="online-wrapper" onClick={() => history.push("/system/people/all/online")}>
+          <span className="online-dot"></span>
+          <span className="nowrap">
+            {uniqueOnlineUsers.length} {dictionary.accounts}
+          </span>
+        </span>
+      )} */}
       {((driffSettings.READ_RELEASE_UPDATES && userSettings.READ_RELEASE_UPDATES && driffSettings.READ_RELEASE_UPDATES.timestamp > userSettings.READ_RELEASE_UPDATES.timestamp) || userSettings?.READ_RELEASE_UPDATES === null) &&
         renderGifIcon()}
       <li className="nav-item dropdown">
@@ -269,7 +305,7 @@ const HomeProfileNavigation = (props) => {
         <span className="nav-link profile-button">
           <ToolTip content={loggedUser.name}>
             <div className="avatar-overlay" />
-            <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_thumbnail_link ? form.profile_image_thumbnail_link : form.profile_image_link} noDefaultClick={true} />
+            <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_link} noDefaultClick={true} />
           </ToolTip>
         </span>
         {showUserProfileDropdown && <UserProfileDropDown user={loggedUser} closeDropdown={toggleShowProfileDropdown} />}

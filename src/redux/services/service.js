@@ -84,7 +84,7 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
     });
 };
 
-export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = null, register = false, mockServer = false, responseType = "json", token = null, config = { timeout: 5000 } }) => {
+export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = null, register = false, mockServer = false, responseType = "json", token = null, config = { timeout: 5000 }, cancelToken = null }) => {
   let userLang = navigator.language || navigator.userLanguage;
   let tzOffset = new Date().getTimezoneOffset();
 
@@ -117,6 +117,7 @@ export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = nul
       data,
       responseType,
       crossDomain: true,
+      cancelToken: cancelToken,
       headers: {
         "Access-Control-Allow-Origin": "*",
         crossorigin: true,
@@ -136,7 +137,6 @@ export const apiNoTokenCall = async ({ method, url, actualUrl = null, data = nul
         },
       };
     }
-
     return axios(axiosParam);
   }
 

@@ -1,17 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { useIdleTimer } from "react-idle-timer";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { useDriff, useFilesUpload, useInitialLoad, useSettings, useSocketConnection, useTimeFormat, useToaster, useUserActions, useVisibilityChange, useWorkspaceActions, useTranslationActions } from "../components/hooks";
+import {
+  useDriff,
+  useFilesUpload,
+  useInitialLoad,
+  useSettings,
+  useSocketConnection,
+  useTimeFormat,
+  useToaster,
+  useTranslationActions,
+  useUserActions,
+  useVisibilityChange,
+  useWorkspaceActions,
+  useProfilePicUpload,
+} from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
 import { WorkspaceContentPanel } from "../components/panels/workspace";
 import SocketListeners from "../components/socket/socketListeners";
-import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { PushNotificationBar, usePushNotification } from "../components/webpush";
-import { useIdleTimer } from "react-idle-timer";
+import { getAPIUrl, getCurrentDriffUrl } from "../helpers/slugHelper";
 import { setIdleStatus } from "../redux/actions/globalActions";
 import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
+import JitsiContainer from "../components/panels/chat/JitsiContainer";
+import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
+import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -25,6 +41,8 @@ const AudioStyle = styled.audio`
   visibility: hidden;
 `;
 
+const MODAL_TIMER = 30000;
+
 const MainLayout = (props) => {
   useFilesUpload(props);
   useVisibilityChange();
@@ -33,9 +51,12 @@ const MainLayout = (props) => {
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
 
   const { path } = useRouteMatch();
-  const { displayWelcomeBanner } = useUserActions();
+  const { displayWelcomeBanner, updateProfileImage } = useUserActions();
   const uDriff = useDriff();
   const { _t } = useTranslationActions();
+
+  const [clickCounter, setClickCounter] = useState(0);
+  const { renderDropDocument, uploadModal } = useProfilePicUpload();
 
   const dictionary = {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
@@ -50,6 +71,7 @@ const MainLayout = (props) => {
   const workspaceActions = useWorkspaceActions();
   const refs = {
     audio: useRef(null),
+    dropZoneRef: useRef(null),
   };
 
   const dispatch = useDispatch();
@@ -57,8 +79,10 @@ const MainLayout = (props) => {
   const {
     driffSettings: { isCompSettingsLoaded },
     chatSettings: { sound_enabled },
-    generalSettings: { notifications_on, notification_sound },
+    generalSettings: { notifications_on, notification_sound, first_login, userCanceledProfileUpload },
   } = useSettings();
+
+  const { generalSettings } = useSettings();
 
   const history = useHistory();
 
@@ -103,6 +127,20 @@ const MainLayout = (props) => {
     }
   }, [notification_sound]);
 
+  useEffect(() => {
+    const modalTimer = setTimeout(() => {
+      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
+        uploadModal(() => {
+          clearTimeout(modalTimer);
+        });
+      }
+    }, MODAL_TIMER);
+
+    return () => {
+      clearTimeout(modalTimer);
+    };
+  }, []);
+
   const handleOnActive = () => {
     dispatch(setIdleStatus(false));
   };
@@ -120,6 +158,7 @@ const MainLayout = (props) => {
 
   return (
     <>
+      {renderDropDocument()}
       <AudioStyle ref={refs.audio} controls>
         <>
           <source src={require("../assets/audio/appointed.ogg")} type="audio/ogg" />
@@ -142,25 +181,27 @@ const MainLayout = (props) => {
         Your browser does not support the audio element.
       </AudioStyle>
       {showNotificationBar && mounted && <PushNotificationBar onClickAskUserPermission={onClickAskUserPermission} onClickRemindLater={onClickRemindLater} />}
-      <NotificationTopBar />
+
+      {generalSettings.impersonationMode ? <ImpersonationTopBar /> : <NotificationTopBar />}
       {mounted && <MainHeaderPanel isExternal={isExternal} />}
       {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
             <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
           <MainSnoozePanel />
         </MainContent>
       )}
+      <JitsiContainer />
       {/* stripe code*/}
       {/* {mounted && (
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
             <Switch>
-              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
               <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
             </Switch>
           )}

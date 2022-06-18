@@ -1,15 +1,15 @@
 import moment from "moment";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Input, InputGroup, Label, Modal, ModalBody } from "reactstrap";
+import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
 import { updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { FileAttachments, PostVisibility } from "../common";
 import { DropDocument } from "../dropzone/DropDocument";
-import { DescriptionInput, FolderSelect } from "../forms";
-import { useToaster, useWindowSize, useWorkspaceAndUserOptions, usePostDraft } from "../hooks";
+import { DescriptionInput, FolderSelect, FormInput } from "../forms";
+import { useToaster, useWindowSize, useWorkspaceAndUserOptions, usePostDraft, useEnlargeEmoticons } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { uploadBulkDocument } from "../../redux/services/global";
 import { useHistory } from "react-router-dom";
@@ -21,7 +21,6 @@ const WrapperDiv = styled(InputGroup)`
   display: flex;
   align-items: center;
   margin: 20px 0;
-
   label {
     margin: 0 20px 0 0;
     min-width: 109px;
@@ -274,6 +273,25 @@ const StyledDescriptionInput = styled(DescriptionInput)`
   }
 `;
 
+const StyledModalFooter = styled(ModalFooter)`
+  .btn.btn-primary {
+    background-color: ${({ theme }) => theme.colors.primary}!important;
+    border-color: ${({ theme }) => theme.colors.primary}!important;
+  }
+  .btn.btn-outline-secondary {
+    color: ${({ theme }) => theme.colors.secondary}!important;
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover,
+  .btn.btn-outline-secondary:hover {
+    background-color: ${({ theme }) => theme.colors.secondary}!important;
+    color: #fff !important;
+  }
+  .btn.btn-outline-secondary:not(:disabled):not(.disabled):hover {
+    border-color: ${({ theme }) => theme.colors.secondary}!important;
+  }
+`;
+
 //onst initTimestamp = Math.floor(Date.now() / 1000);
 
 const fileOptions = [
@@ -324,6 +342,7 @@ const PostModal = (props) => {
   const [savingDraft, setSavingDraft] = useState(false);
   const [quillContents, setQuillContents] = useState([]);
   const [fileOption, setFileOption] = useState(null);
+  const [showNestedModal, setShowNestedModal] = useState(false);
 
   const toasterRef = useRef(null);
   const progressBar = useRef(0);
@@ -351,14 +370,27 @@ const PostModal = (props) => {
     showApprover: false,
     mention_ids: [],
     requiredUsers: [],
-    shared_with_client: false,
+    shared_with_client: null,
     mustReadUsers: [],
     mustReplyUsers: [],
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
+
+  const { enlargeEmoji } = useEnlargeEmoticons();
 
   const { draftSaved, handleDeleteDraft } = usePostDraft({
     draftId,
@@ -383,12 +415,13 @@ const PostModal = (props) => {
     addressIds,
   });
 
-  const [shareOption, setShareOption] = useState({
-    id: "internal",
-    value: "internal",
-    label: dictionary.internalTeamLabel,
-    icon: null,
-  });
+  const [shareOption, setShareOption] = useState(null);
+  // const [shareOption, setShareOption] = useState({
+  //   id: "internal",
+  //   value: "internal",
+  //   label: dictionary.internalTeamLabel,
+  //   icon: null,
+  // });
 
   const toastId = useRef(null);
   const sendNotify = (text) => (toastId.current = toaster.info(text));
@@ -422,15 +455,62 @@ const PostModal = (props) => {
     }
   };
 
-  const handleNameChange = (e) => {
-    setForm({
-      ...form,
-      title: e.target.value,
+  const [formResponse, setFormResponse] = useState({
+    valid: {},
+    message: {},
+  });
+
+  const handleNameChange = useCallback((e) => {
+    e.persist();
+    setForm((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+
+    setFormResponse((prevState) => ({
+      ...prevState,
+      valid: {
+        ...prevState.valid,
+        [e.target.name]: undefined,
+      },
+      message: {
+        ...prevState.message,
+        [e.target.name]: undefined,
+      },
+    }));
+  }, []);
+  const _validateForm = () => {
+    let valid = {};
+    let message = {};
+
+    if (form.title === "") {
+      valid.title = false;
+      message.title = dictionary.titleRequired;
+    } else {
+      valid.title = true;
+    }
+    if (form.selectedAddressTo.length === 0) {
+      valid.selectedAddressTo = false;
+      message.selectedAddressTo = dictionary.addressedToRequired;
+    } else {
+      valid.selectedAddressTo = true;
+    }
+    if (hasExternalWs && !shareOption) {
+      valid.radio = false;
+      message.radio = dictionary.radioRequired;
+    } else {
+      valid.radio = true;
+    }
+    setFormResponse({
+      valid: valid,
+      message: message,
     });
+
+    return !Object.values(valid).some((v) => v === false);
   };
 
   const handleConfirm = () => {
-    if (loading || imageLoading) return;
+    if (loading || imageLoading || !_validateForm()) return;
     if (cancelToken.current) {
       cancelToken.current.cancel("Operation canceled due to new request.");
       cancelToken.current = null;
@@ -536,9 +616,9 @@ const PostModal = (props) => {
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -626,7 +706,7 @@ const PostModal = (props) => {
     setQuillContents(editor.getContents());
     setForm({
       ...form,
-      body: content,
+      body: enlargeEmoji(content),
       textOnly: textOnly.trim(),
       mention_ids: mentionIds.map((id) => parseInt(id)).filter((id) => !isNaN(id)),
     });
@@ -738,9 +818,9 @@ const PostModal = (props) => {
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -825,7 +905,7 @@ const PostModal = (props) => {
       const isAllSelectedMustReply = item.post.must_reply_users.length > 1 && allUserIds.length === item.post.must_reply_users.length;
       setForm({
         ...form,
-        body: item.post.body,
+        body: enlargeEmoji(item.post.body),
         textOnly: item.post.body,
         title: item.post.title,
         has_folder: item.post.recipients.find((r) => r.type === "TOPIC") ? true : false,
@@ -927,19 +1007,7 @@ const PostModal = (props) => {
           };
         })
       );
-    }
-    return () => {
-      componentIsMounted.current = null;
-    };
-  }, []);
-
-  const onDragEnter = () => {
-    if (!showDropzone) setShowDropzone(true);
-  };
-
-  useEffect(() => {
-    if (componentIsMounted.current) {
-      if (form.shared_with_client) {
+      if (item.post.shared_with_client) {
         setShareOption({
           id: "external",
           value: "external",
@@ -955,7 +1023,87 @@ const PostModal = (props) => {
         });
       }
     }
-  }, [form.shared_with_client]);
+    if (isExternalUser) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
+    }
+    return () => {
+      componentIsMounted.current = null;
+    };
+  }, []);
+
+  const onDragEnter = () => {
+    if (!showDropzone) setShowDropzone(true);
+  };
+
+  const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
+
+  const toggleNested = () => {
+    setShowNestedModal((prevState) => !prevState);
+    if (showNestedModal) {
+      setShareOption({
+        id: "external",
+        value: "external",
+        label: dictionary.internalAndExternalTeamLabel,
+        icon: "eye",
+      });
+    }
+  };
+
+  const onCancel = () => {
+    setShareOption({
+      id: "external",
+      value: "external",
+      label: dictionary.internalAndExternalTeamLabel,
+      icon: "eye",
+    });
+    setShowNestedModal(false);
+  };
+
+  const onRemoveExternals = () => {
+    //remove externals in form
+    setForm({
+      ...form,
+      approvers: form.approvers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+      mustReadUsers: form.mustReadUsers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+      mustReplyUsers: form.mustReplyUsers
+        .filter((a) => a.user_type === "internal" || a.value === "all")
+        .map((o) => {
+          if (o.value === "all") {
+            return { ...o, all_ids: o.all_ids.filter((id) => !externalUsersId.some((eid) => eid === id)) };
+          } else {
+            return o;
+          }
+        }),
+    });
+    setShareOption({
+      id: "internal",
+      value: "internal",
+      label: dictionary.internalTeamLabel,
+      icon: "eye-off",
+    });
+    setShowNestedModal(false);
+  };
 
   const handleSelectFileUploadOption = (e) => {
     setFileOption(e);
@@ -969,18 +1117,21 @@ const PostModal = (props) => {
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
       <ModalBody onDragOver={onDragEnter}>
-        {/* <Modal isOpen={nestedModal} toggle={toggleNested} onClosed={closeAll ? toggle : undefined} centered>
-          <ModalHeaderSection toggle={toggleNested}>{dictionary.saveAsDraft}</ModalHeaderSection>
-          <ModalBody>{dictionary.draftBody}</ModalBody>
-          <ModalFooter>
-            <Button className="btn-outline-secondary" onClick={() => toggleAll(false, true)}>
-              {dictionary.discard}
+        <Modal isOpen={showNestedModal} toggle={toggleNested} centered>
+          <ModalHeaderSection toggle={toggleNested}>{dictionary.setToInternalPost}</ModalHeaderSection>
+          <ModalBody>
+            <p>{dictionary.setToInternalPostBody1}</p>
+            <p>{dictionary.setToInternalPostBody2}</p>
+          </ModalBody>
+          <StyledModalFooter>
+            <Button className="btn btn-outline-secondary" onClick={onCancel}>
+              {dictionary.cancel}
             </Button>
-            <Button color="primary" onClick={() => toggleAll(true)}>
-              {dictionary.save}
+            <Button className="btn btn-primary ml-2" onClick={onRemoveExternals}>
+              {dictionary.confirm}
             </Button>
-          </ModalFooter>
-        </Modal> */}
+          </StyledModalFooter>
+        </Modal>
         <DropDocument
           hide={!showDropzone}
           ref={formRef.dropzone}
@@ -999,14 +1150,16 @@ const PostModal = (props) => {
             <Label className={"modal-label"} for="post-title">
               {dictionary.postTitle}
             </Label>
-            <Input className="w-100" style={{ borderRadius: "5px" }} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
+
+            <FormInput name="title" isValid={formResponse.valid.title} feedback={formResponse.message.title} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
         <WrapperDiv className={"modal-input addressed-to-container"}>
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
-          <FolderSelect options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
         </WrapperDiv>
         <WrapperDiv className={"m-0"}>
           <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
@@ -1014,7 +1167,7 @@ const PostModal = (props) => {
         <StyledDescriptionInput
           className="modal-description"
           height={winSize.height - 660}
-          showFileButton={true}
+          // showFileButton={true}
           onChange={handleQuillChange}
           onOpenFileDialog={handleOpenFileDialog}
           defaultValue={item.hasOwnProperty("draft") ? form.body : mode === "edit" ? item.post.body : ""}
@@ -1060,10 +1213,21 @@ const PostModal = (props) => {
         )}
         <WrapperDiv className="modal-label more-option">
           <MoreOption className="mb-1">{dictionary.moreOptions}</MoreOption>
-          <PostSettings userOptions={userOptions} dictionary={dictionary} form={form} isExternalUser={isExternalUser} shareOption={shareOption} setShareOption={setShareOption} setForm={setForm} user={user} />
+          <PostSettings
+            userOptions={userOptions}
+            dictionary={dictionary}
+            form={form}
+            isExternalUser={isExternalUser}
+            shareOption={shareOption}
+            setShareOption={setShareOption}
+            setForm={setForm}
+            user={user}
+            setShowNestedModal={setShowNestedModal}
+          />
+          {!formResponse.valid.radio && <p style={{ color: "red" }}>{formResponse.message.radio}</p>}
         </WrapperDiv>
         <WrapperDiv className={"mt-0 mb-0"}>
-          <button className="btn btn-primary" disabled={form.selectedAddressTo.length === 0 || form.title === "" || imageLoading} onClick={handleConfirm}>
+          <button className="btn btn-primary" onClick={handleConfirm}>
             {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
             {mode === "edit" ? dictionary.updatePostButton : dictionary.createPostButton}
           </button>

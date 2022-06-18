@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Route, useRouteMatch } from "react-router-dom";
+import { Route, useHistory, useRouteMatch } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation, MoreOptions } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember, useRedirect } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
@@ -45,6 +45,18 @@ const NavBarLeft = styled.div`
       .mobile-private {
         display: block;
       }
+    }
+  }
+  .more-item {
+    position: absolute;
+    bottom: 0;
+    top: 3;
+    left: 57;
+  }
+  .is-external {
+    margin-left: 4rem;
+    @media all and (min-width: 440px) {
+      margin-left: 0;
     }
   }
   @media (max-width: 991.99px) {
@@ -220,7 +232,7 @@ const WorkspaceWrapper = styled.span`
   white-space: nowrap;
   display: block;
   @media all and (max-width: 1200px) {
-    max-width: 200px;
+    max-width: 100px;
   }
 `;
 
@@ -332,6 +344,7 @@ const WorspaceHeaderPanel = (props) => {
 
   const isMobile = useMemo(() => winSize.width < 1440, [winSize]);
   const { _t } = useTranslationActions();
+  const redirect = useRedirect();
 
   const dictionary = {
     allWorkspaces: _t("SIDEBAR.ALL_WORKSPACES", "Browse Workspaces"),
@@ -502,12 +515,12 @@ const WorspaceHeaderPanel = (props) => {
 
   const workspaceMembers = activeTopic
     ? activeTopic.members
-      .map((m) => {
-        if (m.member_ids) {
-          return m.member_ids;
-        } else return m.id;
-      })
-      .flat()
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
     : [];
 
   const isMember = useIsMember(activeTopic && activeTopic.member_ids.length ? [...new Set(workspaceMembers)] : []);
@@ -570,6 +583,10 @@ const WorspaceHeaderPanel = (props) => {
     );
   };
 
+  const handleRedirectToWorkspace = () => {
+    redirect.toWorkspace(activeTopic, "dashboard");
+  };
+
   return (
     <>
       <NavBarLeft className="navbar-left">
@@ -611,7 +628,16 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar
+                            onClick={handleRedirectToWorkspace}
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.team_channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                            showSlider={false}
+                          />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -622,9 +648,9 @@ const WorspaceHeaderPanel = (props) => {
                         </li>
                       )}
                       {activeTopic.is_shared && !isExternal && (
-                        <li className="nav-item">
+                        <li className="nav-item is-external">
                           <div className={"badge badge-warning ml-1 d-flex align-items-center"} style={{ backgroundColor: theme.colors.fourth }}>
-                           {dictionary.withClient}
+                            {dictionary.withClient}
                           </div>
                         </li>
                       )}
@@ -660,7 +686,16 @@ const WorspaceHeaderPanel = (props) => {
                       )}
                       <li className="nav-item">
                         <SubWorkspaceName className="current-title">
-                          <Avatar forceThumbnail={false} type={activeTopic.type} imageLink={activeTopic.team_channel.icon_link} id={`ws_${activeTopic.id}`} name={activeTopic.name} noDefaultClick={false} />
+                          <Avatar
+                            forceThumbnail={false}
+                            type={activeTopic.type}
+                            imageLink={activeTopic.team_channel.icon_link}
+                            id={`ws_${activeTopic.id}`}
+                            name={activeTopic.name}
+                            noDefaultClick={false}
+                            onClick={handleRedirectToWorkspace}
+                            showSlider={false}
+                          />
                           <WorkspaceWrapper>{activeTopic.name}</WorkspaceWrapper>
                         </SubWorkspaceName>
                       </li>
@@ -697,9 +732,9 @@ const WorspaceHeaderPanel = (props) => {
                     </>
                   )}
                   {!isMobile && <div style={{ flexGrow: 1 }}></div>}
-                  <li className="nav-item">
+                  <li className="nav-item more-options">
                     {isMobile && (
-                      <MoreOptions className="ml-2" disableHoverEffect>
+                      <MoreOptions disableHoverEffect>
                         <MemberLists members={activeTopic.members} size={3} />
                         <StyledDivider />
                         <div style={{ display: "flex", padding: "8px", gap: 8 }}>
@@ -733,14 +768,14 @@ const WorspaceHeaderPanel = (props) => {
                     exact={true}
                     render={(props) => <WorkspacePageHeaderPanel {...props} user={user} workspace={activeTopic} />}
                     path={[
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName",
-                      "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
-                      "/workspace/:page/:workspaceId/:workspaceName",
-                      "/workspace/:workspaceId/:workspaceName",
-                      "/workspace/:page",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/hub/:page/:workspaceId/:workspaceName",
+                      "/hub/:workspaceId/:workspaceName",
+                      "/hub/:page",
                     ]}
                   />
                 </div>

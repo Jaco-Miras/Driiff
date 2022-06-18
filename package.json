@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@convertkit/slate-lists": "^0.2.11",
+    "@jitsi/react-sdk": "^1.0.0",
     "@sentry/react": "6.9.0",
     "@sentry/tracing": "6.9.0",
     "@testing-library/jest-dom": "^4.2.4",
@@ -28,7 +29,6 @@
     "moment": "^2.25.3",
     "moment-timezone": "^0.5.31",
     "node-sass": "^4.14.1",
-    "prettier": "^2.0.5",
     "push.js": "^1.0.12",
     "quill-image-uploader": "^1.2.2",
     "quill-magic-url": "^2.0.2",
@@ -42,6 +42,7 @@
     "react-device-detect": "^1.12.1",
     "react-dom": "^16.13.1",
     "react-dom-confetti": "^0.2.0",
+    "react-draggable": "^4.4.4",
     "react-dropzone": "^11.0.1",
     "react-emoji-render": "^1.2.4",
     "react-gif-player": "^0.4.2",
@@ -94,7 +95,8 @@
     "eslint": "eslint src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "eslint-fix": "eslint --fix src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
     "prettier": "prettier --check src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
-    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js"
+    "prettier-fix": "prettier --write src/*.js src/layout/*.jsx src/helpers/*.js src/components/**/*.js src/components/**/*.jsx src/components/**/**/*.js src/components/**/**/*.jsx src/components/**/**/**/*.js src/components/**/**/**/*.jsx src/redux/**/*.js",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -110,5 +112,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "^2.6.2"
+  },
+  "lint-staged": {
+    "src/**/*.{js,css,md,jsx}": "prettier --write"
   }
 }

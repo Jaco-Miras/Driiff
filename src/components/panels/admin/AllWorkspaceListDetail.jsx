@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
+import Viewers from "../../list/post/item/Viewers";
+import { useWorkspaceActions, useWorkspaceSearchActions } from "../../hooks";
 
 const Wrapper = styled.div`
   .workspace-title {
@@ -21,6 +23,75 @@ const Wrapper = styled.div`
       display: block;
     }
   }
+  .user-reads-container {
+    position: relative;
+    display: inline-flex;
+    margin-right: 0.5rem;
+
+    .not-read-users-container,
+    .read-users-container {
+      transition: all 0.5s ease;
+      z-index: 2;
+      position: absolute;
+      right: 0;
+      top: 30px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      background-color: #fff;
+      overflow: auto;
+      opacity: 0;
+      max-height: 0;
+      max-width: 200px;
+      text-align: left;
+
+      &:hover {
+        opacity: 1;
+        max-height: 175px;
+        max-width: 200px;
+        text-align: left;
+      }
+
+      .dark & {
+        background-color: #25282c;
+        border: 1px solid #25282c;
+      }
+
+      > span {
+        padding: 0.5rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+
+        .avatar {
+          img {
+            min-width: 2.3rem;
+          }
+        }
+
+        .name {
+          width: 100%;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: block;
+        }
+      }
+    }
+  }
+
+  .user-reads-container {
+    span.not-readers:hover ~ span.not-read-users-container,
+    span.no-readers:hover ~ span.read-users-container {
+      opacity: 1;
+      max-height: 175px;
+      max-width: 200px;
+      text-align: left;
+    }
+  }
+  .avatar {
+    min-width: 2.7rem;
+    min-height: 2.7rem;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)`
@@ -31,11 +102,46 @@ const Icon = styled(SvgIconFeather)`
 
 const AllWorkspaceListDetail = (props) => {
   const { dictionary, item } = props;
+  const actions = useWorkspaceSearchActions();
+
+  const [showViewer, setShowViewer] = useState(false);
+
+  const handleRedirect = () => {
+    let payload = {
+      id: item.id,
+      name: item.name,
+      folder_id: item.workspace ? item.workspace.id : null,
+      folder_name: item.workspace ? item.workspace.name : null,
+    };
+    actions.toWorkspace(payload);
+  };
   return (
     <Wrapper className="workspace-details">
       <div className="title-labels">
-        <span className="workspace-title">{item.name}</span>
-        {item.private && <Icon icon="lock" />}
+        <span className="workspace-title" onClick={handleRedirect}>
+          {item.name}
+        </span>
+        {item.private === 1 && <Icon icon="lock" />}
+        {item.workspace && (
+          <span className="ml-1 d-flex align-items-center">
+            <Icon icon="folder" />
+            {item.workspace.name}
+          </span>
+        )}
+        <span
+          role="button"
+          className="ml-1 d-flex align-items-center user-reads-container"
+          onClick={() => {
+            setShowViewer((prev) => !prev);
+          }}
+        >
+          <span className="no-readers">
+            <Icon icon="user" />
+            {Object.values(item.members).length}
+          </span>
+          <Viewers users={item.members} close={() => setShowViewer(false)} show={showViewer} />
+        </span>
+
         {item.is_shared && (
           <>
             <span className={"badge badge-external ml-1 align-items-center"}>
@@ -43,18 +149,6 @@ const AllWorkspaceListDetail = (props) => {
             </span>
             <Icon icon="eye" className="mobile-icon" />
           </>
-        )}
-      </div>
-      <div className="labels">
-        <span className="mr-2">
-          <Icon icon="user" />
-          {Object.values(item.members).length}
-        </span>
-        {item.workspace && (
-          <span className="mr-2">
-            <Icon icon="folder" />
-            {item.workspace.name}
-          </span>
         )}
       </div>
     </Wrapper>

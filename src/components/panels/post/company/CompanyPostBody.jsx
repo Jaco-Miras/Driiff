@@ -98,12 +98,11 @@ const AuthorRecipients = styled.div`
   align-items: center;
   font-weight: 400;
   padding-bottom: 3px;
-
   .recipients {
     color: #8b8b8b;
     font-size: 10px;
+    min-width: 0;
   }
-
   .ellipsis-hover {
     position: relative;
 
@@ -206,6 +205,15 @@ const SharedBadge = styled.span`
     }
   }
 `;
+const WorkspaceBadge = styled.div`
+  white-space: nowrap;
+  width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @media (min-width: 620px) {
+    width: fit-content;
+  }
+`;
 
 const CompanyPostBody = (props) => {
   const { post, user, postActions, dictionary, disableOptions, disableMarkAsRead } = props;
@@ -252,7 +260,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.body.current) {
-      const googleLinks = refs.body.current.querySelectorAll("[data-google-link-retrieve=\"0\"]");
+      const googleLinks = refs.body.current.querySelectorAll('[data-google-link-retrieve="0"]');
       googleLinks.forEach((gl) => {
         googleApis.init(gl);
       });
@@ -360,9 +368,7 @@ const CompanyPostBody = (props) => {
         .filter((r, i) => i < recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
-            }</span>`;
+            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
           else return `<span class="receiver mb-1" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join(", ");
@@ -382,9 +388,7 @@ const CompanyPostBody = (props) => {
         .filter((r, i) => i >= recipientSize)
         .map((r) => {
           if (["DEPARTMENT", "TOPIC"].includes(r.type))
-            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""} ${
-              r.type === "TOPIC" && r.is_shared ? renderToString(<LockIcon icon="eye" />) : ""
-            }</span>`;
+            return `<span data-init="0" data-id="${r.type_id}" data-type="${r.type}" class="receiver mb-1">${r.name} ${r.type === "TOPIC" && r.private === 1 ? renderToString(<LockIcon icon="lock" />) : ""}</span>`;
           else return `<span class="receiver" data-init="0" data-id="${r.type_id}" data-type="${r.type}">${r.type && r.type === "TEAM" ? `${dictionary.teamLabel} ${r.name}` : r.name}</span>`;
         })
         .join("");
@@ -397,7 +401,7 @@ const CompanyPostBody = (props) => {
 
   useEffect(() => {
     if (refs.container.current) {
-      refs.container.current.querySelectorAll(".receiver[data-init=\"0\"]").forEach((e) => {
+      refs.container.current.querySelectorAll('.receiver[data-init="0"]').forEach((e) => {
         e.dataset.init = 1;
         e.addEventListener("click", handleReceiverClick);
       });
@@ -429,10 +433,10 @@ const CompanyPostBody = (props) => {
       <div className="d-flex align-items-center p-l-r-0 m-b-20">
         <div className="d-flex align-items-center text-muted w-100">
           <div className="d-inline-flex justify-content-center align-items-start">
-            <Avatar className="mr-2 post-author" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link} />
+            <Avatar className="mr-2 post-author" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
             <div>
               <span className="author-name">{post.author.first_name}</span>
-              <AuthorRecipients>{<span className="recipients" dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />}</AuthorRecipients>
+              <WorkspaceBadge dangerouslySetInnerHTML={{ __html: renderUserResponsibleNames() }} />
             </div>
           </div>
           <PostBadgeWrapper>

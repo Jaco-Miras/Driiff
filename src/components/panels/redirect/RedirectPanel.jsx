@@ -37,12 +37,18 @@ const RedirectPanel = (props) => {
                 let ws = res.data.additional_data.data.workspace[0];
                 let postId = res.data.additional_data.data.id;
                 let postName = res.data.additional_data.data.code;
-                if (ws.workspace_id) {
-                  let link = `/workspace/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
-                  history.push(link);
+
+                const isExternal = res.data.user_auth.type === "external";
+                if (isExternal) {
+                  if (ws.workspace_id) {
+                    let link = `/hub/posts/${ws.workspace_id}/${replaceChar(ws.workspace_name)}/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    history.push(link);
+                  } else {
+                    let link = `/hub/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
+                    history.push(link);
+                  }
                 } else {
-                  let link = `/workspace/posts/${ws.topic_id}/${replaceChar(ws.topic_name)}/post/${postId}/${replaceChar(postName)}`;
-                  history.push(link);
+                  history.push(`/posts/${postId}/${replaceChar(postName)}`);
                 }
               }
             } else if (res.data.additional_data.type === "CHANNEL") {
@@ -50,10 +56,10 @@ const RedirectPanel = (props) => {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
                 if (wsFolder) {
-                  let link = `/workspace/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/hub/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 } else {
-                  let link = `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/hub/chat/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 }
               } else if (res.data.additional_data.data) {
@@ -63,11 +69,11 @@ const RedirectPanel = (props) => {
                 });
                 history.push(link);
               } else {
-                history.push("/workspace/chat");
+                history.push("/hub/chat");
               }
             }
           } else {
-            history.push("/workspace/chat");
+            history.push("/hub/chat");
           }
         }
       });

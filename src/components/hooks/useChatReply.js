@@ -348,6 +348,9 @@ const useChatReply = ({ reply, dictionary, isAuthor, user, selectedChannel, user
       } catch (e) {
         return message;
       }
+    } else if (message.startsWith("LEFT_MEETING::{")) {
+      const data = JSON.parse(message.replace("LEFT_MEETING::", ""));
+      newBody = `<div><b>${data.participant.name}</b> has left the meeting</div>`;
     } else if (message.startsWith("ZOOM_MESSAGE::{")) {
       const data = JSON.parse(message.replace("ZOOM_MESSAGE::", ""));
       newBody = data.message;

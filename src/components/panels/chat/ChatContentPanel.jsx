@@ -200,6 +200,14 @@ const ChatContentPanel = (props) => {
     notificationsOff: _t("TOOLTIP.NOTIFICATIONS_OFF", "Notifications off"),
     toasterBellNotificationOff: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_OFF", "All notifications are off except for mention and post actions"),
     toasterBellNotificationOn: _t("TOASTER.WORKSPACE_BELL_NOTIFICATION_ON", "All notifications for this workspace is ON"),
+    googleMeet: _t("CONFIRMATION.GOOGLE_MEET", "Google meet"),
+    yes: _t("YES", "Yes"),
+    no: _t("NO", "No"),
+    googleMeetConfirmation: _t("CONFIRMATION.GOOGLE_MEET_BODY", "Are you sure you want to start a meeting in this channel?"),
+    personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
+    repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
+    personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
+    personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list."),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
@@ -208,17 +216,12 @@ const ChatContentPanel = (props) => {
     setShowSearchPanel(!showSearchPanel);
   };
 
-  const [newSeachToogle, setNewSeachToogle] = useState(false);
-
   useEffect(() => {
     selectedChannel !== null && setPP(selectedChannel.id);
     if (selectedChannel !== null && pP !== selectedChannel.id && pP > 0) {
-      setNewSeachToogle(!newSeachToogle);
       setShowSearchPanel(false);
     }
   }, [pP, selectedChannel]);
-
-  const isAuthorizedUser = ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com"].includes(user.email);
 
   return (
     <Wrapper className={`chat-content ${className}`} onDragOver={handleshowDropZone}>
@@ -231,7 +234,7 @@ const ChatContentPanel = (props) => {
         }}
         onCancel={handleHideDropzone}
       />
-      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} isAuthorizedUser={isAuthorizedUser} />}
+      {!isWorkspace && <ChatHeaderPanel dictionary={dictionary} channel={selectedChannel} handleSearchChatPanel={handleSearchChatPanel} />}
       {selectedChannel !== null ? (
         virtualization && ["anthea@makedevelopment.com", "nilo@makedevelopment.com", "johnpaul@makedevelopment.com", "sander@zuid.com"].includes(user.email) ? (
           <Suspense fallback={<ChatMessagesPlaceholder />}>
@@ -257,16 +260,8 @@ const ChatContentPanel = (props) => {
         <ChatMessagesPlaceholder />
       )}
       <ChatFooterPanel onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} />
-      {selectedChannel !== null && showSearchPanel && isAuthorizedUser && (
-        <ChatSearchPanel
-          newSeachToogle={newSeachToogle}
-          chatMessageActions={chatMessageActions}
-          showSearchPanel={showSearchPanel}
-          setShowSearchPanel={setShowSearchPanel}
-          handleSearchChatPanel={handleSearchChatPanel}
-          selectedChannel={selectedChannel}
-          user={user}
-        />
+      {selectedChannel !== null && showSearchPanel && (
+        <ChatSearchPanel chatMessageActions={chatMessageActions} showSearchPanel={showSearchPanel} setShowSearchPanel={setShowSearchPanel} handleSearchChatPanel={handleSearchChatPanel} selectedChannel={selectedChannel} user={user} />
       )}
     </Wrapper>
   );

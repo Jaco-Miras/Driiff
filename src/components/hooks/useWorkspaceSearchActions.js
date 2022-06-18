@@ -15,6 +15,8 @@ import {
   getWorkspace,
   setWorkspaceToDelete,
   putWorkspaceNotification,
+  addWorkspaceToFolder,
+  removeWorkspaceFromFolder,
 } from "../../redux/actions/workspaceActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster, useTranslationActions } from "./index";
@@ -135,6 +137,9 @@ const useWorkspaceSearchActions = () => {
         folder_id: item.workspace ? item.workspace.id : null,
         folder_name: item.workspace ? item.workspace.name : null,
       });
+
+      dispatch(addWorkspaceToFolder(item.workspace));
+
       toaster.success(
         <>
           {dictionary.joinWorkspace}
@@ -191,6 +196,7 @@ const useWorkspaceSearchActions = () => {
       };
       dispatch(leaveWorkspace({ workspace_id: item.topic.id, channel_id: item.channel.id }, callback));
       dispatch(updateWorkspace(payload));
+      dispatch(removeWorkspaceFromFolder(item.workspace));
     }
   };
 
@@ -198,9 +204,9 @@ const useWorkspaceSearchActions = () => {
     if (workspaces[workspace.id]) {
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
       fetchWorkspaceAndRedirect(workspace);
@@ -218,15 +224,15 @@ const useWorkspaceSearchActions = () => {
         dispatch(setWorkspaceToDelete(workspace.id));
         if (post) {
           if (workspace.folder_id) {
-            history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           } else {
-            history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+            history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
           }
         } else {
           if (workspace.folder_id) {
-            history.push(`/workspace/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
           } else {
-            history.push(`/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+            history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
           }
         }
       })

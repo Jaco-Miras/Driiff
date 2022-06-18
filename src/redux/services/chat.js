@@ -504,3 +504,21 @@ export function getChatMsgsSearch(payload) {
     data: payload,
   });
 }
+
+export function createGoogleMeet(payload) {
+  let url = "/google-meet/create-meet";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+  });
+}
+
+export function createJitsiMeet(payload) {
+  let url = `/meet/signature?${objToUrlParams(payload)}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}

@@ -70,7 +70,7 @@ const WorkspaceChatPanel = (props) => {
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>
       <Chatblock className="row no-gutters chat-block">
-        {workspace && !workspace.team_channel.code && route.path.startsWith("/workspace/team-chat/") && user.type === "internal" && (
+        {workspace && !workspace.team_channel.code && route.path.startsWith("/hub/team-chat/") && user.type === "internal" && (
           <EmptyState>
             <SvgEmptyState icon={3} height={252} />
             <button className="btn btn-outline-primary btn-block" disable={activating} onClick={handleActivateTeamChat}>
@@ -78,9 +78,9 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {((route.path.startsWith("/workspace/chat") && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) ||
-          (route.path.startsWith("/workspace/chat") && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
-          (route.path.startsWith("/workspace/team-chat") && workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.id === workspace.team_channel.id)) && (
+        {((route.path.startsWith("/hub/chat") && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) ||
+          (route.path.startsWith("/hub/chat") && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
+          (route.path.startsWith("/hub/team-chat") && workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.id === workspace.team_channel.id)) && (
           <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />
         )}
       </Chatblock>

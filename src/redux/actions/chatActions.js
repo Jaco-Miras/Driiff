@@ -43,6 +43,8 @@ import {
   putUnpublishedAnswers as putUnpublishedAnswersService,
   generateZoomSignature as generateZoomSignatureService,
   createZoomMeeting as createZoomMeetingService,
+  createGoogleMeet as createGoogleMeetService,
+  createJitsiMeet as createJitsiMeetService,
 } from "../services";
 
 export function setSelectedChannel(payload, callback) {
@@ -486,4 +488,40 @@ export function removeWorkspaceChannelMembers(payload, callback) {
 
 export function removeWorkspaceChannel(payload, callback) {
   return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_CHANNEL", payload, callback);
+}
+
+export function createGoogleMeet(payload, callback) {
+  return dispatchActionToReducer(createGoogleMeetService(payload), "CREATE_GOOGLE_MEET_START", "CREATE_GOOGLE_MEET_SUCCESS", "CREATE_GOOGLE_MEET_FAIL", callback);
+}
+
+export function startJitsi(payload, callback) {
+  return SimpleDispatchActionToReducer("START_JITSI", payload, callback);
+}
+
+export function clearJitsi(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_JITSI", payload, callback);
+}
+
+export function createJitsiMeet(payload, callback) {
+  return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START", "CREATE_JITSI_MEET_SUCCESS", "CREATE_JITSI_MEET_FAIL", callback);
+}
+
+export function incomingJitsi(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_JITSI", payload, callback);
+}
+
+export function clearJitsiInvite(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_JITSI_INVITE", payload, callback);
+}
+
+export function incomingJitsiEnded(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_JITSI_ENDED", payload, callback);
+}
+
+export function setChannelInitialLoad(payload, callback) {
+  return SimpleDispatchActionToReducer("SET_CHANNEL_INITIAL_LOAD", payload, callback);
+}
+
+export function createJitsiMeetMobile(payload, callback) {
+  return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START_MOBILE", "CREATE_JITSI_MEET_SUCCESS_MOBILE", "CREATE_JITSI_MEET_FAIL_MOBILE", callback);
 }

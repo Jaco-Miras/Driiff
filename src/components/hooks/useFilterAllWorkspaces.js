@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 const useFilterAllWorkspaces = (props) => {
   const search = useSelector((state) => state.workspaces.search);
   const user = useSelector((state) => state.session.user);
+
   const { results, filterBy, value, filterByFolder } = search;
   const filteredResults = results
     .filter((ws) => {

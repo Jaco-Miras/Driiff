@@ -54,7 +54,7 @@ export const AppRoute = ({ children, ...props }) => {
       <Suspense fallback={<div></div>}>
         <Switch>
           <Route {...props} component={GuestLayout} path={["/logged-out", "/force-logout"]} exact={true} />
-          {/* <Route {...props} component={TestFiles} path={["/test/files/workspace/:workspaceId"]}>
+          {/* <Route {...props} component={TestFiles} path={["/test/files/hub/:workspaceId"]}>
             {children}
           </Route>
           <Route {...props} component={TestChat} path={["/test/chat"]}>
@@ -63,13 +63,13 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/releases", "/admin-settings"]}>
             {children}
           </Route>
-          <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token"]}>
+          <Route {...props} component={MainLayout} path={["/hub/chat", "/hub/:page", "/magic-link/:token"]}>
             {children}
           </Route>
           <Redirect
             path="*"
             to={{
-              pathname: session.user.type === "external" ? "/workspace/chat" : "/dashboard",
+              pathname: session.user.type === "external" ? "/hub/chat" : "/dashboard",
               state: { from: history.location },
             }}
           />

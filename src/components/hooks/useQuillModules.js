@@ -25,6 +25,7 @@ const useQuillModules = ({
   prioMentionIds = [],
   post = null,
   setImageLoading = null,
+  inlineImageType = "private",
 }) => {
   const dispatch = useDispatch();
   const [modules, setModules] = useState({});
@@ -152,7 +153,7 @@ const useQuillModules = ({
             type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/workspace/chat/${workspace.id}/${replaceChar(workspace.name)}`,
+            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         }),
       ];
@@ -331,7 +332,7 @@ const useQuillModules = ({
               uploadDocument({
                 user_id: user.id,
                 file: formData,
-                file_type: "private",
+                file_type: inlineImageType,
                 folder_id: null,
               })
                 .then((result) => {

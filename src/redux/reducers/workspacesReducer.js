@@ -1,6 +1,8 @@
 /* eslint-disable no-prototype-builtins */
+import _ from "lodash";
 import { convertArrayToObject } from "../../helpers/arrayHelper";
 import { getCurrentTimestamp } from "../../helpers/dateFormatter";
+import { uniqBy } from "lodash";
 
 const INITIAL_STATE = {
   selectedWorkspaceId: null,
@@ -37,6 +39,15 @@ const INITIAL_STATE = {
     maxPage: 1,
     count: 0,
     hasMore: false,
+    limit: 25,
+    skip: 0,
+    query: {
+      hasMore: false,
+      limit: 25,
+      skip: 0,
+      filterBy: "all",
+      value: "",
+    },
     counters: {
       all: 0,
       new: 0,
@@ -77,6 +88,13 @@ const INITIAL_STATE = {
   },
   workspaceReminders: {},
   connectedTeamIds: [],
+  workspaceQuickLinks: {},
+  relatedworkspace: {
+    loading: false,
+    error: null,
+    data: [],
+    hasMore: false,
+  },
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -420,6 +438,27 @@ export default (state = INITIAL_STATE, action) => {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];
         }
       }
+      const ws = {
+        channel: action.data.channel,
+        created_at: action.data.topic.created_at,
+        members: action.data.members,
+        search: action.data.topic.name,
+        timestamp: action.data.topic.created_at.timestamp,
+        workspace: action.data.workspace,
+        topic: {
+          description: action.data.topic.description,
+          icon_link: null,
+          id: action.data.topic.id,
+          is_active: true,
+          is_archive: false,
+          is_favourite: false,
+          is_locked: !!action.data.topic.private,
+          is_shared: !!action.data.topic.is_shared,
+          name: action.data.topic.name,
+          created_at: action.data.topic.created_at,
+          updated_at: action.data.topic.created_at,
+        },
+      };
       return {
         ...state,
         workspaces: updatedWorkspaces,
@@ -434,6 +473,10 @@ export default (state = INITIAL_STATE, action) => {
               return acc;
             }, {})
           : state.allFolders,
+        search: {
+          ...state.search,
+          results: state.search.results.some((r) => r.topic.id === ws.id) ? state.search.results : [ws, ...state.search.results],
+        },
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
@@ -1428,12 +1471,12 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: newWorkspacePosts,
         workspaces: updatedWorkspaces,
-        activeTopic: addUnreadPost
-          ? {
-              ...state.activeTopic,
-              //unread_posts: state.activeTopic.unread_posts + 1,
-            }
-          : state.activeTopic,
+        // activeTopic: addUnreadPost
+        //   ? {
+        //       ...state.activeTopic,
+        //       //unread_posts: state.activeTopic.unread_posts + 1,
+        //     }
+        //   : state.activeTopic,
       };
     }
     // case "INCOMING_POST": {
@@ -3129,21 +3172,23 @@ export default (state = INITIAL_STATE, action) => {
                       must_reply_users: action.data.must_reply_users,
                     },
                   },
-                  ...(state.workspacePosts[ws.topic.id].categories && {
-                    ...state.workspacePosts[ws.topic.id].categories,
-                    mustRead: {
-                      ...state.mustRead,
-                      count:
-                        action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
-                          ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
-                          : state.workspacePosts[ws.topic.id].categories.mustRead.count,
-                    },
-                    mustReply: {
-                      ...state.mustReply,
-                      count:
-                        action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
-                          ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
-                          : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                  ...(state.workspacePosts[ws.topic.id].hasOwnProperty("categories") && {
+                    categories: {
+                      ...state.workspacePosts[ws.topic.id].categories,
+                      mustRead: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustRead,
+                        count:
+                          action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read)
+                            ? state.workspacePosts[ws.topic.id].categories.mustRead.count - 1
+                            : state.workspacePosts[ws.topic.id].categories.mustRead.count,
+                      },
+                      mustReply: {
+                        ...state.workspacePosts[ws.topic.id].categories.mustReply,
+                        count:
+                          action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply)
+                            ? state.workspacePosts[ws.topic.id].categories.mustReply.count - 1
+                            : state.workspacePosts[ws.topic.id].categories.mustReply.count,
+                      },
                     },
                   }),
                 };
@@ -3243,6 +3288,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         search: {
           ...state.search,
+          results: uniqBy([...state.search.results, ...action.data.workspaces], "topic.id"),
           folders: action.data.workspaces
             .filter((ws) => ws.workspace !== null)
             .reduce((acc, ws) => {
@@ -4289,6 +4335,95 @@ export default (state = INITIAL_STATE, action) => {
               }
               return res;
             }, {}),
+        },
+      };
+    }
+    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS":
+    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
+      const workspaceId = action.data[0].group_id;
+      return {
+        ...state,
+        workspaceQuickLinks: {
+          ...state.workspaceQuickLinks,
+          [workspaceId]: action.data,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_START": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: true,
+          error: null,
+          hasMore: false,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_SUCCESS": {
+      return {
+        ...state,
+        relatedworkspace: {
+          loading: false,
+          error: null,
+          data: [...state.relatedworkspace.data, ...action.data.workspaces],
+          hasMore: action.data.has_more,
+        },
+      };
+    }
+    case "GET_RELATED_WORKSPACE_FAIL": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          error: action.error.response.message || "Something went wrong",
+          hasMore: false,
+        },
+      };
+    }
+    case "CLEAR_RELATED_WORKSPACE": {
+      return {
+        ...state,
+        relatedworkspace: {
+          ...state.relatedworkspace,
+          loading: false,
+          data: [],
+          hasMore: false,
+        },
+      };
+    }
+    case "ADD_WORKSPACE_TO_FOLDER": {
+      return {
+        ...state,
+        folders: {
+          ...state.folders,
+          [action.data.id]: action.data,
+        },
+      };
+    }
+    case "REMOVE_WORKSPACE_FROM_FOLDER": {
+      return {
+        ...state,
+        folders: _.omit(state.folders, action.data.id),
+      };
+    }
+    case "UPDATE_WORKSPACE_MEMBERS": {
+      const workspaceId = action.data.workspaceId;
+      return {
+        ...state,
+        activeTopic: {
+          ...state.activeTopic,
+          members: action.data.members,
+          member_ids: action.data.members.map((m) => m.id),
+        },
+        workspaces: {
+          ...state.workspaces,
+          [workspaceId]: {
+            ...state.workspaces[workspaceId],
+            members: action.data.members,
+            member_ids: action.data.members.map((m) => m.id),
+          },
         },
       };
     }

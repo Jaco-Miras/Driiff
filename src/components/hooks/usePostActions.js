@@ -294,7 +294,6 @@ const usePostActions = () => {
 
             if (res) {
               getUnreadNotificationEntries();
-              //dispatch(updateUnreadCounter({ general_post: -1 }));
               if (!post.is_archived) {
                 toaster.success(
                   <>
@@ -342,7 +341,6 @@ const usePostActions = () => {
       };
       if (res) {
         getUnreadNotificationEntries();
-        //dispatch(updateUnreadCounter({ general_post: -1 }));
         if (post.recipients.some((r) => r.type === "TOPIC")) {
           dispatch(getFavoriteWorkspaceCounters());
         }
@@ -407,9 +405,9 @@ const usePostActions = () => {
   const sharePost = (post) => {
     let link = "";
     if (params.folderId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
     } else {
       link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
     }
@@ -441,7 +439,6 @@ const usePostActions = () => {
             })
           );
           getUnreadNotificationEntries();
-          //dispatch(updateUnreadCounter({ general_post: -1 }));
         })
       );
     } else {
@@ -494,7 +491,7 @@ const usePostActions = () => {
           tag: null,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
-        history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
       } else {
         let payload = {
           filter: "inbox",
@@ -518,7 +515,7 @@ const usePostActions = () => {
     dispatch(addToModals(payload));
   };
 
-  const showModal = (mode = "create", post = null, comment = null, rewardRef = null) => {
+  const showModal = (mode = "create", post = null, comment = null, rewardRef = null, cb = () => {}) => {
     let payload = {};
 
     switch (mode) {
@@ -614,13 +611,16 @@ const usePostActions = () => {
                       approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
                         if (err) return;
                         dispatch(
-                          addCommentReact({
-                            counter: 1,
-                            id: comment.id,
-                            parent_id: comment.parent_id,
-                            post_id: post.id,
-                            reaction: "clap",
-                          })
+                          addCommentReact(
+                            {
+                              counter: 1,
+                              id: comment.id,
+                              parent_id: comment.parent_id,
+                              post_id: post.id,
+                              reaction: "clap",
+                            },
+                            cb
+                          )
                         );
                       });
                     })
@@ -629,13 +629,16 @@ const usePostActions = () => {
                   approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
                     if (err) return;
                     dispatch(
-                      addCommentReact({
-                        counter: 1,
-                        id: comment.id,
-                        parent_id: comment.parent_id,
-                        post_id: post.id,
-                        reaction: "clap",
-                      })
+                      addCommentReact(
+                        {
+                          counter: 1,
+                          id: comment.id,
+                          parent_id: comment.parent_id,
+                          post_id: post.id,
+                          reaction: "clap",
+                        },
+                        cb
+                      )
                     );
                     const isLastUserToAnswer = comment.users_approval.filter((u) => u.ip_address === null).length === 1;
                     const allUsersAgreed = comment.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === comment.users_approval.length - 1;
@@ -678,7 +681,7 @@ const usePostActions = () => {
                           post_title: post.title,
                         },
                       };
-                      dispatch(postComment(cpayload));
+                      dispatch(postComment(cpayload, cb));
                     }
                   });
                 }, 1000);
@@ -927,8 +930,8 @@ const usePostActions = () => {
     dispatch(getUnreadPostComments());
   };
 
-  const getUnreadNotificationEntries = (payload = {}) => {
-    dispatch(getUnreadNotificationCounterEntries(payload));
+  const getUnreadNotificationEntries = (payload = {}, callback = () => {}) => {
+    dispatch(getUnreadNotificationCounterEntries(payload, callback));
   };
 
   const like = (payload = {}, callback) => {
@@ -950,6 +953,7 @@ const usePostActions = () => {
   const getUnreadWsPostsCount = (payload = {}, callback = () => {}) => {
     dispatch(
       getUnreadWorkspacePostEntries(payload, (err, res) => {
+        if (callback) callback(err, res);
         if (err) return;
         dispatch(
           updateWorkspacePostCount({

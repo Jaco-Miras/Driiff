@@ -106,9 +106,9 @@ const CreateFilesFolderModal = (props) => {
       if (err) return;
       if (topic_id) {
         if (params.hasOwnProperty("folderId")) {
-          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         } else {
-          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
       } else {
         history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
@@ -142,9 +142,9 @@ const CreateFilesFolderModal = (props) => {
       if (err) return;
       if (topic_id) {
         if (params.hasOwnProperty("folderId")) {
-          history.push(`/workspace/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         } else {
-          history.push(`/workspace/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
+          history.push(`/hub/files/${params.workspaceId}/${params.workspaceName}/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);
         }
       } else {
         history.push(`/files/folder/${res.data.folder.id}/${replaceChar(res.data.folder.search)}`);

@@ -143,13 +143,7 @@ const MemberTimeline = (props) => {
     <Wrapper className={`member-timeline timeline-item ${className}`}>
       <div>
         {message !== null ? (
-          <>
-            {author ? (
-              <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_thumbnail_link ? author.profile_image_thumbnail_link : author.profile_image_link} id={author.id} showSlider={true} scrollRef={scrollRef} />
-            ) : (
-              <Avatar className="mr-3" imageLink={null} isBot={true} />
-            )}
-          </>
+          <>{author ? <Avatar className="mr-3" name={author.name} imageLink={author.profile_image_link} id={author.id} showSlider={true} scrollRef={scrollRef} /> : <Avatar className="mr-3" imageLink={null} isBot={true} />}</>
         ) : (
           <Avatar className="mr-3" imageLink={null} isBot={true} />
         )}

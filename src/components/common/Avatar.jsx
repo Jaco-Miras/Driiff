@@ -105,9 +105,12 @@ const Image = styled.img`
   object-fit: cover;
 `;
 
-const Initials = styled.span`
+const Initials = styled.div.attrs((props) => ({
+  style: {
+    background: props.avatarColor ? props.avatarColor : "white",
+  },
+}))`
   color: #fff !important;
-  background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
   font-size: 11px;
   line-height: 0;
   display: flex;
@@ -118,6 +121,16 @@ const Initials = styled.span`
   object-fit: cover;
   align-items: center;
   justify-content: center;
+`;
+
+const IconAvatarContainer = styled.div`
+  background: ${(props) => (props.avatarColor ? props.avatarColor : "white")};
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
 `;
 
 const Avatar = (props) => {
@@ -133,11 +146,12 @@ const Avatar = (props) => {
     noDefaultClick = false,
     isBot = false,
     isHuddleBot = false,
-    forceThumbnail = true,
+    forceThumbnail = false,
     fromSlider = false,
     showSlider = true,
     tooltipName = null,
     icon = null,
+    isCompany = false,
     ...rest
   } = props;
 
@@ -262,19 +276,21 @@ const Avatar = (props) => {
     return result.substring(0, 2);
   };
 
-  if (forceThumbnail && imageLink && !imageLink.includes("thumbnail")) {
+  /* if (forceThumbnail && imageLink && !imageLink.includes("thumbnail")) {
     imageLink += "&need_thumbnail=1";
-  }
+  } */
 
   return (
     <Wrapper {...rest} className={`avatar avatar-md ${isOnline ? "avatar-state-success" : ""} ${isLoaded ? "ico-avatar-loaded" : ""} ${className} ${type}`} hasTeamIcon={type === "TEAM" && imageLink !== null} ref={avatarRef}>
       {isLoaded === false && <Skeleton borderRadius="50%" widthRandomness={0} heightRandomness={0} />}
       <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={tooltipName ? tooltipName : name}>
-        {type === "TEAM" ? (
+        {type === "TEAM" || isCompany ? (
           imageLink ? (
             <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleImageError} src={imageLink} alt={name} onClick={handleOnClick} />
           ) : (
-            <SvgIconFeather icon={icon ? icon : "users"} />
+            <IconAvatarContainer avatarColor={avatarColor(name)}>
+              <SvgIconFeather icon={icon ? icon : "users"} />
+            </IconAvatarContainer>
           )
         ) : isBot ? (
           <Image show={isLoaded} className="rounded-circle" onLoad={handleImageLoad} onError={handleBotImageError} src={errorBotImage ? botIcon : imageLink ? imageLink : isHuddleBot ? driffIcon : botIcon} alt={name} />

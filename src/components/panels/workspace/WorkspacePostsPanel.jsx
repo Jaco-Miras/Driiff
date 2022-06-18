@@ -150,9 +150,9 @@ const WorkspacePostsPanel = (props) => {
             };
             dispatch(updateWorkspacePostFilterSort(payload));
             if (params.folderId) {
-              history.push(`/workspace/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+              history.push(`/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
             } else {
-              history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+              history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
             }
             toaster.error(dictionary.errorLoadingPost);
           }
@@ -251,6 +251,7 @@ const WorkspacePostsPanel = (props) => {
     featureNotAvailable: _t("LABEL.FEATURE_NOT_AVAILABLE", "This feature is not available for your account."),
     contactAdministrator: _t("LABEL.CONTACT_ADMIN", "Contact your system administrator."),
     loadingPosts: _t("LABEL.LOADING_POSTS", "Loading posts"),
+    repliedViaEmail: _t("COMMENT.REPLIED_VIA_EMAIL", "replied via email"),
   };
 
   useEffect(() => {

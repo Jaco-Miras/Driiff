@@ -9,25 +9,38 @@ import FavChannel from "./FavChannel";
 import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
+  height: 100%;
   > span:first-child {
     display: flex;
     align-items: center;
-    //font-weight: 600;
-  }
-  .feather {
-    width: 1rem;
-    height: 1rem;
   }
   .feather-star {
     margin-right: 0.5rem;
+    width: 1rem;
+    height: 1rem;
   }
   .feather-info {
     margin-left: 0.5rem;
+    width: 1rem;
+    height: 1rem;
   }
   ul {
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow: auto;
+    max-height: calc(100% - 30px);
+    overflow-x: hidden;
+    ::-webkit-scrollbar {
+      -webkit-appearance: none;
+      width: 7px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.5);
+      -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+    }
     li:not(:last-child) {
       border-bottom: 1px solid #f1f2f7;
       .dark & {
@@ -88,7 +101,7 @@ const FavoriteChannelsCard = (props) => {
       </span>
       {favoriteChannels.length === 0 && <div className="mt-3">{dictionary.clickOnStarChat}</div>}
       <ul className="mt-3">
-        {favoriteChannels.slice(0, 4).map((channel) => {
+        {favoriteChannels.map((channel) => {
           return <FavChannel key={channel.id} channel={channel} selectedChannel={selectedChannel} channelDrafts={channelDrafts} dictionary={dictionary} onSelectChannel={onSelectChannel} />;
         })}
       </ul>

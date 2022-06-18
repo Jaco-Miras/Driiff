@@ -132,14 +132,7 @@ const CompanyMemberTimeline = (props) => {
         {message !== null ? (
           <>
             {message.author ? (
-              <Avatar
-                className="mr-3"
-                name={message.author.name}
-                imageLink={message.author.profile_image_thumbnail_link ? message.author.profile_image_thumbnail_link : message.author.profile_image_link}
-                id={message.author.id}
-                showSlider={true}
-                scrollRef={scrollRef}
-              />
+              <Avatar className="mr-3" name={message.author.name} imageLink={message.author.profile_image_link} id={message.author.id} showSlider={true} scrollRef={scrollRef} />
             ) : (
               <Avatar className="mr-3" imageLink={null} isBot={true} />
             )}

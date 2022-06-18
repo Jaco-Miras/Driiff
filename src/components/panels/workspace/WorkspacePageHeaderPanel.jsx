@@ -104,21 +104,18 @@ const WorkspacePageHeaderPanel = (props) => {
 
   let pathname = props.match.url;
   if (
-    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?" ||
-    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?"
+    props.match.path === "/hub/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?" ||
+    props.match.path === "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?"
   ) {
-    pathname = pathname.split("/post/")[0].replace(`/workspace/${props.match.params.page}`, "");
-  } else if (
-    props.match.path === "/workspace/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" ||
-    props.match.path === "/workspace/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName"
-  ) {
-    pathname = pathname.split("/folder/")[0].replace(`/workspace/${props.match.params.page}`, "");
-  } else if (props.match.path === "/workspace/:workspaceId/:workspaceName" && typeof props.match.params.page === "undefined") {
+    pathname = pathname.split("/post/")[0].replace(`/hub/${props.match.params.page}`, "");
+  } else if (props.match.path === "/hub/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || props.match.path === "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+    pathname = pathname.split("/folder/")[0].replace(`/hub/${props.match.params.page}`, "");
+  } else if (props.match.path === "/hub/:workspaceId/:workspaceName" && typeof props.match.params.page === "undefined") {
     const split_pathname = pathname.split("/");
     split_pathname.splice(2, 0, "chat");
     history.push(split_pathname.join("/"));
   } else {
-    pathname = pathname.replace(`/workspace/${props.match.params.page}`, "");
+    pathname = pathname.replace(`/hub/${props.match.params.page}`, "");
   }
 
   const { _t } = useTranslationActions();
@@ -139,43 +136,43 @@ const WorkspacePageHeaderPanel = (props) => {
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/dashboard${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/dashboard${pathname}`}>
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
           {((workspace && user.type === "internal" && workspace.is_shared) || (workspace && user.type === "internal" && workspace.team_channel.code && workspace.is_shared)) && (
             <li className="nav-item">
-              <MainNavLink isSub={true} to={`/workspace/team-chat${pathname}`}>
+              <MainNavLink isSub={true} to={`/hub/team-chat${pathname}`}>
                 {dictionary.pageTitleTeamChat}
                 {workspace !== null && workspace?.team_unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.team_unread_chats}</div>}
               </MainNavLink>
             </li>
           )}
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/chat${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/chat${pathname}`}>
               {workspace && workspace.is_shared && user.type === "internal" ? dictionary.pageTitleClientChat : dictionary.pageTitleChat}
               {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/posts${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/posts${pathname}`}>
               {dictionary.pageTitlePosts}
               {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/reminders${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
               {isLoaded && workspaceReminders[params.workspaceId].count.todo_with_date > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.todo_with_date}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/files${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/files${pathname}`}>
               {dictionary.pageTitleFiles}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/workspace/people${pathname}`}>
+            <MainNavLink isSub={true} to={`/hub/people${pathname}`}>
               {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>

@@ -447,6 +447,28 @@ export function postUploadProfileImage(payload) {
     },
   });
 }
+export function batchUploadProfileImage(payload) {
+  const asyncPayload = payload.map((p) => {
+    let url = `/users/${p.id}/upload-profile-image`;
+    return apiCall({
+      method: "POST",
+      url: url,
+      hasFile: true,
+      data: {
+        file: p.profile_pic,
+      },
+    });
+  });
+
+  return new Promise(async (res, rej) => {
+    try {
+      const result = await Promise.all(asyncPayload);
+      res({ status: 200, data: result.map((res) => res.data) });
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
 
 export function postExternalUserData(payload = {}) {
   let url = "/v2/external-user-data";
@@ -676,5 +698,31 @@ export function searchUsers(payload) {
     url: `/v2/search-user?search=${payload.search}`,
     data: payload,
     cancelToken: payload.cancelToken,
+  });
+}
+
+export function impersonationLogin(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/impersonation/login",
+    data: payload,
+  });
+}
+export function getCurrentUserImpersonation(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/impersonation",
+  });
+}
+export function impersonationLogout(payload) {
+  return apiCall({
+    method: "POST",
+    url: "/impersonation/logout",
+  });
+}
+export function impersonationLists(payload) {
+  return apiCall({
+    method: "GET",
+    url: `/impersonation/lists?page=${payload.page}&limit=${payload.limit}`,
   });
 }

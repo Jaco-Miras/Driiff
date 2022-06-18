@@ -275,11 +275,6 @@ const TodosList = (props) => {
   return (
     <>
       <ItemList className="reminder-list" isDone={isDone}>
-        {todo.workspace && showWsBadge && (
-          <div className="text-truncate false mt-2 workspace-label" onClick={(e) => handleRedirectToWorkspace(e, todo)}>
-            <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
-          </div>
-        )}
         <div className="d-flex align-items-center reminder-content">
           <span className="custom-control custom-checkbox mr-2">
             <ToolTip content={todo.status === "DONE" ? dictionary.actionMarkAsUndone : dictionary.actionMarkAsDone}>
@@ -288,7 +283,7 @@ const TodosList = (props) => {
           </span>
           <span className={`align-items-center todo-title-description text-truncate mr-3 ${isDone && "text-muted"}`} onClick={handleTitleClick}>
             <span className={"todo-title"}>{todo.title}</span>
-            {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />}
+            {/* {todo.description && !isDone && <ReminderDescription ref={descriptionRef} className="text-truncate" dangerouslySetInnerHTML={{ __html: todo.description }} />} */}
             {!isDone &&
               todo.files.map((file) => {
                 return (
@@ -320,23 +315,31 @@ const TodosList = (props) => {
                 </span>
               )}
             </LabelWrapper>
-            <div className="avatars-container">
-              {todo.author !== null && (
-                <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_thumbnail_link ? todo.author.profile_image_thumbnail_link : todo.author.profile_image_link} id={todo.author.id} />
-              )}
-              {showAssignedTo && (
-                <>
-                  <Icon icon="chevron-right" />
-                  <Avatar
-                    name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
-                    tooltipName={dictionary.reminderAssignedTo}
-                    imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace && todo.workspace.team_channel ? todo.workspace.team_channel.icon_link : null}
-                    id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
-                    type={todo.assigned_to ? "USER" : "TOPIC"}
-                    noDefaultClick={todo.assigned_to ? false : true}
-                  />
-                </>
-              )}
+
+            <div className=" d-flex flex-column">
+              <div>
+                {todo.workspace && showWsBadge && (
+                  <div className="text-truncate false mt-2 workspace-label" onClick={(e) => handleRedirectToWorkspace(e, todo)}>
+                    <span className={"badge ml-4 badge-light border-0"}>{todo.workspace.name}</span>
+                  </div>
+                )}
+              </div>
+              <div className="avatars-container">
+                {todo.author !== null && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />}
+                {showAssignedTo && (
+                  <>
+                    <Icon icon="chevron-right" />
+                    <Avatar
+                      name={todo.assigned_to ? todo.assigned_to.name : todo.workspace.name}
+                      tooltipName={dictionary.reminderAssignedTo}
+                      imageLink={todo.assigned_to ? todo.assigned_to.profile_image_link : todo.workspace && todo.workspace.team_channel ? todo.workspace.team_channel.icon_link : null}
+                      id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
+                      type={todo.assigned_to ? "USER" : "TOPIC"}
+                      noDefaultClick={todo.assigned_to ? false : true}
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </RightSectionWrapper>
         </div>

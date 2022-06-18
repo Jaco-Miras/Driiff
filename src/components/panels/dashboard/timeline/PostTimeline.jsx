@@ -76,13 +76,13 @@ const PostTimeline = (props) => {
 
   const handleLinkClick = (e) => {
     e.preventDefault();
-    history.push(`/workspace/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${data.id}/${replaceChar(data.title)}`);
+    history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${data.id}/${replaceChar(data.title)}`);
   };
 
   return (
     <Wrapper className={`post-timeline timeline-item ${className}`}>
       <div>
-        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_thumbnail_link ? data.user.profile_image_thumbnail_link : data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
+        <Avatar className="mr-3" name={data.user.name} imageLink={data.user.profile_image_link} id={data.user.id} showSlider={true} scrollRef={scrollRef} />
       </div>
       <div>
         <div>

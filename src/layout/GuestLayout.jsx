@@ -114,6 +114,7 @@ const GuestLayout = (props) => {
   const { setRegisteredDriff } = props;
 
   const dictionary = {
+    passwordLoginDisableLabel: _t("LOGIN.PASSWORD_LOGIN_DISABLED_LABEL", "Password Login is disabled"),
     magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),
     rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
     resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
@@ -126,8 +127,9 @@ const GuestLayout = (props) => {
     submit: _t("RESET_PASSWORD.SUBMIT", "Submit"),
     login: _t("RESET_PASSWORD.LOGIN", "Login!"),
     takeADifferentAction: _t("RESET_PASSWORD.TAKE_A_DIFFERENT_ACTION", "Take a different action."),
-    updatePassword: _t("UPDATE_PASSWORD.UPDATE_PASSWORD", "Update password"),
+    updatePassword: _t("UPDATE_PASSWORD.UPDATE_PASSWORD", "Set password"),
     register: _t("REGISTER.REGISTER", "Register"),
+    confirmPassword: _t("REGISTER.REPEAT_PASSWORD", "Confirm Password must be the same with your password."),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
     password: _t("REGISTER.PASSWORD", "Password"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
@@ -167,6 +169,8 @@ const GuestLayout = (props) => {
     welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
     setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
+    submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
+    cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);

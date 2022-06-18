@@ -11,7 +11,7 @@ import { Avatar, FileAttachments, SvgIconFeather, ToolTip } from "../common";
 import Flag from "../common/Flag";
 import { DropDocument } from "../dropzone/DropDocument";
 import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, RadioInput } from "../forms";
-import { useFileActions, useToaster, useTranslationActions } from "../hooks";
+import { useFileActions, useProfilePicUpload, useToaster, useTranslationActions } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel } from "../../redux/actions/chatActions";
 import { getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
@@ -255,6 +255,37 @@ const NestedModalWrapper = styled.div`
   input.form-control:focus {
     border-color: ${({ theme }) => theme.colors.primary};
   }
+  .image-container {
+    border-radius: 50%;
+    background: #c3c3c3;
+    position: relative;
+
+    .image-edit-icon {
+      position: absolute;
+      bottom: 8px;
+      left: 48px;
+      background: #fff;
+      padding: 2px;
+      border-radius: 50%;
+
+      :hover {
+        svg {
+          color: ${({ theme }) => theme.colors.primary};
+        }
+      }
+      .dark & {
+        svg {
+          color: #fff;
+        }
+      }
+    }
+
+    img {
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
   .react-select__control,
   .react-select__control:hover,
   .react-select__control:active,
@@ -283,6 +314,8 @@ const NestedModalWrapper = styled.div`
     border-color: ${({ theme }) => theme.colors.secondary};
   }
 `;
+
+const MAX_NAME_CHAR = 25;
 
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
@@ -389,8 +422,12 @@ const CreateEditWorkspaceModal = (props) => {
     company: "",
     language: "en",
     send_by_email: true,
+    profile_pic: null,
   });
+
   const [inactiveMembers, setInactiveMembers] = useState([]);
+
+  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage } = useProfilePicUpload();
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -442,6 +479,7 @@ const CreateEditWorkspaceModal = (props) => {
     lockedWorkspace: _t("WORKSPACE.LOCKED_WORKSPACE", "Private workspace"),
     lockedWorkspaceText: _t("WORKSPACE.LOCKED_WORKSPACE_TEXT", "Only members can view and search this workspace."),
     feedbackWorkspaceNameIsRequired: _t("FEEDBACK.WORKSPACE_NAME_IS_REQUIRED", "Workspace name is required."),
+    feedbackWorkspaceNameIsTooLong: _t("FEEDBACK.WORKSPACE_NAME_IS_TOO_LONG", `Workspace name is too long (Maximum of ${MAX_NAME_CHAR} characters only)`),
     feedbackWorkspaceNameAlreadyExists: _t("FEEDBACK.WORKSPACE_NAME_ALREADY_EXISTS", "Workspace name already exists."),
     feedbackWorkspaceDescriptionIsRequired: _t("FEEDBACK.WORKSPACE_DESCRIPTION_IS_REQUIRED", "Description is required."),
     feedbackWorkspaceTypeIsRequired: _t("FEEDBACK.WORKSPACE_TYPE_IS_REQUIRED", "Workspace type is required."),
@@ -460,9 +498,12 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
     emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
     invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
-    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (#::email::#). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
+    newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (::email::). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
       email: invitedExternal.email,
     }),
+    newExternalInfo1: _t("WORKSPACE.NEW_EXTERNAL_INFO_1", "You are adding a new external user"),
+    newExternalInfo2: _t("WORKSPACE.NEW_EXTERNAL_INFO_2", "You can add extra information to this account if you like. The account can verify or change this info during his first login."),
+
     newExternalUser: _t("WORKSPACE.NEW_EXTERNAL_USER", "New external user"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
@@ -484,6 +525,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceIsUnarchived: _t("TOASTER.WORKSPACE_IS_UNARCHIVED", "workpace is un-archived"),
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
     disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
+    uploadProfilePic: _t("BUTTON.UPLOAD_PROFILE_PIC", "Upload Profile Picture"),
   };
 
   const _validateName = useCallback(() => {
@@ -491,6 +533,17 @@ const CreateEditWorkspaceModal = (props) => {
       setFeedback((prevState) => ({
         ...prevState,
         name: dictionary.feedbackWorkspaceNameIsRequired,
+      }));
+      setValid((prevState) => ({
+        ...prevState,
+        name: false,
+      }));
+      return false;
+    }
+    if (form.name.length > MAX_NAME_CHAR) {
+      setFeedback((prevState) => ({
+        ...prevState,
+        name: dictionary.feedbackWorkspaceNameIsTooLong,
       }));
       setValid((prevState) => ({
         ...prevState,
@@ -1005,6 +1058,22 @@ const CreateEditWorkspaceModal = (props) => {
           }
 
           if (res.data) {
+            const _externalUsers = res.data.members.reduce((acc, c) => {
+              const found = invitedExternals.find((ex) => ex.email === c.email);
+              if (found) {
+                acc.push({ ...c, profile_image_link: URL.createObjectURL(found.profile_pic), profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic), profile_pic: found.profile_pic });
+              }
+              return acc;
+            }, []);
+            batchEditUploadExternalUserProfilePic(_externalUsers);
+
+            const updatedMembers = res.data.members.map((member) => {
+              const found = _externalUsers.find((ex) => ex.id === member.id);
+              return found ? found : member;
+            });
+
+            updateMembers(updatedMembers, res.data.id);
+
             const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
             if (sendByMyselfEmail) {
               const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
@@ -1032,9 +1101,9 @@ const CreateEditWorkspaceModal = (props) => {
             );
           }
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 
@@ -1117,13 +1186,29 @@ const CreateEditWorkspaceModal = (props) => {
 
             if (res) {
               //redirect url
+              const _externalUsers = res.data.members.reduce((acc, c) => {
+                const found = invitedExternals.find((ex) => ex.email === c.email);
+                if (found) {
+                  acc.push({ ...c, profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic), profile_pic: found.profile_pic });
+                }
+                return acc;
+              }, []);
+              batchUploadExternalUserProfilePic(_externalUsers);
+
+              const updatedMembers = res.data.members.map((member) => {
+                const found = _externalUsers.find((ex) => ex.id === member.id);
+                return found ? found : member;
+              });
+
+              updateMembers(updatedMembers, res.data.id);
+
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: form.selectedFolder.value,
                   workspace_id: res.data.id,
                 });
               } else {
-                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/hub/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: null,
                   workspace_id: res.data.id,
                 });
@@ -1158,7 +1243,7 @@ const CreateEditWorkspaceModal = (props) => {
                 workspace_id: res.data.workspace ? res.data.workspace.id : null,
                 folder_name: res.data.workspace ? res.data.workspace.name : null,
                 member_ids: res.data.member_ids,
-                members: res.data.members,
+                members: updatedMembers,
                 is_active: true,
                 channel: {
                   code: res.data.channel.code,
@@ -1748,267 +1833,290 @@ const CreateEditWorkspaceModal = (props) => {
     );
   }, [Object.values(folders).length]);
 
+  useEffect(() => {
+    setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
+  }, [currentProfilePic]);
+
   return (
-    <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
-      <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
-      <ModalBody onDragOver={handleShowDropzone}>
-        <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
-          <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
-          <ModalBody>
-            <NestedModalWrapper>
-              <Label className={"modal-info mb-3"}>{dictionary.newExternalInfo}</Label>
-              <Label className={"modal-label"}>{dictionary.firstName}</Label>
-              <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
-              <Label className={"modal-label"}>{dictionary.middleName}</Label>
-              <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
-              <Label className={"modal-label"}>{dictionary.lastName}</Label>
-              <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
-              <Label className={"modal-label"}>{dictionary.companyName}</Label>
-              <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
-              <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
-              <Select
-                styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme}
-                className={"react-select-container"}
-                classNamePrefix="react-select"
-                value={languageOptions.find((o) => o.value === invitedExternal.language)}
-                onChange={handleLanguageChange}
-                options={languageOptions}
-              />
-              <RadioInputWrapper className="mt-3">
-                <RadioInput
-                  readOnly
-                  onClick={(e) => {
-                    handleSetSignupLink(e, "myself");
-                  }}
-                  checked={!invitedExternal.send_by_email}
-                  value={"myself"}
-                  name={"myself"}
-                >
-                  {dictionary.sendMyself}
-                </RadioInput>
-                <RadioInput
-                  readOnly
-                  onClick={(e) => {
-                    handleSetSignupLink(e, "driff");
-                  }}
-                  checked={invitedExternal.send_by_email}
-                  value={"driff"}
-                  name={"driff"}
-                >
-                  {dictionary.sendTruDriff}
-                </RadioInput>
-              </RadioInputWrapper>
-            </NestedModalWrapper>
-          </ModalBody>
-          <ModalFooter>
-            <NestedModalWrapper>
-              <Button className="btn-outline-secondary" onClick={toggleNested}>
-                {dictionary.cancel}
-              </Button>
-              <Button color="primary" onClick={handleSaveExternalFields}>
-                {dictionary.save}
-              </Button>
-            </NestedModalWrapper>
-          </ModalFooter>
-        </Modal>
-        <DropDocument
-          hide={!showDropzone}
-          ref={refs.dropZone}
-          onDragLeave={handleHideDropzone}
-          onDrop={({ acceptedFiles }) => {
-            dropAction(acceptedFiles);
-          }}
-          onCancel={handleHideDropzone}
-          attachedFiles={attachedFiles}
-        />
-        <WrapperDiv className={"modal-input mt-0"}>
-          <div>
-            <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label>
-            <div className="d-flex justify-content-start align-items-center">
-              <div className="icon-wrapper" onClick={handleWorkspaceIconClick}>
-                <DropDocument
-                  acceptType="imageOnly"
-                  hide={!showIconDropzone}
-                  ref={refs.iconDropZone}
-                  onDragLeave={handleHideIconDropzone}
-                  onDrop={({ acceptedFiles }) => {
-                    dropIconAction(acceptedFiles);
-                  }}
-                  onCancel={handleHideIconDropzone}
+    <>
+      {renderDropDocumentGuest()}
+      <Modal innerRef={refs.container} isOpen={modal} toggle={toggle} centered size="lg" onOpened={onOpened}>
+        <ModalHeaderSection toggle={toggle}>{mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}</ModalHeaderSection>
+        <ModalBody onDragOver={handleShowDropzone}>
+          <Modal isOpen={showNestedModal} toggle={toggleNested} centered onOpened={onOpenedNested}>
+            <ModalHeaderSection toggle={toggleNested}>{dictionary.newExternalUser}</ModalHeaderSection>
+            <ModalBody>
+              <NestedModalWrapper className="mt-2">
+                <span className="modal-info">{dictionary.newExternalInfo1}</span>
+                <strong>({invitedExternal.email}).</strong>
+                <span className={"modal-info"}>{dictionary.newExternalInfo2}</span>
+                <div className="d-flex justify-content-center mt-2 mb-2">
+                  <div className="image-container">
+                    <img src={previewImage} height={64} width={64} />
+                    <span className="btn image-edit-icon" onClick={() => guestUploadModal()}>
+                      <SvgIconFeather icon="pencil" />
+                    </span>
+                  </div>
+                </div>
+              </NestedModalWrapper>
+              <NestedModalWrapper>
+                <Label className={"modal-label"}>{dictionary.firstName}</Label>
+                <Input className="mb-2" name="first_name" value={invitedExternal.first_name} onChange={handleExternalFieldChange} autoFocus innerRef={refs.first_name} />
+                <Label className={"modal-label"}>{dictionary.middleName}</Label>
+                <Input className="mb-2" name="middle_name" value={invitedExternal.middle_name} onChange={handleExternalFieldChange} />
+                <Label className={"modal-label"}>{dictionary.lastName}</Label>
+                <Input className="mb-2" name="last_name" value={invitedExternal.last_name} onChange={handleExternalFieldChange} />
+                <Label className={"modal-label"}>{dictionary.companyName}</Label>
+                <Input className="mb-2" name="company" value={invitedExternal.company} onChange={handleExternalFieldChange} />
+                <Label className={"modal-label"}>{dictionary.languageLabel}</Label>
+                <Select
+                  styles={userSettings.GENERAL_SETTINGS.dark_mode === "1" ? darkTheme : lightTheme}
+                  className={"react-select-container"}
+                  classNamePrefix="react-select"
+                  value={languageOptions.find((o) => o.value === invitedExternal.language)}
+                  onChange={handleLanguageChange}
+                  options={languageOptions}
                 />
-                {<Avatar imageLink={form.icon_link} name={form.name} noDefaultClick={true} forceThumbnail={false} />}
-                <span className="btn btn-outline-light btn-sm">
-                  <SvgIconFeather icon="pencil" />
-                </span>
-              </div>
-              <div className="name-wrapper">
-                <Label className={"modal-label"} for="chat">
-                  {dictionary.workspaceName}
-                </Label>
-                <Input
-                  name="name"
-                  defaultValue={mode === "edit" ? item.name : ""}
-                  onFocus={handleNameFocus}
-                  onChange={handleNameChange}
-                  onBlur={handleNameBlur}
-                  valid={valid.name}
-                  invalid={valid.name !== null && !valid.name}
-                  innerRef={refs.workspace_name}
-                />
-                <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+                <RadioInputWrapper className="mt-3">
+                  <RadioInput
+                    readOnly
+                    onClick={(e) => {
+                      handleSetSignupLink(e, "myself");
+                    }}
+                    checked={!invitedExternal.send_by_email}
+                    value={"myself"}
+                    name={"myself"}
+                  >
+                    {dictionary.sendMyself}
+                  </RadioInput>
+                  <RadioInput
+                    readOnly
+                    onClick={(e) => {
+                      handleSetSignupLink(e, "driff");
+                    }}
+                    checked={invitedExternal.send_by_email}
+                    value={"driff"}
+                    name={"driff"}
+                  >
+                    {dictionary.sendTruDriff}
+                  </RadioInput>
+                </RadioInputWrapper>
+              </NestedModalWrapper>
+            </ModalBody>
+            <ModalFooter>
+              <NestedModalWrapper>
+                <button className="btn btn-link text-dark" onClick={toggleNested}>
+                  {dictionary.cancel}
+                </button>
+                <Button color="primary" onClick={handleSaveExternalFields}>
+                  {dictionary.save}
+                </Button>
+              </NestedModalWrapper>
+            </ModalFooter>
+          </Modal>
+          <DropDocument
+            hide={!showDropzone}
+            ref={refs.dropZone}
+            onDragLeave={handleHideDropzone}
+            onDrop={({ acceptedFiles }) => {
+              dropAction(acceptedFiles);
+            }}
+            onCancel={handleHideDropzone}
+            attachedFiles={attachedFiles}
+          />
+          <WrapperDiv className={"modal-input mt-0"}>
+            <div>
+              <Label className={"modal-info pb-3 pt-3"}>{dictionary.workspaceInfo}</Label>
+              <div className="d-flex justify-content-start align-items-center">
+                <div className="icon-wrapper" onClick={handleWorkspaceIconClick}>
+                  <DropDocument
+                    acceptType="imageOnly"
+                    hide={!showIconDropzone}
+                    ref={refs.iconDropZone}
+                    onDragLeave={handleHideIconDropzone}
+                    onDrop={({ acceptedFiles }) => {
+                      dropIconAction(acceptedFiles);
+                    }}
+                    onCancel={handleHideIconDropzone}
+                  />
+                  {<Avatar imageLink={form.icon_link} name={form.name} noDefaultClick={true} forceThumbnail={false} />}
+                  <span className="btn btn-outline-light btn-sm">
+                    <SvgIconFeather icon="pencil" />
+                  </span>
+                </div>
+                <div className="name-wrapper">
+                  <Label className={"modal-label"} for="chat">
+                    {dictionary.workspaceName}
+                  </Label>
+                  <Input
+                    name="name"
+                    defaultValue={mode === "edit" ? item.name : ""}
+                    onFocus={handleNameFocus}
+                    onChange={handleNameChange}
+                    onBlur={handleNameBlur}
+                    valid={valid.name}
+                    invalid={valid.name !== null && !valid.name}
+                    innerRef={refs.workspace_name}
+                  />
+                  <InputFeedback valid={valid.name}>{feedback.name}</InputFeedback>
+                </div>
               </div>
             </div>
-          </div>
-        </WrapperDiv>
-        <WrapperDiv className={"modal-input checkboxes"} hasGuestAccess={hasGuestAccess}>
-          <div>
-            <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
-              {dictionary.addToFolder}
-            </CheckBox>
-          </div>
-          <div>
-            <CheckBox className="add-guest-checkbox" type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
-              {dictionary.workspaceWithExternals}
-            </CheckBox>
-          </div>
-          <div style={{ position: "relative" }}>
-            <ToolTip
-              content={
-                hasGuestAccess ? (
-                  <div>
-                    {dictionary.workspaceWithExternalsInfo1}
-                    <br />
-                    {dictionary.workspaceWithExternalsInfo2}
-                  </div>
-                ) : (
-                  dictionary.disabledWorkspaceExternalsInfo
-                )
-              }
-            >
-              <SvgIconFeather icon="info" width="16" height="16" />
-            </ToolTip>
-          </div>
-        </WrapperDiv>
-        {form.has_folder === true && (
+          </WrapperDiv>
+          <WrapperDiv className={"modal-input checkboxes"} hasGuestAccess={hasGuestAccess}>
+            <div>
+              <CheckBox type="success" name="has_folder" checked={form.has_folder} onClick={toggleCheck}>
+                {dictionary.addToFolder}
+              </CheckBox>
+            </div>
+            <div>
+              <CheckBox className="add-guest-checkbox" type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
+                {dictionary.workspaceWithExternals}
+              </CheckBox>
+            </div>
+            <div style={{ position: "relative" }}>
+              <ToolTip
+                content={
+                  hasGuestAccess ? (
+                    <div>
+                      {dictionary.workspaceWithExternalsInfo1}
+                      <br />
+                      {dictionary.workspaceWithExternalsInfo2}
+                    </div>
+                  ) : (
+                    dictionary.disabledWorkspaceExternalsInfo
+                  )
+                }
+              >
+                <SvgIconFeather icon="info" width="16" height="16" />
+              </ToolTip>
+            </div>
+          </WrapperDiv>
+          {form.has_folder === true && (
+            <WrapperDiv className={"modal-input"}>
+              <LabelWrapper className="mb-1">
+                <Label for="people">{dictionary.folder}</Label>
+                <ToolTip content={dictionary.folderTooltip}>
+                  <SvgIconFeather icon="info" width="16" height="16" />
+                </ToolTip>
+              </LabelWrapper>
+              <SelectFolder
+                creatable={true}
+                defaultOptions={folderOptions}
+                value={form.selectedFolder}
+                onChange={handleSelectFolder}
+                isMulti={false}
+                isClearable={true}
+                inputValue={folderInput}
+                isValidNewOption={handleFolderValidation}
+                onCreateOption={handleCreateFolderOption}
+                onInputChange={handleFolderInputChange}
+                formatCreateLabel={formatCreateLabel}
+                loadOptions={promiseOptions}
+                isSearchable
+              />
+              <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
+            </WrapperDiv>
+          )}
           <WrapperDiv className={"modal-input"}>
             <LabelWrapper className="mb-1">
-              <Label for="people">{dictionary.folder}</Label>
-              <ToolTip content={dictionary.folderTooltip}>
+              <Label for="people">{dictionary.team}</Label>
+              <ToolTip content={dictionary.teamMembersTooltip}>
                 <SvgIconFeather icon="info" width="16" height="16" />
               </ToolTip>
             </LabelWrapper>
-            <SelectFolder
-              creatable={true}
-              defaultOptions={folderOptions}
-              value={form.selectedFolder}
-              onChange={handleSelectFolder}
-              isMulti={false}
-              isClearable={true}
-              inputValue={folderInput}
-              isValidNewOption={handleFolderValidation}
-              onCreateOption={handleCreateFolderOption}
-              onInputChange={handleFolderInputChange}
-              formatCreateLabel={formatCreateLabel}
-              loadOptions={promiseOptions}
-              isSearchable
-            />
-            <InputFeedback valid={valid.has_folder}>{feedback.has_folder}</InputFeedback>
+            <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
+            <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
           </WrapperDiv>
-        )}
-        <WrapperDiv className={"modal-input"}>
-          <LabelWrapper className="mb-1">
-            <Label for="people">{dictionary.team}</Label>
-            <ToolTip content={dictionary.teamMembersTooltip}>
-              <SvgIconFeather icon="info" width="16" height="16" />
-            </ToolTip>
-          </LabelWrapper>
-          <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
-          <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
-        </WrapperDiv>
-        {form.has_externals === true && (
-          <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
-            <LabelWrapper className="mb-1">
-              <Label for="people">{dictionary.externalGuest}</Label>
-              <ToolTip content={hasGuestAccess ? dictionary.guestTooltip : dictionary.disabledWorkspaceExternalsInfo}>
-                <SvgIconFeather icon="info" width="16" height="16" />
-              </ToolTip>
-            </LabelWrapper>
-            <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
-            <SelectPeople
-              creatable={true}
-              options={externalUserOptions}
-              value={form.selectedExternals}
-              inputValue={externalInput}
-              isValidNewOption={handleExternalValidation}
-              onCreateOption={handleCreateOption}
-              onChange={handleSelectExternalUser}
-              onInputChange={handleExternalInputChange}
-              filterOption={filterOptions}
-              formatCreateLabel={formatCreateLabel}
-              isSearchable
-              onMenuClose={handleMenuClose}
-              onEmailClick={handleEmailClick}
-              isDisabled={!hasGuestAccess}
-            />
-          </WrapperDiv>
-        )}
-        <StyledDescriptionInput
-          className="modal-description"
-          height={window.innerHeight - 660}
-          required
-          showFileButton={true}
-          onChange={handleQuillChange}
-          onOpenFileDialog={handleOpenFileDialog}
-          defaultValue={mode === "edit" && item ? item.description : ""}
-          mode={mode}
-          valid={valid.description}
-          feedback={feedback.description}
-          //disableMention={mode !== "edit"}
-          disableBodyMention={true}
-          modal={"workspace"}
-          mentionedUserIds={mentionedUserIds}
-          onAddUsers={handleAddMentionedUsers}
-          onDoNothing={handleIgnoreMentionedUsers}
-          setInlineImages={setInlineImages}
-        />
-        {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
-          <WrapperDiv className="file-attachment-wrapper">
-            <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
-          </WrapperDiv>
-        )}
-        <WrapperDiv className="action-wrapper">
-          <RadioInputWrapper className="workspace-radio-input">
-            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
-              {dictionary.lockWorkspace}
-            </RadioInput>
-            <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
-              {dictionary.publicWorkspace}
-            </RadioInput>
-          </RadioInputWrapper>
-          <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
-          <div className={"lock-workspace-text-container pb-3"}>
-            <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
-          </div>
-          <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
-            {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
-            {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
-          </button>
-          {mode === "edit" && (
-            <div className="action-archive-wrapper">
-              {item.active === 1 ? (
-                <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
-                  {dictionary.archiveThisWorkspace}
-                </span>
-              ) : (
-                <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
-                  {dictionary.unArchiveThisWorkspace}
-                </span>
-              )}
-            </div>
+          {form.has_externals === true && (
+            <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
+              <LabelWrapper className="mb-1">
+                <Label for="people">{dictionary.externalGuest}</Label>
+                <ToolTip content={hasGuestAccess ? dictionary.guestTooltip : dictionary.disabledWorkspaceExternalsInfo}>
+                  <SvgIconFeather icon="info" width="16" height="16" />
+                </ToolTip>
+              </LabelWrapper>
+              <InputFeedback valid={valid.external}>{feedback.external}</InputFeedback>
+              <SelectPeople
+                creatable={true}
+                options={externalUserOptions}
+                value={form.selectedExternals}
+                inputValue={externalInput}
+                isValidNewOption={handleExternalValidation}
+                onCreateOption={handleCreateOption}
+                onChange={handleSelectExternalUser}
+                onInputChange={handleExternalInputChange}
+                filterOption={filterOptions}
+                formatCreateLabel={formatCreateLabel}
+                isSearchable
+                onMenuClose={handleMenuClose}
+                onEmailClick={handleEmailClick}
+                isDisabled={!hasGuestAccess}
+              />
+            </WrapperDiv>
           )}
-        </WrapperDiv>
-      </ModalBody>
-    </Modal>
+          <StyledDescriptionInput
+            className="modal-description"
+            height={window.innerHeight - 660}
+            required
+            showFileButton={true}
+            onChange={handleQuillChange}
+            onOpenFileDialog={handleOpenFileDialog}
+            defaultValue={mode === "edit" && item ? item.description : ""}
+            mode={mode}
+            valid={valid.description}
+            feedback={feedback.description}
+            //disableMention={mode !== "edit"}
+            disableBodyMention={true}
+            modal={"workspace"}
+            mentionedUserIds={mentionedUserIds}
+            onAddUsers={handleAddMentionedUsers}
+            onDoNothing={handleIgnoreMentionedUsers}
+            setInlineImages={setInlineImages}
+          />
+          {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
+            <WrapperDiv className="file-attachment-wrapper">
+              <FileAttachments attachedFiles={[...attachedFiles, ...uploadedFiles]} handleRemoveFile={handleRemoveFile} />
+            </WrapperDiv>
+          )}
+          <WrapperDiv className="action-wrapper">
+            <RadioInputWrapper className="workspace-radio-input">
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
+                {dictionary.lockWorkspace}
+              </RadioInput>
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
+                {dictionary.publicWorkspace}
+              </RadioInput>
+            </RadioInputWrapper>
+            <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
+            <div className={"lock-workspace-text-container pb-3"}>
+              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+            </div>
+            <button
+              className="btn btn-primary"
+              onClick={handleConfirm}
+              disabled={form.name.trim() === "" || form.name.trim().length > MAX_NAME_CHAR || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}
+            >
+              {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
+              {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}
+            </button>
+            {mode === "edit" && (
+              <div className="action-archive-wrapper">
+                {item.active === 1 ? (
+                  <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
+                    {dictionary.archiveThisWorkspace}
+                  </span>
+                ) : (
+                  <span onClick={handleShowArchiveConfirmation} className="btn-archive text-link mt-2 cursor-pointer">
+                    {dictionary.unArchiveThisWorkspace}
+                  </span>
+                )}
+              </div>
+            )}
+          </WrapperDiv>
+        </ModalBody>
+      </Modal>
+    </>
   );
 };
 

@@ -236,3 +236,29 @@ export function getAllWorkspaces(payload) {
     data: payload,
   });
 }
+
+export function getMeetingSettings(payload) {
+  return apiCall({
+    method: "GET",
+    url: "/v2/meeting-settings",
+    data: payload,
+  });
+}
+
+export function putMeetingSettings(payload) {
+  return apiCall({
+    method: "PUT",
+    url: "/v2/meeting-settings",
+    data: payload,
+  });
+}
+
+export function uploadFavicon(payload) {
+  let url = "/v2/favicon-upload";
+  return apiCall({
+    method: "POST",
+    url: url,
+    data: payload,
+    hasFile: true,
+  });
+}

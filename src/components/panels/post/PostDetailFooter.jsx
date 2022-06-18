@@ -81,6 +81,12 @@ const ChatInputContainer = styled.div`
 const IconButton = styled(SvgIconFeather)``;
 
 const Dflex = styled.div`
+  #btn-disagree {
+    &:hover {
+      background: ${(props) => props.theme.colors.primary};
+      border-color: ${(props) => props.theme.colors.primary};
+    }
+  }
   .feather-send {
     background: ${(props) => props.backgroundSend} !important;
     fill: ${(props) => props.fillSend};
@@ -414,6 +420,10 @@ const PostDetailFooter = (props) => {
 
   const toggleApprover = () => {
     setShowApprover((prevState) => !prevState);
+    setApproving({
+      ...approving,
+      change: false,
+    });
   };
 
   // const privateWsOnly = post.recipients.filter((r) => {
@@ -571,9 +581,7 @@ const PostDetailFooter = (props) => {
       tag: null,
     };
     const path =
-      workspace.folder_name && workspace.folder_id
-        ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-        : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+      workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
     dispatch(updateWorkspacePostFilterSort(payload));
     history.push(path);
     console.log("go back to inbox");
@@ -593,9 +601,7 @@ const PostDetailFooter = (props) => {
         goBackToInbox();
       } else {
         const path =
-          workspace.folder_name && workspace.folder_id
-            ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-            : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+          workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
         postActions.openPost(nextUnreadPosts, path);
       }
     });
@@ -779,6 +785,7 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
+                hasPostAccess={prioMentionIds.some((id) => id === user.id)}
               />
             </ChatInputContainer>
 
@@ -794,7 +801,7 @@ const PostDetailFooter = (props) => {
       {((hasPendingAproval && isApprover && !approving.change) || (isMultipleApprovers && isApprover && !hasAnswered)) && (
         <Dflex>
           <div className="d-flex align-items-center justify-content-center mt-3">
-            <button className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
+            <button id="btn-disagree" className="btn btn-outline-primary mr-3" onClick={handleRequestChange}>
               {dictionary.disagree} {approving.change && <span className="spinner-border spinner-border-sm ml-2" role="status" aria-hidden="true" />}
             </button>
             <Suspense fallback={<></>}>

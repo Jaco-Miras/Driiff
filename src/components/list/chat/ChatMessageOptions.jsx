@@ -90,8 +90,8 @@ const ChatMessageOptions = (props) => {
           let pathname = match.url;
           if (match.path === "/chat/:code") {
             history.push(`/chat/${teamChannelId.code}`);
-          } else if (match.path.startsWith("/workspace/chat")) {
-            history.push(pathname.replace("/workspace/chat", "/workspace/team-chat"));
+          } else if (match.path.startsWith("/hub/chat")) {
+            history.push(pathname.replace("/hub/chat", "/hub/team-chat"));
           }
         }
         setRedirecting(false);
@@ -127,7 +127,7 @@ const ChatMessageOptions = (props) => {
       }
       var a = document.createElement("a");
       a.href = files[i].download_link;
-      a.target = "_parent";
+      a.target = "_blank";
       // Use a.download if available, it prevents plugins from opening.
       if ("download" in a) {
         a.download = files[i].filename;

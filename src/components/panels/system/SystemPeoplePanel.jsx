@@ -97,6 +97,7 @@ const SystemPeoplePanel = (props) => {
     btnInviteUsers: _t("BUTTON.INVITE_USERS", "Invite users"),
     resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
     showInvited: _t("PEOPLE.SHOW_INVITED", "Show invited"),
+    showGuest: _t("PEOPLE.GUEST_ACCOUNTS", "Guest accounts"),
     removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
     sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
     deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
@@ -116,6 +117,11 @@ const SystemPeoplePanel = (props) => {
     guestAccounts: _t("CHART.GUEST_ACCOUNTS", "Guest accounts"),
     totalAccounts: _t("LABEL.TOTAL_ACCOUNTS", "Total accounts"),
     thisIsAnAdminAccount: _t("TOOLTIP.THIS_IS_AN_ADMIN_ACCOUNT", "This is an administrator account"),
+    guestBadge: _t("BADGE.GUEST", "Guest"),
+    invitedGuestBadge: _t("BADGE.INVITED_GUEST", "Invited Guest"),
+    connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
+    phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
+    messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
   };
 
   const toaster = useToaster();
@@ -317,7 +323,7 @@ const SystemPeoplePanel = (props) => {
                 />
               </div>
             )}
-            path={["/system/people"]}
+            path={["/system/people/all/online", "/system/people/all", "/system/people/invited", "/system/people/inactive", "/system/people/guest"]}
           />
         </Switch>
       </div>

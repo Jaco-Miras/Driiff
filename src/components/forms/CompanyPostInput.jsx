@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PostInputMention from "../common/PostInputMention";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -148,6 +148,8 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const [mentionUsers, setMentionUsers] = useState([]);
   const [mentionUsersPayload, setMentionUsersPayload] = useState({});
 
+  const { enlargeEmoji } = useEnlargeEmoticons();
+
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -217,7 +219,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
 
     let payload = {
       post_id: post.id,
-      body: text,
+      body: enlargeEmoji(text),
       mention_ids: mention_ids,
       //mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
@@ -249,7 +251,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
     if (!editMode) {
       let commentObj = {
         author: user,
-        body: text,
+        body: enlargeEmoji(text),
         clap_count: 0,
         claps: [],
         code: timestamp,
@@ -354,8 +356,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       handleClearUserMention();
       setMentionUsersPayload({});
     }
-
-    if (textOnly.trim() === "" && editMode) {
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0 && !content.includes("<img")) {
       setEditMode(false);
       setEditMessage(null);
       setMentionUsersPayload({});
@@ -364,6 +365,15 @@ const CompanyPostInput = forwardRef((props, ref) => {
         dispatch(setEditComment(null));
       }
     }
+    /* if (textOnly.trim() === "" && editMode) {
+      setEditMode(false);
+      setEditMessage(null);
+      setMentionUsersPayload({});
+      //edit message in redux
+      if (editPostComment !== null) {
+        dispatch(setEditComment(null));
+      }
+    } */
 
     if (textOnly.trim() === "" && draftId) {
       removeDraft(draftId);

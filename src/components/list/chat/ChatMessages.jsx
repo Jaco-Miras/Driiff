@@ -4,7 +4,7 @@ import { InView } from "react-intersection-observer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Loader, SvgEmptyState } from "../../common";
+import { Avatar, Loader, SvgEmptyState, SvgIconFeather } from "../../common";
 import ChatBubble from "./ChatBubble";
 import ChatMessageOptions from "./ChatMessageOptions";
 import ChatNewMessagesLine from "./ChatNewMessageLine";
@@ -14,6 +14,8 @@ import SeenIndicator from "./SeenIndicator";
 import SystemMessage from "./SystemMessage";
 import { FindGifRegex } from "../../../helpers/stringFormatter";
 import memoizeOne from "memoize-one";
+import GoogleMeetMessage from "./GoogleMeetMessage";
+import DriffTalkMessage from "./DriffTalkMessage";
 
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
@@ -173,6 +175,16 @@ const ChatBubbleContainer = styled.div`
       display: none;
     }
   }
+  &.google-meet-message {
+    margin-left: 0;
+    margin-top: 1rem;
+    > div.chat-bubble-quote-div {
+      width: 100%;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 10px;
+    }
+  }
 `;
 const ChatActionsContainer = styled.div`
   flex-flow: ${(props) => (props.isAuthor ? "row-reverse" : "row")};
@@ -317,6 +329,7 @@ const StyledAvatar = styled(Avatar)`
 
 const EmptyState = styled.div`
   display: flex;
+  flex-direction: column;
   -webkit-box-align: center;
   align-items: center;
   position: absolute;
@@ -332,6 +345,11 @@ const EmptyState = styled.div`
   }
 `;
 
+const PersonalNoteContainer = styled.div`
+  display: flex;
+  align-self: flex-start;
+  margin-left: 3rem;
+`;
 class ChatMessages extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -357,7 +375,7 @@ class ChatMessages extends React.PureComponent {
 
   loadReplies = () => {
     const { selectedChannel, chatMessageActions } = this.props;
-    const scrollComponent = this.scrollComponent.current;
+    //const scrollComponent = this.scrollComponent.current;
     if (!selectedChannel.isFetching && selectedChannel.hasMore) {
       chatMessageActions.channelActions.fetchingMessages(selectedChannel, true);
       let payload = {
@@ -377,15 +395,17 @@ class ChatMessages extends React.PureComponent {
           return;
         }
 
-        if ((selectedChannel.replies.length === 0 || selectedChannel.skip === 0) && typeof this.props.history.location.state !== "object") {
-          scrollComponent.scrollTop = scrollComponent.scrollHeight;
-          let initialScrollHeight = scrollComponent.scrollHeight;
-          setTimeout(() => {
-            if (initialScrollHeight < scrollComponent.scrollHeight) {
-              scrollComponent.scrollTop = scrollComponent.scrollHeight;
-            }
-          }, 1000);
-        }
+        // if (selectedChannel.replies.length === 0 || selectedChannel.skip === 0) {
+        //   scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        //   let initialScrollHeight = scrollComponent.scrollHeight;
+        //   if (channelId === selectedChannel.id) {
+        //     setTimeout(() => {
+        //       if (initialScrollHeight < scrollComponent.scrollHeight) {
+        //         scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        //       }
+        //     }, 1000);
+        //   }
+        // }
       });
     }
   };
@@ -502,6 +522,14 @@ class ChatMessages extends React.PureComponent {
               }
             }
           }
+        }
+      }
+      //initial load of replies
+      if (selectedChannel && prevProps.selectedChannel.skip === 0 && selectedChannel.replies.length > 0 && selectedChannel.skip !== 0) {
+        scrollComponent.scrollTop = scrollComponent.scrollHeight;
+        let initialScrollHeight = scrollComponent.scrollHeight;
+        if (initialScrollHeight < scrollComponent.scrollHeight) {
+          scrollComponent.scrollTop = scrollComponent.scrollHeight;
         }
       }
     }
@@ -623,6 +651,9 @@ class ChatMessages extends React.PureComponent {
   gMessages = memoizeOne((replies) =>
     Object.entries(
       replies
+        .filter((r) => {
+          return r.channel_id === this.props.selectedChannel.id;
+        })
         .sort((a, b) => {
           if (a.created_at.timestamp - b.created_at.timestamp === 0) {
             return a.id - b.id;
@@ -667,7 +698,6 @@ class ChatMessages extends React.PureComponent {
     //console.log(this.renderCount.current++);
 
     const groupedMessages = this.gMessages(this.props.selectedChannel.replies);
-
     return (
       <ChatReplyContainer ref={this.scrollComponent} id={"component-chat-thread"} className={`component-chat-thread messages ${this.props.className}`} tabIndex="2">
         {this.props.selectedChannel.isFetching && this.props.selectedChannel.hasMore && this.props.selectedChannel.replies.length === 0 && this.props.selectedChannel.skip === 0 && (
@@ -685,7 +715,7 @@ class ChatMessages extends React.PureComponent {
             {this.props.selectedChannel.replies && this.props.selectedChannel.replies.length
               ? groupedMessages.map((gm, i) => {
                   return (
-                    <div key={`${gm[0]}`}>
+                    <div key={`${this.props.selectedChannel.code + gm[0]}`}>
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm[1].map((reply, k, e) => {
@@ -744,7 +774,7 @@ class ChatMessages extends React.PureComponent {
                           isBot = botCodes.includes(reply.user.code);
                         }
                         return (
-                          <ChatList key={reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
+                          <ChatList key={this.props.selectedChannel.code + reply.id} className={`chat-list chat-list-item-${reply.id} code-${reply.code}`} showTimestamp={showTimestamp} isLastChat={reply.isLastChat}>
                             {reply.user && showMessageLine && this.props.unreadCount > 0 && <ChatNewMessagesLine />}
                             {reply.user && (
                               <ChatBubbleContainer
@@ -806,7 +836,8 @@ class ChatMessages extends React.PureComponent {
                                     isForwardedMessage={reply.is_transferred}
                                     id={reply.user.id}
                                     type="USER"
-                                    imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
+                                    imageLink={reply.user.profile_image_link}
+                                    // imageLink={reply.user.profile_image_thumbnail_link ? reply.user.profile_image_thumbnail_link : reply.user.profile_image_link}
                                     name={reply.user.name}
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
@@ -815,7 +846,7 @@ class ChatMessages extends React.PureComponent {
                                 )}
                               </ChatBubbleContainer>
                             )}
-                            {reply.user === null && (
+                            {reply.user === null && !reply.body.startsWith("GOOGLE_MEETING::") && !reply.body.startsWith("DRIFF_TALK::") && !reply.body.startsWith("MEETING_ENDED::") && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id}`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <SystemMessageContainer className="system-message" isAuthor={false}>
@@ -858,6 +889,20 @@ class ChatMessages extends React.PureComponent {
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
+                            {reply.user === null && reply.body.startsWith("GOOGLE_MEETING::") && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <GoogleMeetMessage reply={reply} timeFormat={this.props.timeFormat} />
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
+                            {reply.user === null && (reply.body.startsWith("DRIFF_TALK::") || reply.body.startsWith("MEETING_ENDED::")) && (
+                              <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
+                                <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
+                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
+                                </ChatBubbleQuoteDiv>
+                              </ChatBubbleContainer>
+                            )}
                           </ChatList>
                         );
                       })}
@@ -866,9 +911,22 @@ class ChatMessages extends React.PureComponent {
                 })
               : null}
             {!this.props.selectedChannel.isFetching && this.props.selectedChannel.replies && this.props.selectedChannel.replies.length < 1 && (
-              <EmptyState className="no-reply-container">
-                <SvgEmptyState icon={3} />
-              </EmptyState>
+              <>
+                <EmptyState className="no-reply-container">
+                  <SvgEmptyState icon={3} />
+                  {this.props.selectedChannel.type === "PERSONAL_BOT" && (
+                    <PersonalNoteContainer>
+                      <div>
+                        <SvgIconFeather icon="message_slack_alike" />
+                      </div>
+                      <div>
+                        <h5>{this.props.dictionary.personalNoteHeaderText}</h5>
+                        <p>{this.props.dictionary.personalNoteDescription}</p>
+                      </div>
+                    </PersonalNoteContainer>
+                  )}
+                </EmptyState>
+              </>
             )}
           </ul>
         </InfiniteScroll>

@@ -34,6 +34,9 @@ import {
   getAllWorkspaceFolders as getAllWorkspaceFoldersService,
   getExistingFolder as getExistingFolderService,
   putWorkspaceNotification as putWorkspaceNotificationService,
+  getWorkspaceQuickLinks as getWorkspaceQuickLinksService,
+  putWorkspaceQuickLinks as putWorkspaceQuickLinksService,
+  getRelatedWorkspace as getRelatedWorkspaceService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -306,4 +309,33 @@ export function setUnreadPostIds(payload, callback) {
 
 export function setPostIsSelected(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SELECTED_POST", payload, callback);
+}
+
+export function getWorkspaceQuickLinks(payload, callback) {
+  return dispatchActionToReducer(getWorkspaceQuickLinksService(payload), "GET_WORKSPACE_QUICKLINKS_START", "GET_WORKSPACE_QUICKLINKS_SUCCESS", "GET_WORKSPACE_QUICKLINKS_FAIL", callback);
+}
+
+export function putWorkspaceQuickLinks(payload, callback) {
+  return dispatchActionToReducer(putWorkspaceQuickLinksService(payload), "PUT_WORKSPACE_QUICKLINKS_START", "PUT_WORKSPACE_QUICKLINKS_SUCCESS", "PUT_WORKSPACE_QUICKLINKS_FAIL", callback);
+}
+
+export function incomingUpdatedWorkspaceQuickLinks(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_UPDATED_WORKSPACE_QUICK_LINKS", payload, callback);
+}
+
+export function getRelatedWorkspace(payload, callback) {
+  return dispatchActionToReducer(getRelatedWorkspaceService(payload), "GET_RELATED_WORKSPACE_START", "GET_RELATED_WORKSPACE_SUCCESS", "GET_RELATED_WORKSPACE_FAIL", callback);
+}
+export function clearRelatedWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_RELATED_WORKSPACE", payload, callback);
+}
+export function addWorkspaceToFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_WORKSPACE_TO_FOLDER", payload, callback);
+}
+export function removeWorkspaceFromFolder(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE_FROM_FOLDER", payload, callback);
+}
+
+export function updateWorkspaceMember(payload, callback) {
+  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_MEMBERS", payload, callback);
 }

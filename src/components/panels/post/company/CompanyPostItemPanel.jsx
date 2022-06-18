@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
+import { PostCheckBox } from "../../../forms";
+import { useTimeFormat } from "../../../hooks";
 import { MoreOptions } from "../../common";
 import { PostBadge, PostRecipients } from "../index";
-import { useTimeFormat } from "../../../hooks";
-import { PostCheckBox } from "../../../forms";
 import PostApprovalLabels from "../PostApprovalLabels";
 
 const Wrapper = styled.li`
@@ -293,13 +293,7 @@ const CompanyPostItemPanel = (props) => {
         </CheckBoxContainer>
         <PostContent onClick={() => openPost(post, "/posts")}>
           <Author className="d-flex ml-2 mr-2">
-            <Avatar
-              title={`FROM: ${post.author.name}`}
-              className="author-avatar mr-2"
-              id={post.author.id}
-              name={post.author.name}
-              imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
-            />
+            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
           </Author>
           <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
             <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>

@@ -5,6 +5,7 @@ import Avatar from "./Avatar";
 import { SvgIconFeather } from "./SvgIcon";
 //import Badge from "./Badge";
 import { useOutsideClick, useUserChannels, useTranslationActions } from "../hooks";
+import { useHistory } from "react-router-dom";
 
 const ProfileWrapper = styled.div`
   .info-details span {
@@ -20,6 +21,8 @@ const ProfileSlider = (props) => {
   const { id, onShowPopup, orientation, profile, classNames = "" } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const [loading, setLoading] = useState(false);
+
+  const history = useHistory();
 
   const inactiveUsers = useSelector((state) => state.users.archivedUsers);
   const externalUsers = useSelector((state) => state.users.externalUsers);
@@ -39,7 +42,7 @@ const ProfileSlider = (props) => {
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
-    information: _t("PROFILE.INFORMATION", "Information"),
+    // information: _t("PROFILE.INFORMATION", "Information"),
     firstName: _t("PROFILE.FIRST_NAME", "First name:"),
     middleName: _t("PROFILE.MIDDLE_NAME", "Middle name:"),
     lastName: _t("PROFILE.LAST_NAME", "Last name:"),
@@ -78,6 +81,10 @@ const ProfileSlider = (props) => {
 
   useOutsideClick(sliderRef, onShowPopup, true);
 
+  const handleWorkspaceClick = () => {
+    history.push(`/hub/search?user-id=${user.id}`);
+  };
+
   return (
     <ProfileWrapper className={`profile-slider ${classNames} ${orientation ? `${orientation.vertical} ${orientation.horizontal}` : ""}`} ref={sliderRef}>
       <SvgIconFeather onClick={handleClose} icon="x" />
@@ -85,18 +92,26 @@ const ProfileSlider = (props) => {
         {user && <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />}
         <h5>{user?.name}</h5>
         <span className="text-muted small">{user?.designation}</span>
-        {user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
-          <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
-            {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
-            <Icon icon="message-circle" loading={loading} />
-          </button>
-        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          {user.has_accepted && (
+            <button className="ml-1 btn btn-outline-light" onClick={handleWorkspaceClick}>
+              {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
+              <Icon icon="compass" loading={loading} />
+            </button>
+          )}
+          {user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
+            <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
+              {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
+              <Icon icon="message-circle" loading={loading} />
+            </button>
+          )}
+        </div>
         {user && user.type === "external" && loggedUser.type === "internal" && <span className="badge badge-info text-white mt-2">{dictionary.external}</span>}
       </div>
       <div className="information-wrapper">
-        <div className="info-x">
+        {/* <div className="info-x">
           <span>{dictionary.information}</span>
-        </div>
+        </div> */}
         <div className="d-flex">
           <div className="labels-wrapper">
             <label>{dictionary.firstName}</label>

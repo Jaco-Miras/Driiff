@@ -30,6 +30,9 @@ import {
   uploadDashboardBg as uploadDashboardBgService,
   putCompanyDescription as putCompanyDescriptionService,
   getAllWorkspaces as getAllWorkspacesService,
+  getMeetingSettings as getMeetingSettingsService,
+  putMeetingSettings as putMeetingSettingsService,
+  uploadFavicon as uploadFaviconService,
 } from "../services";
 
 export function getLoginSettings(payload, callback) {
@@ -190,4 +193,20 @@ export function updateAllWorkspacesPage(payload, callback) {
 
 export function incomingLoginSettings(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_LOGIN_SETTINGS", payload, callback);
+}
+
+export function getMeetingSettings(payload, callback) {
+  return dispatchActionToReducer(getMeetingSettingsService(payload), "GET_MEETING_SETTINGS_START", "GET_MEETING_SETTINGS_SUCCESS", "GET_MEETING_SETTINGS_FAILURE", callback);
+}
+
+export function putMeetingSettings(payload, callback) {
+  return dispatchActionToReducer(putMeetingSettingsService(payload), "PUT_MEETING_SETTINGS_START", "PUT_MEETING_SETTINGS_SUCCESS", "PUT_MEETING_SETTINGS_FAILURE", callback);
+}
+
+export function incomingMeetingSettings(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_MEETING_SETTINGS", payload, callback);
+}
+
+export function uploadFavicon(payload, callback) {
+  return dispatchActionToReducer(uploadFaviconService(payload), "UPLOAD_FAVICON_START", "UPLOAD_FAVICON_SUCCESS", "UPLOAD_FAVICON_FAILURE", callback);
 }

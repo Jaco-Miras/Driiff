@@ -7,11 +7,8 @@ import { updateThemeColors } from "../../../redux/actions/settingsActions";
 import { putLoginSettings } from "../../../redux/actions/adminActions";
 import { BlockPicker } from "react-color";
 import { CustomInput } from "reactstrap";
-import Select from "react-select";
-import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import colorWheel from "../../../assets/img/svgs/RGB_color_wheel_12.svg";
 import { putNotificationSettings, getNotificationSettings } from "../../../redux/actions/adminActions";
-import Flag from "../../common/Flag";
 import { Loader } from "../../common";
 
 const Wrapper = styled.div`
@@ -101,15 +98,6 @@ const ColorWheelIcon = styled.img`
   cursor: pointer;
 `;
 
-const LabelInfoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  label {
-    margin: 0 !important;
-  }
-  margin-bottom: 0.5rem;
-`;
-
 const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -157,39 +145,21 @@ function StylingSettingsBody() {
     styling: _t("STYLING", "Styling"),
     dashboardBg: _t("LABEL.DASHBOARD_BACKGROUND", "Dashboard background"),
     uploadBg: _t("BUTTON.UPLOAD_BACKGROUND", "Upload background"),
+    faviconImg: _t("LABEL.FAVICON", "Favicon"),
+    uploadFavicon: _t("BUTTON.UPLOAD_FAVICON", "Upload favicon"),
     languageLabel: _t("SETTINGS.LANGUAGE_LABEL", "Language"),
     companyLanguage: _t("SETTINGS.COMPANY_LANGUAGE_LABEL", "Company language"),
     updateLanguage: _t("BUTTON.UPDATE_LANGUAGE", "Update language"),
     toasterSettingsUpdated: _t("TOASTER.COMPANY_SETTINGS_UPDATED", "Successfully updated company settings"),
   };
 
-  const languageOptions = [
-    {
-      value: "en",
-      label: (
-        <>
-          <Flag countryAbbr="en" className="mr-2" width="18" />
-          {_t("LANGUAGE.ENGLISH", "English")}
-        </>
-      ),
-    },
-    {
-      value: "nl",
-      label: (
-        <>
-          <Flag countryAbbr="nl" className="mr-2" width="18" />
-          {_t("LANGUAGE.DUTCH", "Dutch")}
-        </>
-      ),
-    },
-  ];
-
   const iconDropZone = useRef(null);
+  const faviconDropZone = useRef(null);
   const [showIconDropzone, setShowIconDropzone] = useState(false);
   const bgDropZone = useRef(null);
   const [showBgDropzone, setShowBgDropzone] = useState(false);
   const toast = useToaster();
-  const { uploadLogo, resetLogo, uploadDashboardBackground, fetchLoginSettings } = useAdminActions();
+  const { uploadLogo, resetLogo, uploadDashboardBackground, fetchLoginSettings, uploadFaviconImage } = useAdminActions();
   const logo = useSelector((state) => state.settings.driff.logo);
   const theme = useSelector((state) => state.settings.driff.theme);
   const origTheme = useSelector((state) => state.settings.origTheme);
@@ -209,8 +179,7 @@ function StylingSettingsBody() {
   const notificationsLoaded = useSelector((state) => state.admin.notificationsLoaded);
   const [notifications, setNotifications] = useState(notificationSettings);
   const [savingNotifications, setSavingNotifications] = useState(false);
-  const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
-  const { dark_mode } = generalSettings;
+  const [uploadingFavicon, setUploadingFavicon] = useState(false);
 
   useEffect(() => {
     if (!notificationsLoaded) {
@@ -271,6 +240,22 @@ function StylingSettingsBody() {
     };
     uploadDashboardBackground(payload, cb);
   };
+  const handleUploadFavicon = (file) => {
+    setUploadingFavicon(true);
+    let payload = {
+      file: file,
+      code: "code",
+    };
+    let cb = (err, res) => {
+      setUploadingFavicon(false);
+      if (err) return;
+      toast.success(dictionary.uploadSuccess);
+
+      const favicon = document.getElementById("favicon");
+      favicon.href = res.data.path.image_link;
+    };
+    uploadFaviconImage(payload, cb);
+  };
 
   const dropBgAction = (uploadedFiles) => {
     if (uploadedFiles.length === 0) {
@@ -279,6 +264,14 @@ function StylingSettingsBody() {
       toast.warning(dictionary.multipleFileError);
     }
     handleUploadDashboardBg(uploadedFiles[0]);
+  };
+  const dropFaviconAction = (uploadedFiles) => {
+    if (uploadedFiles.length === 0) {
+      toast.error(dictionary.fileTypeError);
+    } else if (uploadedFiles.length > 1) {
+      toast.warning(dictionary.multipleFileError);
+    }
+    handleUploadFavicon(uploadedFiles[0]);
   };
 
   const handleOpenBgDropzone = () => {
@@ -404,10 +397,6 @@ function StylingSettingsBody() {
     );
   };
 
-  const handleSelectLanguage = (e) => {
-    setSettings({ ...settings, language: e.value });
-  };
-
   return (
     <Wrapper theme={theme}>
       {!loginFetched && (
@@ -460,24 +449,19 @@ function StylingSettingsBody() {
               {dictionary.uploadBg}
             </button>
           </div>
-          <h4 className="mt-3">{dictionary.languageLabel}</h4>
+          <h4 className="mt-3">{dictionary.faviconImg}</h4>
           <div>
-            <LabelInfoWrapper>
-              <label>{dictionary.companyLanguage}</label>
-            </LabelInfoWrapper>
-            <Select
-              className={"react-select-container"}
-              classNamePrefix="react-select"
-              styles={dark_mode === "0" ? lightTheme : darkTheme}
-              value={languageOptions.find((o) => settings.language === o.value)}
-              onChange={handleSelectLanguage}
-              options={languageOptions}
+            <DropDocument
+              acceptType="imageOnly"
+              hide
+              ref={faviconDropZone}
+              onDrop={({ acceptedFiles }) => {
+                dropFaviconAction(acceptedFiles);
+              }}
             />
-          </div>
-          <div className="d-flex align-items-center mt-2">
-            <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleSubmit}>
-              {dictionary.updateLanguage}
-            </SubmitButton>
+            <button className="btn btn-primary" onClick={() => faviconDropZone.current.open()} disabled={uploadingFavicon}>
+              {dictionary.uploadFavicon} {uploadingFavicon && <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+            </button>
           </div>
           <h4 className="mt-3">{dictionary.styling}</h4>
           {/* <p>Purple theme colors: primary: "#7a1b8b", secondary: "#8c3b9b", third: "#3f034a", fourth: "#4d075a", fifth: "#FFC856"</p>

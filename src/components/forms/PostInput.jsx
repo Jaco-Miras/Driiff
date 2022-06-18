@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PostInputMention from "../common/PostInputMention";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions } from "../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -150,6 +150,8 @@ const PostInput = forwardRef((props, ref) => {
 
   const { _t } = useTranslationActions();
 
+  const { enlargeEmoji } = useEnlargeEmoticons();
+
   const dictionary = {
     savingDraftLabel: _t("DRAFT.SAVING_DRAFT", "Saving draft..."),
     draftSavedLabel: _t("DRAFT.SAVED", "Draft saved"),
@@ -217,7 +219,7 @@ const PostInput = forwardRef((props, ref) => {
 
     let payload = {
       post_id: post.id,
-      body: text,
+      body: enlargeEmoji(text),
       mention_ids: mention_ids,
       //mention_ids: excludeExternals ? mention_ids.filter((id) => !activeExternalUsers.some((ex) => ex.id === id)) : mention_ids,
       file_ids: inlineImages.map((i) => i.id),
@@ -237,7 +239,7 @@ const PostInput = forwardRef((props, ref) => {
     if (quote) {
       payload.quote = {
         id: quote.id,
-        body: quote.body,
+        body: enlargeEmoji(quote.body),
         user_id: quote.author ? quote.author.id : quote.user_id,
         user: quote.author ? quote.author : quote.user,
         files: quote.files,
@@ -249,7 +251,7 @@ const PostInput = forwardRef((props, ref) => {
     if (!editMode) {
       let commentObj = {
         author: user,
-        body: text,
+        body: enlargeEmoji(text),
         clap_count: 0,
         claps: [],
         code: timestamp,
@@ -354,7 +356,7 @@ const PostInput = forwardRef((props, ref) => {
       setMentionUsersPayload({});
     }
 
-    if (textOnly.trim() === "" && editMode) {
+    if (content.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
       setEditMode(false);
       setEditMessage(null);
       setMentionUsersPayload({});

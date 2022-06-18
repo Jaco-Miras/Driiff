@@ -287,17 +287,19 @@ const useChannelActions = () => {
       //console.log(channel, "selected user create new channel");
       createByUserChannel({ ...channel, selected: true });
       //if unarchived archived chat
-    } else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived) {
-      unArchive(channel, (err, res) => {
-        const channel = res.data;
-        dispatch(
-          setSelectedChannel(res.data, () => {
-            callback(channel);
-          })
-        );
-      });
-      history.push(`/chat/${channel.code}`);
-    } else {
+    }
+    // else if (channel.type === "DIRECT" && channel.members.length === 2 && channel.is_archived) {
+    //   unArchive(channel, (err, res) => {
+    //     const channel = res.data;
+    //     dispatch(
+    //       setSelectedChannel(res.data, () => {
+    //         callback(channel);
+    //       })
+    //     );
+    //   });
+    //   history.push(`/chat/${channel.code}`);
+    // }
+    else {
       dispatch(
         setSelectedChannel({
           ...channel,
@@ -573,9 +575,9 @@ const useChannelActions = () => {
 
   const getChannelLink = (channel) => {
     if (channel.workspace_folder) {
-      return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      return `/hub/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
     } else {
-      return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      return `/hub/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
     }
   };
 

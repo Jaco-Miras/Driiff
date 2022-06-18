@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getHttpStatus } from "../../helpers/commonFunctions";
 import { getTranslationObject } from "../../redux/actions/globalActions";
 import { useDriff, useSettings, useToaster } from "./index";
 import { isTranslationLogged } from "../../helpers/slugHelper";
+import axios from "axios";
 
 let cookieName = {
   dict: "i18n",
@@ -13,6 +14,7 @@ let cookieName = {
 let init = false;
 export const useTranslation = () => {
   const dispatch = useDispatch();
+  const cancelToken = useRef(null);
   const session = useSelector((state) => state.session);
   const { registeredDriff } = useDriff();
   const {
@@ -48,88 +50,42 @@ export const useTranslation = () => {
       localStorage.removeItem(cookieName.lang);
       localStorage.setItem(cookieName.name, cookieName.ver);
     }
-
-    // if (language) {
-    //   setDictFile(`${dictionaryAPIUrl}/${language}`);
-    // } else {
-    //   setDictFile(`${dictionaryAPIUrl}/${browserLang.exact}`);
-    // }
   });
 
   useEffect(() => {
-    dispatch(
-      getTranslationObject(
-        {
-          url:
-            language && driffSettings.settings.custom_translation
-              ? `${dictionaryAPIUrl}/${language}`
-              : language
-              ? `https://driff.io/api/lang/${language}`
-              : driffSettings.language
-              ? `https://driff.io/api/lang/${driffSettings.language}`
-              : "https://driff.io/api/lang/nl",
-        },
-        (err, res) => {
-          if (err) {
-            toaster.error("Error loading translations");
-            //console.log(err, dictFile, "error loading dictionary file");
+    if (driffSettings.isCompSettingsLoaded) {
+      //Check if there are any previous pending requests
+      if (cancelToken.current) {
+        cancelToken.current.cancel("Operation canceled due to new request.");
+        cancelToken.current = null;
+      }
+
+      //Save the cancel token for the current request
+      cancelToken.current = axios.CancelToken.source();
+      dispatch(
+        getTranslationObject(
+          {
+            url:
+              language && driffSettings.settings.custom_translation
+                ? `${dictionaryAPIUrl}/${language}`
+                : language
+                ? `https://driff.io/api/lang/${language}`
+                : driffSettings.language
+                ? `https://driff.io/api/lang/${driffSettings.language}`
+                : "https://driff.io/api/lang/nl",
+            cancelToken: cancelToken.current.token,
+          },
+          (err, res) => {
+            if (err) {
+              toaster.error("Error loading translations");
+              //console.log(err, dictFile, "error loading dictionary file");
+            }
           }
-
-          // if (res) {
-          //   if (res.data.length === 0) {
-          //     //exact browser language
-          //     if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
-          //       setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
-
-          //       //country browser language or language setting
-          //     } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
-          //       setDictFile(`${dictionaryAPIUrl}/en`);
-          //     }
-          //   } else {
-          //     setGeneralSetting({
-          //       language: dictFile.split("/").pop(),
-          //     });
-          //   }
-          // }
-        }
-      )
-    );
-    localStorage.setItem(cookieName.lang, language);
-  }, [driffSettings.language, language, driffSettings.settings.custom_translation]);
-
-  // useEffect(() => {
-  //   if (dictFile) {
-  //     dispatch(
-  //       getTranslationObject(
-  //         {
-  //           url: dictFile,
-  //         },
-  //         (err, res) => {
-  //           if (err) {
-  //             //console.log(err, dictFile, "error loading dictionary file");
-  //           }
-
-  //           if (res) {
-  //             if (res.data.length === 0) {
-  //               //exact browser language
-  //               if (dictFile === `${dictionaryAPIUrl}/${browserLang.exact}`) {
-  //                 setDictFile(`${dictionaryAPIUrl}/${browserLang.main}`);
-
-  //                 //country browser language or language setting
-  //               } else if (dictFile === `${dictionaryAPIUrl}/${browserLang.main}`) {
-  //                 setDictFile(`${dictionaryAPIUrl}/en`);
-  //               }
-  //             } else {
-  //               setGeneralSetting({
-  //                 language: dictFile.split("/").pop(),
-  //               });
-  //             }
-  //           }
-  //         }
-  //       )
-  //     );
-  //   }
-  // }, [dispatch, dictFile, dictionaryAPIUrl]);
+        )
+      );
+      localStorage.setItem(cookieName.lang, language);
+    }
+  }, [driffSettings.language, language, driffSettings.settings.custom_translation, driffSettings.isCompSettingsLoaded]);
 
   const translate = (code, default_value, replacement = null) => {
     let translation = default_value;

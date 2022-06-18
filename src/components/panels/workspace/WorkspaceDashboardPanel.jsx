@@ -5,14 +5,16 @@ import TimelinePanel from "../common/TimelinePanel";
 import { DashboardAboutWorkspace, DashboardTeam, RecentPosts } from "../dashboard";
 
 const Wrapper = styled.div`
-  overflow: auto !important;
+  overflow-x: auto;
   min-height: calc(100vh - 100px);
   &::-webkit-scrollbar {
     display: none;
   }
   -ms-overflow-style: none;
   scrollbar-width: none;
-
+  .container-inner {
+    overflow-x: scroll;
+  }
   h5 {
     text-align: left;
   }
@@ -112,7 +114,7 @@ const WorkspaceDashboardPanel = (props) => {
   }
 
   return (
-    <Wrapper className={`container-fluid fadeIn ${className}`}>
+    <Wrapper className={`container-fluid container-inner fadeIn ${className}`} style={{ border: "3px solid red" }}>
       <div className={"row"}>
         {workspace === null ? (
           <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />

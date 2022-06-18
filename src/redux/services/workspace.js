@@ -329,10 +329,23 @@ export function getWorkspaceFolder(payload) {
 }
 
 export function getAllWorkspace(payload) {
-  return apiCall({
-    method: "GET",
-    url: `/v2/search-workspace?${objToUrlParams(payload)}`,
-  });
+  if (payload.cancelToken) {
+    const cancelToken = payload.cancelToken;
+    const dataPayload = { ...payload };
+    delete dataPayload.cancelToken;
+    const url = `/v2/search-workspace?${objToUrlParams(dataPayload)}`;
+    return apiCall({
+      method: "GET",
+      url: url,
+      cancelToken: cancelToken,
+    });
+  } else {
+    const url = `/v2/search-workspace?${objToUrlParams(payload)}`;
+    return apiCall({
+      method: "GET",
+      url: url,
+    });
+  }
 }
 
 export function postResendInvite(payload) {
@@ -457,5 +470,32 @@ export function putWorkspaceNotification(payload) {
     method: "PUT",
     url: url,
     data: payload,
+  });
+}
+
+export function getWorkspaceQuickLinks(payload) {
+  let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    data: payload,
+  });
+}
+
+export function putWorkspaceQuickLinks(payload) {
+  let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
+  return apiCall({
+    method: "PUT",
+    url: url,
+    data: payload,
+  });
+}
+
+export function getRelatedWorkspace(payload) {
+  let url = `/v2/workspace-shared/${payload.userId}?skip=${payload.skip}&limit=${payload.limit}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    // data: payload,
   });
 }

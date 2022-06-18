@@ -45,21 +45,15 @@ const RecentPostItem = (props) => {
   };
   const handleRedirectToPost = () => {
     if (workspace.folder_id) {
-      history.push(`/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+      history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
     } else {
-      history.push(`/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
+      history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`);
     }
     closeModal();
   };
   return (
     <Wrapper>
-      <Avatar
-        title={`FROM: ${post.author.name}`}
-        className="author-avatar mr-2"
-        id={post.author.id}
-        name={post.author.name}
-        imageLink={post.author.profile_image_thumbnail_link ? post.author.profile_image_thumbnail_link : post.author.profile_image_link}
-      />
+      <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
       <div>
         <div className="post-title" onClick={handleRedirectToPost}>
           {post.title}

@@ -1,6 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { CheckBox, FolderSelect } from "../forms";
+import RadioInput from "../forms/RadioInput";
+import { SvgIconFeather } from "../common";
 
 const CheckBoxGroup = styled.div`
   transition: all 0.3s ease !important;
@@ -32,15 +34,64 @@ const ApproveOptions = styled.div`
   }
 `;
 
+const RadioInputWrapper = styled.div`
+  .component-radio-input {
+    display: inline-flex;
+  }
+  input {
+    width: auto;
+  }
+  .client-shared {
+    border-radius: 8px;
+    padding: 2px 6px;
+    background: ${(props) => props.theme.colors.fourth};
+    color: #212529;
+    margin-right: 5px;
+    font-size: 0.8rem;
+    .feather {
+      margin-right: 5px;
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+  .client-not-shared {
+    border-radius: 8px;
+    padding: 2px 6px;
+    background: #d6edff;
+    color: #212529;
+    margin-right: 5px;
+    font-size: 0.8rem;
+    .feather {
+      margin-right: 5px;
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+`;
+
+const LockIcon = styled(SvgIconFeather)`
+  width: 12px;
+  margin: 0;
+`;
+
 const Wrapper = styled.div``;
 
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user } = props;
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal } = props;
+  const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
+  let options = userOptions;
+  if (shareOption && shareOption.value === "internal") {
+    options = userOptions.filter((o) => {
+      return o.user_type === "internal";
+    });
+  }
 
   let approverOptions = [
-    ...userOptions
+    ...options
       .filter((u) => u.id !== user.id)
       .map((u) => {
         return {
@@ -114,10 +165,10 @@ const PostSettings = (props) => {
           ...prevState,
           [name]: !prevState[name],
           no_reply: !prevState[name] === true ? false : prevState["no_reply"],
-          mustReplyUsers:
-            prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
-              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-              : prevState.mustReplyUsers,
+          // mustReplyUsers:
+          //   prevState.mustReplyUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
+          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+          //     : prevState.mustReplyUsers,
         }));
         break;
       }
@@ -125,27 +176,64 @@ const PostSettings = (props) => {
         setForm((prevState) => ({
           ...prevState,
           [name]: !prevState[name],
-          mustReadUsers:
-            prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
-              ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
-              : prevState.mustReadUsers,
+          // mustReadUsers:
+          //   prevState.mustReadUsers.length === 0 && prevState.selectedAddressTo.length > 0 && approverOptions.length > 1
+          //     ? [{ id: "all", value: "all", label: "All users", icon: "users", all_ids: userOptions.filter((u) => u.id !== user.id).map((u) => u.id) }]
+          //     : prevState.mustReadUsers,
         }));
       }
     }
   };
 
-  const handleSelectShareOption = (e) => {
-    setShareOption(e);
-    if (e.id === "external") {
+  // const handleSelectShareOption = (e) => {
+  //   setShareOption(e);
+  //   if (e.id === "external") {
+  //     setForm({
+  //       ...form,
+  //       shared_with_client: true,
+  //     });
+  //   } else {
+  //     const hasExternal =
+  //       form.approvers.some((a) => a.user_type === "external") ||
+  //       form.approvers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+  //       form.mustReadUsers.some((a) => a.user_type === "external") ||
+  //       form.mustReadUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+  //       form.mustReplyUsers.some((a) => a.user_type === "external") ||
+  //       form.mustReplyUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id)));
+
+  //     if (hasExternal) setShowNestedModal(true);
+  //     else {
+  //       setForm({
+  //         ...form,
+  //         shared_with_client: false,
+  //       });
+  //     }
+  //   }
+  // };
+
+  const handleSelectShareOption = (e, value) => {
+    setShareOption(shareOptions.find((o) => o.value === value));
+    if (value === "external") {
       setForm({
         ...form,
         shared_with_client: true,
       });
     } else {
-      setForm({
-        ...form,
-        shared_with_client: false,
-      });
+      const hasExternal =
+        form.approvers.some((a) => a.user_type === "external") ||
+        form.approvers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReadUsers.some((a) => a.user_type === "external") ||
+        form.mustReadUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id))) ||
+        form.mustReplyUsers.some((a) => a.user_type === "external") ||
+        form.mustReplyUsers.some((a) => a.value === "all" && a.all_ids.some((id) => externalUsersId.some((eid) => eid === id)));
+
+      if (hasExternal) setShowNestedModal(true);
+      else {
+        setForm({
+          ...form,
+          shared_with_client: false,
+        });
+      }
     }
   };
 
@@ -181,7 +269,7 @@ const PostSettings = (props) => {
         setForm({
           ...form,
           mustReadUsers: e.filter((a) => a.value === "all"),
-          shared_with_client: true,
+          //shared_with_client: true,
         });
       } else {
         setForm({
@@ -203,7 +291,7 @@ const PostSettings = (props) => {
         setForm({
           ...form,
           mustReplyUsers: e.filter((a) => a.value === "all"),
-          shared_with_client: true,
+          //shared_with_client: true,
         });
       } else {
         setForm({
@@ -214,11 +302,11 @@ const PostSettings = (props) => {
     }
   };
 
-  useEffect(() => {
-    if (form.mustReplyUsers.find((r) => r.value === "all") || form.mustReadUsers.find((r) => r.value === "all")) {
-      if (!form.shared_with_client) setForm({ ...form, shared_with_client: true });
-    }
-  }, [form]);
+  // useEffect(() => {
+  //   if (form.mustReplyUsers.find((r) => r.value === "all") || form.mustReadUsers.find((r) => r.value === "all")) {
+  //     if (!form.shared_with_client) setForm({ ...form, shared_with_client: true });
+  //   }
+  // }, [form]);
 
   // if (form.requiredUsers.length && form.requiredUsers.find((a) => a.value === "all")) {
   //   requiredUserOptions = approverOptions.filter((a) => a.value === "all");
@@ -303,7 +391,39 @@ const PostSettings = (props) => {
             <span>{dictionary.shareWithClient}</span>
           </ApproveOptions>
           <ApproveOptions className="d-flex align-items-center">
-            <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" />
+            <RadioInputWrapper className="mr-2">
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSelectShareOption(e, "external");
+                }}
+                checked={form.shared_with_client}
+                value={"external"}
+                name={"role"}
+              >
+                <span class="receiver client-shared">
+                  <LockIcon icon="eye" />
+                  {dictionary.sharedClientBadge}
+                </span>
+              </RadioInput>
+            </RadioInputWrapper>
+            <RadioInputWrapper>
+              <RadioInput
+                readOnly
+                onClick={(e) => {
+                  handleSelectShareOption(e, "internal");
+                }}
+                checked={form.shared_with_client === false}
+                value={"internal"}
+                name={"role"}
+              >
+                <span class="receiver client-not-shared">
+                  <LockIcon icon="eye-off" />
+                  {dictionary.notSharedClientBadge}
+                </span>
+              </RadioInput>
+            </RadioInputWrapper>
+            {/* <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" /> */}
           </ApproveOptions>
         </Wrapper>
       )}

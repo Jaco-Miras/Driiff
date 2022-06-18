@@ -145,7 +145,9 @@ const useSelectQuote = (props) => {
           }
           selectedQuoteBody += quillHelper.parseEmoji(selectedQuote.body);
         } else {
-          if (selectedQuote.body.startsWith("CHANNEL_UPDATE")) {
+          if (selectedQuote.body.startsWith("LEFT_MEETING::")) {
+            selectedQuoteBody = document.getElementById(`bot-${selectedQuote.id}`).outerHTML;
+          } else if (selectedQuote.body.startsWith("CHANNEL_UPDATE")) {
             selectedQuoteBody = document.getElementById(`bot-${selectedQuote.id}`).outerHTML;
           } else if (selectedQuote.body.startsWith("POST_CREATE::")) {
             let parsedData = selectedQuote.body.replace("POST_CREATE::", "");
@@ -154,9 +156,9 @@ const useSelectQuote = (props) => {
               let link = "";
               if (params && params.workspaceId) {
                 if (params.folderId) {
-                  link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+                  link = `/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
                 } else {
-                  link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+                  link = `/hub/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
                 }
               } else {
                 link = `/posts/${item.post.id}/${item.post.title}`;

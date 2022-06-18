@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
 import Viewers from "./Viewers";
@@ -100,6 +100,9 @@ const PostCounters = (props) => {
   const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
   const hasRead = readByUsers.some((u) => u.id === user.id);
   const likers = Object.values(users).filter((u) => post.claps.some((c) => c.user_id === u.id));
+
+  const [showViewer, setShowViewer] = useState(false);
+
   return (
     <Counters className="d-flex align-items-center">
       <div className="clap-count-wrapper d-none d-sm-flex">
@@ -110,7 +113,7 @@ const PostCounters = (props) => {
             {likers.map((u) => {
               return (
                 <span key={u.id}>
-                  <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                  <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
                 </span>
               );
             })}
@@ -134,7 +137,7 @@ const PostCounters = (props) => {
               {readByUsers.map((u) => {
                 return (
                   <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id] ? users[u.id].profile_image_thumbnail_link : null} id={u.id} /> <span className="name">{u.name}</span>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id].profile_image_thumbnail_link} id={u.id} /> <span className="name">{u.name}</span>
                   </span>
                 );
               })}
@@ -149,7 +152,7 @@ const PostCounters = (props) => {
               {likers.map((u) => {
                 return (
                   <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={u.profile_image_thumbnail_link ? u.profile_image_thumbnail_link : u.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id]?.profile_image_link} id={u.id} /> <span className="name">{u.name}</span>
                   </span>
                 );
               })}
@@ -159,12 +162,18 @@ const PostCounters = (props) => {
         <Icon className="mr-2" icon="message-square" />
         {post.reply_count}
         {
-          <div className="user-reads-container">
+          <div
+            role="button"
+            className="user-reads-container"
+            onClick={() => {
+              setShowViewer((prev) => !prev);
+            }}
+          >
             <span className="no-readers">
               <Icon className="ml-2 mr-2 seen-indicator" icon="eye" />
               {viewerIds.length}
             </span>
-            <Viewers users={viewers} />
+            <Viewers users={viewers} close={() => setShowViewer(false)} show={showViewer} />
           </div>
         }
       </div>

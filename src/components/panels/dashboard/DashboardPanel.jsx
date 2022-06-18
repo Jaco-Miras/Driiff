@@ -14,10 +14,7 @@ import PostMentionCard from "./PostMentionCard";
 import { useTranslationActions } from "../../hooks";
 
 const Wrapper = styled.div`
-  overflow: auto;
-  @media (min-width: 768px) {
-    overflow: hidden;
-  }
+  overflow-x: auto;
   ${(props) =>
     props.bg &&
     `
@@ -36,14 +33,8 @@ const Wrapper = styled.div`
       height: 100%;
       display: flex;
       flex-flow: column;
-      .maxh-10 {
-        flex: 1 1 80px;
-      }
-      .maxh-40 {
-        flex: 2 2 50%;
-      }
-      .maxh-50 {
-        flex: 1 1 50%;
+      .welcome-card {
+        min-height: 74px;
       }
     }
   }
@@ -66,21 +57,20 @@ const Wrapper = styled.div`
         padding-right: 7px;
       }
       .row > div:last-child {
-        padding-left: 7px;
+        padding-right: 7px;
+      }
+      .fav-channels-card {
+        flex: 1 0 200px;
+        min-height: 0;
+      }
+      .fav-ws-card {
+        flex: 1 0 200px;
+        min-height: 0;
       }
       .col-md-6 {
         height: 100%;
         display: flex;
         flex-flow: column;
-      }
-      .quicklinks-postmention {
-        > div:first-child {
-          //flex: 1 2 10%;
-          min-height: 15%;
-        }
-        > div:last-child {
-          //flex: 2 1 20%;
-        }
       }
       .count-card {
         min-height: 74px;
@@ -89,10 +79,26 @@ const Wrapper = styled.div`
   }
 `;
 
+const QuicklinksMentionColumn = styled.div`
+  @media (min-width: 768px) {
+    > div:first-child {
+      min-height: ${(props) => (props.personalLinks === 0 ? "300px" : "450px")};
+    }
+    > div:last-child {
+      //flex: 2 1 20%;
+    }
+
+    .count-card {
+      min-height: 74px;
+    }
+  }
+`;
+
 const DashboardPanel = (props) => {
   const dashboardBg = useSelector((state) => state.settings.driff.background);
   const companyName = useSelector((state) => state.settings.driff.company_name);
   const user = useSelector((state) => state.session.user);
+  const personalLinks = useSelector((state) => state.settings.user.GENERAL_SETTINGS.personal_links);
   const { _t } = useTranslationActions();
   const dictionary = {
     shortcuts: _t("SIDEBAR.SHORTCUTS", "Shortcuts"),
@@ -110,15 +116,17 @@ const DashboardPanel = (props) => {
     createNewPost: _t("POST.CREATE_NEW_POST", "Create new post"),
     startWritingPost: _t("LABEL.START_WRITING_POST", "Start writing a new post,"),
     noQuickLinks: _t("LABEL.NO_QUICK_LINKS", "No quick links yet, wait for your admin to add quick links"),
+    personalLinks: _t("SIDEBAR.PERSONAL_LINKS", "Personal"),
+    nothingToDoHere: _t("LABEL.NOTHING_TO_DO_HERE", "Nothing to do here!"),
   };
   return (
     <Wrapper className={"container-fluid fadeIn dashboard-panel"} bg={dashboardBg}>
       <div className={"row h-100"}>
         <div className={"col-md-4 first-column"}>
-          <Card className="mb-2">
-            <WelcomeCard dictionary={dictionary} />
+          <Card className="mb-2 welcome-card">
+            <WelcomeCard dictionary={dictionary} isWorkspace={false} />
           </Card>
-          <Card className="mb-2 maxh-50">
+          <Card className="mb-2 about-card">
             <AboutCard dictionary={dictionary} />
           </Card>
         </div>
@@ -137,21 +145,21 @@ const DashboardPanel = (props) => {
               <Card className="mb-2 count-card">
                 <CountCard text={dictionary.unreadPosts} type={"posts"} />
               </Card>
-              <Card className="mb-2  maxh-40">
+              <Card className="mb-2  fav-channels-card">
                 <FavoriteChannelsCard dictionary={dictionary} />
               </Card>
-              <Card className="mb-2">
+              <Card className="mb-2 fav-ws-card">
                 <FavoriteWorkspaceCard dictionary={dictionary} />
               </Card>
             </div>
-            <div className={"col-md-6 quicklinks-postmention"}>
+            <QuicklinksMentionColumn className={"col-md-6 quicklinks-postmention"} personalLinks={personalLinks.length}>
               <Card className="mb-2">
                 <ShortcutsCard dictionary={dictionary} />
               </Card>
               <Card className="mb-2">
                 <PostMentionCard dictionary={dictionary} />
               </Card>
-            </div>
+            </QuicklinksMentionColumn>
           </div>
         </div>
       </div>

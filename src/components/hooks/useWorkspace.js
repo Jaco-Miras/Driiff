@@ -24,7 +24,7 @@ const useWorkspace = () => {
   const channelIds = useSelector((state) => Object.keys(state.chat.channels));
   const selectedChannelId = useSelector((state) => state.chat.selectedChannelId);
   const user = useSelector((state) => state.session.user);
-  const [fetchingPrimary, setFetchingPrimary] = useState(false);
+  //const [fetchingPrimary, setFetchingPrimary] = useState(false);
   const [fetchingChannel, setFetchingChannel] = useState(false);
 
   const { _t } = useTranslationActions();
@@ -52,8 +52,8 @@ const useWorkspace = () => {
       });
     });
 
-    if (user.type === "external" && url.startsWith("/workspace/team-chat")) {
-      history.push("/workspace/chat");
+    if (user.type === "external" && url.startsWith("/hub/team-chat")) {
+      history.push("/hub/dashboard");
     }
   }, []);
 
@@ -110,17 +110,19 @@ const useWorkspace = () => {
         }
       } else {
         //fetch last visited workspace - from login or loaded in non workspace page
-        if (params.page !== "search") {
-          if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
-            actions.selectWorkspace(workspaces[activeTopicSettings.id]);
-            if (url.startsWith("/workspace")) {
-              actions.redirectTo(workspaces[activeTopicSettings.id]);
-            }
-          } else if (url.startsWith("/workspace") && localStorage.getItem("fromRegister") && user.type === "external") {
-            actions.selectWorkspace(Object.values(workspaces)[0]);
-            actions.redirectTo(Object.values(workspaces)[0]);
-            localStorage.removeItem("fromRegister");
+        if (["search", "all"].includes(params.page)) return;
+        if (activeTopicSettings && workspaces.hasOwnProperty(activeTopicSettings.id)) {
+          actions.selectWorkspace(workspaces[activeTopicSettings.id]);
+          if (url.startsWith("/hub")) {
+            actions.redirectTo(workspaces[activeTopicSettings.id]);
           }
+        } else if (url.startsWith("/hub") && localStorage.getItem("fromRegister") && user.type === "external") {
+          actions.selectWorkspace(Object.values(workspaces)[0]);
+          actions.redirectTo(Object.values(workspaces)[0]);
+          localStorage.removeItem("fromRegister");
+        } else if (user.type === "external" && url.startsWith("/hub/chat")) {
+          actions.selectWorkspace(Object.values(workspaces)[0]);
+          actions.redirectTo(Object.values(workspaces)[0]);
         }
       }
     }
@@ -131,8 +133,8 @@ const useWorkspace = () => {
     const fetchingCallback = (err, res) => {
       if (res) setFetchingChannel(false);
     };
-    if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
-      if (url.startsWith("/workspace/team-chat")) {
+    if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/hub")) {
+      if (url.startsWith("/hub/team-chat")) {
         if (activeTopic.team_channel.code && channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
           actions.selectChannel({ id: activeTopic.team_channel.id });
         } else if (activeTopic.team_channel.code && !channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
@@ -158,9 +160,9 @@ const useWorkspace = () => {
           }
         }
       }
-    } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/workspace")) {
+    } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/hub")) {
       // check if channel is not match
-      if (url.startsWith("/workspace/team-chat")) {
+      if (url.startsWith("/hub/team-chat")) {
         if (activeTopic.team_channel.code && activeTopic.team_channel.id !== selectedChannelId) {
           if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
             actions.selectChannel({ id: activeTopic.team_channel.id });
@@ -198,24 +200,24 @@ const useWorkspace = () => {
     }
   }, [params]);
 
-  useEffect(() => {
-    if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/workspace/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
-      setFetchingPrimary(true);
-      const callback = (err, res) => {
-        setTimeout(() => {
-          setFetchingPrimary(false);
-        }, 300);
-        if (err) return;
-        let payload = {
-          id: activeTopic.id,
-          folder_id: activeTopic.workspace_id,
-          files: res.data,
-        };
-        actions.addPrimaryFilesToWorkspace(payload);
-      };
-      actions.getPrimaryFiles(activeTopic.id, callback);
-    }
-  }, [fetchingPrimary, activeTopic, url, user]);
+  // useEffect(() => {
+  //   if (!fetchingPrimary && activeTopic && !activeTopic.hasOwnProperty("primary_files") && url.startsWith("/hub/dashboard/") && activeTopic.members.some((m) => m.id === user.id)) {
+  //     setFetchingPrimary(true);
+  //     const callback = (err, res) => {
+  //       setTimeout(() => {
+  //         setFetchingPrimary(false);
+  //       }, 300);
+  //       if (err) return;
+  //       let payload = {
+  //         id: activeTopic.id,
+  //         folder_id: activeTopic.workspace_id,
+  //         files: res.data,
+  //       };
+  //       actions.addPrimaryFilesToWorkspace(payload);
+  //     };
+  //     actions.getPrimaryFiles(activeTopic.id, callback);
+  //   }
+  // }, [fetchingPrimary, activeTopic, url, user]);
 
   let timeline = null;
   if (Object.keys(workspaceTimeline).length && activeTopic && workspaceTimeline[activeTopic.id]) {

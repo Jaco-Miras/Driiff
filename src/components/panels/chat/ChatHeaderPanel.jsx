@@ -115,6 +115,10 @@ const Wrapper = styled.div`
     margin-left: 5px;
     cursor: pointer;
   }
+  .feather-google-meet {
+    cursor: pointer;
+    margin-left: 5px;
+  }
 `;
 
 const Icon = styled(SvgIconFeather)``;
@@ -268,7 +272,7 @@ const ChatHeaderPanel = (props) => {
   /**
    * @todo refactor
    */
-  const { className = "", channel, dictionary, handleSearchChatPanel, isAuthorizedUser } = props;
+  const { className = "", channel, dictionary, handleSearchChatPanel } = props;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -411,6 +415,9 @@ const ChatHeaderPanel = (props) => {
           </>
         );
       }
+      case "PERSONAL_BOT": {
+        return dictionary.personalNotes;
+      }
       default: {
         return chatChannel.title;
       }
@@ -540,7 +547,7 @@ const ChatHeaderPanel = (props) => {
             <StarIcon icon="star" isFav={channel.is_pinned} onClick={handleFavoriteChannel} />
           </StyledTooltip>
           {channel.type === "GROUP" && !channel.is_archived && <SvgIconFeather icon="pencil" onClick={handleShowChatEditModal} />}
-          {isAuthorizedUser && <SearchIcon icon="search" onClick={handleSearchChatPanel} />}
+          <SearchIcon icon="search" onClick={handleSearchChatPanel} />
 
           <div>
             <ul className="nav align-items-center justify-content-end">

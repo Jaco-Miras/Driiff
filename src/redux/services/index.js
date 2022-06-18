@@ -33,6 +33,9 @@ export {
   uploadDashboardBg,
   putCompanyDescription,
   getAllWorkspaces,
+  getMeetingSettings,
+  putMeetingSettings,
+  uploadFavicon,
 } from "./admin";
 export {
   getGlobalRecipients,
@@ -79,6 +82,8 @@ export {
   postChatMessageTranslate,
   generateZoomSignature,
   createZoomMeeting,
+  createGoogleMeet,
+  createJitsiMeet,
 } from "./chat";
 
 export { getDriffSettings, getUserSettings, updateUserSettings, getDriffCompSettings, putCompanyUpdateName, uploadDriffLogo } from "./settings";
@@ -124,6 +129,11 @@ export {
   removeTeamMember,
   createTeamChannel,
   searchUsers,
+  batchUploadProfileImage,
+  impersonationLogin,
+  getCurrentUserImpersonation,
+  impersonationLogout,
+  impersonationLists,
 } from "./user";
 
 export {
@@ -311,6 +321,9 @@ export {
   getAllWorkspaceFolders,
   getExistingFolder,
   putWorkspaceNotification,
+  getWorkspaceQuickLinks,
+  putWorkspaceQuickLinks,
+  getRelatedWorkspace,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

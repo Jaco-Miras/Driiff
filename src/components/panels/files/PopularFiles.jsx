@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import {FileListItem} from "../../list/file/item";
+import { FileListItem } from "../../list/file/item";
 
 const Wrapper = styled.div``;
 
 const PopularFiles = (props) => {
-  const {className = "", folders, wsFiles, actions, disableOptions} = props;
+  const { className = "", folders, wsFiles, disableOptions } = props;
 
   // const files = [
   //     {
@@ -38,13 +38,10 @@ const PopularFiles = (props) => {
       <h6 className="font-size-11 text-uppercase mb-4">Popular</h6>
       <div className="row">
         {wsFiles &&
-        wsFiles.popular_files.length > 0 &&
-        wsFiles.popular_files.map((id) => {
-          return <FileListItem
-            key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} actions={actions}
-            folders={folders}
-            disableOptions={disableOptions}/>;
-        })}
+          wsFiles.popular_files.length > 0 &&
+          wsFiles.popular_files.map((id) => {
+            return <FileListItem key={id} className="col-xl-3 col-lg-4 col-md-6 col-sm-12" file={wsFiles.files[id]} folders={folders} disableOptions={disableOptions} />;
+          })}
       </div>
     </Wrapper>
   );

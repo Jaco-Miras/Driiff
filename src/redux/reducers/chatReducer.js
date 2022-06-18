@@ -48,6 +48,8 @@ const INITIAL_STATE = {
     hasMore: true,
     fetching: false,
   },
+  jitsi: null,
+  initialLoad: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -1632,6 +1634,15 @@ export default function (state = INITIAL_STATE, action) {
           team: channels[action.data.channel_detail.id].team,
         };
         channels[action.data.channel_detail.id] = channel;
+      } else if (action.data.channel_detail && !channels.hasOwnProperty(action.data.channel_detail.id)) {
+        channel = {
+          ...action.data.channel_detail,
+          replies: [],
+          hasMore: true,
+          skip: 0,
+          isFetching: false,
+        };
+        channels[action.data.channel_detail.id] = channel;
       }
       return {
         ...state,
@@ -1669,6 +1680,14 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: channels[action.data.id].hasMore,
           is_active: channels[action.data.id].is_active,
           skip: channels[action.data.id].skip,
+          isFetching: false,
+        };
+      } else {
+        channels[action.data.id] = {
+          ...action.data,
+          replies: [],
+          hasMore: true,
+          skip: 0,
           isFetching: false,
         };
       }
@@ -1727,7 +1746,11 @@ export default function (state = INITIAL_STATE, action) {
         let channels = { ...state.channels };
         let channel = {
           ...action.data,
-          replies: action.data.replies.length ? action.data.replies : [],
+          replies: action.data.replies.length
+            ? action.data.replies.map((r) => {
+                return { ...r, channel_id: action.data.id };
+              })
+            : [],
           hasMore: action.data.replies.length === 20,
           skip: action.data.replies.length,
           selected: true,
@@ -1896,10 +1919,17 @@ export default function (state = INITIAL_STATE, action) {
           ...Object.values(state.channels)
             .map((channel) => {
               if (action.data.channel_ids.some((id) => id === channel.id)) {
-                return {
-                  ...channel,
-                  members: channel.members.filter((m) => m.id !== action.data.user.id),
-                };
+                if (channel.type === "DIRECT" && channel.profile && channel.profile.id === action.data.user.id) {
+                  return {
+                    ...channel,
+                    is_archived: true,
+                  };
+                } else {
+                  return {
+                    ...channel,
+                    members: channel.members.filter((m) => m.id !== action.data.user.id),
+                  };
+                }
               } else {
                 return channel;
               }
@@ -1909,6 +1939,7 @@ export default function (state = INITIAL_STATE, action) {
               return channels;
             }, {}),
         },
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "DIRECT" && state.selectedChannel.profile.id === action.data.user.id ? { ...state.selectedChannel, is_archived: true } : state.selectedChannel,
       };
     }
     case "INCOMING_UNARCHIVED_USER": {
@@ -1918,10 +1949,17 @@ export default function (state = INITIAL_STATE, action) {
           ...Object.values(state.channels)
             .map((channel) => {
               if (action.data.connected_channel_ids.some((id) => id === channel.id)) {
-                return {
-                  ...channel,
-                  members: [...channel.members, { ...action.data.profile, last_visited_at: { timestamp: Math.floor(Date.now() / 1000) } }],
-                };
+                if (channel.type === "DIRECT" && channel.profile && channel.profile.id === action.data.profile.id) {
+                  return {
+                    ...channel,
+                    is_archived: false,
+                  };
+                } else {
+                  return {
+                    ...channel,
+                    members: [...channel.members, { ...action.data.profile, last_visited_at: { timestamp: Math.floor(Date.now() / 1000) } }],
+                  };
+                }
               } else {
                 return channel;
               }
@@ -1931,6 +1969,7 @@ export default function (state = INITIAL_STATE, action) {
               return channels;
             }, {}),
         },
+        selectedChannel: state.selectedChannel && state.selectedChannel.type === "DIRECT" && state.selectedChannel.profile.id === action.data.profile.id ? { ...state.selectedChannel, is_archived: false } : state.selectedChannel,
       };
     }
     case "GET_USER_BOTS_SUCCESS": {
@@ -2842,7 +2881,7 @@ export default function (state = INITIAL_STATE, action) {
                     })
                   : [...channel.members, newUser],
               };
-            } else if (channel.type === "TOPIC" && action.data.team_ids.some((id) => channel.team_ids.some((cid) => cid === id))) {
+            } else if (channel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => channel.team_ids && channel.team_ids.some((cid) => cid === id))) {
               acc[channel.id] = {
                 ...channel,
                 members: channel.members.some((m) => m.id === action.data.id)
@@ -2859,8 +2898,8 @@ export default function (state = INITIAL_STATE, action) {
             return acc;
           }, {}),
           selectedChannel:
-            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
-            (state.selectedChannel.type === "TOPIC" && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
+            (state.selectedChannel && (state.selectedChannel.type === "TEAM" || state.selectedChannel.type === "DIRECT_TEAM") && action.data.team_ids && action.data.team_ids.some((id) => id === state.selectedChannel.entity_id)) ||
+            (state.selectedChannel && state.selectedChannel.type === "TOPIC" && action.data.team_ids && action.data.team_ids.some((id) => state.selectedChannel.team_ids.some((cid) => cid === id)))
               ? {
                   ...state.selectedChannel,
                   members: state.selectedChannel.members.some((m) => m.id === action.data.id)
@@ -2939,6 +2978,7 @@ export default function (state = INITIAL_STATE, action) {
         selectedChannel: state.selectedChannel && state.selectedChannel.type === "TOPIC" && state.selectedChannel.entity_id === action.data.id ? { ...state.selectedChannel, is_active: action.data.is_active } : state.selectedChannel,
       };
     }
+    case "INCOMING_JITSI_ENDED":
     case "INCOMING_ZOOM_ENDED": {
       return {
         ...state,
@@ -2987,6 +3027,30 @@ export default function (state = INITIAL_STATE, action) {
           return acc;
         }, {}),
         selectedChannel: state.selectedChannel && state.selectedChannel.id === action.data.channel_id ? { ...state.selectedChannel, replies: [...state.selectedChannel.replies, action.data.chat] } : state.selectedChannel,
+      };
+    }
+    case "CREATE_JITSI_MEET_SUCCESS": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "START_JITSI": {
+      return {
+        ...state,
+        jitsi: action.data,
+      };
+    }
+    case "CLEAR_JITSI": {
+      return {
+        ...state,
+        jitsi: null,
+      };
+    }
+    case "SET_CHANNEL_INITIAL_LOAD": {
+      return {
+        ...state,
+        initialLoad: true,
       };
     }
     default:

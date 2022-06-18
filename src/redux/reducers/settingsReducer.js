@@ -21,8 +21,10 @@ const INITIAL_STATE = {
     domains: [],
     logo: "",
     background: null,
+    favicon: null,
     login_mode: "email",
-    language: null,
+    language: "nl",
+    meet: "jitsi",
     theme: {
       colors: {
         primary: "#29323F",
@@ -95,7 +97,7 @@ const INITIAL_STATE = {
       dark_mode: "0",
       log_rocket: "0",
       sentry: "0",
-      language: null,
+      language: "nl",
       active_topic: null,
       workspace_open_folder: {},
       date_format: "DD-MM-YYYY",
@@ -109,6 +111,7 @@ const INITIAL_STATE = {
       },
       translated_channels: [],
       chat_language: "en",
+      first_login: true,
     },
     READ_ANNOUNCEMENT: null,
     ORDER_CHANNEL: {
@@ -146,6 +149,7 @@ export default (state = INITIAL_STATE, action) => {
       let background = state.driff.background;
       let login_mode = state.driff.login_mode;
       let language = state.driff.language;
+      let meet = state.driff.meet;
 
       action.data.settings.forEach((s) => {
         if (s.ANNOUNCEMENT_AT) ANNOUNCEMENT_AT = s.ANNOUNCEMENT_AT;
@@ -192,6 +196,7 @@ export default (state = INITIAL_STATE, action) => {
           background: background,
           login_mode: login_mode,
           language: language,
+          meet: meet,
         },
       };
     }
@@ -510,6 +515,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_MEETING_SETTINGS": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          meet: action.data.meet,
+        },
+      };
+    }
+    case "INCOMING_FAVICON_IMAGE": {
+      return {
+        ...state,
+        driff: {
+          ...state.driff,
+          favicon: action.data,
+        },
+      };
+    }
+
     default:
       return state;
   }

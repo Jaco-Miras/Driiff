@@ -44,7 +44,7 @@ const TopicList = (props) => {
   const history = useHistory();
   const route = useRouteMatch();
   const { params } = route;
-  const onWorkspace = route.url.startsWith("/workspace");
+  const onWorkspace = route.url.startsWith("/hub");
   const { virtualization } = useSelector((state) => state.settings.user.CHAT_SETTINGS);
 
   const handleSelectTopic = () => {
@@ -93,10 +93,7 @@ const TopicList = (props) => {
   return (
     <TopicListWrapper ref={workspaceRef} className={`topic-list ${className}`} onClick={handleSelectTopic} selected={selected && onWorkspace && params.page !== "search"}>
       <div className={"topic-text-container"}>
-        <a
-          href={topic.folder_id ? `/workspace/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/workspace/chat/${topic.id}/${replaceChar(topic.name)}`}
-          onClick={(e) => e.preventDefault(e)}
-        >
+        <a href={topic.folder_id ? `/hub/chat/${topic.folder_id}/${replaceChar(topic.folder_name)}/${topic.id}/${replaceChar(topic.name)}` : `/hub/chat/${topic.id}/${replaceChar(topic.name)}`} onClick={(e) => e.preventDefault(e)}>
           <span className={"topic-text"}>{topic.name}</span>
           {topic.is_lock === 1 && <Icon icon={"lock"} strokeWidth="2" />}
           {topic.is_shared && <Icon icon={"eye"} strokeWidth="3" />}

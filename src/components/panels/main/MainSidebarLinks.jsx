@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useSelector } from "react-redux";
 import { useParams, useLocation } from "react-router-dom";
 import { NavLink, SvgIconFeather } from "../../common";
-import { QuickLinks } from "../../list/links";
+//import { QuickLinks } from "../../list/links";
 //import { Badge } from "reactstrap";
 //import christmas from "../../../assets/img/christmas.png";
 
@@ -168,14 +168,14 @@ const MainSidebarLinks = (props) => {
           </NavIconContainer>
         </li> */}
         <li onClick={closeLeftNav}>
-          <NavIconContainer to={"/workspace/search"} active={["/workspace/search"].includes(location.pathname)}>
+          <NavIconContainer to={"/hub/search"} active={["/hub/search"].includes(location.pathname)}>
             <NavIcon icon={"compass"} />
             <div>{dictionary.allWorkspaces}</div>
           </NavIconContainer>
         </li>
         {user.type === "internal" && (
           <li onClick={closeLeftNav}>
-            <NavIconContainer to={"/system/people"} active={["/system/people"].includes(location.pathname)}>
+            <NavIconContainer to={"/system/people/all"} active={["/system/people"].includes(location.pathname)}>
               <NavIcon icon={"user"} />
               <div>{dictionary.people}</div>
             </NavIconContainer>

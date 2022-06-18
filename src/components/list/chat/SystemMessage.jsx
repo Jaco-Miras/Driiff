@@ -71,7 +71,7 @@ const SystemMessageContent = styled.span`
   width: 100%;
   cursor: ${(props) => (props.isPostNotification ? "pointer" : "auto")};
   strong {
-    cursor: ${(props) => (props.isZoomMessage ? "pointer" : "auto")};
+    cursor: ${(props) => (props.isMeetMessage ? "pointer" : "auto")};
   }
 `;
 const ChatTimeStamp = styled.div`
@@ -86,6 +86,20 @@ const ChatTimeStamp = styled.div`
   align-items: center;
   white-space: nowrap;
 `;
+// const getSlug = () => {
+//   let driff = localStorage.getItem("slug");
+//   if (driff) {
+//     return driff;
+//   } else {
+//     const host = window.location.host.split(".");
+//     if (host.length === 3) {
+//       localStorage.setItem("slug", host[0]);
+//       return host[0];
+//     } else {
+//       return null;
+//     }
+//   }
+// };
 const THRESHOLD = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
 const SystemMessage = (props) => {
   const { reply, selectedChannel, isLastChat, chatMessageActions, user, timeFormat, dictionary } = props;
@@ -150,14 +164,21 @@ const SystemMessage = (props) => {
     // if (zoomLink) zoomLink.addEventListener("click", handleZoomLink, true);
 
     let zLink = null;
+    //let jLink = null;
 
     if (reply.body.startsWith("ZOOM_MEETING::{")) {
       zLink = messageRef.current.querySelector("strong");
       if (zLink) zLink.addEventListener("click", handleZoomLink, true);
     }
 
+    // if (reply.body.startsWith("DRIFF_TALK::{")) {
+    //   jLink = messageRef.current.querySelector("strong");
+    //   if (jLink) jLink.addEventListener("click", handleJitsiLink, true);
+    // }
+
     return () => {
       if (zLink) zLink.removeEventListener("click", handleZoomLink, true);
+      //if (jLink) jLink.removeEventListener("click", handleJitsiLink, true);
     };
   }, []);
 
@@ -173,9 +194,9 @@ const SystemMessage = (props) => {
         let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
         if (params && params.workspaceId) {
           if (params.folderId) {
-            history.push(`/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           } else {
-            history.push(`/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+            history.push(`/hub/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           }
         } else {
           history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);
@@ -191,7 +212,7 @@ const SystemMessage = (props) => {
         ref={messageRef}
         dangerouslySetInnerHTML={{ __html: parseBody }}
         isPostNotification={reply.body.includes("POST_CREATE::")}
-        isZoomMessage={reply.body.includes("ZOOM_MEETING::")}
+        isMeetMessage={reply.body.includes("ZOOM_MEETING::") || reply.body.includes("DRIFF_TALK::")}
       />
       <ChatTimeStamp className="chat-timestamp" isAuthor={false}>
         <span className="reply-date created">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>

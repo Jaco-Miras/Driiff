@@ -83,14 +83,28 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest, enable_all_notification_reply_in_email },
+    generalSettings: {
+      language,
+      timezone,
+      date_format,
+      time_format,
+      dark_mode,
+      notifications_on,
+      log_rocket,
+      sentry,
+      logs,
+      notification_sound,
+      order_channel: orderChannel,
+      chat_language,
+      daily_digest,
+      enable_all_notification_reply_in_email,
+    },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
-
 
     // driffSettings,
   } = useSettings();
@@ -99,13 +113,22 @@ const ProfileSettings = (props) => {
 
   const { _t } = useTranslationActions();
 
+  const i18n = localStorage.getItem("i18n") ? JSON.parse(localStorage.getItem("i18n")) : {};
   const i18new = localStorage.getItem("i18new") ? JSON.parse(localStorage.getItem("i18new")) : {};
 
-  const uploadTranslationToServer = (callback = () => { }) => {
+  const i18update = {};
+
+  for (let key in i18new) {
+    if (!(key in i18n)) {
+      i18update[key] = i18new[key];
+    }
+  }
+
+  const uploadTranslationToServer = (callback = () => {}) => {
     let vocabulary = [];
     let bodyText = "You are about to add the following words to the dictionary files, continue?";
     bodyText += "<table>";
-    Object.keys(i18new).forEach((k) => {
+    Object.keys(i18update).forEach((k) => {
       bodyText += "<tr>";
       bodyText += `<td>${k}</td>`;
       bodyText += `<td>${i18new[k]}</td>`;
@@ -176,7 +199,6 @@ const ProfileSettings = (props) => {
     // },
   ];
   const emailOptions = [
-
     {
       value: true,
       label: dictionary.emailToggleLabelOn,
