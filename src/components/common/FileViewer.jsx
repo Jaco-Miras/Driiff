@@ -281,7 +281,7 @@ const FileRender = (props) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
       let token = viewFiles.workspace_id && workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].auth_token : viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken");
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug })}/file-view-attempt/${file.file_id}/${token}`;
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug || workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
     } else {
       let img = document.querySelector(`.file-item[data-index="${e.currentTarget.dataset.index}"] img`);
       img.classList.remove("d-none");
