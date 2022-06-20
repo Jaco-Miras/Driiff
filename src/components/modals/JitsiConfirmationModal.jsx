@@ -104,7 +104,7 @@ const JitsiConfirmationModal = (props) => {
     let payload = {
       channel_id: selectedChannel.id,
       host: true,
-      room_name: getSlug() + "~" + parseChannel + "~" + selectedChannel.id,
+      room_name: slug + "~" + parseChannel + "~" + selectedChannel.id,
     };
 
     if (deviceType === "mobile" && browserName === "WebKit") {
