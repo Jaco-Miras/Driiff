@@ -109,7 +109,7 @@ const ChannelIcon = (props) => {
     }
   };
   return (
-    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={() => console.log(1)}>
+    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={handleSelectChannel}>
       {channel && channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <Avatar
           imageLink={channel.profile.profile_image_link}

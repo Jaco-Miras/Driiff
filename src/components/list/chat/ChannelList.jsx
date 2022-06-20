@@ -176,7 +176,7 @@ const ChannelList = (props) => {
       tabIndex={tabIndex}
       onKeyDown={(e) => handleResultKeydown(e, index)}
     >
-      <ChannelIcon channel={channel} />
+      <ChannelIcon channel={channel} onSelectChannel={handleSelectChannel} />
       <div className="channel-info" ref={addLoadRef ? loadRef : null}>
         <div className="channel-title-preview">
           <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} dictionary={dictionary} />
