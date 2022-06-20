@@ -145,6 +145,7 @@ const MainLayout = (props) => {
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
           history.replace({ state: {} });
+          if (err) return;
           let redirectLink = "/dashboard";
           if (res.data.data.current_workspace) {
             redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
@@ -152,7 +153,6 @@ const MainLayout = (props) => {
             redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
           }
           history.push(redirectLink);
-          if (err) return;
           dispatch(
             getSharedWorkspaces({}, (err, response) => {
               if (err) return;
