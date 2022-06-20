@@ -108,7 +108,9 @@ const FavChannel = (props) => {
   const { className = "", channel, selectedChannel, channelDrafts, dictionary, onSelectChannel } = props;
 
   const handleSelectChannel = () => {
-    onSelectChannel(channel);
+    if (onSelectChannel) {
+      onSelectChannel(channel);
+    }
   };
 
   return (

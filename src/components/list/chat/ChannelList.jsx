@@ -142,7 +142,9 @@ const ChannelList = (props) => {
   }, [addLoadRef, loadInView]);
 
   const handleSelectChannel = () => {
-    onSelectChannel(channel);
+    if (onSelectChannel) {
+      onSelectChannel(channel);
+    }
   };
 
   const handleResultKeydown = (e, k) => {
