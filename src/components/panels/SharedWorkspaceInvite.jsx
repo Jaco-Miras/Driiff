@@ -199,17 +199,6 @@ const SharedWorkspaceInvite = (props) => {
         if (res) {
           localStorage.removeItem(slug);
           window.location.href = `${process.env.REACT_APP_apiProtocol}${driffName}.${process.env.REACT_APP_localDNSName}/login?state_code=${form.state_code}&invite_slug=${slug}`;
-          //   let payload = {
-          //     url: `https://${slug}.driff.network/api/v2/shared-workspace-invite-accept`,
-          //     state_code: form.state_code,
-          //     slug: driff,
-          //   };
-          //   dispatch(
-          //     acceptSharedUserInvite(payload, (err, res) => {
-          //       if (err) return;
-          //       history.replace({ state: {} });
-          //     })
-          //   );
         }
       })
     );
