@@ -26,9 +26,11 @@ const VideoMeeting = () => {
   return (
     <JaaSMeeting
       appId={appId}
-      jwt={params?.jwt_token}
       roomName={params?.room_name}
       configOverwrite={{
+        SHOW_POWERED_BY: false,
+        SHOW_PROMOTIONAL_CLOSE_PAGE: false,
+        MOBILE_APP_PROMO: false,
         startWithAudioMuted: true,
         hiddenPremeetingButtons: ["microphone"],
         enableLobbyChat: false,
@@ -74,6 +76,7 @@ const VideoMeeting = () => {
           "__end",
         ],
       }}
+
       onReadyToClose={handleClearJitsi}
       onApiReady={(externalApi) => {
         console.log(externalApi, "jitsi api");
