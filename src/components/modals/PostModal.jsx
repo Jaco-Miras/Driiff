@@ -1193,15 +1193,15 @@ const PostModal = (props) => {
             <FormInput name="title" isValid={formResponse.valid.title} feedback={formResponse.message.title} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
-        {!isSharedWorkspace && (
-          <WrapperDiv className={"modal-input addressed-to-container"}>
-            <Label className={"modal-label"} for="workspace">
-              {dictionary.addressedTo}
-            </Label>
-            <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
-            {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
-          </WrapperDiv>
-        )}
+
+        <WrapperDiv className={"modal-input addressed-to-container"}>
+          <Label className={"modal-label"} for="workspace">
+            {dictionary.addressedTo}
+          </Label>
+          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} isDisabled={isSharedWorkspace} />
+          {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
+        </WrapperDiv>
+
         {!isSharedWorkspace && (
           <WrapperDiv className={"m-0"}>
             <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
