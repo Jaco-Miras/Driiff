@@ -176,6 +176,9 @@ const StyledBadge = styled(Badge)`
         case "WATCHER": {
           return "#FFEC59";
         }
+        case "SHARED_TEAM_LEAD": {
+          return "#33b5e5";
+        }
         default:
           return "#fb3";
       }
@@ -346,15 +349,16 @@ const TeamListItem = (props) => {
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
           <div className="badge-container">
-            {isSharedWorkspace && member.is_creator && <StyledBadge role={member.workspace_role} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
+            {member.workspace_role}
+            {isSharedWorkspace && member.is_creator && <StyledBadge role={"SHARED_TEAM_LEAD"} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
             {member.workspace_role && member.workspace_role !== "" && (
               <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
             )}
-            {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
-            {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
+            {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
+            {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleInvited} />}
             {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
               <>
-                <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
+                <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />
               </>
             )}
           </div>
