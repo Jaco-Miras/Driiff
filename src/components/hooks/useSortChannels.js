@@ -254,7 +254,6 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
         if (a.is_active === false && b.is_active) {
           return 1;
         }
-
         if (a.last_reply && b.last_reply) {
           if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
             return a.title.localeCompare(b.title);
@@ -263,14 +262,23 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           }
         }
 
-        if (a.last_reply && !b.last_reply) {
+        if (a.last_reply && !b.last_reply && !b.sharedSlug && !a.sharedSlug) {
           return -1;
         }
 
-        if (!a.last_reply && b.last_reply) {
+        if (!a.last_reply && b.last_reply && !b.sharedSlug && !a.sharedSlug) {
           return 1;
         }
+        if (!a.last_reply && b.last_reply && a.sharedSlug && b.sharedSlug) {
+          return 1;
+        }
+        if (a.last_reply && !b.last_reply && a.sharedSlug && b.sharedSlug) {
+          return -1;
+        }
 
+        if (!a.last_reply && !b.last_reply && a.sharedSlug && b.sharedSlug) {
+          return b.created_at.timestamp - a.created_at.timestamp;
+        }
         if (!a.last_reply && !b.last_reply) {
           return a.title.localeCompare(b.title);
         }
