@@ -4,9 +4,10 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize, useWorkspace } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 import { sessionService } from "redux-react-session";
+import { saveAs } from "file-saver";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -303,7 +304,10 @@ const FileRender = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    window.open(file.download_link);
+    let token = viewFiles.workspace_id && workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].auth_token : viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken");
+
+    const retrieved = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug || workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
+    saveAs(retrieved, file.filename ? file.filename : file.search ? file.search : file.name);
     // handle.blur();
     // window.focus();
   };
@@ -466,6 +470,8 @@ const FileViewer = (props) => {
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
   //const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const { localizeDate } = useTimeFormat();
+  const { workspace } = useWorkspace();
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [files, setFiles] = useState([]);
@@ -506,7 +512,16 @@ const FileViewer = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    window.open(file.download_link);
+
+    let token = currentSharedWorkspace?.auth_token;
+    let retrieved = `${getAPIUrl({ isDNS: true, sharedSlug: workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
+
+    if (file.imgSrc) {
+      retrieved = URL.getFromObjectURL(file.imgSrc);
+    }
+    saveAs(retrieved, file.filename ? file.filename : file.search ? file.search : file.name);
+
+    // window.open(file.download_link);
     // handle.blur();
     // window.focus();
   };
