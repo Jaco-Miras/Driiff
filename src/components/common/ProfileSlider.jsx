@@ -124,7 +124,7 @@ const ProfileSlider = (props) => {
         {/* <div className="info-x">
           <span>{dictionary.information}</span>
         </div> */}
-        <div className="d-flex mt-2">
+        {/* <div className="d-flex mt-2">
           <div className="labels-wrapper">
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
@@ -141,6 +141,41 @@ const ProfileSlider = (props) => {
             <span>{!sharedUser ? null : user?.role && user?.role.display_name}</span>
             {!sharedUser && loggedUser.type === "internal" && <span>{user?.email}</span>}
           </div>
+        </div> */}
+
+        <div className="d-flex flex-column mt-3">
+          <div className="d-flex justify-content-between">
+            <div className="w-50 ">{dictionary.firstName}</div>
+            <div className="w-50 text-right">{sharedUser ? sharedUser.first_name : user?.first_name}</div>
+          </div>
+          <div className="d-flex justify-content-between">
+            <div className="w-50 ">{dictionary.lastName}</div>
+            <div className="w-50 text-right">{sharedUser ? sharedUser.last_name : user?.last_name}</div>
+          </div>
+          {sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50">{dictionary.companyName}</div>
+              <div className="w-50 text-right">{sharedUser.company_name}</div>
+            </div>
+          )}
+          {sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50">{dictionary.slugName}</div>
+              <div className="w-50 text-right">{sharedUser.slug}</div>
+            </div>
+          )}
+          {!sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50">{dictionary.position}</div>
+              <div className="w-50 text-right">{!sharedUser ? null : user?.role && user?.role.display_name}</div>
+            </div>
+          )}
+          {!sharedUser && loggedUser.type === "internal" && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50">{dictionary.email}</div>
+              <div className="w-50 text-right">{user?.email}</div>
+            </div>
+          )}
         </div>
       </div>
     </ProfileWrapper>
