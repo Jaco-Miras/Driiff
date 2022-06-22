@@ -625,7 +625,7 @@ const WorspaceHeaderPanel = (props) => {
 
   const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
 
-  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id;
+  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator)?.id === user.id;
   const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id);
 
   const showInviteButton = (isCreator || isTeamMember) && !isExternal;
