@@ -949,14 +949,36 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const handleUpdateWorkspaceIcon = (payload, file) => {
+  const handleUpdateWorkspaceIcon = (payload, file, workspace) => {
     let formData = new FormData();
     formData.append("files[0]", file);
+    let sharedPayload = null;
+    let updatePayload = {
+      ...payload,
+      topic_id: workspace.id,
+      workspace_id: workspace.workspace_id,
+    };
+    if (mode === "create" && payload.is_shared_wp && sharedWs[`${slug}-shared`]) {
+      sharedPayload = { slug: `${slug}-shared`, token: sharedWs[`${slug}-shared`].access_token, is_shared: true };
+      const sharedMembers = workspace.members.filter((m) => {
+        return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
+      });
+      updatePayload = {
+        ...updatePayload,
+        shared_workspace_member_ids: sharedMembers.map((ex) => ex.id),
+        new_shared_workspace_members: [],
+        new_member_ids: [],
+      };
+    } else if (mode === "edit" && item.is_shared_wp && sharedWs[item.slug]) {
+      sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+    }
+
     uploadFiles(
       {
         is_primary: 0,
-        topic_id: payload.topic_id ? payload.topic_id : payload.id,
+        topic_id: workspace.id,
         files: formData,
+        sharedPayload: sharedPayload,
       },
       (err, res) => {
         if (err) {
@@ -965,10 +987,8 @@ const CreateEditWorkspaceModal = (props) => {
         }
         dispatch(
           updateWorkspace({
-            ...payload,
-            topic_id: payload.topic_id ? payload.topic_id : payload.id,
+            ...updatePayload,
             file_id: res.data.files[0].id,
-            workspace_id: payload.folder_id ? payload.folder_id : payload.workspace_id,
           })
         );
       }
@@ -1150,7 +1170,7 @@ const CreateEditWorkspaceModal = (props) => {
           if (err) return;
 
           if (form.icon) {
-            handleUpdateWorkspaceIcon(payload, form.icon);
+            handleUpdateWorkspaceIcon(payload, form.icon, res.data);
           }
 
           if (res.data) {
@@ -1454,7 +1474,7 @@ const CreateEditWorkspaceModal = (props) => {
 
               dispatch(setActiveTopic(newWorkspace));
               if (form.icon) {
-                handleUpdateWorkspaceIcon(newWorkspace, form.icon);
+                handleUpdateWorkspaceIcon(payload, form.icon, newWorkspace);
               }
 
               if (form.selectedFolder !== null) {
