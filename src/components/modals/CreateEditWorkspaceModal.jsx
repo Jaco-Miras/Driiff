@@ -638,6 +638,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
+    if (name === "is_shared_wp" && mode === "edit" && item && item.is_shared_wp) return;
     const checked = !form[name];
     if (name === "has_externals" && !hasGuestAccess) return;
     if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
@@ -2441,7 +2442,7 @@ const CreateEditWorkspaceModal = (props) => {
               </CheckBox>
             </div>
             <div>
-              <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck}>
+              <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck} disabled={mode === "edit" && item.is_shared_wp}>
                 {dictionary.shareWorkspace}
               </CheckBox>
             </div>
