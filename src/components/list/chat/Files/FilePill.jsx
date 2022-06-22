@@ -4,7 +4,6 @@ import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
-import { useWorkspace } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;

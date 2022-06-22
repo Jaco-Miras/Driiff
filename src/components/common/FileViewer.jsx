@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat, useWindowSize, useWorkspace } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 import { sessionService } from "redux-react-session";
 import { saveAs } from "file-saver";
