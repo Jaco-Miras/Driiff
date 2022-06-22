@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat, useWindowSize, useWorkspace } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 import { sessionService } from "redux-react-session";
 import { saveAs } from "file-saver";
@@ -468,9 +468,9 @@ const FileViewer = (props) => {
   const channelFiles = useSelector((state) => state.files.channelFiles);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   //const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const { localizeDate } = useTimeFormat();
-  const { workspace } = useWorkspace();
   const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
 
   const [activeIndex, setActiveIndex] = useState(0);
