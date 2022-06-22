@@ -20,6 +20,7 @@
     "eslint": "^6.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
+    "file-saver": "^2.0.5",
     "hex-to-css-filter": "^2.0.4",
     "is-valid-domain": "^0.1.2",
     "laravel-echo": "^1.7.0",
