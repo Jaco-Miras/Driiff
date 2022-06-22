@@ -4336,15 +4336,29 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
-    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS":
-    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
-      const workspaceId = action.data.quick_links[0].group_id;
+    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS": {
+      let workspaceKey = action.data.quick_links[0].group_id;
+      if (action.data.sharedSlug) {
+        workspaceKey = `${action.data.quick_links[0].group_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         workspaceQuickLinks: {
           ...state.workspaceQuickLinks,
-          [workspaceId]: action.data.quick_links,
+          [workspaceKey]: action.data.quick_links,
+        },
+      };
+    }
+    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
+      let workspaceKey = action.data[0].group_id;
+      if (action.isSharedSlug) {
+        workspaceKey = `${action.data[0].group_id}-${action.slug}`;
+      }
+      return {
+        ...state,
+        workspaceQuickLinks: {
+          ...state.workspaceQuickLinks,
+          [workspaceKey]: action.data,
         },
       };
     }

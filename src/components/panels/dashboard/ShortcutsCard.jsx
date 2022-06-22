@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { SvgIconFeather, ToolTip } from "../../common";
 import { FancyLink } from "../../common";
@@ -78,14 +78,25 @@ const PersonalLinkList = styled.li`
 
 const ShortcutsCard = (props) => {
   const { dictionary, isWorkspace = false, workspace = null } = props;
-  const params = useParams();
+  const route = useRouteMatch();
+  const { params, url } = route;
   const dispatch = useDispatch();
   const companyLinks = useSelector((state) => state.global.links.filter((l) => l.id && l.menu_name.trim() !== "" && l.link.trim() !== ""));
   const linksFetched = useSelector((state) => state.global.linksFetched);
-  const wsQuickLinks = useSelector((state) => state.workspaces.workspaceQuickLinks[params.workspaceId]);
+  const wsQuickLinks = useSelector((state) => state.workspaces.workspaceQuickLinks);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [fetchingWsQuicklinks, setFetchingWsQuicklins] = useState(false);
   const { generalSettings, showModal } = useSettings();
+
+  const workspaceRef = useRef(null);
+  const sharedWsRef = useRef(null);
+
+  useEffect(() => {
+    if (workspace) workspaceRef.current = workspace;
+    if (sharedWs) sharedWsRef.current = sharedWs;
+  }, [workspace, sharedWs]);
+
+  let hubQuicklinks = url.startsWith("/shared-hub") && workspace && workspace.sharedSlug ? wsQuickLinks[workspace.key] : wsQuickLinks[params.workspaceId];
 
   const handleAddItemClick = () => {
     showModal("personal_link_create");
@@ -94,7 +105,7 @@ const ShortcutsCard = (props) => {
   const handleShowWsQuicklinksModal = () => {
     let payload = {
       type: "workspace-quicklinks",
-      links: wsQuickLinks,
+      links: hubQuicklinks,
       workspaceId: params.workspaceId,
       sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
     };
@@ -110,36 +121,41 @@ const ShortcutsCard = (props) => {
 
   useEffect(() => {
     if (!linksFetched && !isWorkspace) dispatch(getQuickLinks());
-    if (isWorkspace && !wsQuickLinks) {
-      let payload = {
-        workspace_id: params.workspaceId,
-      };
-      if (workspace && workspace.sharedSlug) {
+    let payload = {
+      workspace_id: params.workspaceId,
+    };
+    if (isWorkspace && url.startsWith("/hub") && !wsQuickLinks[params.workspaceId]) {
+      dispatch(getWorkspaceQuickLinks(payload));
+    } else if (isWorkspace && url.startsWith("/shared-hub") && workspace && !wsQuickLinks[workspace.key]) {
+      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
         payload = {
           ...payload,
           sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
         };
+        dispatch(getWorkspaceQuickLinks(payload));
       }
-      dispatch(getWorkspaceQuickLinks(payload));
     }
   }, []);
 
   useEffect(() => {
     if (fetchingWsQuicklinks) return;
-    if (isWorkspace && !wsQuickLinks) {
-      let payload = {
-        workspace_id: params.workspaceId,
-      };
-      if (workspace && workspace.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
-        };
-      }
+    let payload = {
+      workspace_id: params.workspaceId,
+    };
+    if (isWorkspace && url.startsWith("/hub") && !wsQuickLinks[params.workspaceId]) {
       setFetchingWsQuicklins(true);
       dispatch(getWorkspaceQuickLinks(payload, () => setFetchingWsQuicklins(false)));
+    } else if (isWorkspace && url.startsWith("/shared-hub") && workspaceRef.current && !wsQuickLinks[workspaceRef.current.key]) {
+      if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+        payload = {
+          ...payload,
+          sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
+        };
+        setFetchingWsQuicklins(true);
+        dispatch(getWorkspaceQuickLinks(payload, () => setFetchingWsQuicklins(false)));
+      }
     }
-  }, [params.workspaceId, wsQuickLinks]);
+  }, [params.workspaceId, wsQuickLinks, url, fetchingWsQuicklinks, workspace]);
 
   return (
     <Wrapper>
@@ -148,10 +164,10 @@ const ShortcutsCard = (props) => {
         <ToolTip content={isWorkspace ? dictionary.wsShorcutsTooltip : dictionary.shorcutsTooltip}>
           <SvgIconFeather icon="info" />
         </ToolTip>
-        {isWorkspace && wsQuickLinks && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
+        {isWorkspace && hubQuicklinks && <SvgIconFeather className="ml-auto" icon="circle-plus" width={24} height={24} onClick={handleShowWsQuicklinksModal} />}
       </span>
       {companyLinks.length === 0 && linksFetched && !isWorkspace && <span className="mt-3">{dictionary.noQuickLinks}</span>}
-      {isWorkspace && wsQuickLinks && wsQuickLinks.filter((l) => l.link !== "").length === 0 && <span className="mt-3">{dictionary.noWsQuickLinks}</span>}
+      {isWorkspace && hubQuicklinks && hubQuicklinks.filter((l) => l.link !== "").length === 0 && <span className="mt-3">{dictionary.noWsQuickLinks}</span>}
       {!isWorkspace && (
         <ul className="mt-2">
           {companyLinks.map((l) => {
@@ -164,9 +180,9 @@ const ShortcutsCard = (props) => {
           })}
         </ul>
       )}
-      {isWorkspace && wsQuickLinks && (
+      {isWorkspace && hubQuicklinks && (
         <ul className="mt-2 ws-quicklinks-lists">
-          {wsQuickLinks
+          {hubQuicklinks
             .filter((l) => l.link !== "")
             .map((l) => {
               const securedLink = !l.link.startsWith("http") ? "https://" + l.link : l.link;
