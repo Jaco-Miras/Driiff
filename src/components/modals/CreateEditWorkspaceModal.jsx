@@ -957,6 +957,7 @@ const CreateEditWorkspaceModal = (props) => {
       ...payload,
       topic_id: workspace.id,
       workspace_id: workspace.workspace_id,
+      new_member_ids: [],
     };
     if (mode === "create" && payload.is_shared_wp && sharedWs[`${slug}-shared`]) {
       sharedPayload = { slug: `${slug}-shared`, token: sharedWs[`${slug}-shared`].access_token, is_shared: true };
