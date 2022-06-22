@@ -19,6 +19,7 @@ const VideoMeeting = (props) => {
   return (
     <JaaSMeeting
       appId={appId}
+      jwt={params?.jwt_token}
       roomName={params?.room_name}
       configOverwrite={{
         startWithAudioMuted: true,

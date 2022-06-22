@@ -67,9 +67,6 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/workspace/chat", "/workspace/:page", "/magic-link/:token"]}>
             {children}
           </Route>
-          <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"}>
-            {children}
-          </Route>
           <Redirect
             path="*"
             to={{
@@ -87,6 +84,14 @@ export const AppRoute = ({ children, ...props }) => {
           {...props}
           component={GuestLayout}
           path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token", "/authenticate-ios/:tokens"]}
+          exact
+        >
+          {children}
+        </Route>
+        <Route
+          {...props}
+          component={VideoMeeting}
+          path={"/video-meeting/:room_name/:jwt_token"}
           exact
         >
           {children}
