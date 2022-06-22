@@ -5,8 +5,8 @@ import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { useTranslationActions } from "../hooks";
-import { createJitsiMeet } from "../../redux/actions/chatActions";
-import { browserName, deviceType } from "react-device-detect";
+import { createJitsiMeet, createJitsiMeetMobile } from "../../redux/actions/chatActions";
+import { browserName, deviceType, isIOS, isMobileOnly } from "react-device-detect";
 import { getDriffName } from "../hooks/useDriff";
 
 const ModalWrapper = styled(Modal)`
@@ -93,15 +93,14 @@ const JitsiConfirmationModal = (props) => {
       host: true,
       room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
     };
-    if (deviceType === "mobile" && browserName === "WebKit") {
+    if (isIOS && isMobileOnly && browserName === "WebKit") {
       dispatch(
-        createJitsiMeet(payload, (err, res) => {
+        createJitsiMeetMobile(payload, (err, res) => {
           if (err) {
             toggle();
             return;
           }
           window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: slugName, status: "OK", token: res.data._token, room: res.data.room_name });
-          toggle();
         })
       );
     } else {
