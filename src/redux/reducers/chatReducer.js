@@ -241,7 +241,7 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "GET_CHANNEL_SUCCESS": {
-      let sharedChannel = action.slug !== getSlug();
+      let sharedChannel = action.isSharedSlug;
       let channel = null;
       if (sharedChannel) {
         channel = {
@@ -252,7 +252,7 @@ export default function (state = INITIAL_STATE, action) {
           slug: action.slug,
           sharedSlug: true,
         };
-      } else {
+      } else if (state.channels[action.data.id]) {
         channel = { ...state.channels[action.data.id] };
       }
       if (!channel) {
@@ -265,13 +265,12 @@ export default function (state = INITIAL_STATE, action) {
           sharedSlug: false,
         };
       }
-
       return {
         ...state,
         channels: {
           ...state.channels,
           ...(channel && {
-            [sharedChannel ? channel.code : channel.id]: channel,
+            [channel.sharedSlug ? channel.code : channel.id]: channel,
           }),
         },
       };
