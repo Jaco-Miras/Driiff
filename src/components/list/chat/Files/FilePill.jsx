@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
 import { isMacOs, isMobileSafari, isSafari } from "react-device-detect";
-import { useWorkspace } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -96,7 +95,7 @@ const FilePill = (props) => {
   }
 
   const dispatch = useDispatch();
-  const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
   //const refImageLoader = useRef();
   const refImage = useRef();
