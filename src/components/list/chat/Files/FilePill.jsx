@@ -95,7 +95,7 @@ const FilePill = (props) => {
   }
 
   const dispatch = useDispatch();
-  const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
   //const refImageLoader = useRef();
   const refImage = useRef();

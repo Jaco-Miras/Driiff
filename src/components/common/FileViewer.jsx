@@ -470,7 +470,7 @@ const FileViewer = (props) => {
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
   //const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const { localizeDate } = useTimeFormat();
-  const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
 
   const [activeIndex, setActiveIndex] = useState(0);
