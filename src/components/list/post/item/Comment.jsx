@@ -331,15 +331,6 @@ const Comment = (props) => {
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
-    // let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    // if (file) {
-    //   dispatch(
-    //     setViewFiles({
-    //       file_id: file.id,
-    //       files: comment.files,
-    //     })
-    //   );
-    // }
     let id = null;
     if (e.target.dataset.id) id = e.target.dataset.id;
 

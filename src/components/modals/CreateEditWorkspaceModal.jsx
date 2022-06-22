@@ -367,7 +367,7 @@ const CreateEditWorkspaceModal = (props) => {
   );
 
   const [form, setForm] = useState({
-    is_private: null,
+    is_private: item && item.is_shared_wp ? true : null,
     has_folder: item !== null && item.type === "WORKSPACE" && item.folder_id !== null,
     icon: null,
     icon_link: item && item.team_channel ? item.team_channel.icon_link : null,
@@ -453,7 +453,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const [inactiveMembers, setInactiveMembers] = useState([]);
 
-  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage } = useProfilePicUpload();
+  const { renderDropDocumentGuest, guestUploadModal, currentProfilePic, batchUploadExternalUserProfilePic, batchEditUploadExternalUserProfilePic, updateMembers, previewImage, resetPreview, setPreviewImage } = useProfilePicUpload();
 
   const allUsers = [...Object.values(users), ...inactiveUsers];
 
@@ -489,6 +489,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
     lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
     lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
+    workspaceTypeIsInviteOnly: _t("WORKSPACE.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are always invite only."),
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
     unArchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -552,7 +553,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceIsArchived: _t("TOASTER.WORKSPACE_IS_ARCHIVED", "workpace is archived"),
     disabledWorkspaceExternalsInfo: _t("WORKSPACE.NOT_ALLOWED_INVITE_INFO", "Your account is not allowed to invite people. Contact your administrator."),
     uploadProfilePic: _t("BUTTON.UPLOAD_PROFILE_PIC", "Upload Profile Picture"),
-    shareWorkspace: _t("CHECKBOX.SHARE_WORKSPACE", "Share workspace"),
+    shareWorkspace: _t("CHECKBOX.SHARE_WORKSPACE", "Share hub"),
   };
 
   const _validateName = useCallback(() => {
@@ -637,6 +638,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const toggleCheck = (e) => {
     const name = e.target.dataset.name;
+    if (name === "is_shared_wp" && mode === "edit" && item && item.is_shared_wp) return;
     const checked = !form[name];
     if (name === "has_externals" && !hasGuestAccess) return;
     if (name === "has_externals" && !checked && (form.selectedExternals.length || invitedExternals.length)) {
@@ -752,7 +754,9 @@ const CreateEditWorkspaceModal = (props) => {
   const handleCreateOption = (inputValue) => {
     const external = invitedExternals.find((ex) => ex.email === inputValue);
     if (external) setInvitedExternal(external);
-    else setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    else {
+      setInvitedExternal({ email: inputValue, first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
+    }
     toggleNested();
     setExternalNestedMode(true);
     setForm((prevState) => ({
@@ -945,14 +949,36 @@ const CreateEditWorkspaceModal = (props) => {
     }
   };
 
-  const handleUpdateWorkspaceIcon = (payload, file) => {
+  const handleUpdateWorkspaceIcon = (payload, file, workspace) => {
     let formData = new FormData();
     formData.append("files[0]", file);
+    let sharedPayload = null;
+    let updatePayload = {
+      ...payload,
+      topic_id: workspace.id,
+      workspace_id: workspace.workspace_id,
+    };
+    if (mode === "create" && payload.is_shared_wp && sharedWs[`${slug}-shared`]) {
+      sharedPayload = { slug: `${slug}-shared`, token: sharedWs[`${slug}-shared`].access_token, is_shared: true };
+      const sharedMembers = workspace.members.filter((m) => {
+        return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
+      });
+      updatePayload = {
+        ...updatePayload,
+        shared_workspace_member_ids: sharedMembers.map((ex) => ex.id),
+        new_shared_workspace_members: [],
+        new_member_ids: [],
+      };
+    } else if (mode === "edit" && item.is_shared_wp && sharedWs[item.slug]) {
+      sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+    }
+
     uploadFiles(
       {
         is_primary: 0,
-        topic_id: payload.topic_id ? payload.topic_id : payload.id,
+        topic_id: workspace.id,
         files: formData,
+        sharedPayload: sharedPayload,
       },
       (err, res) => {
         if (err) {
@@ -961,10 +987,8 @@ const CreateEditWorkspaceModal = (props) => {
         }
         dispatch(
           updateWorkspace({
-            ...payload,
-            topic_id: payload.topic_id ? payload.topic_id : payload.id,
+            ...updatePayload,
             file_id: res.data.files[0].id,
-            workspace_id: payload.folder_id ? payload.folder_id : payload.workspace_id,
           })
         );
       }
@@ -983,7 +1007,7 @@ const CreateEditWorkspaceModal = (props) => {
       description: form.description,
       is_external: 0,
       member_ids: member_ids,
-      is_lock: form.is_private ? 1 : 0,
+      is_lock: form.is_shared_wp ? 1 : form.is_private ? 1 : 0,
       workspace_id: form.selectedFolder && typeof form.selectedFolder.value === "number" && form.has_folder ? form.selectedFolder.value : 0,
       file_ids: inlineImages.map((i) => i.id),
       new_team_member_ids: [],
@@ -1087,9 +1111,14 @@ const CreateEditWorkspaceModal = (props) => {
       const teamIds = activeTeams.map((t) => t.id);
       const selectedTeams = form.selectedUsers.filter((m) => m.hasOwnProperty("members"));
 
-      const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
-      const notSharedMembersId = notSharedMembers.map((m) => m.id);
-      const removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      let removed_members = [];
+      if (item.is_shared_wp) {
+        const notSharedMembers = item.members.filter((m) => !m.hasOwnProperty("members") && m.slug && m.slug === slug);
+        const notSharedMembersId = notSharedMembers.map((m) => m.id);
+        removed_members = notSharedMembers.filter((m) => !m.hasOwnProperty("members") && !notSharedMembersId.some((id) => m.id === id));
+      } else {
+        removed_members = item.members.filter((m) => !m.hasOwnProperty("members") && !member_ids.some((id) => m.id === id));
+      }
 
       const removed_teams = teamIds.length ? activeTeams.filter((t) => !selectedTeams.some((st) => st.id === t.id)) : [];
 
@@ -1110,12 +1139,6 @@ const CreateEditWorkspaceModal = (props) => {
         remove_team_member_ids: removed_teams.map((t) => t.id),
         team_member_ids: activeTeams.map((t) => t.id),
       };
-      if (item && item.sharedSlug) {
-        payload = {
-          ...payload,
-          sharedPayload: { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true },
-        };
-      }
       if (
         removed_members.filter((rm) => rm.has_accepted).length ||
         payload.new_member_ids.filter((r) => !invitedIds.some((id) => id === r) && !inactiveMembers.some((m) => m.id === r)).length ||
@@ -1147,7 +1170,7 @@ const CreateEditWorkspaceModal = (props) => {
           if (err) return;
 
           if (form.icon) {
-            handleUpdateWorkspaceIcon(payload, form.icon);
+            handleUpdateWorkspaceIcon(payload, form.icon, res.data);
           }
 
           if (res.data) {
@@ -1165,7 +1188,7 @@ const CreateEditWorkspaceModal = (props) => {
               return found ? found : member;
             });
 
-            updateMembers(updatedMembers, res.data.id);
+            if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
 
             const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
             if (sendByMyselfEmail) {
@@ -1193,10 +1216,11 @@ const CreateEditWorkspaceModal = (props) => {
               })
             );
           }
+          let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 
@@ -1292,7 +1316,7 @@ const CreateEditWorkspaceModal = (props) => {
                 return found ? found : member;
               });
 
-              updateMembers(updatedMembers, res.data.id);
+              if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
 
               if (attachedFiles.length) {
                 let formData = new FormData();
@@ -1342,9 +1366,10 @@ const CreateEditWorkspaceModal = (props) => {
                 sharedSlug: form.is_shared_wp,
                 slug: form.is_shared_wp ? `${slug}-shared` : slug,
                 key: form.is_shared_wp ? `${res.data.id}-${slug}-shared` : res.data.id,
+                is_shared_wp: form.is_shared_wp,
               };
 
-              let ws_type = form.is_shared_wp ? "shared-workspace" : "workspace";
+              let ws_type = form.is_shared_wp ? "shared-hub" : "hub";
 
               if (form.is_shared_wp) {
                 // check if user has shared-auth loaded
@@ -1449,7 +1474,7 @@ const CreateEditWorkspaceModal = (props) => {
 
               dispatch(setActiveTopic(newWorkspace));
               if (form.icon) {
-                handleUpdateWorkspaceIcon(newWorkspace, form.icon);
+                handleUpdateWorkspaceIcon(payload, form.icon, newWorkspace);
               }
 
               if (form.selectedFolder !== null) {
@@ -1743,7 +1768,7 @@ const CreateEditWorkspaceModal = (props) => {
       let externalMembers = [];
       let teamMembers = [];
       let sharedMembers = [];
-      let is_private = item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
+      let is_private = item.is_shared_wp ? true : item.type !== undefined && item.type === "WORKSPACE" ? item.is_lock === 1 : item.private === 1;
       if (item.members.length) {
         teamMembers = item.members
           .filter((m) => m.type !== "internal" && m.type !== "external")
@@ -1757,7 +1782,13 @@ const CreateEditWorkspaceModal = (props) => {
             };
           });
         members = item.members
-          .filter((m) => m.active === 1 && m.type === "internal" && m.slug && m.slug === slug)
+          .filter((m) => {
+            if (item && item.is_shared_wp) {
+              return m.active === 1 && m.type === "internal" && m.slug && m.slug === slug;
+            } else {
+              return m.active === 1 && m.type === "internal";
+            }
+          })
           .map((m) => {
             return {
               value: m.id,
@@ -1953,7 +1984,7 @@ const CreateEditWorkspaceModal = (props) => {
     setInputValue(e);
   };
 
-  const handleExternalInputChange = (e) => {
+  const handleExternalInputChange = (e, args) => {
     setExternalInput(e);
     const isExistingOption = externalUserOptions.some((o) => o.email === e);
     const isSelectedOption = form.selectedExternals.some((o) => o.email === e);
@@ -2130,7 +2161,12 @@ const CreateEditWorkspaceModal = (props) => {
   const handleSharedEmailClick = (data) => {
     setExternalNestedMode(false);
     const sharedUser = invitedSharedUsers.find((ex) => ex.email === data.email);
-    if (sharedUser) setInvitedSharedUser(sharedUser);
+    if (sharedUser) {
+      setInvitedSharedUser(sharedUser);
+      if (sharedUser.profile_pic) {
+        setPreviewImage(URL.createObjectURL(sharedUser.profile_pic));
+      }
+    }
     toggleNested();
   };
 
@@ -2151,6 +2187,7 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleSaveExternalFields = () => {
     if (externalNestedMode) {
+      resetPreview();
       toggleNested();
       setExternalNestedMode(true);
       if (invitedExternals.some((ex) => ex.email === invitedExternal.email)) {
@@ -2166,6 +2203,7 @@ const CreateEditWorkspaceModal = (props) => {
       }
       setInvitedExternal({ email: "", first_name: "", middle_name: "", last_name: "", company: "", language: "en", send_by_email: true });
     } else {
+      resetPreview();
       toggleNested();
       setExternalNestedMode(true);
       if (invitedSharedUsers.some((ex) => ex.email === invitedSharedUser.email)) {
@@ -2229,7 +2267,12 @@ const CreateEditWorkspaceModal = (props) => {
 
   const handleEmailClick = (data) => {
     const external = invitedExternals.find((ex) => ex.email === data.email);
-    if (external) setInvitedExternal(external);
+    if (external) {
+      setInvitedExternal(external);
+      if (external.profile_pic) {
+        setPreviewImage(URL.createObjectURL(external.profile_pic));
+      }
+    }
     toggleNested();
     setExternalNestedMode(true);
   };
@@ -2238,6 +2281,11 @@ const CreateEditWorkspaceModal = (props) => {
     if (refs.first_name && refs.first_name.current) {
       refs.first_name.current.focus();
     }
+  };
+
+  const handleCancelExternalInvite = () => {
+    resetPreview();
+    toggleNested();
   };
 
   useEffect(() => {
@@ -2256,11 +2304,19 @@ const CreateEditWorkspaceModal = (props) => {
   }, [Object.values(folders).length]);
 
   useEffect(() => {
-    setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
-  }, [currentProfilePic]);
+    if (form.is_shared_wp) {
+      setInvitedSharedUser((prev) => ({ ...prev, profile_pic: currentProfilePic }));
+    } else {
+      setInvitedExternal((prev) => ({ ...prev, profile_pic: currentProfilePic }));
+    }
+  }, [currentProfilePic, form.is_shared_wp]);
 
   useEffect(() => {
-    setForm((prev) => ({ ...prev, is_private: !form.is_shared_wp }));
+    if (form.is_shared_wp) {
+      setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
+    } else {
+      setForm((prev) => ({ ...prev, is_private: prev.is_private }));
+    }
   }, [form.is_shared_wp]);
 
   return (
@@ -2336,7 +2392,7 @@ const CreateEditWorkspaceModal = (props) => {
             </ModalBody>
             <ModalFooter>
               <NestedModalWrapper>
-                <button className="btn btn-link text-dark" onClick={toggleNested}>
+                <button className="btn btn-link text-dark" onClick={handleCancelExternalInvite}>
                   {dictionary.cancel}
                 </button>
                 <Button color="primary" onClick={handleSaveExternalFields}>
@@ -2406,7 +2462,7 @@ const CreateEditWorkspaceModal = (props) => {
               </CheckBox>
             </div>
             <div>
-              <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck}>
+              <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck} disabled={mode === "edit" && item.is_shared_wp}>
                 {dictionary.shareWorkspace}
               </CheckBox>
             </div>
@@ -2543,23 +2599,22 @@ const CreateEditWorkspaceModal = (props) => {
             </WrapperDiv>
           )}
           <WrapperDiv className="action-wrapper">
-            {!form.is_shared_wp && (
-              <>
-                <RadioInputWrapper className="workspace-radio-input">
-                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"}>
-                    {dictionary.lockWorkspace}
-                  </RadioInput>
-                  <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"}>
-                    {dictionary.publicWorkspace}
-                  </RadioInput>
-                </RadioInputWrapper>
+            <RadioInputWrapper className="workspace-radio-input">
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"} disabled={form.is_shared_wp}>
+                {dictionary.lockWorkspace}
+              </RadioInput>
+              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"} disabled={form.is_shared_wp}>
+                {dictionary.publicWorkspace}
+              </RadioInput>
+            </RadioInputWrapper>
 
-                <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
-                <div className={"lock-workspace-text-container pb-3"}>
-                  <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
-                </div>
-              </>
-            )}
+            <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
+
+            <div className={"lock-workspace-text-container pb-3"}>
+              {form.is_shared_wp && <Label className={"lock-workspace-text"}>{dictionary.workspaceTypeIsInviteOnly}</Label>}
+              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+            </div>
+
             <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
               {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />}
               {mode === "edit" ? dictionary.updateWorkspace : dictionary.createWorkspace}

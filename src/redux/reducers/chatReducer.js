@@ -66,6 +66,7 @@ const INITIAL_STATE = {
   },
   jitsi: null,
   initialLoad: false,
+  sharedDriff: {},
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -240,7 +241,7 @@ export default function (state = INITIAL_STATE, action) {
       };
     }
     case "GET_CHANNEL_SUCCESS": {
-      let sharedChannel = action.slug !== getSlug();
+      let sharedChannel = action.isSharedSlug;
       let channel = null;
       if (sharedChannel) {
         channel = {
@@ -251,7 +252,7 @@ export default function (state = INITIAL_STATE, action) {
           slug: action.slug,
           sharedSlug: true,
         };
-      } else {
+      } else if (state.channels[action.data.id]) {
         channel = { ...state.channels[action.data.id] };
       }
       if (!channel) {
@@ -264,13 +265,12 @@ export default function (state = INITIAL_STATE, action) {
           sharedSlug: false,
         };
       }
-
       return {
         ...state,
         channels: {
           ...state.channels,
           ...(channel && {
-            [sharedChannel ? channel.code : channel.id]: channel,
+            [channel.sharedSlug ? channel.code : channel.id]: channel,
           }),
         },
       };
@@ -385,42 +385,46 @@ export default function (state = INITIAL_STATE, action) {
     case "GET_CHAT_MESSAGES_SUCCESS": {
       let channel;
       if (action.isSharedSlug) {
-        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug);
+        channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.sharedSlug && c.slug && c.slug === action.slug);
       } else {
         channel = { ...state.channels[action.data.channel_id] };
       }
-      let messages = [
-        ...action.data.results.map((r) => {
-          return {
-            ...r,
-            is_read: true,
-            body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
-            channel_id: action.data.channel_id,
-          };
-        }),
-        ...channel.replies,
-      ];
-      let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
-      channel = {
-        ...channel,
-        replies: uniqMessages,
-        read_only: action.data.read_only,
-        hasMore: action.data.results.length === 20,
-        skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
-        isFetching: false,
-        replyCount: action.data.total,
-      };
-      return {
-        ...state,
-        channels: {
-          ...state.channels,
-          [action.isSharedSlug ? channel.code : action.data.channel_id]: channel,
-        },
-        ...(channel &&
-          state.selectedChannel && {
-            selectedChannel: channel.id === state.selectedChannel.id ? channel : state.selectedChannel,
+      if (channel) {
+        let messages = [
+          ...action.data.results.map((r) => {
+            return {
+              ...r,
+              is_read: true,
+              body: r.body.replace(/<[/]?img src=\"data:image[^>]*>/gi, ""),
+              channel_id: action.data.channel_id,
+            };
           }),
-      };
+          ...channel.replies,
+        ];
+        let uniqMessages = [...new Map(messages.map((item) => [item["id"], item])).values()];
+        channel = {
+          ...channel,
+          replies: uniqMessages,
+          read_only: action.data.read_only,
+          hasMore: action.data.results.length === 20,
+          skip: channel.skip === 0 && channel.replies.length ? channel.replies.length + 20 : channel.skip + 20,
+          isFetching: false,
+          replyCount: action.data.total,
+        };
+        return {
+          ...state,
+          channels: {
+            ...state.channels,
+            [action.isSharedSlug ? channel.code : action.data.channel_id]: channel,
+          },
+          ...(channel &&
+            state.selectedChannel && {
+              selectedChannel: channel.code === state.selectedChannel.code ? channel : state.selectedChannel,
+            }),
+        };
+      } else {
+        return state;
+      }
     }
     case "ADD_CHAT_MESSAGE": {
       let channel;
@@ -2767,6 +2771,35 @@ export default function (state = INITIAL_STATE, action) {
           }
           return acc;
         }, {}),
+      };
+    }
+    case "GET_SHARED_CHANNELS_SUCCESS": {
+      return {
+        ...state,
+        channels: {
+          ...state.channels,
+          ...Object.values(action.data.results).reduce((acc, channel) => {
+            if (channel.type === "TOPIC") {
+              acc[channel.code] = {
+                ...channel,
+                hasMore: true,
+                skip: 0,
+                isFetching: false,
+                slug: action.slug,
+                sharedSlug: true,
+              };
+            }
+            return acc;
+          }, {}),
+        },
+        sharedDriff: {
+          ...state.sharedDriff,
+          [action.slug]: {
+            hasMore: action.data.results.length === 15,
+            skip: state.sharedDriff[action.slug] ? action.data.results.length + state.sharedDriff[action.slug].skip : 15,
+            channels: action.data.results.map((c) => c.code),
+          },
+        },
       };
     }
     default:

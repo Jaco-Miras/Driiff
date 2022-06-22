@@ -68,6 +68,9 @@ const MainLayout = (props) => {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
     likedYourPost: _t("TOAST.LIKED_YOUR_POST", "liked your post"),
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
+    invalidCode: _t("INVALID_INVITE_CODE", "Invite code is invalid."),
+    codeAlreadyAccepted: _t("CODE_ALREADY_ACCEPTED", "Invite code already used."),
+    userNotFound: _t("USER_NOT_FOUND", "User not found"),
   };
 
   //const subscriptions = useSelector((state) => state.admin.subscriptions);
@@ -145,22 +148,36 @@ const MainLayout = (props) => {
           localStorage.removeItem("inviteSlug");
           localStorage.removeItem("stateCode");
           history.replace({ state: {} });
-          let redirectLink = "/dashboard";
-          if (res.data.data.current_workspace) {
-            redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+          if (err) {
+            if (err && err.response) {
+              if (err.response.data.errors) {
+                let errorMessage = err.response.data.errors.error_message.includes("INVALID_CODE")
+                  ? dictionary.invalidCode
+                  : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
+                  ? dictionary.codeAlreadyAccepted
+                  : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
+                  ? dictionary.userNotFound
+                  : null;
+                toaster.error(errorMessage);
+              }
+            }
           } else {
-            redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+            let redirectLink = "/dashboard";
+            if (res.data.data.current_workspace) {
+              redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+            } else {
+              redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+            }
+            history.push(redirectLink);
+            dispatch(
+              getSharedWorkspaces({}, (error, response) => {
+                if (error) return;
+                sessionService.loadSession().then((current) => {
+                  sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
+                });
+              })
+            );
           }
-          history.push(redirectLink);
-          if (err) return;
-          dispatch(
-            getSharedWorkspaces({}, (err, response) => {
-              if (err) return;
-              sessionService.loadSession().then((current) => {
-                sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
-              });
-            })
-          );
         })
       );
     };

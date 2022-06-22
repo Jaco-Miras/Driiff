@@ -113,6 +113,7 @@ const INITIAL_STATE = {
   sharedWorkspaces: {},
   sharedWorkspacesLoaded: false,
   sharedPostLists: {},
+  sharedWorkspaceInitialFetch: false,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -605,15 +606,22 @@ export default (state = INITIAL_STATE, action) => {
         });
       }
 
-      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && updatedWorkspaces.hasOwnProperty(action.data.id)) {
+      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => ws.id === action.data.id)) {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
+        workspace = Object.values(state.workspaces).find((ws) => {
+          if (action.data.sharedSlug) {
+            return ws.id === action.data.id && ws.sharedSlug;
+          } else {
+            return ws.id === action.data.id;
+          }
+        });
         workspace = {
-          ...state.workspaces[action.data.id],
+          ...state.workspaces[action.data.sharedSlug ? workspace.key : workspace.id],
           ...action.data,
           is_lock: action.data.private,
           folder_name: action.data.current_workspace_folder_name,
         };
-        updatedWorkspaces[workspace.id] = workspace;
+        updatedWorkspaces[action.data.sharedSlug ? workspace.key : workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
           updatedTopic = workspace;
         }
@@ -4279,15 +4287,29 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
-    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS":
-    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
-      const workspaceId = action.data.quick_links[0].group_id;
+    case "INCOMING_UPDATED_WORKSPACE_QUICK_LINKS": {
+      let workspaceKey = action.data.quick_links[0].group_id;
+      if (action.data.sharedSlug) {
+        workspaceKey = `${action.data.quick_links[0].group_id}-${action.data.slug}`;
+      }
       return {
         ...state,
         workspaceQuickLinks: {
           ...state.workspaceQuickLinks,
-          [workspaceId]: action.data.quick_links,
+          [workspaceKey]: action.data.quick_links,
+        },
+      };
+    }
+    case "GET_WORKSPACE_QUICKLINKS_SUCCESS": {
+      let workspaceKey = action.data[0].group_id;
+      if (action.isSharedSlug) {
+        workspaceKey = `${action.data[0].group_id}-${action.slug}`;
+      }
+      return {
+        ...state,
+        workspaceQuickLinks: {
+          ...state.workspaceQuickLinks,
+          [workspaceKey]: action.data,
         },
       };
     }
@@ -4379,6 +4401,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         sharedWorkspaces: action.data.length === 0 ? state.sharedWorkspaces : action.data,
         sharedWorkspacesLoaded: action.data.length === 0 ? false : true,
+        sharedWorkspaceInitialFetch: true,
       };
     }
     case "POST_LIST_SUCCESS": {

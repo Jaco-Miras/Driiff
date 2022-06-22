@@ -177,7 +177,7 @@ const FileWrapper = styled.figure`
 
 const StyledFileRender = styled.div`
   text-align: center;
-  height: ${({ isLoaded }) => (isLoaded ? "60vh" : "initial")};
+  max-height: 60vh;
 
   .spinner-border {
     border-width: 3px;
@@ -246,8 +246,11 @@ const FileRender = (props) => {
     actions: { setFileSrc },
   } = useFiles();
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[viewFiles.slug]);
   let refFiles = {};
 
   const handlePdfOnLoad = (e) => {
@@ -276,7 +279,8 @@ const FileRender = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
+      let token = viewFiles.workspace_id && workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].auth_token : viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken");
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug || workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
     } else {
       let img = document.querySelector(`.file-item[data-index="${e.currentTarget.dataset.index}"] img`);
       img.classList.remove("d-none");
@@ -312,6 +316,11 @@ const FileRender = (props) => {
         if (viewFiles && viewFiles.sharedSlug) {
           if (current.sharedWorkspaces[viewFiles.slug]) {
             myToken = `Bearer ${current.sharedWorkspaces[viewFiles.slug].access_token}`;
+          }
+        }
+        if (viewFiles.workspace_id && workspace && workspace.sharedSlug) {
+          if (sharedWs[workspace.slug]) {
+            myToken = `Bearer ${sharedWs[workspace.slug].access_token}`;
           }
         }
         fetch(file.view_link, {
@@ -522,18 +531,6 @@ const FileViewer = (props) => {
         setFiles(viewFiles.files);
         setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
       }
-
-      // let files = Object.values(companyFiles);
-      // if (!Object.keys(viewFiles).some((k) => ["channel_id", "workspace_id"].includes(k))) {
-      //   //console.log("default", viewFiles);
-      //   if (files.length) {
-      //     setFiles(files);
-      //     setActiveIndex(files.findIndex((f) => f.file_id === viewFiles.file_id));
-      //   } else {
-      //     setFiles(viewFiles.files);
-      //     setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
-      //   }
-      // }
     }
   }, []);
 
