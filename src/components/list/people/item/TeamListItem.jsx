@@ -345,22 +345,17 @@ const TeamListItem = (props) => {
               <Viewers users={member.members} close={() => setShowViewer(false)} show={showViewer} />
             </div>
           )}
-
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
           <div className="badge-container">
             {member.workspace_role}
-            {isSharedWorkspace && member.is_creator && <StyledBadge role={"SHARED_TEAM_LEAD"} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
+            {isSharedWorkspace && member.is_creator && <StyledBadge role={"SHARED_TEAM_LEAD"} badgeClassName={"text-white"} label={dictionary.roleTeamLead} />}
             {member.workspace_role && member.workspace_role !== "" && (
               <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
             )}
             {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
             {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleInvited} />}
-            {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
-              <>
-                <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />
-              </>
-            )}
+            {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
           </div>
         </div>
       </div>

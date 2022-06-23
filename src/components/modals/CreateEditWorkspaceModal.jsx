@@ -957,6 +957,7 @@ const CreateEditWorkspaceModal = (props) => {
       ...payload,
       topic_id: workspace.id,
       workspace_id: workspace.workspace_id,
+      new_member_ids: [],
     };
     if (mode === "create" && payload.is_shared_wp && sharedWs[`${slug}-shared`]) {
       sharedPayload = { slug: `${slug}-shared`, token: sharedWs[`${slug}-shared`].access_token, is_shared: true };
@@ -1804,23 +1805,25 @@ const CreateEditWorkspaceModal = (props) => {
               email: m.email,
             };
           });
-        externalMembers = item.members
-          .filter((m) => m.type === "external" && m.slug)
-          .map((m) => {
-            return {
-              value: m.id,
-              label: m.name !== "" ? m.name : m.first_name !== "" ? m.first_name : m.email,
-              name: m.name,
-              id: m.id,
-              first_name: m.first_name === "" ? m.email : m.first_name,
-              middle_name: item.sharedSlug ? "" : users[m.id] ? users[m.id].middle_name : "",
-              last_name: item.sharedSlug ? m.last_name : users[m.id] ? users[m.id].last_name : "",
-              profile_image_link: m.profile_image_link,
-              profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
-              email: m.email,
-              has_accepted: m.has_accepted,
-            };
-          });
+        externalMembers = item.is_shared_wp
+          ? []
+          : item.members
+              .filter((m) => m.type === "external")
+              .map((m) => {
+                return {
+                  value: m.id,
+                  label: m.name !== "" ? m.name : m.first_name !== "" ? m.first_name : m.email,
+                  name: m.name,
+                  id: m.id,
+                  first_name: m.first_name === "" ? m.email : m.first_name,
+                  middle_name: item.sharedSlug ? "" : users[m.id] ? users[m.id].middle_name : "",
+                  last_name: item.sharedSlug ? m.last_name : users[m.id] ? users[m.id].last_name : "",
+                  profile_image_link: m.profile_image_link,
+                  profile_image_thumbnail_link: m.profile_image_thumbnail_link ? m.profile_image_thumbnail_link : m.profile_image_link,
+                  email: m.email,
+                  has_accepted: m.has_accepted,
+                };
+              });
         sharedMembers = item.members
           .filter((m) => {
             return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
@@ -2456,11 +2459,13 @@ const CreateEditWorkspaceModal = (props) => {
                 {dictionary.addToFolder}
               </CheckBox>
             </div>
-            <div>
+
+            {/* <div>
               <CheckBox className="add-guest-checkbox" type="success" name="has_externals" checked={form.has_externals} onClick={toggleCheck} disabled={!hasGuestAccess}>
                 {dictionary.workspaceWithExternals}
               </CheckBox>
-            </div>
+            </div> */}
+
             <div>
               <CheckBox className="" type="success" name="is_shared_wp" checked={form.is_shared_wp} onClick={toggleCheck} disabled={mode === "edit" && item.is_shared_wp}>
                 {dictionary.shareWorkspace}
@@ -2520,7 +2525,7 @@ const CreateEditWorkspaceModal = (props) => {
             <SelectPeople valid={valid.team} options={userOptions} value={form.selectedUsers} inputValue={inputValue} onChange={handleSelectUser} onInputChange={handleInputChange} filterOption={filterOptions} isSearchable />
             <InputFeedback valid={valid.user}>{feedback.user}</InputFeedback>
           </WrapperDiv>
-          {form.has_externals === true && (
+          {mode === "edit" && form.has_externals && (
             <WrapperDiv className={"modal-input external-select"} valid={valid.external}>
               <LabelWrapper className="mb-1">
                 <Label for="people">{dictionary.externalGuest}</Label>
@@ -2543,7 +2548,7 @@ const CreateEditWorkspaceModal = (props) => {
                 isSearchable
                 onMenuClose={handleMenuClose}
                 onEmailClick={handleEmailClick}
-                isDisabled={!hasGuestAccess}
+                isDisabled={true}
               />
             </WrapperDiv>
           )}
