@@ -78,9 +78,6 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/hub/chat", "/hub/:page", "/magic-link/:token", "/shared-hub/chat", "/shared-hub/:page"]}>
             {children}
           </Route>
-          <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"}>
-            {children}
-          </Route>
           <Redirect
             path="*"
             to={{
@@ -114,6 +111,14 @@ export const AppRoute = ({ children, ...props }) => {
             "/authenticate-ios/:tokens",
             "/shared-hub-invite",
           ]}
+          exact
+        >
+          {children}
+        </Route>
+        <Route
+          {...props}
+          component={VideoMeeting}
+          path={"/video-meeting/:room_name/:jwt_token"}
           exact
         >
           {children}

@@ -26,6 +26,7 @@ const VideoMeeting = () => {
   return (
     <JaaSMeeting
       appId={appId}
+      jwt={params?.jwt_token}
       roomName={params?.room_name}
       configOverwrite={{
         SHOW_POWERED_BY: false,
