@@ -401,8 +401,8 @@ const PostSettings = (props) => {
                 value={"external"}
                 name={"role"}
               >
-                <span class="receiver client-shared">
-                  <LockIcon icon="eye" />
+                <span class="receiver client-shared text-white">
+                  {/* <LockIcon icon="eye" /> */}
                   {dictionary.sharedClientBadge}
                 </span>
               </RadioInput>
@@ -418,7 +418,7 @@ const PostSettings = (props) => {
                 name={"role"}
               >
                 <span class="receiver client-not-shared">
-                  <LockIcon icon="eye-off" />
+                  {/* <LockIcon icon="eye-off" /> */}
                   {dictionary.notSharedClientBadge}
                 </span>
               </RadioInput>
