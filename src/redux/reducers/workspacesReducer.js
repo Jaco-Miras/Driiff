@@ -1432,23 +1432,45 @@ export default (state = INITIAL_STATE, action) => {
           ...Object.keys(state.workspacePosts)
             .filter((wsId) => state.workspacePosts[wsId])
             .map((wsId) => {
-              return {
-                [wsId]: {
-                  ...state.workspacePosts[wsId],
-                  posts: {
-                    ...state.workspacePosts[wsId].posts,
-                    [postKey]: action.data,
+              if (action.data.sharedSlug && wsId === `${action.data.recipient_ids[0]}-${action.data.slug}`) {
+                return {
+                  [wsId]: {
+                    ...state.workspacePosts[wsId],
+                    posts: {
+                      ...state.workspacePosts[wsId].posts,
+                      [postKey]: action.data,
+                    },
+                    count: state.workspacePosts[wsId].count
+                      ? {
+                          ...state.workspacePosts[wsId].count,
+                          is_must_read: state.workspacePosts[wsId].count.is_must_read + 1,
+                          is_must_reply: state.workspacePosts[wsId].count.is_must_reply + 1,
+                          is_read_only: state.workspacePosts[wsId].count.is_read_only + 1,
+                        }
+                      : null,
                   },
-                  count: state.workspacePosts[wsId].count
-                    ? {
-                        ...state.workspacePosts[wsId].count,
-                        is_must_read: state.workspacePosts[wsId].count.is_must_read + 1,
-                        is_must_reply: state.workspacePosts[wsId].count.is_must_reply + 1,
-                        is_read_only: state.workspacePosts[wsId].count.is_read_only + 1,
-                      }
-                    : null,
-                },
-              };
+                };
+              } else {
+                if (action.data.workspaces.some((ws) => ws.topic_id == wsId)) {
+                  return {
+                    [wsId]: {
+                      ...state.workspacePosts[wsId],
+                      posts: {
+                        ...state.workspacePosts[wsId].posts,
+                        [postKey]: action.data,
+                      },
+                      count: state.workspacePosts[wsId].count
+                        ? {
+                            ...state.workspacePosts[wsId].count,
+                            is_must_read: state.workspacePosts[wsId].count.is_must_read + 1,
+                            is_must_reply: state.workspacePosts[wsId].count.is_must_reply + 1,
+                            is_read_only: state.workspacePosts[wsId].count.is_read_only + 1,
+                          }
+                        : null,
+                    },
+                  };
+                }
+              }
             })
             .reduce((obj, workspace) => {
               return { ...obj, ...workspace };
