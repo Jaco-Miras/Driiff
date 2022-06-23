@@ -372,6 +372,7 @@ export default (state = INITIAL_STATE, action) => {
               is_active: t.is_active,
               type: "WORKSPACE",
               sharedSlug: false,
+              slug: action.slug,
               key: t.id,
             };
           });
@@ -392,6 +393,7 @@ export default (state = INITIAL_STATE, action) => {
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             sharedSlug: false,
+            slug: action.slug,
             key: ws.id,
             team_channel_bot: ws.topic_detail.team_channel_bot,
             channel_bot: ws.topic_detail.channel_bot,
@@ -462,6 +464,7 @@ export default (state = INITIAL_STATE, action) => {
           sharedSlug: false,
           team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
           channel_bot: action.data.workspace_data.topic_detail.channel_bot,
+          slug: action.slug,
         };
         return {
           ...state,
@@ -617,19 +620,19 @@ export default (state = INITIAL_STATE, action) => {
       if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => ws.id === action.data.id)) {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = Object.values(state.workspaces).find((ws) => {
-          if (action.data.sharedSlug) {
+          if (action.data.is_shared_wp) {
             return ws.id === action.data.id && ws.sharedSlug;
           } else {
             return ws.id === action.data.id;
           }
         });
         workspace = {
-          ...state.workspaces[action.data.sharedSlug ? workspace.key : workspace.id],
+          ...state.workspaces[workspace.sharedSlug ? workspace.key : workspace.id],
           ...action.data,
           is_lock: action.data.private,
           folder_name: action.data.current_workspace_folder_name,
         };
-        updatedWorkspaces[action.data.sharedSlug ? workspace.key : workspace.id] = workspace;
+        updatedWorkspaces[workspace.sharedSlug ? workspace.key : workspace.id] = workspace;
         if (state.activeTopic && state.activeTopic.id === workspace.id) {
           updatedTopic = workspace;
         }
