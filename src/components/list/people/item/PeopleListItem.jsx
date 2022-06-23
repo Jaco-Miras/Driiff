@@ -86,6 +86,9 @@ const StyledBadge = styled(Badge)`
         case "WATCHER": {
           return "#FFEC59";
         }
+        case "SHARED_TEAM_LEAD": {
+          return "#33b5e5";
+        }
         default:
           return "#fb3";
       }
@@ -288,11 +291,14 @@ const PeopleListItem = (props) => {
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-0">
+                    <h6 className="user-name mb-0 d-flex">
                       {renderUserName({ user })}
                       {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
-                      <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
-                      {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                      <span>
+                        <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
+                        {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                      </span>
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
@@ -308,8 +314,8 @@ const PeopleListItem = (props) => {
 
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />}
-                        {isSharedWorkspace && user.is_creator && <StyledBadge role={user.workspace_role} badgeClassName={"text-dark"} label={dictionary.roleTeamLead} />}
-                        {user.type === "external" && loggedUser.type !== "external" && user.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
+                        {isSharedWorkspace && user.is_creator && <StyledBadge role="SHARED_TEAM_LEAD" badgeClassName={"text-white"} label={dictionary.roleTeamLead} />}
+                        {user.type === "external" && loggedUser.type !== "external" && user.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
