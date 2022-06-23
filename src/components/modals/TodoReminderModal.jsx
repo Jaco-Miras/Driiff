@@ -253,7 +253,14 @@ const TodoReminderModal = (props) => {
           })
         );
       }
-
+      if (!itemType && params.workspaceId && activeTopic && mode === "create") {
+        setSelectedWorkspace({
+          ...activeTopic,
+          icon: "compass",
+          value: activeTopic.id,
+          label: activeTopic.name,
+        });
+      }
       if (itemType && itemType === "POST" && mode === "create") {
         const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
         if (workspaceRecipient) {
