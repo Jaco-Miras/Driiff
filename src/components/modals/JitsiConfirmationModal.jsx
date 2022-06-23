@@ -88,7 +88,7 @@ const JitsiConfirmationModal = (props) => {
     const payload = {
       channel_id: selectedChannel.id,
       host: true,
-      room_name: getSlug() + "-" + parseChannel + "-" + selectedChannel.id,
+      room_name: getSlug() + "~" + parseChannel + "~" + selectedChannel.id,
     };
     dispatch(createJitsiMeet(payload, () => toggle()));
   };
