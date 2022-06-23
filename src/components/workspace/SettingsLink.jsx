@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { useIsMember, useOutsideClick, useTranslationActions, useToaster, useGetSlug } from "../hooks";
+import { useOutsideClick, useTranslationActions, useToaster, useGetSlug } from "../hooks";
 import { SvgIconFeather } from "../common";
 import { addToModals } from "../../redux/actions/globalActions";
 import Tooltip from "react-tooltip-lite";
@@ -169,8 +169,7 @@ const SettingsLink = (props) => {
   const isExternal = user.type === "external";
   // const isMember = useIsMember(topic && topic.member_ids.length ? [...new Set(workspaceMembers)] : []);
   const { slug } = useGetSlug();
-  // const sharedWorkspace = topic && topic.sharedSlug ? true : false;
-  const isSameDriff = topic && topic.slug && slug === topic.slug.slice(0, -7);
+  const isSameDriff = (topic && topic.sharedSlug && topic.slug && slug === topic.slug.slice(0, -7)) || (topic && !topic.sharedSlug);
   const isCreator = topic && topic.slug && topic.sharedSlug && sharedWs[topic.slug] && topic.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
   const isTeamMember = topic && !topic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
   const showInviteButton = (isCreator || isTeamMember) && !isExternal;

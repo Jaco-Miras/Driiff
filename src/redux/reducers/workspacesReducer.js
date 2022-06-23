@@ -370,6 +370,7 @@ export default (state = INITIAL_STATE, action) => {
               is_active: t.is_active,
               type: "WORKSPACE",
               sharedSlug: false,
+              slug: action.slug,
               key: t.id,
             };
           });
@@ -390,6 +391,7 @@ export default (state = INITIAL_STATE, action) => {
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             sharedSlug: false,
+            slug: action.slug,
             key: ws.id,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
@@ -454,6 +456,7 @@ export default (state = INITIAL_STATE, action) => {
           is_active: action.data.workspace_data.topic_detail.is_active,
           key: action.data.workspace_data.topic_detail.id,
           sharedSlug: false,
+          slug: action.slug,
         };
         return {
           ...state,
