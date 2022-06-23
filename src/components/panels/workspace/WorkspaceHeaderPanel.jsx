@@ -7,7 +7,7 @@ import { Avatar, SvgIconFeather } from "../../common";
 import { HeaderProfileNavigation, MoreOptions } from "../common";
 import { SettingsLink } from "../../workspace";
 import { joinWorkspace, favouriteWorkspace } from "../../../redux/actions/workspaceActions";
-import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember, useRedirect } from "../../hooks";
+import { useToaster, useTranslationActions, useWorkspaceActions, useIsMember, useRedirect, useGetSlug } from "../../hooks";
 import { MemberLists } from "../../list/members";
 import { WorkspacePageHeaderPanel } from "../workspace";
 import MainBackButton from "../main/MainBackButton";
@@ -617,14 +617,12 @@ const WorspaceHeaderPanel = (props) => {
   const handleRedirectToWorkspace = () => {
     redirect.toWorkspace(activeTopic, "dashboard");
   };
-
+  const { slug } = useGetSlug();
   const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
-
-  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator)?.id === user.id;
-  const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id);
-
+  const isSameDriff = activeTopic && activeTopic.slug && slug === activeTopic.slug.slice(0, -7);
+  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+  const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
   const showInviteButton = (isCreator || isTeamMember) && !isExternal;
-  //const isNotSameDriff = activeTopic && activeTopic.slug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.id === user.id)?.slug !== activeTopic?.slug.slice(0, -7);
 
   return (
     <>
