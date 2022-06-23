@@ -274,13 +274,13 @@ const GuestLayout = (props) => {
           </>
         )}
       </Wrapper>
-      {location.pathname === "/driff-register" && (
+      {/*  {location.pathname === "/driff-register" && (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <StyledLink href="#" onClick={loginClick}>
             {dictionary.login}
           </StyledLink>
         </div>
-      )}
+      )} */}
     </>
   );
 };
