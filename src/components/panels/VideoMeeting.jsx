@@ -14,6 +14,7 @@ const VideoMeeting = (props) => {
 
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
+    window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
   };
 
   return (
