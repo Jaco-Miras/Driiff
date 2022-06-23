@@ -62,7 +62,7 @@ const WorkspaceListItemDetails = (props) => {
           {item.topic.name}
         </span>
         {item.topic.is_locked && <Icon icon="lock" />}
-        {item.topic.is_shared && !isExternal && (
+        {item.topic.is_shared && !isExternal && !item.slug && (
           <>
             <span className={"badge badge-external ml-1 align-items-center"}>
               <Icon icon="eye" /> {dictionary.withClient}
