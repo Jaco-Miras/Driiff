@@ -67,11 +67,12 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             error,
           });
           if (callback) callback(error);
-        } else if (error.response === undefined && error.message === undefined) {
-          dispatch({
-            type: "API_ERROR",
-            error,
-          });
+        } else if (error.response === undefined) {
+          if (error.message !== "Operation canceled due to new request.") {
+            dispatch({
+              type: "API_ERROR",
+            });
+          }
         } else {
           userForceLogout();
         }

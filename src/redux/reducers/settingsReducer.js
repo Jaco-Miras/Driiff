@@ -536,11 +536,12 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "API_ERROR": {
+      let reference_id = require("shortid").generate();
       return {
         ...state,
         driffErrors: {
           ...state.driffErrors,
-          [getCurrentTimestamp()]: getCurrentTimestamp(),
+          [reference_id]: getCurrentTimestamp(),
         },
       };
     }
