@@ -120,6 +120,7 @@ const INITIAL_STATE = {
     },
   },
   isLoaded: false,
+  driffErrors: 0,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -531,6 +532,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.driff,
           favicon: action.data,
         },
+      };
+    }
+    case "API_ERROR": {
+      return {
+        ...state,
+        driffErrors: state.driffErrors + 1,
       };
     }
 

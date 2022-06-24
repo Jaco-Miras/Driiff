@@ -67,6 +67,11 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
             error,
           });
           if (callback) callback(error);
+        } else if (error.response === undefined) {
+          dispatch({
+            type: "API_ERROR",
+            error,
+          });
         } else {
           userForceLogout();
         }
