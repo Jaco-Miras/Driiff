@@ -1724,8 +1724,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
-                  slug: this.state.slug,
-                  sharedSlug: this.props.sharedSlug,
+                  slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                  sharedSlug: e.topic.is_shared_wp,
                 });
               });
             } else {
@@ -1735,8 +1735,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
-                slug: this.state.slug,
-                sharedSlug: this.props.sharedSlug,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                sharedSlug: e.topic.is_shared_wp,
               });
             }
           } else {
@@ -1746,12 +1746,12 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
-              slug: this.state.slug,
-              sharedSlug: this.props.sharedSlug,
+              slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+              sharedSlug: e.topic.is_shared_wp,
             });
           }
 
-          if (e.channel.code) {
+          if (e.channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.channel.code }, (err, res) => {
               if (err) return;
               let channel = {
@@ -1764,7 +1764,7 @@ class SocketListeners extends Component {
               };
               this.props.addToChannels(channel);
             });
-          } else if (e.team_channel.code) {
+          } else if (e.team_channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
               if (err) return;
               let channel = {
@@ -2008,8 +2008,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
-                  slug: this.state.slug,
-                  sharedSlug: this.props.sharedSlug,
+                  slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                  sharedSlug: e.topic.is_shared_wp,
                 });
               });
             } else {
@@ -2019,8 +2019,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
-                slug: this.state.slug,
-                sharedSlug: this.props.sharedSlug,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                sharedSlug: e.topic.is_shared_wp,
               });
             }
           } else {
@@ -2030,12 +2030,12 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
-              slug: this.state.slug,
-              sharedSlug: this.props.sharedSlug,
+              slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+              sharedSlug: e.topic.is_shared_wp,
             });
           }
 
-          if (e.channel.code) {
+          if (e.channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.channel.code }, (err, res) => {
               if (err) return;
               let channel = {
@@ -2048,7 +2048,7 @@ class SocketListeners extends Component {
               };
               this.props.addToChannels(channel);
             });
-          } else if (e.team_channel.code) {
+          } else if (e.team_channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
               if (err) return;
               let channel = {
@@ -2085,8 +2085,8 @@ class SocketListeners extends Component {
                     id: e.channel.id ? e.channel.id : 0,
                     code: e.channel.code ? e.channel.code : null,
                   },
-                  slug: this.state.slug,
-                  sharedSlug: this.props.sharedSlug,
+                  slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                  sharedSlug: e.topic.is_shared_wp,
                 });
               });
             } else {
@@ -2096,8 +2096,8 @@ class SocketListeners extends Component {
                   id: e.channel.id ? e.channel.id : 0,
                   code: e.channel.code ? e.channel.code : null,
                 },
-                slug: this.state.slug,
-                sharedSlug: this.props.sharedSlug,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                sharedSlug: e.topic.is_shared_wp,
               });
             }
           } else {
@@ -2107,11 +2107,11 @@ class SocketListeners extends Component {
                 id: e.channel.id ? e.channel.id : 0,
                 code: e.channel.code ? e.channel.code : null,
               },
-              slug: this.state.slug,
-              sharedSlug: this.props.sharedSlug,
+              slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+              sharedSlug: e.topic.is_shared_wp,
             });
           }
-          if (e.channel.code) {
+          if (e.channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.channel.code }, (err, res) => {
               if (err) return;
               let channel = {
@@ -2124,7 +2124,7 @@ class SocketListeners extends Component {
               };
               this.props.addToChannels(channel);
             });
-          } else if (e.team_channel.code) {
+          } else if (e.team_channel.code && !e.topic.is_shared_wp) {
             this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
               if (err) return;
               let channel = {

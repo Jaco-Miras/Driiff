@@ -175,8 +175,8 @@ const useWorkspace = () => {
         }
       }
     } else {
-      if (activeTopic && !selectedChannelId && channelIds.length && (url.startsWith("/hub") || url.startsWith("/shared-hub"))) {
-        if (url.startsWith("/hub/team-chat") || url.startsWith("/shared-hub/team-chat")) {
+      if (activeTopic && !selectedChannelId && channelIds.length && url.startsWith("/hub")) {
+        if (url.startsWith("/hub/team-chat")) {
           if (activeTopic.team_channel.code && channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
             actions.selectChannel({ id: activeTopic.team_channel.id });
           } else if (activeTopic.team_channel.code && !channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
@@ -204,7 +204,7 @@ const useWorkspace = () => {
         }
       } else if (activeTopic && selectedChannelId && channelIds.length && url.startsWith("/hub")) {
         // check if channel is not match
-        if (url.startsWith("/hub/team-chat") || url.startsWith("/shared-hub/team-chat")) {
+        if (url.startsWith("/hub/team-chat")) {
           if (activeTopic.team_channel.code && activeTopic.team_channel.id !== selectedChannelId) {
             if (channelIds.some((id) => parseInt(id) === activeTopic.team_channel.id)) {
               actions.selectChannel({ id: activeTopic.team_channel.id });
