@@ -60,7 +60,7 @@ function App() {
   useTranslation();
 
   useEffect(() => {
-    if (driffErrors > 3) {
+    if (driffErrors >= 2) {
       window.location.href = "https://offline.getdriff.com/";
     }
   }, [driffErrors]);
