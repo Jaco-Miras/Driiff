@@ -70,3 +70,6 @@ export function updateThemeColors(payload, callback) {
 export function incomingFaviconImage(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FAVICON_IMAGE", payload, callback);
 }
+export function notificationReplyInEmail(payload, callback) {
+  return SimpleDispatchActionToReducer("NOTIFICATION_REPLY_IN_EMAIL", payload, callback);
+}

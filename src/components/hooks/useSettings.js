@@ -10,6 +10,7 @@ import {
   updateUserSettings,
   updateReadAnnouncement,
   setUserWorkspaceSetting,
+  notificationReplyInEmail,
 } from "../../redux/actions/settingsActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { setPushNotification } from "../../redux/actions/notificationActions";
@@ -62,6 +63,7 @@ const useSettings = () => {
   };
 
   const setGeneralSetting = (e, callback = () => {}) => {
+    debugger;
     dispatch(
       setUserGeneralSetting(e, () => {
         let payload = {
@@ -73,11 +75,17 @@ const useSettings = () => {
             ...userSettings.GENERAL_SETTINGS,
             ...e,
           },
+
           enable_all_notification_reply_in_email: e.enable_all_notification_reply_in_email,
         };
 
         if (loggedUser) {
-          dispatch(updateUserSettings(payload, callback));
+          dispatch(
+            updateUserSettings(payload, () => {
+              callback();
+              dispatch(notificationReplyInEmail({ enable_all_notification_reply_in_email: e.enable_all_notification_reply_in_email }));
+            })
+          );
         }
       })
     );

@@ -50,6 +50,7 @@ const INITIAL_STATE = {
   },
   user: {
     isLoaded: false,
+    enable_all_notification_reply_in_email: false,
     CHAT_SETTINGS: {
       chat_filter: "pills-home",
       sound_enabled: true,
@@ -104,7 +105,6 @@ const INITIAL_STATE = {
       time_format: "HH:mm",
       personal_links: [],
       notifications_on: true,
-      enable_all_notification_reply_in_email: false,
       order_channel: {
         order_by: "channel_date_updated",
         sort_by: "DESC",
@@ -530,6 +530,15 @@ export default (state = INITIAL_STATE, action) => {
         driff: {
           ...state.driff,
           favicon: action.data,
+        },
+      };
+    }
+    case "NOTIFICATION_REPLY_IN_EMAIL": {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          enable_all_notification_reply_in_email: action.data.enable_all_notification_reply_in_email,
         },
       };
     }

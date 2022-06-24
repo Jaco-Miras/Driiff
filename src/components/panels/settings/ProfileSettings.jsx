@@ -83,24 +83,9 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: {
-      language,
-      timezone,
-      date_format,
-      time_format,
-      dark_mode,
-      notifications_on,
-      log_rocket,
-      sentry,
-      logs,
-      notification_sound,
-      order_channel: orderChannel,
-      chat_language,
-      daily_digest,
-      enable_all_notification_reply_in_email,
-    },
+    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
-    userSettings: { isLoaded },
+    userSettings: { isLoaded, enable_all_notification_reply_in_email },
     setChatSetting,
     setWorkspaceSetting,
     setGeneralSetting,
@@ -655,8 +640,9 @@ const ProfileSettings = (props) => {
   };
 
   const handleEmailNotificationDropdown = (e) => {
-    setGeneralSetting({ enable_all_notification_reply_in_email: e.value });
-    toaster.success(<span>You have successfully updated notification sound</span>);
+    setGeneralSetting({ enable_all_notification_reply_in_email: e.value }, () => {
+      toaster.success(<span>You have successfully updated email notification</span>);
+    });
   };
 
   return (
