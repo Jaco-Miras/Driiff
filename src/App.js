@@ -19,6 +19,7 @@ import { sessionService } from "redux-react-session";
 import { DriffUpdateModal } from "./components/modals";
 import { ThemeProvider } from "styled-components";
 import AppWrapper from "./AppWrapper";
+import { clearApiError } from "./redux/actions/settingsActions";
 const FileViewer = lazy(() => import("./components/common/FileViewer"));
 const ModalPanel = lazy(() => import("./components/panels/ModalPanel"));
 
@@ -38,7 +39,7 @@ function App() {
   const showNewDriffBar = useSelector((state) => state.global.newDriffData.showNewDriffBar);
   const theme = useSelector((state) => state.settings.driff.theme);
   const faviconImg = useSelector((state) => state.settings.driff.favicon);
-
+  const driffErrors = useSelector((state) => state.settings.driffErrors);
   // const primarycolor = "#29323F"; //primary blue //#a903fc to check if  color changes
   // const secondarycolor = "#4E5D72";
   // const thirdcolor = "#4E5D72"; //lighter blue
@@ -58,6 +59,20 @@ function App() {
   //useHuddleNotification();
 
   useTranslation();
+  useEffect(() => {
+    if (driffErrors) {
+      if (Object.values(driffErrors).length >= 2) {
+        const lastIndex = Object.values(driffErrors).length;
+        if (Object.values(driffErrors)[lastIndex] - Object.values(driffErrors)[0] < 30) {
+          // if errors is within 30 seconds
+          window.location.href = "https://offline.getdriff.com/";
+        } else {
+          //clear driff error
+          dispatch(clearApiError());
+        }
+      }
+    }
+  }, [driffErrors]);
 
   useEffect(() => {
     if (location.pathname === "/force-logout") {
