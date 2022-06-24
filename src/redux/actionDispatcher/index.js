@@ -78,6 +78,9 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
           if (error.response.status === 401) {
             userForceLogout();
           }
+          if (error.response.status === 503) {
+            window.location.href = "https://offline.getdriff.com/";
+          }
           // internal server error
           // if (error.response.status === 500) {
           // }
