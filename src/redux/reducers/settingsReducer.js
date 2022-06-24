@@ -1,5 +1,6 @@
 import momentTZ from "moment-timezone";
 import { $_GET } from "../../helpers/commonFunctions";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   origTheme: {
@@ -120,7 +121,7 @@ const INITIAL_STATE = {
     },
   },
   isLoaded: false,
-  driffErrors: 0,
+  driffErrors: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -537,7 +538,16 @@ export default (state = INITIAL_STATE, action) => {
     case "API_ERROR": {
       return {
         ...state,
-        driffErrors: state.driffErrors + 1,
+        driffErrors: {
+          ...state.driffErrors,
+          [getCurrentTimestamp()]: getCurrentTimestamp(),
+        },
+      };
+    }
+    case "CLEAR_API_ERROR": {
+      return {
+        ...state,
+        driffErrors: null,
       };
     }
 

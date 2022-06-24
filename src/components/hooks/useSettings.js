@@ -103,12 +103,7 @@ const useSettings = () => {
     if (!driffSettings.isCompSettingsLoaded && !isCompSettingsIsLoading) {
       setIsCompSettingsLoading(true);
       dispatch(
-        getDriffCompSettings({}, (err, res) => {
-          if (err) {
-            if (err.response.status === 503) {
-              window.location.href = "https://offline.getdriff.com/";
-            }
-          }
+        getDriffCompSettings({}, () => {
           setIsCompSettingsLoading(false);
         })
       );
