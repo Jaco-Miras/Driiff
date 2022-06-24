@@ -16,6 +16,10 @@ const VideoMeeting = (props) => {
     dispatch(clearJitsi());
   };
 
+  const handleOnClose = (externalApi) => {
+    apiRef.current = externalApi;
+    window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
+  }
   return (
     <JaaSMeeting
       appId={appId}
@@ -68,15 +72,9 @@ const VideoMeeting = (props) => {
         ],
       }}
       onReadyToClose={handleClearJitsi}
-      onApiReady={(externalApi) => {
-        console.log(externalApi, "jitsi api");
-        apiRef.current = externalApi;
-      }}
+      onApiReady={(externalApi) => handleOnClose(externalApi)}
       getIFrameRef={node => node.style.height = '100vh'}
     />
-
-
-
   );
 };
 
