@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
 import { SvgIconFeather, Loader } from "../../common";
@@ -33,7 +33,8 @@ const Wrapper = styled.div`
 const PostSearch = (props) => {
   const { search, placeholder } = props;
   const dispatch = useDispatch();
-  const params = useParams();
+  const route = useRouteMatch();
+  const { params, url } = route;
   const workspace = useSelector((state) => state.workspaces.activeTopic);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [searchValue, setSearchValue] = useState(search === null ? "" : search);

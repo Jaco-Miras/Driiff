@@ -318,10 +318,10 @@ const usePostCategory = (props) => {
     loadMoreCompany: loadMoreCompany,
     loadMoreWorkspaceCategory: loadMoreWorkspaceCategory,
     count: {
-      is_must_read: !params.hasOwnProperty("workspaceId") ? mustRead.count : wsPosts ? wsPosts.categories.mustRead.count : 0,
-      is_must_reply: !params.hasOwnProperty("workspaceId") ? mustReply.count : wsPosts ? wsPosts.categories.mustReply.count : 0,
-      is_read_only: !params.hasOwnProperty("workspaceId") ? noReplies.count : wsPosts ? wsPosts.categories.noReplies.count : 0,
-      is_close: !params.hasOwnProperty("workspaceId") ? closedPost.count : wsPosts ? wsPosts.categories.closedPost.count : 0,
+      is_must_read: !params.hasOwnProperty("workspaceId") ? mustRead.count : wsPosts ? wsPosts.categories?.mustRead?.count : 0,
+      is_must_reply: !params.hasOwnProperty("workspaceId") ? mustReply.count : wsPosts ? wsPosts.categories?.mustReply?.count : 0,
+      is_read_only: !params.hasOwnProperty("workspaceId") ? noReplies.count : wsPosts ? wsPosts.categories?.noReplies?.count : 0,
+      is_close: !params.hasOwnProperty("workspaceId") ? closedPost.count : wsPosts ? wsPosts.categories?.closedPost?.count : 0,
     },
   };
 };

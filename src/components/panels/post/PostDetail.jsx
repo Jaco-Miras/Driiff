@@ -441,7 +441,7 @@ const PostDetail = (props) => {
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
-        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
       }
 
       if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id, sharedPayload });
