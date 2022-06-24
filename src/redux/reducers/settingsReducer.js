@@ -119,6 +119,7 @@ const INITIAL_STATE = {
     },
   },
   isLoaded: false,
+  driffErrors: 0,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -531,6 +532,13 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "API_ERROR": {
+      return {
+        ...state,
+        driffErrors: state.driffErrors + 1,
+      };
+    }
+
     default:
       return state;
   }
