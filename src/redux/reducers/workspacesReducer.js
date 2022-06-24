@@ -815,12 +815,14 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspacePosts: {
           ...state.workspacePosts,
-          [action.data.topicKey]: {
-            ...state.workspacePosts[action.data.topicKey],
-            search: action.data.search,
-            searchResults: action.data.search_result,
-            filter: "all",
-          },
+          ...(state.workspaces[action.data.topicKey] && {
+            [action.data.topicKey]: {
+              ...state.workspacePosts[action.data.topicKey],
+              search: action.data.search,
+              searchResults: action.data.search_result,
+              filter: "all",
+            },
+          }),
         },
       };
     }
@@ -4175,6 +4177,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_LAST_VISIT_POST": {
+      const isSharedHub = action.data.workspace && action.data.workspace.sharedSlug;
       return {
         ...state,
         workspacePosts: {
@@ -4188,13 +4191,13 @@ export default (state = INITIAL_STATE, action) => {
                   ...(state.workspacePosts[id].posts &&
                     Object.values(state.workspacePosts[id].posts).length > 0 && {
                       ...Object.values(state.workspacePosts[id].posts).reduce((pos, post) => {
-                        if (post.id && action.data.post_id) {
-                          pos[post.id] = {
+                        if (post.id === action.data.post_id) {
+                          pos[isSharedHub ? post.code : post.id] = {
                             ...post,
                             last_visited_at: { timestamp: action.data.last_visit },
                           };
                         } else {
-                          pos[post.id] = post;
+                          pos[isSharedHub ? post.code : post.id] = post;
                         }
                         return pos;
                       }, {}),

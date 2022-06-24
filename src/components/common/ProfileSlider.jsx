@@ -16,6 +16,10 @@ const Icon = styled(SvgIconFeather)`
   opacity: ${(props) => (props.loading ? "0" : "1")};
   width: ${(props) => (props.loading ? "1px !important" : "1rem")};
 `;
+const RepeatIcon = styled(SvgIconFeather)`
+  width: 0.8rem;
+  margin-right: 4px;
+`;
 
 const ProfileSlider = (props) => {
   const { id, onShowPopup, orientation, profile, classNames = "", sharedUser = null } = props;
@@ -161,7 +165,10 @@ const ProfileSlider = (props) => {
           {sharedUser && (
             <div className="d-flex justify-content-between">
               <div className="w-50">{dictionary.slugName}</div>
-              <div className="w-50 text-right">{sharedUser.slug}</div>
+              <div className="w-50 text-right">
+                <RepeatIcon icon="repeat" />
+                {sharedUser.slug}
+              </div>
             </div>
           )}
           {!sharedUser && (
