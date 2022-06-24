@@ -594,6 +594,8 @@ export default (state = INITIAL_STATE, action) => {
             return {
               ...item,
               ...action.data,
+              slug: workspace.slug,
+              sharedSlug: workspace.sharedSlug,
               members: action.data.members,
               topic: {
                 ...item.topic,
@@ -621,6 +623,8 @@ export default (state = INITIAL_STATE, action) => {
         workspace = {
           ...state.workspaces[workspace.sharedSlug ? workspace.key : workspace.id],
           ...action.data,
+          slug: workspace.slug,
+          sharedSlug: workspace.sharedSlug,
           is_lock: action.data.private,
           folder_name: action.data.current_workspace_folder_name,
         };
