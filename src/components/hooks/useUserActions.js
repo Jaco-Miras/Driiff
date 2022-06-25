@@ -46,11 +46,18 @@ export const userForceLogout = () => {
   //     //console.log("error");
   //   }
   // }
-  localStorage.removeItem("userAuthToken");
-  localStorage.removeItem("token");
-  localStorage.removeItem("atoken");
-  localStorage.removeItem("welcomeBanner");
-  sessionService.deleteSession().then(() => sessionService.deleteUser());
+  if (deviceType === "mobile" && browserName === "WebKit") {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      window.webkit.messageHandlers.driffLogout.postMessage({ slug: host[0], status: "OK" });
+    }
+  } else {
+    localStorage.removeItem("userAuthToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("atoken");
+    localStorage.removeItem("welcomeBanner");
+    sessionService.deleteSession().then(() => sessionService.deleteUser());
+  }
 };
 
 const useUserActions = () => {
