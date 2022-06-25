@@ -40,19 +40,17 @@ import { useHistory } from "react-router-dom";
 import { browserName, deviceType, isAndroid } from "react-device-detect";
 
 export const userForceLogout = () => {
-  if (localStorage.getItem("userAuthToken")) {
-    if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
-      //alert("error :(");
-      //console.log("error");
-    }
-  }
-  /*localStorage.removeItem("userAuthToken");
+  // if (localStorage.getItem("userAuthToken")) {
+  //   if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
+  //     //alert("error :(");
+  //     //console.log("error");
+  //   }
+  // }
+  localStorage.removeItem("userAuthToken");
   localStorage.removeItem("token");
   localStorage.removeItem("atoken");
   localStorage.removeItem("welcomeBanner");
-  sessionService
-    .deleteSession()
-    .then(() => sessionService.deleteUser());*/
+  sessionService.deleteSession().then(() => sessionService.deleteUser());
 };
 
 const useUserActions = () => {
