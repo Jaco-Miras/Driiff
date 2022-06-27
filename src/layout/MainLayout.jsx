@@ -71,6 +71,7 @@ const MainLayout = (props) => {
     invalidCode: _t("INVALID_INVITE_CODE", "Invite code is invalid."),
     codeAlreadyAccepted: _t("CODE_ALREADY_ACCEPTED", "Invite code already used."),
     userNotFound: _t("USER_NOT_FOUND", "User not found"),
+    userAlreadyExists: _t("USER_ALREADY_EXISTS", "User already exists"),
   };
 
   //const subscriptions = useSelector((state) => state.admin.subscriptions);
@@ -157,6 +158,8 @@ const MainLayout = (props) => {
                   ? dictionary.codeAlreadyAccepted
                   : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
                   ? dictionary.userNotFound
+                  : err.response.data.errors.error_message.includes("USER_EXISTED")
+                  ? dictionary.userAlreadyExists
                   : null;
                 toaster.error(errorMessage);
               }
