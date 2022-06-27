@@ -90,7 +90,7 @@ const CompanyFolderList = (props) => {
 
   /*const handleSelectSubFolder = (f) => {
     clearFilter();
-    if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+    if (path === "/hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
       let pathname = url.split("/folder/")[0];
       history.push(pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
     } else {

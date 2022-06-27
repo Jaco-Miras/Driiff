@@ -188,7 +188,7 @@ const MainLayout = (props) => {
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
             <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
           <MainSnoozePanel />
@@ -201,7 +201,7 @@ const MainLayout = (props) => {
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           {(path === "/admin-settings" || (subscriptions && subscriptions.status !== "canceled")) && (
             <Switch>
-              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/workspace"]} />
+              <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
               <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
             </Switch>
           )}

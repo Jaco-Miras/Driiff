@@ -90,8 +90,8 @@ const ChatMessageOptions = (props) => {
           let pathname = match.url;
           if (match.path === "/chat/:code") {
             history.push(`/chat/${teamChannelId.code}`);
-          } else if (match.path.startsWith("/workspace/chat")) {
-            history.push(pathname.replace("/workspace/chat", "/workspace/team-chat"));
+          } else if (match.path.startsWith("/hub/chat")) {
+            history.push(pathname.replace("/hub/chat", "/hub/team-chat"));
           }
         }
         setRedirecting(false);

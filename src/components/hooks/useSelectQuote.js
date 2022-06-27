@@ -56,7 +56,7 @@ const useSelectQuote = (props) => {
         setQuote(selectedQuote[0]);
         selectedQuote = selectedQuote[0];
         let selectedQuoteBody = "";
-        if (selectedQuote.user && (selectedQuote.body.startsWith("{\"Welk punt geef je ons\"") || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
+        if (selectedQuote.user && (selectedQuote.body.startsWith('{"Welk punt geef je ons"') || selectedQuote.body.startsWith("ZAP_SUBMIT::"))) {
           const renderStars = (num) => {
             let star = "";
             for (let i = 1; i <= 10; i++) {
@@ -156,9 +156,9 @@ const useSelectQuote = (props) => {
               let link = "";
               if (params && params.workspaceId) {
                 if (params.folderId) {
-                  link = `/workspace/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+                  link = `/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
                 } else {
-                  link = `/workspace/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
+                  link = `/hub/posts/${params.workspaceId}/${params.workspaceName}/post/${item.post.id}/${item.post.title}`;
                 }
               } else {
                 link = `/posts/${item.post.id}/${item.post.title}`;

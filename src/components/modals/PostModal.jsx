@@ -375,7 +375,18 @@ const PostModal = (props) => {
     mustReplyUsers: [],
   });
 
-  const { options: addressToOptions, getDefaultAddressTo, getAddressTo, responsible_ids, recipient_ids, is_personal, workspace_ids, userOptions, addressIds, actualUsers } = useWorkspaceAndUserOptions({
+  const {
+    options: addressToOptions,
+    getDefaultAddressTo,
+    getAddressTo,
+    responsible_ids,
+    recipient_ids,
+    is_personal,
+    workspace_ids,
+    userOptions,
+    addressIds,
+    actualUsers,
+  } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
   });
 
@@ -605,9 +616,9 @@ const PostModal = (props) => {
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -807,9 +818,9 @@ const PostModal = (props) => {
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
                 if (activeTopic.folder_id) {
-                  history.push(`/workspace/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/workspace/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {

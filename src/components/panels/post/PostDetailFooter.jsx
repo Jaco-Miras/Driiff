@@ -581,9 +581,7 @@ const PostDetailFooter = (props) => {
       tag: null,
     };
     const path =
-      workspace.folder_name && workspace.folder_id
-        ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-        : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+      workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
     dispatch(updateWorkspacePostFilterSort(payload));
     history.push(path);
     console.log("go back to inbox");
@@ -603,9 +601,7 @@ const PostDetailFooter = (props) => {
         goBackToInbox();
       } else {
         const path =
-          workspace.folder_name && workspace.folder_id
-            ? `/workspace/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
-            : `/workspace/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+          workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
         postActions.openPost(nextUnreadPosts, path);
       }
     });

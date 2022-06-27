@@ -306,13 +306,7 @@ const PostItemPanel = (props) => {
         </CheckBoxContainer>
         <PostContent onClick={() => openPost(post)}>
           <Author className="d-flex ml-2 mr-2">
-            <Avatar
-              title={`FROM: ${post.author.name}`}
-              className="author-avatar mr-2"
-              id={post.author.id}
-              name={post.author.name}
-              imageLink={post.author.profile_image_link}
-            />
+            <Avatar title={`FROM: ${post.author.name}`} className="author-avatar mr-2" id={post.author.id} name={post.author.name} imageLink={post.author.profile_image_link} />
           </Author>
           <div className="d-flex align-items-center justify-content-between flex-grow-1 min-width-0 mr-1">
             <div className={`app-list-title text-truncate ${isUnread ? "has-unread" : ""}`}>

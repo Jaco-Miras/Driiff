@@ -575,9 +575,9 @@ const useChannelActions = () => {
 
   const getChannelLink = (channel) => {
     if (channel.workspace_folder) {
-      return `/workspace/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      return `/hub/chat/${channel.workspace_folder.id}/${getUrlTitle(channel.workspace_folder.name)}/${channel.entity_id}/${getUrlTitle(channel.title)}`;
     } else {
-      return `/workspace/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
+      return `/hub/chat/${channel.entity_id}/${getUrlTitle(channel.title)}`;
     }
   };
 

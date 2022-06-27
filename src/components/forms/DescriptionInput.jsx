@@ -152,7 +152,6 @@ const StyledQuillEditor = styled(QuillEditor)`
 
 const IconButton = styled(SvgIconFeather)`
   cursor: pointer;
-  border: 1px solid #afb8bd;
   height: 1.5rem;
   margin: -1px 4px;
   width: 1.5rem;
@@ -160,8 +159,7 @@ const IconButton = styled(SvgIconFeather)`
   border-radius: 8px;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   &:hover {
-    background: ${({ theme }) => theme.colors.primary};
-    color: #ffffff;
+    color: ${({ theme }) => theme.colors.primary};
   }
 `;
 
@@ -200,7 +198,7 @@ const DescriptionInput = (props) => {
   const {
     className = "",
     onChange,
-    showFileButton = false,
+    showFileButton = true,
     onOpenFileDialog,
     defaultValue = "",
     //mode = "",
@@ -219,7 +217,6 @@ const DescriptionInput = (props) => {
     setImageLoading = null,
     prioMentionIds = [],
     readOnly = false,
-    inlineImageType = "private",
     ...otherProps
   } = props;
 
@@ -281,7 +278,6 @@ const DescriptionInput = (props) => {
     setInlineImages,
     setImageLoading,
     prioMentionIds: [...new Set(prioMentionIds)],
-    inlineImageType,
   });
 
   useEffect(() => {

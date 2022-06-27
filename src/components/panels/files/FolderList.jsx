@@ -84,7 +84,7 @@ const FolderList = (props) => {
       window.open(folder.payload.url, "_blank");
     } else {
       clearFilter();
-      if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+      if (path === "/hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
         let pathname = url.split("/folder/")[0];
         history.push(pathname + `/folder/${folder.id}/${replaceChar(folder.search)}`);
       } else {
@@ -96,7 +96,7 @@ const FolderList = (props) => {
 
   // const handleSelectSubFolder = (f) => {
   //   clearFilter();
-  //   if (path === "/workspace/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/workspace/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
+  //   if (path === "/hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || path === "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
   //     let pathname = url.split("/folder/")[0];
   //     history.push(pathname + `/folder/${f.id}/${replaceChar(f.search)}`);
   //   } else {

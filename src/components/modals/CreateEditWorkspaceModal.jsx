@@ -1101,9 +1101,9 @@ const CreateEditWorkspaceModal = (props) => {
             );
           }
           if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-            history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(form.selectedFolder.label)}/${res.data.id}/${replaceChar(form.name)}`);
           } else {
-            history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(form.name)}`);
+            history.push(`/hub/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
         };
 
@@ -1200,15 +1200,13 @@ const CreateEditWorkspaceModal = (props) => {
                 return found ? found : member;
               });
 
-              updateMembers(updatedMembers, res.data.id);
-
               if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
-                history.push(`/workspace/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: form.selectedFolder.value,
                   workspace_id: res.data.id,
                 });
               } else {
-                history.push(`/workspace/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                history.push(`/hub/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
                   folder_id: null,
                   workspace_id: res.data.id,
                 });

@@ -11,6 +11,7 @@ import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
 import { deletePushSubscription, postGenerateTranslationRaw, addToModals } from "../../../redux/actions/globalActions";
 import { driffData } from "../../../config/environment.json";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
+import { SvgIconFeather, ToolTip } from "../../common";
 
 const Wrapper = styled.div`
   .card {
@@ -82,13 +83,29 @@ const ProfileSettings = (props) => {
   const { user: loggedUser } = useSelector((state) => state.session);
 
   const {
-    generalSettings: { language, timezone, date_format, time_format, dark_mode, notifications_on, log_rocket, sentry, logs, notification_sound, order_channel: orderChannel, chat_language, daily_digest },
+    generalSettings: {
+      language,
+      timezone,
+      date_format,
+      time_format,
+      dark_mode,
+      notifications_on,
+      log_rocket,
+      sentry,
+      logs,
+      notification_sound,
+      order_channel: orderChannel,
+      chat_language,
+      daily_digest,
+      enable_all_notification_reply_in_email,
+    },
     chatSettings: { order_channel, sound_enabled, preview_message, virtualization },
     userSettings: { isLoaded },
     setChatSetting,
     setWorkspaceSetting,
     setGeneralSetting,
     setPushSubscription,
+
     // driffSettings,
   } = useSettings();
 
@@ -164,12 +181,31 @@ const ProfileSettings = (props) => {
     extraSettings: _t("SETTINGS.EXTRA_SETTINGS", "Extra settings"),
     darkMode: _t("SETTINGS.DARK_MODE", "Dark mode"),
     customTranslation: _t("SETTINGS.CUSTOM_TRANSLATION", "Use custom translation"),
+    emailToggle: _t("SETTINGS.EMAIL_TOGGLE", " Email notification"),
+    emailToggleLabelOn: _t("SETTINGS.EMAIL_TOGGLE_LABEL_ON", "Always, i prefer mostly email"),
+    emailToggleLabelOff: _t("SETTINGS.EMAIL_TOGGLE_LABEL_OFF", "Only on mention, I will use Driff mostly"),
+    emailToggleToolTip1: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP_ONE", "By selecting 'Always', you will receive all notifications through email."),
+    emailToggleToolTip2: _t("SETTINGS.EMAIL_TOGGLE_TOOL_TIP_TWO", "By selecting 'Only on mention', you will receive email notifications when you are mentioned on Chat or Post."),
   };
 
   const notificationSoundOptions = [
     {
       value: "appointed",
       label: dictionary.notificationSoundDefault,
+    },
+    // {
+    //   value: "jingle-bells",
+    //   label: dictionary.notificationSoundJingleBells,
+    // },
+  ];
+  const emailOptions = [
+    {
+      value: true,
+      label: dictionary.emailToggleLabelOn,
+    },
+    {
+      value: false,
+      label: dictionary.emailToggleLabelOff,
     },
     // {
     //   value: "jingle-bells",
@@ -618,6 +654,11 @@ const ProfileSettings = (props) => {
     window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
   };
 
+  const handleEmailNotificationDropdown = (e) => {
+    setGeneralSetting({ enable_all_notification_reply_in_email: e.value });
+    toaster.success(<span>You have successfully updated notification sound</span>);
+  };
+
   return (
     <Wrapper className={`profile-settings ${className}`}>
       {isLoaded ? (
@@ -825,6 +866,34 @@ const ProfileSettings = (props) => {
                     value={notificationSoundOptions.find((o) => o.value === notification_sound)}
                     onChange={handleNotificationSoundChange}
                     options={notificationSoundOptions}
+                  />
+                </div>
+              </div>
+              <div className="row mb-2">
+                <div className="col-5 text-muted" style={{ display: "flex" }}>
+                  {dictionary.emailToggle}
+                  &nbsp;
+                  <ToolTip
+                    content={
+                      <>
+                        {dictionary.emailToggleToolTip1}
+                        <br />
+                        {dictionary.emailToggleToolTip2}
+                      </>
+                    }
+                  >
+                    <SvgIconFeather icon="info" />
+                  </ToolTip>
+                </div>
+
+                <div className="col-7">
+                  <Select
+                    className={"react-select-container"}
+                    classNamePrefix="react-select"
+                    styles={dark_mode === "0" ? lightTheme : darkTheme}
+                    value={emailOptions.find((o) => o.value === enable_all_notification_reply_in_email)}
+                    onChange={handleEmailNotificationDropdown}
+                    options={emailOptions}
                   />
                 </div>
               </div>
