@@ -1,10 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
 import { browserName, deviceType, isMobile } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
-import { browserName, deviceType } from "react-device-detect";
 
 const VideoMeeting = () => {
   const params = useParams();
