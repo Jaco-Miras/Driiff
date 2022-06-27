@@ -1,5 +1,5 @@
-import React, { useRef, } from "react";
-import { useDispatch, } from "react-redux";
+import React, { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
 import { isMobile } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
@@ -11,15 +11,11 @@ const VideoMeeting = (props) => {
   const dispatch = useDispatch();
   const apiRef = useRef(null);
 
-
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
+    window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
   };
 
-  const handleOnClose = (externalApi) => {
-    apiRef.current = externalApi;
-    window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
-  }
   return (
     <JaaSMeeting
       appId={appId}
@@ -72,7 +68,9 @@ const VideoMeeting = (props) => {
         ],
       }}
       onReadyToClose={handleClearJitsi}
-      onApiReady={(externalApi) => handleOnClose(externalApi)}
+      onApiReady={(externalApi) => {
+        apiRef.current = externalApi;
+      }}
       getIFrameRef={node => node.style.height = '100vh'}
     />
   );
