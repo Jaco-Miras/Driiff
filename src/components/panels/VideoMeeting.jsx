@@ -11,7 +11,7 @@ const VideoMeeting = (props) => {
   const dispatch = useDispatch();
   const apiRef = useRef(null);
 
-  const handleClearJitsi = () => {
+  const handleOnClose = () => {
     dispatch(clearJitsi());
     if (deviceType === "mobile" && browserName === "WebKit") {
       window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
@@ -69,7 +69,7 @@ const VideoMeeting = (props) => {
           "__end",
         ],
       }}
-      onReadyToClose={handleClearJitsi}
+      onReadyToClose={handleOnClose}
       onApiReady={(externalApi) => {
         apiRef.current = externalApi;
       }}
