@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
-import { isMobile } from "react-device-detect";
+import { browserName, deviceType, isMobile } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
 import { browserName, deviceType } from "react-device-detect";
@@ -12,8 +12,11 @@ const VideoMeeting = () => {
   const dispatch = useDispatch();
   const apiRef = useRef(null);
 
-  const handleClearJitsi = () => {
+  const handleOnClose = () => {
     dispatch(clearJitsi());
+    if (deviceType === "mobile" && browserName === "WebKit") {
+      window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
+    }
   };
 
   useEffect(() => {
@@ -77,10 +80,8 @@ const VideoMeeting = () => {
           "__end",
         ],
       }}
-
-      onReadyToClose={handleClearJitsi}
+      onReadyToClose={handleOnClose}
       onApiReady={(externalApi) => {
-        console.log(externalApi, "jitsi api");
         apiRef.current = externalApi;
       }}
       getIFrameRef={(node) => (node.style.height = "100vh")}
