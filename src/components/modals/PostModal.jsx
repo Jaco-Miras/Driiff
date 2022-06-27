@@ -501,7 +501,7 @@ const PostModal = (props) => {
     }
     if (hasExternalWs && !shareOption) {
       valid.radio = false;
-      message.radio = dictionary.radioRequired;
+      message.radio = "";
     } else {
       valid.radio = true;
     }
