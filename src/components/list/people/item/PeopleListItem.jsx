@@ -103,6 +103,13 @@ const WorkSpaceIcon = styled(SvgIconFeather)`
     color: ${({ theme }) => theme.colors.primary};
   }
 `;
+const InviteEmailIcon = styled(SvgIconFeather)`
+  cursor: pointer;
+  transition: 0.3s ease;
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
+`;
 
 const PeopleListItem = (props) => {
   const {
@@ -270,6 +277,15 @@ const PeopleListItem = (props) => {
   const handleWorkspaceIconClick = () => {
     history.push(`/hub/search?user-id=${user.id}`);
   };
+  const handleCopyInviteLink = () => {
+    navigator.clipboard.writeText(user.invite_link).then(() => {
+      toaster.info(dictionary.copyToClipboard);
+    });
+  };
+
+  const handleSendInviteMail = () => {
+    window.location.href = `mailto:${user.email}?subject=Driff invite&body=${user.invite_link}`;
+  };
 
   return (
     <Wrapper className={`workspace-user-item-list col-lg-4 col-md-6 ${className}`}>
@@ -354,6 +370,11 @@ const PeopleListItem = (props) => {
                       <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                     </ToolTip>
                   )}
+                  {loggedUser.id !== user.id && user.hasOwnProperty("has_accepted") && !user.has_accepted && (
+                    <ToolTip content={dictionary.sendEmailInviteLink}>
+                      <InviteEmailIcon onClick={handleSendInviteMail} icon="mail" />
+                    </ToolTip>
+                  )}
                   {showOptions && loggedUser.id !== user.id && (
                     <MoreOptions className="ml-2" width={240} moreButton={"more-horizontal"} scrollRef={refs.cardBody.current}>
                       {!showInactive && user.type === "internal" && user.role && user.role.id !== 1 && user.hasOwnProperty("has_accepted") && user.has_accepted && <div onClick={handleAssignAsAdmin}>{dictionary.assignAsAdmin}</div>}
@@ -374,6 +395,7 @@ const PeopleListItem = (props) => {
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && notificationsLoaded && notificationSettings.email && <div onClick={handleReinvite}>{dictionary.resendInvitation}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleDeleteInvitedInternalUser}>{dictionary.removeInvitedInternal}</div>}
                       {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "internal" && <div onClick={handleSendInviteManually}>{dictionary.sendInviteManually}</div>}
+                      {!showInactive && user.hasOwnProperty("has_accepted") && !user.has_accepted && <div onClick={handleCopyInviteLink}>{dictionary.copyInviteLink}</div>}
                       {!showInactive && user.type === "internal" && <div onClick={handleAddUserToTeam}>{dictionary.addUserToTeam}</div>}
                       {onDeleteTeamMember && <div onClick={handleRemoveTeamMember}>{dictionary.removeTeamMember}</div>}
                     </MoreOptions>
