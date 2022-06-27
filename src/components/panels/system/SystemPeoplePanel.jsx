@@ -101,6 +101,7 @@ const SystemPeoplePanel = (props) => {
     removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
     sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
     deleteInvitedUser: _t("PEOPLE.DELETE_INVITED_USER", "Delete invited user"),
+    copyInviteLink: _t("PEOPLE.COPY_INVITE_LINK", "Copy Invite link"),
     deleteInvitedConfirmationText: _t("PEOPLE.DELETE_INVITED_CONFIRMATION_TEXT", "Are you sure you want to remove this invited user?"),
     toasterRemoveInvited: _t("TOASTER.REMOVE_INVITED_USER", "Removed invited user"),
     btnTeam: _t("BUTTON.TEAM", "Team"),
@@ -122,6 +123,8 @@ const SystemPeoplePanel = (props) => {
     connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
     phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
     messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
+    copyToClipboard: _t("TOAST.COPY_TO_CLIPBOARD_INVITE_LINK", "Invitation link copied"),
+    sendEmailInviteLink: _t("TOOLTIP.SEND_EMAIL_INVITE", "Mail Invite Link"),
   };
 
   const toaster = useToaster();
