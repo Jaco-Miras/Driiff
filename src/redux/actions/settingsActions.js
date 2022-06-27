@@ -73,3 +73,6 @@ export function incomingFaviconImage(payload, callback) {
 export function clearApiError(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_API_ERROR", payload, callback);
 }
+export function notificationReplyInEmail(payload, callback) {
+  return SimpleDispatchActionToReducer("NOTIFICATION_REPLY_IN_EMAIL", payload, callback);
+}
