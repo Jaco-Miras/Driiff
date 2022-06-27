@@ -194,13 +194,7 @@ const SystemMessage = (props) => {
       let parsedData = reply.body.replace("POST_CREATE::", "");
       if (parsedData.trim() !== "") {
         let item = JSON.parse(reply.body.replace("POST_CREATE::", ""));
-        if (params && params.workspaceId) {
-          if (params.folderId) {
-            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
-          } else {
-            history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
-          }
-        } else if (selectedChannel.slug) {
+        if (selectedChannel.sharedSlug) {
           let ws = workspaces[`${selectedChannel.entity_id}-${selectedChannel.slug}`];
           if (ws) {
             if (ws.folder_id) {
@@ -210,6 +204,12 @@ const SystemMessage = (props) => {
               dispatch(setActiveTopic(ws));
               history.push(`/shared-hub/posts/${ws.id}/${replaceChar(ws.name)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
             }
+          }
+        } else if (params && params.workspaceId) {
+          if (params.folderId) {
+            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
+          } else {
+            history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${item.post.id}/${replaceChar(item.post.title)}`);
           }
         } else {
           history.push(`/posts/${item.post.id}/${replaceChar(item.post.title)}`);

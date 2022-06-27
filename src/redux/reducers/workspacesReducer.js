@@ -823,14 +823,14 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.isSharedSlug) {
         convertedPosts = convertArrayToObject(
           action.data.posts.map((p) => {
-            return Object.assign({}, p, { claps: [] });
+            return Object.assign({}, p, { claps: [], slug: action.data.slug });
           }),
           "code"
         );
       } else {
         convertedPosts = convertArrayToObject(
           action.data.posts.map((p) => {
-            return Object.assign({}, p, { claps: [] });
+            return Object.assign({}, p, { claps: [], slug: action.data.slug });
           }),
           "id"
         );
