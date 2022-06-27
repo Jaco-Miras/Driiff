@@ -63,20 +63,14 @@ function App() {
     if (driffErrors) {
       if (Object.values(driffErrors).length >= 2) {
         const lastIndex = Object.values(driffErrors).length;
-        if (Object.values(driffErrors)[lastIndex] - Object.values(driffErrors)[0] < 30) {
-          // if errors is within 30 seconds
-          window.location.href = "https://offline.getdriff.com/";
+        if (Object.values(driffErrors)[lastIndex - 1] - Object.values(driffErrors)[0] < 10) {
+          // if errors is within 10 seconds
+          //window.location.href = "https://offline.getdriff.com/";
         } else {
           //clear driff error
           dispatch(clearApiError());
         }
       }
-    }
-  }, [driffErrors]);
-
-  useEffect(() => {
-    if (driffErrors >= 2) {
-      window.location.href = "https://offline.getdriff.com/";
     }
   }, [driffErrors]);
 
