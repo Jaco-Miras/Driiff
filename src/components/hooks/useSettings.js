@@ -63,6 +63,7 @@ const useSettings = () => {
   };
 
   const setGeneralSetting = (e, callback = () => {}) => {
+    console.log(e);
     dispatch(
       setUserGeneralSetting(e, () => {
         let payload = {
@@ -76,8 +77,9 @@ const useSettings = () => {
           },
           user: {
             ...userSettings,
-            enable_all_notification_reply_in_email: !!e.enable_all_notification_reply_in_email,
+            enable_all_notification_reply_in_email: e.hasOwnProperty("enable_all_notification_reply_in_email") ? e.enable_all_notification_reply_in_email : userSettings.enable_all_notification_reply_in_email,
           },
+          enable_all_notification_reply_in_email: e.hasOwnProperty("enable_all_notification_reply_in_email") ? e.enable_all_notification_reply_in_email : userSettings.enable_all_notification_reply_in_email,
         };
 
         if (loggedUser) {
