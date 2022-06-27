@@ -192,19 +192,19 @@ const LoginPanel = (props) => {
                 typeof props.location.state !== "undefined" && typeof props.location.state.from !== "undefined" && props.location.state.from !== "/logout"
                   ? props.location.state.from.pathname + props.location.state.from.search
                   : "/dashboard";
-              if (stateCode && inviteSlug) {
-                let payload = {
-                  url: `https://${inviteSlug}.driff.network/api/v2/shared-workspace-invite-accept`,
-                  state_code: stateCode,
-                  slug: slug,
-                  as_guest: false,
-                };
-                dispatch(
-                  acceptSharedUserInvite(payload, (err, res) => {
-                    if (err) return;
-                  })
-                );
-              }
+              // if (stateCode && inviteSlug) {
+              //   let payload = {
+              //     url: `https://${inviteSlug}.driff.network/api/v2/shared-workspace-invite-accept`,
+              //     state_code: stateCode,
+              //     slug: slug,
+              //     as_guest: false,
+              //   };
+              //   dispatch(
+              //     acceptSharedUserInvite(payload, (err, res) => {
+              //       if (err) return;
+              //     })
+              //   );
+              // }
               userActions.login(res.data, returnUrl);
             }
 
