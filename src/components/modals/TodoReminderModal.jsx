@@ -345,6 +345,10 @@ const TodoReminderModal = (props) => {
           value: activeTopic.id,
           label: activeTopic.name,
         });
+        setForm({
+          ...form,
+          topic_id: { value: activeTopic.id },
+        });
       }
       if (itemType && itemType === "POST" && mode === "create") {
         const workspaceRecipient = item.recipients.find((r) => r.type === "TOPIC");
