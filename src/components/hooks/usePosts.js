@@ -341,7 +341,19 @@ const usePosts = () => {
     activePostListTag = postListTag;
 
     counters = {
-      drafts: Object.values(posts).filter((p) => p.type === "draft_post").length,
+      drafts: Object.values(posts).filter((p) => {
+        return (
+          p.type === "draft_post" &&
+          p.form &&
+          p.form.selectedAddressTo.some((a) => {
+            if (workspace && workspace.sharedSlug) {
+              return a.id === workspace.id && a.is_shared_wp;
+            } else if (workspace) {
+              return a.id === workspace.id;
+            }
+          })
+        );
+      }).length,
     };
 
     if (workspace && workspace.sharedSlug) {
@@ -377,7 +389,17 @@ const usePosts = () => {
             if (p.hasOwnProperty("author") && !p.hasOwnProperty("draft_type")) return p.author.id === userId;
             else return false;
           } else if (activeFilter === "draft") {
-            return p.hasOwnProperty("draft_type");
+            return (
+              p.hasOwnProperty("draft_type") &&
+              p.form &&
+              p.form.selectedAddressTo.some((a) => {
+                if (workspace && workspace.sharedSlug) {
+                  return a.id === workspace.id && a.is_shared_wp;
+                } else if (workspace) {
+                  return a.id === workspace.id;
+                }
+              })
+            );
           } else if (activeFilter === "star") {
             return p.is_favourite && !p.hasOwnProperty("draft_type");
           } else if (activeFilter === "archive") {
