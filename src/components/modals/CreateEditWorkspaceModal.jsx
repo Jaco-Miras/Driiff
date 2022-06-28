@@ -83,7 +83,8 @@ const WrapperDiv = styled(InputGroup)`
   .file-attachments {
     position: relative;
     max-width: 100%;
-    margin-left: 128px;
+    padding-bottom: 1rem;
+    /* margin-left: 128px; */
     @media all and (max-width: 480px) {
       margin-left: 0;
     }
