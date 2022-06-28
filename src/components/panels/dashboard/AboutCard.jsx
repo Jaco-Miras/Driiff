@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
+import { useGetSlug } from "../../hooks";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -51,6 +52,8 @@ const AboutCard = (props) => {
   const recipients = useSelector((state) => state.global.recipients);
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const { slug } = useGetSlug();
 
   const handleEditClick = () => {
     if (isWorkspace) {
@@ -72,10 +75,19 @@ const AboutCard = (props) => {
 
   let workspaceMember = false;
   if (isWorkspace && workspace) {
-    workspaceMember = workspace.members.some((m) => m.id === user.id);
-    // if (workspace.sharedSlug && sharedWs[workspace.slug]) {
-    //   workspaceMember = workspace.members.some((m) => m.id === sharedWs[workspace.slug].user_auth.id);
-    // }
+    const workspaceMembers = workspace
+      ? workspace.members
+          .map((m) => {
+            if (m.member_ids) {
+              return m.member_ids;
+            } else return m.id;
+          })
+          .flat()
+      : [];
+    const isSameDriff = (workspace && workspace.sharedSlug && workspace.slug && slug === workspace.slug.slice(0, -7)) || (workspace && !workspace.sharedSlug);
+    const isCreator = workspace && workspace.slug && workspace.sharedSlug && sharedWs[workspace.slug] && workspace.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+    const isTeamMember = workspace && !workspace.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
+    workspaceMember = (isCreator || isTeamMember) && user.type !== "external";
   }
 
   return (
