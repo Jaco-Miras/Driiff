@@ -1176,10 +1176,15 @@ const CreateEditWorkspaceModal = (props) => {
 
           if (res.data) {
             const _externalUsers = res.data.members.reduce((acc, c) => {
-              const found = invitedExternals.find((ex) => ex.email === c.email);
-              if (found) {
-                acc.push({ ...c, profile_image_link: URL.createObjectURL(found.profile_pic), profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic), profile_pic: found.profile_pic });
-              }
+              const found = invitedSharedUsers.find((ex) => ex.email === c.email);
+              const sharedSlug = form.is_shared_wp ? `${slug}-shared` : slug;
+              acc.push({
+                ...c,
+                profile_image_link: URL.createObjectURL(found.profile_pic),
+                profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic),
+                profile_pic: found.profile_pic,
+                sharedPayload: form.is_shared_wp ? { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true } : null,
+              });
               return acc;
             }, []);
             batchEditUploadExternalUserProfilePic(_externalUsers);
@@ -1189,9 +1194,9 @@ const CreateEditWorkspaceModal = (props) => {
               return found ? found : member;
             });
 
-            if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
+            updateMembers(updatedMembers, `${res.data.id}-${res.data.slug_owner}`);
 
-            const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+            const sendByMyselfEmail = invitedSharedUsers.find((ex) => !ex.send_by_email);
             if (sendByMyselfEmail) {
               const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
               if (member && member.invite_link) {
@@ -1304,9 +1309,16 @@ const CreateEditWorkspaceModal = (props) => {
             if (res) {
               //redirect url
               const _externalUsers = res.data.members.reduce((acc, c) => {
-                const found = invitedExternals.find((ex) => ex.email === c.email);
+                const found = invitedSharedUsers.find((ex) => ex.email === c.email);
                 if (found) {
-                  acc.push({ ...c, profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic), profile_pic: found.profile_pic });
+                  const sharedSlug = form.is_shared_wp ? `${slug}-shared` : slug;
+                  acc.push({
+                    ...c,
+                    profile_image_link: URL.createObjectURL(found.profile_pic),
+                    profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic),
+                    profile_pic: found.profile_pic,
+                    sharedPayload: form.is_shared_wp ? { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true } : null,
+                  });
                 }
                 return acc;
               }, []);
@@ -1316,8 +1328,6 @@ const CreateEditWorkspaceModal = (props) => {
                 const found = _externalUsers.find((ex) => ex.id === member.id);
                 return found ? found : member;
               });
-
-              if (!form.is_shared_wp) updateMembers(updatedMembers, res.data.id);
 
               if (attachedFiles.length) {
                 let formData = new FormData();
@@ -1464,7 +1474,7 @@ const CreateEditWorkspaceModal = (props) => {
                 toggle();
               }
 
-              const sendByMyselfEmail = invitedExternals.find((ex) => !ex.send_by_email);
+              const sendByMyselfEmail = invitedSharedUsers.find((ex) => !ex.send_by_email);
               if (sendByMyselfEmail) {
                 const member = res.data.members.find((m) => m.email === sendByMyselfEmail.email);
                 if (member && member.invite_link) {
@@ -1473,7 +1483,11 @@ const CreateEditWorkspaceModal = (props) => {
                 }
               }
 
-              dispatch(setActiveTopic(newWorkspace));
+              dispatch(
+                setActiveTopic(newWorkspace, () => {
+                  updateMembers(updatedMembers, newWorkspace.key);
+                })
+              );
               if (form.icon) {
                 handleUpdateWorkspaceIcon(payload, form.icon, newWorkspace);
               }
