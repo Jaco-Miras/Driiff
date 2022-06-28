@@ -2277,7 +2277,7 @@ class SocketListeners extends Component {
         this.props.incomingUpdatedChannelDetail(data);
       })
       .listen(".member-update-timestamp", (e) => {
-        this.props.setMemberTimestamp({ ...e, userId: this.state.userId, slug: this.state.slug });
+        this.props.setMemberTimestamp({ ...e, userId: this.state.userId, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".new-added-member-chat", (e) => {
         if (e.id) {
