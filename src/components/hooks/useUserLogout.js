@@ -5,7 +5,7 @@ import { sessionService } from "redux-react-session";
 import { getAPIUrl, getCurrentDriffUrl } from "../../helpers/slugHelper";
 import { toggleLoading } from "../../redux/actions/globalActions";
 import { userLogout } from "../../redux/actions/userAction";
-import { browserName, deviceType } from "react-device-detect";
+import { browserName, deviceType, isTablet } from "react-device-detect";
 
 const useUserLogout = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const useUserLogout = () => {
           .then(() => {
             history.push("/login");
             dispatch(toggleLoading(false));
-            if (deviceType === "mobile" && browserName === "WebKit") {
+            if ((deviceType === "mobile" && browserName === "WebKit") || isTablet) {
               window.webkit.messageHandlers.driffLogout.postMessage({ slug: "24", status: "OK" });
             }
           });

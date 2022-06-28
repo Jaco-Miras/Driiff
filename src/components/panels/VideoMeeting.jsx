@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
-import { isMobile } from "react-device-detect";
+import { browserName, deviceType, isMobile, isTablet } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
 
@@ -13,7 +13,9 @@ const VideoMeeting = (props) => {
 
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
-    window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
+    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet) {
+      window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
+    }
   };
 
   return (
