@@ -390,7 +390,7 @@ export default function (state = INITIAL_STATE, action) {
     }
     case "UPDATE_MEMBER_TIMESTAMP": {
       let channel = null;
-      if (action.data.slug !== getSlug()) {
+      if (action.data.sharedSlug) {
         if (Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug)) {
           channel = Object.values(state.channels).find((c) => c.id === action.data.channel_id && c.slug && c.slug === action.data.slug);
         }
@@ -431,10 +431,10 @@ export default function (state = INITIAL_STATE, action) {
           channel !== null
             ? {
                 ...state.channels,
-                [channel.slug ? channel.code : channel.id]: channel,
+                [action.data.sharedSlug ? channel.code : channel.id]: channel,
               }
             : state.channels,
-        selectedChannel: state.selectedChannel && state.selectedChannel.id === parseInt(action.data.channel_id) ? channel : state.selectedChannel,
+        selectedChannel: state.selectedChannel && channel && state.selectedChannel.id === channel.id ? channel : state.selectedChannel,
       };
     }
     case "ADD_TO_CHANNELS": {
