@@ -5,7 +5,7 @@ import { SvgIconFeather } from "../../common";
 import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
-import { browserName, deviceType, isTablet } from "react-device-detect";
+import { browserName, deviceType, isIPad13, isTablet } from "react-device-detect";
 
 const Wrapper = styled.div`
   display: flex;
@@ -73,7 +73,7 @@ const DriffTalkMessage = (props) => {
       host: false,
       room_name: getSlug() + "-" + parseChannel + "-" + channelId,
     };
-    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet) {
+    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet || isIPad13) {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
           if (err) {
