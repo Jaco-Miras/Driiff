@@ -50,7 +50,7 @@ const INITIAL_STATE = {
   },
   user: {
     isLoaded: false,
-    enable_all_notification_reply_in_email: false,
+    enable_all_notification_reply_in_email: true,
     CHAT_SETTINGS: {
       chat_filter: "pills-home",
       sound_enabled: true,
