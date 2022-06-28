@@ -2632,7 +2632,7 @@ const CreateEditWorkspaceModal = (props) => {
 
             <div className={"lock-workspace-text-container pb-3"}>
               {form.is_shared_wp && <Label className={"lock-workspace-text"}>{dictionary.workspaceTypeIsInviteOnly}</Label>}
-              <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>
+              {form.is_private === false && <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>}
             </div>
 
             <button className="btn btn-primary" onClick={handleConfirm} disabled={form.name.trim() === "" || form.textOnly.trim() === "" || form.selectedUsers.length === 0 || form.is_private === null || creatingFolder}>
