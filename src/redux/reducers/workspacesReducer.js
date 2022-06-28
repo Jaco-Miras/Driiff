@@ -1051,13 +1051,16 @@ export default (state = INITIAL_STATE, action) => {
           drafts: [...state.drafts, draft],
           workspacePosts: {
             ...state.workspacePosts,
-            [action.data.data.topic_id]: {
-              ...state.workspacePosts[action.data.data.topic_id],
-              posts: {
-                ...state.workspacePosts[action.data.data.topic_id].posts,
-                [draft.id]: draft,
-              },
-            },
+            ...(action.data.data.form.selectedAddressTo &&
+              state.workspacePosts[action.data.data.form.selectedAddressTo[0].key] && {
+                [action.data.data.form.selectedAddressTo[0].key]: {
+                  ...state.workspacePosts[action.data.data.form.selectedAddressTo[0].key],
+                  posts: {
+                    ...state.workspacePosts[action.data.data.form.selectedAddressTo[0].key].posts,
+                    [draft.id]: draft,
+                  },
+                },
+              }),
           },
         };
       } else {
@@ -1065,10 +1068,10 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "UPDATE_DRAFT_SUCCESS": {
-      if (action.data.data.draft_type === "draft_post" && action.data.data.topic_id && state.workspacePosts[action.data.data.topic_id]) {
+      if (action.data.data.draft_type === "draft_post" && action.data.data.topic_id && state.workspacePosts[action.data.data.form.selectedAddressTo[0].key]) {
         const workspacePosts = { ...state.workspacePosts };
-        workspacePosts[action.data.data.topic_id].posts[action.data.data.id] = {
-          ...workspacePosts[action.data.data.topic_id].posts[action.data.data.post_id],
+        workspacePosts[action.data.data.form.selectedAddressTo[0].key].posts[action.data.data.id] = {
+          ...workspacePosts[action.data.data.form.selectedAddressTo[0].key].posts[action.data.data.post_id],
           ...action.data.data,
           id: action.data.data.post_id,
           post_id: action.data.data.post_id,
