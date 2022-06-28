@@ -347,7 +347,7 @@ const usePosts = () => {
           p.form &&
           p.form.selectedAddressTo.some((a) => {
             if (workspace && workspace.sharedSlug) {
-              return a.id === workspace.id && a.is_shared_wp;
+              return a.id === workspace.id && a.is_shared_wp && a.name === workspace.name;
             } else if (workspace) {
               return a.id === workspace.id;
             }
@@ -394,7 +394,7 @@ const usePosts = () => {
               p.form &&
               p.form.selectedAddressTo.some((a) => {
                 if (workspace && workspace.sharedSlug) {
-                  return a.id === workspace.id && a.is_shared_wp;
+                  return a.id === workspace.id && a.is_shared_wp && a.name === workspace.name;
                 } else if (workspace) {
                   return a.id === workspace.id;
                 }
