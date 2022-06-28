@@ -602,8 +602,8 @@ export default (state = INITIAL_STATE, action) => {
             return {
               ...item,
               ...action.data,
-              slug: workspace.slug,
-              sharedSlug: workspace.sharedSlug,
+              slug: action.data.slug_owner,
+              sharedSlug: action.data.is_shared_wp,
               members: action.data.members,
               topic: {
                 ...item.topic,
