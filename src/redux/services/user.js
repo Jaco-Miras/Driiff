@@ -463,6 +463,7 @@ export function batchUploadProfileImage(payload) {
       data: {
         file: p.profile_pic,
       },
+      sharedPayload: p.sharedPayload,
     });
   });
 
