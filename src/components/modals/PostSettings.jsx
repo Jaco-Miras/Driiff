@@ -403,7 +403,7 @@ const PostSettings = (props) => {
               >
                 <span class="receiver client-shared text-white">
                   {/* <LockIcon icon="eye" /> */}
-                  {dictionary.sharedClientBadge}
+                  {dictionary.badgeShared}
                 </span>
               </RadioInput>
             </RadioInputWrapper>
@@ -425,6 +425,7 @@ const PostSettings = (props) => {
             </RadioInputWrapper>
             {/* <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" /> */}
           </ApproveOptions>
+          <p className="text-muted">{dictionary.radioRequired}</p>
         </Wrapper>
       )}
     </CheckBoxGroup>
