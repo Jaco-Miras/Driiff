@@ -3,8 +3,6 @@ import styled from "styled-components";
 import { CheckBox, FolderSelect } from "../forms";
 import RadioInput from "../forms/RadioInput";
 import { SvgIconFeather } from "../common";
-import { useSelector } from "react-redux";
-import { useMemo } from "react";
 
 const CheckBoxGroup = styled.div`
   transition: all 0.3s ease !important;
@@ -83,8 +81,7 @@ const Wrapper = styled.div``;
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal, isSharedWorkspace = false } = props;
-  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal, isSharedExternal = false } = props;
   const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
   let options = userOptions;
   if (shareOption && shareOption.value === "internal") {
@@ -326,10 +323,6 @@ const PostSettings = (props) => {
   const hasExternal = form.selectedAddressTo.some((r) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
-
-  const isSharedExternal = useMemo(() => {
-    return isSharedWorkspace && activeTopic?.members.find((aMember) => aMember?.external_id === user.id)?.type === "external";
-  }, [isSharedWorkspace, activeTopic]);
 
   return (
     <CheckBoxGroup>
