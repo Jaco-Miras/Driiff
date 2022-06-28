@@ -1267,6 +1267,7 @@ const PostModal = (props) => {
             setForm={setForm}
             user={user}
             setShowNestedModal={setShowNestedModal}
+            isSharedWorkspace={isSharedWorkspace}
           />
           {!formResponse.valid.radio && <p style={{ color: "red" }}>{formResponse.message.radio}</p>}
         </WrapperDiv>
