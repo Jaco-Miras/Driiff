@@ -350,7 +350,7 @@ const PostItemPanel = (props) => {
               <PostReplyCounter>
                 {isUnread && (
                   <>
-                    {post.author.id !== user.id && post.unread_count === 0 && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+                    {post.author.id !== user.id && post.unread_count === 0 && post.view_user_ids && !post.view_user_ids.some((id) => id === user.id) && <div className="mr-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
                     {post.unread_count !== 0 && <div className="mr-2 badge badge-secondary text-white text-9">{post.unread_count} new</div>}
                   </>
                 )}

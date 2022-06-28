@@ -41,7 +41,9 @@ const WorkspacePeoplePanel = (props) => {
 
   const dispatch = useDispatch();
   const { selectUserChannel, loggedUser } = useUserChannels();
-  const { activeTopic } = useSelector((state) => state.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const user = useSelector((state) => state.session.user);
 
   const history = useHistory();
 
@@ -98,7 +100,6 @@ const WorkspacePeoplePanel = (props) => {
   };
 
   const { _t } = useTranslationActions();
-  const slug = useGetSlug();
 
   const dictionary = {
     searchPeoplePlaceholder: _t("PLACEHOLDER.SEARCH_PEOPLE", "Search by name or email"),
@@ -123,7 +124,21 @@ const WorkspacePeoplePanel = (props) => {
   };
 
   useFocusInput(refs.search.current);
-  const sharedWorkspace = workspace && workspace.slug ? workspace.slug !== slug : false;
+  const workspaceMembers = activeTopic
+    ? activeTopic.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+  const { slug } = useGetSlug();
+  const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
+  const isSameDriff = (activeTopic && activeTopic.sharedSlug && activeTopic.slug && slug === activeTopic.slug.slice(0, -7)) || (activeTopic && !activeTopic.sharedSlug);
+  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+  const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
+  const showInviteButton = (isCreator || isTeamMember) && !isExternal;
 
   return (
     <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
@@ -131,7 +146,7 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-            {!isExternal && isMember && (
+            {showInviteButton && (
               <div>
                 <button className="btn btn-primary" onClick={handleEditWorkspace}>
                   <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
