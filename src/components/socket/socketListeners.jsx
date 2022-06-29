@@ -1014,7 +1014,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
             break;
           }
           case "POST_CLAP_TOGGLE": {
@@ -1117,13 +1117,13 @@ class SocketListeners extends Component {
                 }
               });
               if (hasMentioned || e.workspaces.length === 0) {
-                this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+                this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true });
               } else {
                 const comment = { ...e, allMuted: workspacesMuted.length === e.workspaces.length };
-                this.props.incomingComment({ ...comment, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+                this.props.incomingComment({ ...comment, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true });
               }
             } else {
-              this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+              this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
             }
             break;
           }
@@ -1133,7 +1133,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {

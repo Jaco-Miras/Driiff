@@ -297,11 +297,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_COMMENT": {
+      const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          ...(action.data.author.id !== state.user.id &&
+          ...(action.data.addToNotification &&
+            isNewComment &&
             action.data.notification && {
               [action.data.notification.id]: {
                 id: action.data.notification.id,
