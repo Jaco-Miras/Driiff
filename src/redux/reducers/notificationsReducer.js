@@ -318,6 +318,8 @@ export default (state = INITIAL_STATE, action) => {
                   users_approval: action.data.users_approval,
                   post_approval_label: action.data.users_approval.length > 0 && action.data.users_approval.every((u) => u.ip_address === null) ? "NEED_ACTION" : "",
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
           ...Object.values(state.notifications).reduce((acc, notif) => {

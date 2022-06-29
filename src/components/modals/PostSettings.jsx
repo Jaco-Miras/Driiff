@@ -81,7 +81,7 @@ const Wrapper = styled.div``;
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal } = props;
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal, isSharedExternal = false } = props;
   const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
   let options = userOptions;
   if (shareOption && shareOption.value === "internal") {
@@ -385,7 +385,7 @@ const PostSettings = (props) => {
           {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
         </ApproveOptions>
       </Wrapper>
-      {!isExternalUser && hasExternal && (
+      {!isExternalUser && !isSharedExternal && hasExternal && (
         <Wrapper className="mt-1">
           <ApproveOptions className="d-flex align-items-center mb-1">
             <span>{dictionary.shareWithClient}</span>

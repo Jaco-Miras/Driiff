@@ -1,5 +1,5 @@
 import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
@@ -504,7 +504,7 @@ const PostModal = (props) => {
     } else {
       valid.selectedAddressTo = true;
     }
-    if (hasExternalWs && !shareOption) {
+    if (hasExternalWs && !shareOption && !isSharedExternal) {
       valid.radio = false;
       message.radio = "";
     } else {
@@ -575,7 +575,7 @@ const PostModal = (props) => {
       //     : form.must_read || form.reply_required
       //     ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
       //     : [],
-      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
+      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser || isSharedExternal ? 1 : 0,
       body_mention_ids: rawMentionIds.includes(NaN) ? addressIds : mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       must_read_user_ids: form.must_read && form.mustReadUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.must_read ? form.mustReadUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
       must_reply_user_ids:
@@ -1152,6 +1152,10 @@ const PostModal = (props) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
 
+  const isSharedExternal = useMemo(() => {
+    return isSharedWorkspace && activeTopic?.members.find((aMember) => aMember?.external_id === user.id)?.type === "external";
+  }, [isSharedWorkspace, activeTopic]);
+
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
@@ -1272,6 +1276,7 @@ const PostModal = (props) => {
             setForm={setForm}
             user={user}
             setShowNestedModal={setShowNestedModal}
+            isSharedExternal={isSharedExternal}
           />
           {!formResponse.valid.radio && <p style={{ color: "red" }}>{formResponse.message.radio}</p>}
         </WrapperDiv>
