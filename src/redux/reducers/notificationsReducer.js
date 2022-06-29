@@ -264,6 +264,8 @@ export default (state = INITIAL_STATE, action) => {
                   must_reply_users: action.data.must_reply_users,
                   is_close: 0,
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
           ...(action.data.notification_approval &&
@@ -291,6 +293,8 @@ export default (state = INITIAL_STATE, action) => {
                   must_reply_users: action.data.must_reply_users,
                   is_close: 0,
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
         },
