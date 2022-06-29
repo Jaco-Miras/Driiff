@@ -385,49 +385,50 @@ const PostSettings = (props) => {
           {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
         </ApproveOptions>
       </Wrapper>
-      {!isSharedExternal && hasExternal && (
-        <Wrapper className="mt-1">
-          <ApproveOptions className="d-flex align-items-center mb-1">
-            <span>{dictionary.shareWithClient}</span>
-          </ApproveOptions>
-          <ApproveOptions className="d-flex align-items-center">
-            <RadioInputWrapper className="mr-2">
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSelectShareOption(e, "external");
-                }}
-                checked={form.shared_with_client}
-                value={"external"}
-                name={"role"}
-              >
-                <span class="receiver client-shared text-white">
-                  {/* <LockIcon icon="eye" /> */}
-                  {dictionary.badgeShared}
-                </span>
-              </RadioInput>
-            </RadioInputWrapper>
-            <RadioInputWrapper>
-              <RadioInput
-                readOnly
-                onClick={(e) => {
-                  handleSelectShareOption(e, "internal");
-                }}
-                checked={form.shared_with_client === false}
-                value={"internal"}
-                name={"role"}
-              >
-                <span class="receiver client-not-shared">
-                  {/* <LockIcon icon="eye-off" /> */}
-                  {dictionary.notSharedClientBadge}
-                </span>
-              </RadioInput>
-            </RadioInputWrapper>
-            {/* <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" /> */}
-          </ApproveOptions>
-          <p className="text-muted">{dictionary.radioRequired}</p>
-        </Wrapper>
-      )}
+      {(!isExternalUser || !isSharedExternal) &&
+        hasExternal(
+          <Wrapper className="mt-1">
+            <ApproveOptions className="d-flex align-items-center mb-1">
+              <span>{dictionary.shareWithClient}</span>
+            </ApproveOptions>
+            <ApproveOptions className="d-flex align-items-center">
+              <RadioInputWrapper className="mr-2">
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSelectShareOption(e, "external");
+                  }}
+                  checked={form.shared_with_client}
+                  value={"external"}
+                  name={"role"}
+                >
+                  <span class="receiver client-shared text-white">
+                    {/* <LockIcon icon="eye" /> */}
+                    {dictionary.badgeShared}
+                  </span>
+                </RadioInput>
+              </RadioInputWrapper>
+              <RadioInputWrapper>
+                <RadioInput
+                  readOnly
+                  onClick={(e) => {
+                    handleSelectShareOption(e, "internal");
+                  }}
+                  checked={form.shared_with_client === false}
+                  value={"internal"}
+                  name={"role"}
+                >
+                  <span class="receiver client-not-shared">
+                    {/* <LockIcon icon="eye-off" /> */}
+                    {dictionary.notSharedClientBadge}
+                  </span>
+                </RadioInput>
+              </RadioInputWrapper>
+              {/* <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" /> */}
+            </ApproveOptions>
+            <p className="text-muted">{dictionary.radioRequired}</p>
+          </Wrapper>
+        )}
     </CheckBoxGroup>
   );
 };
