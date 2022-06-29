@@ -2759,6 +2759,7 @@ export default function (state = INITIAL_STATE, action) {
                   return {
                     ...mem,
                     company_name: member.company_name,
+                    last_name: member.last_name,
                     slug: member.slug,
                   };
                 } else {
@@ -2771,6 +2772,25 @@ export default function (state = INITIAL_STATE, action) {
           }
           return acc;
         }, {}),
+        selectedChannel:
+          state.selectedChannel && state.selectedChannel.code === action.data.code
+            ? {
+                ...state.selectedChannel,
+                members: state.selectedChannel.members.map((mem) => {
+                  const member = action.data.members.find((m) => m.id === mem.id);
+                  if (member) {
+                    return {
+                      ...mem,
+                      company_name: member.company_name,
+                      last_name: member.last_name,
+                      slug: member.slug,
+                    };
+                  } else {
+                    return mem;
+                  }
+                }),
+              }
+            : state.selectedChannel,
       };
     }
     case "GET_SHARED_CHANNELS_SUCCESS": {

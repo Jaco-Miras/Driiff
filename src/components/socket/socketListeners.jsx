@@ -276,11 +276,14 @@ class SocketListeners extends Component {
   // };
 
   componentDidMount() {
-    this.props.getOnlineUsers();
+    if (!this.props.sharedSlug) {
+      this.props.getOnlineUsers();
 
-    this.props.getLatestReply({}, (err, res) => {
-      //console.log(res, "latest");
-    });
+      this.props.getLatestReply({}, (err, res) => {
+        //console.log(res, "latest");
+      });
+    }
+
     window[this.state.slug].connector.socket.on("connect", () => {
       //console.log("socket connected");
     });
@@ -1542,7 +1545,7 @@ class SocketListeners extends Component {
         if (e.user_id === this.state.userId) {
           this.props.getUser({ id: this.state.userId }, (err, res) => {
             if (err) return;
-            sessionService.saveUser({ ...res.data });
+            sessionService.saveUser({ ...this.props.user, ...res.data });
           });
         }
       })
@@ -1662,7 +1665,7 @@ class SocketListeners extends Component {
             if (e.id === this.state.userId || e.user_id === this.state.userId) {
               this.props.getUser({ id: this.state.userId }, (err, res) => {
                 if (err) return;
-                sessionService.saveUser({ ...res.data });
+                sessionService.saveUser({ ...this.props.user, ...res.data });
               });
             }
             break;

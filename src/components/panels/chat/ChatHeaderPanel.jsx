@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -14,6 +14,7 @@ import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 import { isMobile } from "react-device-detect";
 import Tooltip from "react-tooltip-lite";
 import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
+import { addCompanyNameOnMembers } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -292,6 +293,16 @@ const ChatHeaderPanel = (props) => {
 
   const toaster = useToaster();
   const [bellClicked, setBellClicked] = useState(false);
+
+  useEffect(() => {
+    if (channel && channel.slug && channel.sharedSlug) {
+      //check for members slug
+      let ws = workspaces[`${channel.entity_id}-${channel.slug}`];
+      if (channel.members.every((m) => !m.hasOwnProperty("slug")) && ws) {
+        dispatch(addCompanyNameOnMembers({ code: channel.code, members: ws.members }));
+      }
+    }
+  }, [channel, workspaces]);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
