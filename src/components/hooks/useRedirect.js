@@ -98,16 +98,17 @@ const useRedirect = () => {
   };
 
   const toPost = (payload, locationState = null) => {
-    const { post, workspace } = payload;
-    if (workspace && workspaces[workspace.id]) {
-      dispatch(setActiveTopic(workspace));
+    const { post, workspace, sharedSlug = false } = payload;
+    if (workspace && workspaces[workspace.key]) {
+      dispatch(setActiveTopic(workspaces[workspace.key]));
+      let wsType = sharedSlug ? "shared-hub" : "hub";
       if (workspace.folder_id) {
-        history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       } else {
-        history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       }
-    } else if (workspace && typeof workspaces[workspace.id] === "undefined") {
-      fetchWorkspaceAndRedirect(workspace, post);
+    } else if (workspace && typeof workspaces[workspace.key] === "undefined") {
+      if (!sharedSlug) fetchWorkspaceAndRedirect(workspace, post);
     } else {
       history.push(`/posts/${post.id}/${replaceChar(post.title)}`, locationState);
     }

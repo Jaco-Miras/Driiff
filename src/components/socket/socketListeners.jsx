@@ -1057,31 +1057,37 @@ class SocketListeners extends Component {
                   workspacesMuted.push(ws.topic_id);
                 }
               });
+              let postKey = this.props.sharedSlug ? e.post_code : e.post_id;
               // check if posts exists, if not then fetch post
-              if (!this.props.posts[e.post_id]) {
-                this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
-                  if (err) return;
-                  let post = {
-                    ...res.data,
-                    claps: [],
-                    slug: this.state.slug,
-                    sharedSlug: this.props.sharedSlug,
-                    //is_unread: 1,
-                  };
-                  if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
-                    this.props.incomingPost(post);
-                  } else {
-                    this.props.incomingWorkspacePost(post);
-                  }
-                });
-              } else {
-                const post = this.props.posts[e.post_id];
-                if (post) {
-                  if (post.is_unread === 0) {
-                    this.props.updateUnreadCounter({ general_post: 1 });
+              if (this.props.sharedSlug) {
+                if (!this.props.posts[postKey]) {
+                  this.props.fetchPost({ post_id: e.post_id }, (err, res) => {
+                    if (err) return;
+                    let post = {
+                      ...res.data,
+                      claps: [],
+                      slug: this.state.slug,
+                      sharedSlug: this.props.sharedSlug,
+                      //is_unread: 1,
+                    };
+                    if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
+                      this.props.incomingPost(post);
+                    } else {
+                      this.props.incomingWorkspacePost(post);
+                    }
+                  });
+                } else {
+                  const post = this.props.posts[postKey];
+                  if (post) {
+                    if (post.is_unread === 0) {
+                      this.props.updateUnreadCounter({ general_post: 1 });
+                    }
                   }
                 }
+              } else {
+                //from shared
               }
+
               if (isSafari) {
                 if (this.props.notificationsOn) {
                   let link = "";
