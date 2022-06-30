@@ -1152,9 +1152,10 @@ const PostModal = (props) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
 
-  const isSharedExternal = useMemo(() => {
-    return isSharedWorkspace && activeTopic?.members.find((aMember) => aMember?.external_id === user.id)?.type === "external";
-  }, [isSharedWorkspace, activeTopic]);
+  // const isSharedExternal = useMemo(() => {
+  //   return isSharedWorkspace && activeTopic?.members.find((aMember) => aMember?.external_id === user.id)?.type === "external";
+  // }, [isSharedWorkspace, activeTopic]);
+  const isSharedExternal = isSharedWorkspace && sharedWs[activeTopic.slug] && sharedWs[activeTopic.slug].user_auth.type === "external";
 
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">

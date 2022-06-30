@@ -8,11 +8,17 @@ import { apiCall } from "./index";
  */
 
 export function getNotifications(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/notification-counter?skip=${payload.skip}&limit=${payload.limit}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
