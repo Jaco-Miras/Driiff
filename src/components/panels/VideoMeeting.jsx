@@ -13,7 +13,7 @@ const VideoMeeting = (props) => {
 
   const handleClearJitsi = () => {
     dispatch(clearJitsi());
-    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet || isIPad13) {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
     }
   };

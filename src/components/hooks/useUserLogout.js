@@ -25,7 +25,7 @@ const useUserLogout = () => {
           .then(() => {
             history.push("/login");
             dispatch(toggleLoading(false));
-            if ((deviceType === "mobile" && browserName === "WebKit") || isTablet || isIPad13) {
+            if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
               window.webkit.messageHandlers.driffLogout.postMessage({ slug: "24", status: "OK" });
             }
           });

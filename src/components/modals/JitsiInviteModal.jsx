@@ -80,7 +80,7 @@ const JitsiInviteModal = (props) => {
 
   const handleJoin = () => {
     setStartingMeet(true);
-    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet || isIPad13) {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
           if (err) {

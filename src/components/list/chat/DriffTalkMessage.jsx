@@ -73,7 +73,7 @@ const DriffTalkMessage = (props) => {
       host: false,
       room_name: getSlug() + "-" + parseChannel + "-" + channelId,
     };
-    if ((deviceType === "mobile" && browserName === "WebKit") || isTablet || isIPad13) {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
           if (err) {
