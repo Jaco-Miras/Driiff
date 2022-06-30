@@ -108,12 +108,14 @@ const FavChannel = (props) => {
   const { className = "", channel, selectedChannel, channelDrafts, dictionary, onSelectChannel } = props;
 
   const handleSelectChannel = () => {
-    onSelectChannel(channel);
+    if (onSelectChannel) {
+      onSelectChannel(channel);
+    }
   };
 
   return (
     <Wrapper className={`d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel}>
-      <ChannelIcon channel={channel} />
+      <ChannelIcon channel={channel} onSelectChannel={handleSelectChannel} />
       <div className="channel-info">
         <div className="channel-title-preview">
           <ChatTitleDate className={"chat-date-icons"} selectedChannel={selectedChannel} channel={channel} dictionary={dictionary} />
