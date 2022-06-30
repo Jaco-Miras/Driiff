@@ -26,6 +26,8 @@ export default (state = INITIAL_STATE, action) => {
           ...obj,
           is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
           snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null,
+          slug: action.slug,
+          sharedSlug: action.isSharedSlug,
         };
       });
       return {
@@ -127,6 +129,8 @@ export default (state = INITIAL_STATE, action) => {
                 snooze_time: null,
                 created_at: action.data.created_at ? action.data.created_at : action.data.user_approved.updated_at,
                 author: action.data.user_approved,
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
                 data: {
                   post_id: action.data.post.id,
                   type: "POST",
@@ -163,6 +167,8 @@ export default (state = INITIAL_STATE, action) => {
               if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id) {
                 acc[notif.id] = {
                   ...notif,
+                  sharedSlug: action.data.sharedSlug,
+                  slug: action.data.slug,
                   data: {
                     ...notif.data,
                     post_approval_label: "",
@@ -220,6 +226,8 @@ export default (state = INITIAL_STATE, action) => {
             if (notif.type === "POST_COMMENT" && action.data.post.id === notif.data.post_id && action.data.user_approved.id === state.user.id && action.data.users_approval.some((u) => u.ip_address !== null && u.id === state.user.id)) {
               acc[notif.id] = {
                 ...notif,
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
                 data: {
                   ...notif.data,
                   users_approval: action.data.users_approval,
@@ -372,6 +380,8 @@ export default (state = INITIAL_STATE, action) => {
           snooze_time: null,
           author: null,
           created_at: action.data.created_at,
+          sharedSlug: action.data.sharedSlug,
+          slug: action.data.slug,
           data: {
             id: action.data.id,
             title: action.data.title,
@@ -407,6 +417,8 @@ export default (state = INITIAL_STATE, action) => {
           ...(action.data.notification && {
             [action.data.notification.id]: {
               ...action.data.notification,
+              sharedSlug: action.data.sharedSlug,
+              slug: action.data.slug,
               is_read: 0,
               is_snooze: false,
               snooze_time: null,
@@ -498,6 +510,8 @@ export default (state = INITIAL_STATE, action) => {
           if (notif.type === "POST_CREATE" && action.data.post.id === notif.data.post_id) {
             acc[notif.id] = {
               ...notif,
+              sharedSlug: action.data.sharedSlug,
+              slug: action.data.slug,
               data: {
                 ...notif.data,
                 required_users: action.data.required_users,
@@ -655,6 +669,71 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_WORKSPACE_POST": {
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          ...(action.data.notification &&
+            action.data.sharedSlug && {
+              [action.data.notification.id]: {
+                id: action.data.notification.id,
+                type: "POST_CREATE",
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.author,
+                data: {
+                  post_id: action.data.id,
+                  type: action.data.type,
+                  must_read: action.data.is_must_read,
+                  must_reply: action.data.is_must_reply,
+                  personalized_for_id: action.data.personalized_for_id,
+                  title: action.data.title,
+                  workspaces: action.data.workspaces,
+                  comment_body: null,
+                  required_users: action.data.required_users,
+                  must_read_users: action.data.must_read_users,
+                  must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
+                },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
+              },
+            }),
+          ...(action.data.notification_approval &&
+            action.data.author.id !== state.user.id && {
+              [action.data.notification_approval.id]: {
+                id: action.data.notification_approval.id,
+                type: action.data.notification_approval.type,
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.author,
+                data: {
+                  post_id: action.data.id,
+                  type: action.data.type,
+                  must_read: action.data.is_must_read,
+                  must_reply: action.data.is_must_reply,
+                  personalized_for_id: action.data.personalized_for_id,
+                  title: action.data.title,
+                  workspaces: action.data.workspaces,
+                  comment_body: null,
+                  users_approval: action.data.users_approval,
+                  required_users: action.data.required_users,
+                  must_read_users: action.data.must_read_users,
+                  must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
+                },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
+              },
+            }),
+        },
+      };
     }
     default:
       return state;

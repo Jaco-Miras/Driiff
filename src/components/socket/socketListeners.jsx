@@ -926,11 +926,15 @@ class SocketListeners extends Component {
               }
             }
             if (this.state.userId !== post.author.id) {
-              if (post.show_post) {
-                this.props.updateUnreadCounter({ general_post: 1 });
-                this.props.incomingPost(post);
-              } else {
+              if (this.props.sharedSlug) {
                 this.props.incomingWorkspacePost(post);
+              } else {
+                if (post.show_post) {
+                  this.props.updateUnreadCounter({ general_post: 1 });
+                  this.props.incomingPost(post);
+                } else {
+                  this.props.incomingWorkspacePost(post);
+                }
               }
             } else {
               this.props.incomingPost(post);
