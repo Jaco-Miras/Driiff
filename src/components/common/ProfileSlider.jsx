@@ -149,23 +149,23 @@ const ProfileSlider = (props) => {
 
         <div className="d-flex flex-column mt-3">
           <div className="d-flex justify-content-between">
-            <div className="w-50 ">{dictionary.firstName}</div>
-            <div className="w-50 text-right">{sharedUser ? sharedUser.first_name : user?.first_name}</div>
+            <div className="w-50 text-left">{dictionary.firstName}</div>
+            <div className="w-50 text-left ml-2">{sharedUser ? sharedUser.first_name : user?.first_name}</div>
           </div>
           <div className="d-flex justify-content-between">
-            <div className="w-50 ">{dictionary.lastName}</div>
-            <div className="w-50 text-right">{sharedUser ? sharedUser.last_name : user?.last_name}</div>
+            <div className="w-50 text-left">{dictionary.lastName}</div>
+            <div className="w-50 text-left ml-2">{sharedUser ? sharedUser.last_name : user?.last_name}</div>
           </div>
           {sharedUser && (
             <div className="d-flex justify-content-between">
-              <div className="w-50">{dictionary.companyName}</div>
-              <div className="w-50 text-right">{sharedUser.company_name}</div>
+              <div className="w-50 text-left">{dictionary.companyName}</div>
+              <div className="w-50 text-left ml-2">{sharedUser.company_name}</div>
             </div>
           )}
           {sharedUser && (
             <div className="d-flex justify-content-between">
-              <div className="w-50">{dictionary.slugName}</div>
-              <div className="w-50 text-right">
+              <div className="w-50 text-left">{dictionary.slugName}</div>
+              <div className="w-50 text-left ml-2">
                 <RepeatIcon icon="repeat" />
                 {sharedUser.slug}
               </div>
@@ -173,14 +173,14 @@ const ProfileSlider = (props) => {
           )}
           {!sharedUser && (
             <div className="d-flex justify-content-between">
-              <div className="w-50">{dictionary.position}</div>
-              <div className="w-50 text-right">{!sharedUser ? null : user?.role && user?.role.display_name}</div>
+              <div className="w-50 text-left">{dictionary.position}</div>
+              <div className="w-50 text-left ml-2">{!sharedUser ? null : user?.role && user?.role.display_name}</div>
             </div>
           )}
           {!sharedUser && loggedUser.type === "internal" && (
             <div className="d-flex justify-content-between">
-              <div className="w-50">{dictionary.email}</div>
-              <div className="w-50 text-right">{user?.email}</div>
+              <div className="w-50 text-left">{dictionary.email}</div>
+              <div className="w-50 text-left ml-2">{user?.email}</div>
             </div>
           )}
         </div>
