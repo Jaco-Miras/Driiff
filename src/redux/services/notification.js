@@ -64,17 +64,29 @@ export function unreadNotification(payload) {
 }
 
 export function readAllNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/notification-counter-all-read",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function deleteAllNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: "/v2/notification-counter-all-delete",
+    sharedPayload: sharedPayload,
   });
 }
 
