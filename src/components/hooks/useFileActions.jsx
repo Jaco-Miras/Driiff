@@ -992,6 +992,9 @@ const useFileActions = () => {
   const deleteWorkspaceFilesUpload = (payload) => {
     dispatch(removeWorkspaceFilesUploadingBar(payload));
   };
+  const postCompanyUploadBulkFilesDispatch = (payload, callback = () => {}) => {
+    dispatch(postCompanyUploadBulkFiles(payload, callback));
+  };
 
   return {
     addGoogleDriveFile,
@@ -1061,6 +1064,7 @@ const useFileActions = () => {
     setFileThumbnailSrc,
     deleteCompanyFilesUpload,
     deleteWorkspaceFilesUpload,
+    postCompanyUploadBulkFilesDispatch,
   };
 };
 
