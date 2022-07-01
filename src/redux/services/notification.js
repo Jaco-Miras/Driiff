@@ -29,11 +29,17 @@ export function getNotifications(payload) {
  */
 
 export function patchNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/notification-counter/${payload.id}`;
   return apiCall({
     method: "PATCH",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -43,11 +49,17 @@ export function patchNotification(payload) {
  * @returns {Promise<*>}
  */
 export function unreadNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/unread-notification-counter?notification_id=${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

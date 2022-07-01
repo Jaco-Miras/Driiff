@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
@@ -13,6 +14,11 @@ const useRedirect = () => {
   const user = useSelector((state) => state.session.user);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const toaster = useToaster();
+
+  const workspacesRef = useRef({});
+  useEffect(() => {
+    workspacesRef.current = workspaces;
+  }, [workspaces]);
 
   const fetchSelectChannel = (code, callback) => {
     dispatch(
@@ -115,16 +121,18 @@ const useRedirect = () => {
   };
 
   const toWorkspace = (ws, page = "chat") => {
-    if (workspaces[ws.id]) {
-      let workspace = { ...workspaces[ws.id] };
+    console.log(workspaces[ws.id], workspaces, ws.id);
+    if (workspacesRef.current[ws.id]) {
+      let workspace = { ...workspacesRef.current[ws.id] };
+      let wsType = workspace.sharedSlug ? "shared-hub" : "hub";
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/hub/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/hub/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
-      fetchWorkspaceAndRedirect(ws);
+      if (!ws.sharedSlug) fetchWorkspaceAndRedirect(ws);
     }
   };
 

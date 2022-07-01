@@ -5,14 +5,18 @@ const NotificationBadge = (props) => {
   const { notification, dictionary, user, fromSnooze = false } = props;
 
   const notifications = useSelector((state) => state.notifications.notifications);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const getMustReadText = (data) => {
-    if (data.must_read && data.must_read_users && data.must_read_users.some((u) => u.id === user.id && !u.must_read)) return dictionary.mustRead;
+    const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
+    console.log(data.must_read_users, userId);
+    if (data.must_read && data.must_read_users && data.must_read_users.some((u) => u.id === userId && !u.must_read)) return dictionary.mustRead;
     return null;
   };
 
   const getMustReplyText = (data) => {
-    if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) return dictionary.replyRequired;
+    const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
+    if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === userId && !u.must_reply)) return dictionary.replyRequired;
     return null;
   };
 
