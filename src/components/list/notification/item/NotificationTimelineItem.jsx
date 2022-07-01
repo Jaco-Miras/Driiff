@@ -78,20 +78,34 @@ export const NotificationTimelineItem = (props) => {
   const user = useSelector((state) => state.session.user);
   const darkMode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
   const actions = useNotificationActions();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const handleRedirect = (e) => {
     e.preventDefault();
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      let payload = {
+        id: notification.id,
+      };
+      if (notification.sharedSlug && sharedWs[notification.slug]) {
+        const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+      actions.read(payload);
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
     } else if (notification.type === "WORKSPACE_ADD_MEMBER") {
+      let key = notification.sharedSlug ? `${notification.data.id}-${notification.slug}` : notification.data.id;
       let payload = {
-        id: notification.data.id,
+        id: key,
         name: notification.data.title,
         folder_id: notification.data.workspace_folder_id !== 0 ? notification.data.workspace_folder_id : null,
         folder_name: notification.data.workspace_folder_name !== "" ? notification.data.workspace_folder_name : null,
+        sharedSlug: notification.sharedSlug,
+        slug: notification.slug,
       };
       redirect.toWorkspace(payload);
     } else {
@@ -131,10 +145,20 @@ export const NotificationTimelineItem = (props) => {
   const handleReadUnread = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    let payload = {
+      id: notification.id,
+    };
+    if (notification.sharedSlug && sharedWs[notification.slug]) {
+      const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read(payload);
     } else {
-      actions.unread({ id: notification.id });
+      actions.unread(payload);
     }
   };
 
