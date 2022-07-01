@@ -9,7 +9,6 @@ const NotificationBadge = (props) => {
 
   const getMustReadText = (data) => {
     const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
-    console.log(data.must_read_users, userId);
     if (data.must_read && data.must_read_users && data.must_read_users.some((u) => u.id === userId && !u.must_read)) return dictionary.mustRead;
     return null;
   };

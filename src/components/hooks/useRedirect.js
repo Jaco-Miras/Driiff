@@ -121,7 +121,6 @@ const useRedirect = () => {
   };
 
   const toWorkspace = (ws, page = "chat") => {
-    console.log(workspaces[ws.id], workspaces, ws.id);
     if (workspacesRef.current[ws.id]) {
       let workspace = { ...workspacesRef.current[ws.id] };
       let wsType = workspace.sharedSlug ? "shared-hub" : "hub";
