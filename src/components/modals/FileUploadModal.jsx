@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
-import { useEnlargeEmoticons, useToaster } from "../hooks";
+import { useEnlargeEmoticons, useToaster, useFileActions } from "../hooks";
 import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslationActions } from "../hooks";
@@ -290,6 +291,8 @@ const FileUploadModal = (props) => {
   const editWIPComment = useSelector((state) => state.wip.editWIPComment);
   const wipParentId = useSelector((state) => state.wip.parentId);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const params = useParams();
+  const fileActions = useFileActions(params);
 
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -434,15 +437,27 @@ const FileUploadModal = (props) => {
           formData.append(`files[${index}]`, file.bodyFormData.get("file"));
         });
       payload["files"] = formData;
-      uploadBulkDocument(payload)
-        .then((result) => {
-          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+      if (selectedChannel.type === "COMPANY") {
+        fileActions.postCompanyUploadBulkFilesDispatch(payload, (err, result) => {
+          if (err) {
+            handleNetWorkError(err);
+            return;
+          }
+          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.files.map((res) => res)];
           handleSubmit(resFiles);
-          //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
-        })
-        .catch((error) => {
-          handleNetWorkError(error);
+          fileActions.deleteCompanyFilesUpload({ fileIds: resFiles.map((rFile) => rFile.id) });
         });
+      } else {
+        uploadBulkDocument(payload)
+          .then((result) => {
+            const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+            handleSubmit(resFiles);
+            //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+          })
+          .catch((error) => {
+            handleNetWorkError(error);
+          });
+      }
     }
   };
 
