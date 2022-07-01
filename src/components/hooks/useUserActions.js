@@ -37,7 +37,7 @@ import { toggleLoading } from "../../redux/actions/globalActions";
 import { getDriffName } from "./useDriff";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { useHistory } from "react-router-dom";
-import { browserName, deviceType, isAndroid } from "react-device-detect";
+import { browserName, deviceType, isAndroid, isIPad13, isTablet } from "react-device-detect";
 import reduxPersist from "../../redux/store/configStore";
 
 export const userForceLogout = () => {
@@ -416,7 +416,7 @@ const useUserActions = () => {
           .then(() => sessionService.deleteUser())
           .then(() => {
             const host = window.location.host.split(".");
-            if (deviceType === "mobile" && browserName === "WebKit") {
+            if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
               if (host.length === 3) {
                 window.webkit.messageHandlers.driffLogout.postMessage({ slug: host[0], status: "OK" });
               }

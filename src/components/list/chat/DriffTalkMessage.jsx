@@ -5,8 +5,8 @@ import { SvgIconFeather } from "../../common";
 import { useTranslationActions } from "../../hooks";
 //import { replaceChar } from "../../../helpers/stringFormatter";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../../redux/actions/chatActions";
-import { browserName, deviceType } from "react-device-detect";
 import { getDriffName } from "../../hooks/useDriff";
+import { browserName, deviceType, isIPad13, isTablet } from "react-device-detect";
 
 const Wrapper = styled.div`
   display: flex;
@@ -86,7 +86,7 @@ const DriffTalkMessage = (props) => {
         sharedPayload: sharedPayload,
       };
     }
-    if (deviceType === "mobile" && browserName === "WebKit") {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
           if (err) {

@@ -5,8 +5,8 @@ import { Button, Modal, ModalBody } from "reactstrap";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useTranslationActions } from "../hooks";
 import { createJitsiMeet, createJitsiMeetMobile } from "../../redux/actions/chatActions";
-import { browserName, deviceType } from "react-device-detect";
 import { getDriffName } from "../hooks/useDriff";
+import { browserName, deviceType, isIPad13, isTablet } from "react-device-detect";
 
 const ButtonsContainer = styled.div`
   margin-top: 1.5rem;
@@ -91,7 +91,7 @@ const JitsiInviteModal = (props) => {
 
   const handleJoin = () => {
     setStartingMeet(true);
-    if (deviceType === "mobile" && browserName === "WebKit") {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       dispatch(
         createJitsiMeetMobile(payload, (err, res) => {
           if (err) {

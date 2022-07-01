@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { JaaSMeeting } from "@jitsi/react-sdk";
-import { browserName, deviceType, isMobile } from "react-device-detect";
+import { browserName, deviceType, isIPad13, isMobile, isTablet } from "react-device-detect";
 import { clearJitsi } from "../../redux/actions/chatActions";
 import { useParams } from "react-router-dom";
 
@@ -13,7 +13,7 @@ const VideoMeeting = () => {
 
   const handleOnClose = () => {
     dispatch(clearJitsi());
-    if (deviceType === "mobile" && browserName === "WebKit") {
+    if ((deviceType === "mobile" && browserName === "WebKit") || (isTablet && browserName === "WebKit") || (isIPad13 && browserName === "WebKit")) {
       window.webkit.messageHandlers.closeDriffTalkWindow.postMessage();
     }
   };
