@@ -70,3 +70,6 @@ export function updateThemeColors(payload, callback) {
 export function incomingFaviconImage(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_FAVICON_IMAGE", payload, callback);
 }
+export function clearApiError(payload, callback) {
+  return SimpleDispatchActionToReducer("CLEAR_API_ERROR", payload, callback);
+}

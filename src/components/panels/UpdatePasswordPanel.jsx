@@ -74,11 +74,11 @@ const UpdatePasswordPanel = (props) => {
         errorData = { ...errorData, password: dictionary.invalidPassword, valid: false };
       }
     }
-    console.log(form.confirmPassword !== form.password)
+    console.log(form.confirmPassword !== form.password);
     // PASSWORD CONFIRM VALIDATION
     if (form.confirmPassword !== form.password) {
       valid = false;
-      console.log("ERROR")
+      console.log("ERROR");
       errorData = { ...errorData, confirmPassword: dictionary.confirmPassword, valid: false };
     } else {
       valid = true;

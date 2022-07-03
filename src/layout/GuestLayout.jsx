@@ -114,6 +114,7 @@ const GuestLayout = (props) => {
   const { setRegisteredDriff } = props;
 
   const dictionary = {
+    passwordLoginDisableLabel: _t("LOGIN.PASSWORD_LOGIN_DISABLED_LABEL", "Password Login is disabled"),
     magicLink: _t("LOGIN.MAGIC_LINK", "Magic link"),
     rememberMe: _t("LOGIN.REMEMBER_ME", "Remember me"),
     resetPassword: _t("LOGIN.RESET_PASSWORD", "Reset password"),
@@ -170,6 +171,8 @@ const GuestLayout = (props) => {
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
     submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
     cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
+    generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
+    generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
@@ -253,10 +256,6 @@ const GuestLayout = (props) => {
                 </>
               )}
             </h5>
-            {location.pathname === "/driff-register" && <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>}
             <Suspense fallback={<div></div>}>
               <Switch>
                 <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
@@ -273,7 +272,7 @@ const GuestLayout = (props) => {
           </>
         )}
       </Wrapper>
-      {location.pathname === "/driff-register" && (
+      {location.pathname !== "/driff-register" && (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <StyledLink href="#" onClick={loginClick}>
             {dictionary.login}

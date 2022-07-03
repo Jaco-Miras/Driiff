@@ -1,5 +1,6 @@
 import momentTZ from "moment-timezone";
 import { $_GET } from "../../helpers/commonFunctions";
+import { getCurrentTimestamp } from "../../helpers/dateFormatter";
 
 const INITIAL_STATE = {
   origTheme: {
@@ -104,6 +105,7 @@ const INITIAL_STATE = {
       time_format: "HH:mm",
       personal_links: [],
       notifications_on: true,
+      enable_all_notification_reply_in_email: false,
       order_channel: {
         order_by: "channel_date_updated",
         sort_by: "DESC",
@@ -119,6 +121,7 @@ const INITIAL_STATE = {
     },
   },
   isLoaded: false,
+  driffErrors: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -530,6 +533,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.driff,
           favicon: action.data,
         },
+      };
+    }
+    case "API_ERROR": {
+      let reference_id = require("shortid").generate();
+      return {
+        ...state,
+        driffErrors: {
+          ...state.driffErrors,
+          [reference_id]: getCurrentTimestamp(),
+        },
+      };
+    }
+    case "CLEAR_API_ERROR": {
+      return {
+        ...state,
+        driffErrors: null,
       };
     }
 

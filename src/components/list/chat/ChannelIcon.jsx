@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
 const Wrapper = styled.div`
   position: relative;
@@ -101,8 +102,14 @@ const ChannelIcon = (props) => {
   const { className = "", channel, children = null, onSelectChannel = null, showSlider = true } = props;
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channelTitle = channel && channel.title ? channel.title.toLowerCase() : "";
+
+  const handleSelectChannel = () => {
+    if (onSelectChannel) {
+      onSelectChannel(channel);
+    }
+  };
   return (
-    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={onSelectChannel}>
+    <Wrapper className={`pr-3 ${className}`} iconColor={iconColor(channelTitle)} onClick={handleSelectChannel}>
       {channel && channel.profile && channel.members.length >= 1 && channel.type === "DIRECT" && (
         <Avatar
           imageLink={channel.profile.profile_image_link}
@@ -112,14 +119,14 @@ const ChannelIcon = (props) => {
           partialName={channel.profile.partial_name}
           type="USER"
           showSlider={showSlider}
-          onClick={onSelectChannel}
+          onClick={handleSelectChannel}
         />
       )}
-      {channel && (channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && <Avatar imageLink={channel.icon_link} name={channel.title} type="TEAM" showSlider={false} onClick={onSelectChannel} />}
+      {channel && (channel.type === "DIRECT_TEAM" || channel.type === "TEAM") && <Avatar imageLink={channel.icon_link} name={channel.title} type="TEAM" showSlider={false} onClick={handleSelectChannel} />}
       {channel &&
         channel.type === "GROUP" &&
         (channel.icon_link ? (
-          <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />
+          <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={handleSelectChannel} />
         ) : (
           <Icon icon="users" alt={channel.title} />
         ))}
@@ -127,7 +134,7 @@ const ChannelIcon = (props) => {
       {channel && channel.type === "POST" && <Icon icon="users" alt={channel.title} />}
       {channel && channel.type === "PERSONAL_BOT" && <Icon icon="clipboard" alt={channel.title} />}
       {channel && channel.type === "TOPIC" && (
-        <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={onSelectChannel} />
+        <Avatar forceThumbnail={false} type={channel.type} imageLink={channel.icon_link} id={`ws_${channel.id}`} name={channel.title} noDefaultClick={false} showSlider={showSlider} onClick={handleSelectChannel} />
       )}
       {channel && channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared}
       {channel && !channel.team && channel.type === "TOPIC" && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared}

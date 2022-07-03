@@ -1330,6 +1330,17 @@ const CreateEditWorkspaceModal = (props) => {
                 return found ? found : member;
               });
 
+              if (form.selectedFolder && typeof form.selectedFolder.value === "number") {
+                history.push(`/hub/dashboard/${form.selectedFolder.value}/${replaceChar(res.data.workspace.name)}/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                  folder_id: form.selectedFolder.value,
+                  workspace_id: res.data.id,
+                });
+              } else {
+                history.push(`/hub/dashboard/${res.data.id}/${replaceChar(res.data.topic.name)}`, {
+                  folder_id: null,
+                  workspace_id: res.data.id,
+                });
+              }
               if (attachedFiles.length) {
                 let formData = new FormData();
                 for (const i in attachedFiles) {

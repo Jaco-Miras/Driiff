@@ -40,19 +40,24 @@ import { useHistory } from "react-router-dom";
 import { browserName, deviceType, isAndroid } from "react-device-detect";
 
 export const userForceLogout = () => {
-  if (localStorage.getItem("userAuthToken")) {
-    if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
-      //alert("error :(");
-      //console.log("error");
+  // if (localStorage.getItem("userAuthToken")) {
+  //   if (["nilo@makedevelopment.com", "joules@makedevelopment.com", "jessryll@makedevelopment.com"].includes(JSON.parse(localStorage.getItem("userAuthToken")).user_auth.email)) {
+  //     //alert("error :(");
+  //     //console.log("error");
+  //   }
+  // }
+  if (deviceType === "mobile" && browserName === "WebKit") {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      window.webkit.messageHandlers.driffLogout.postMessage({ slug: host[0], status: "OK" });
     }
+  } else {
+    localStorage.removeItem("userAuthToken");
+    localStorage.removeItem("token");
+    localStorage.removeItem("atoken");
+    localStorage.removeItem("welcomeBanner");
+    sessionService.deleteSession().then(() => sessionService.deleteUser());
   }
-  /*localStorage.removeItem("userAuthToken");
-  localStorage.removeItem("token");
-  localStorage.removeItem("atoken");
-  localStorage.removeItem("welcomeBanner");
-  sessionService
-    .deleteSession()
-    .then(() => sessionService.deleteUser());*/
 };
 
 const useUserActions = () => {
