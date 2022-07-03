@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState, lazy, Suspense } from "react";
-import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { FormInput, InputFeedback, PasswordInput } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
@@ -54,9 +53,12 @@ const CheckBoxWrapper = styled.div`
   }
 `;
 
+const StyledWelcomeNote = styled.div`
+  font-size: 12px;
+`;
+
 const DriffCreatePanel = (props) => {
   const { dictionary, setRegisteredDriff } = props;
-  const history = useHistory();
   const dispatch = useDispatch();
   const driffActions = useDriffActions();
   const [loading, setLoading] = useState(false);
@@ -73,6 +75,7 @@ const DriffCreatePanel = (props) => {
   };
 
   const [form, setForm] = useState({});
+  const [creatingDriff, setCreatingDriff] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
@@ -191,6 +194,7 @@ const DriffCreatePanel = (props) => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+
     if (loading) return;
     if (_validate()) {
       setLoading(true);
@@ -206,7 +210,9 @@ const DriffCreatePanel = (props) => {
             },
           });
         } else {
+          setCreatingDriff(true);
           driffActions.create({ ...form, token: captcha }, (err, res) => {
+            setCreatingDriff(false);
             setLoading(false);
             if (res) {
               setRegistered(true);
@@ -233,13 +239,15 @@ const DriffCreatePanel = (props) => {
   useEffect(() => {
     let e = document.querySelector("h5.title");
     if (e) {
-      if (registered) {
+      if (creatingDriff) {
+        e.innerHTML = dictionary.generatingDriff;
+      } else if (registered) {
         e.innerHTML = dictionary.thankYou;
       } else {
         e.innerHTML = dictionary.driffRegistration;
       }
     }
-  }, [registered]);
+  }, [registered, creatingDriff]);
 
   const toggleCheck = () => {
     setAgreed(!agreed);
@@ -268,8 +276,14 @@ const DriffCreatePanel = (props) => {
             <ReactConfetti recycle={false} />
           </Suspense>
         </>
+      ) : creatingDriff ? (
+        <StyledWelcomeNote>{dictionary.generateDriffMessage}</StyledWelcomeNote>
       ) : (
         <>
+          <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>
           <FormInput
             //ref={refs.company_name}
             onChange={handleInputChange}
