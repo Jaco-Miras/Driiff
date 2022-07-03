@@ -43,7 +43,7 @@ export const NotificationListItem = (props) => {
     e.preventDefault();
     removeOverlay(e);
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read({ id: notification.id, key: notification.key });
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
@@ -93,9 +93,9 @@ export const NotificationListItem = (props) => {
     e.preventDefault();
     e.stopPropagation();
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read({ id: notification.id, key: notification.key });
     } else {
-      actions.unread({ id: notification.id });
+      actions.unread({ id: notification.id, key: notification.key });
     }
   };
 

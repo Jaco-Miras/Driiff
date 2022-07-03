@@ -485,12 +485,13 @@ class SocketListeners extends Component {
         this.props.incomingZoomEnded({ ...e, chat: chatMessage, channel_id: e.channel_id });
       })
       .listen(".notification-read", (e) => {
-        this.props.incomingReadNotifications(e);
+        this.props.incomingReadNotifications({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".delete-notification", (e) => {
         const elemId = `notification__${e.notification_id}`;
         if (toast.isActive(elemId)) toast.dismiss(elemId);
-        this.props.removeNotificationReducer({ id: e.notification_id });
+        const key = this.props.sharedSlug ? `${e.notification_id}-${this.props.slug}` : e.notification_id;
+        this.props.removeNotificationReducer({ id: e.notification_id, key: key });
       })
       .listen(".snooze-notification", (e) => {
         this.props.incomingSnoozedNotification(e);
@@ -513,7 +514,7 @@ class SocketListeners extends Component {
               claps: [],
               is_unread: 1,
             };
-            this.props.incomingPost({ ...post, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingPost({ ...post, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
           });
         });
       })
@@ -646,7 +647,7 @@ class SocketListeners extends Component {
                 pushBrowserNotification(`You asked to be reminded about ${e.title}`, e.title, this.props.user.profile_image_link, redirect);
               }
             }
-            this.props.incomingReminderNotification(e);
+            this.props.incomingReminderNotification({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -855,21 +856,22 @@ class SocketListeners extends Component {
         //this.props.getFavoriteWorkspaceCounters(payload);
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {
-            this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingClosePost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
             break;
           }
           case "POST_APPROVED": {
-            this.props.incomingPostApproval({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingPostApproval({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
             break;
           }
           case "POST_REQUIRED": {
-            this.props.incomingPostRequired({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingPostRequired({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
             break;
           }
           case "POST_COMMENT_APPROVED": {
             this.props.getNotifications({ skip: 0, limit: 5 });
             this.props.incomingCommentApproval({
               ...e,
+              userId: this.state.userId,
               slug: this.state.slug,
               sharedSlug: this.props.sharedSlug,
               users_approval: e.users_approval.map((u) => {
@@ -902,13 +904,14 @@ class SocketListeners extends Component {
                 claps: [],
                 slug: this.state.slug,
                 sharedSlug: this.props.sharedSlug,
+                userId: this.state.userId,
               };
               this.props.incomingPost(post);
             });
             break;
           }
           case "POST_CREATE": {
-            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [], slug: this.state.slug, sharedSlug: this.props.sharedSlug };
+            let post = { ...e, claps: [], mention_ids: e.code_data && e.code_data.mention_ids ? e.code_data.mention_ids : [], slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId };
             const isApprover = post.users_approval.some((ua) => ua.id === this.state.userId);
             const hasActiveWorkspace = post.workspaces.length > 0 && post.workspaces.some((ws) => this.props.workspaces[ws.topic_id] && this.props.workspaces[ws.topic_id].is_active);
             const hasMentioned = post.mention_ids.some((id) => this.state.userId === id);
@@ -973,7 +976,7 @@ class SocketListeners extends Component {
               } else if (!e.post_participant_data.from_company && e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 // from private to public post
                 e.claps = [];
-                this.props.incomingPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+                this.props.incomingPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
                 e.channel_messages &&
                   e.channel_messages.forEach((m) => {
                     m.system_message.files = [];
@@ -1021,7 +1024,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false, userId: this.state.userId });
             break;
           }
           case "POST_CLAP_TOGGLE": {
@@ -1076,6 +1079,7 @@ class SocketListeners extends Component {
                       slug: this.state.slug,
                       sharedSlug: this.props.sharedSlug,
                       //is_unread: 1,
+                      userId: this.state.userId,
                     };
                     if (hasMentioned || workspacesMuted.length !== e.workspaces.length || e.workspaces.length === 0) {
                       this.props.incomingPost(post);
@@ -1158,13 +1162,13 @@ class SocketListeners extends Component {
                 }
               });
               if (hasMentioned || e.workspaces.length === 0) {
-                this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true });
+                this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true, userId: this.state.userId });
               } else {
                 const comment = { ...e, allMuted: workspacesMuted.length === e.workspaces.length };
-                this.props.incomingComment({ ...comment, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true });
+                this.props.incomingComment({ ...comment, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: true, userId: this.state.userId });
               }
             } else {
-              this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
+              this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false, userId: this.state.userId });
             }
             break;
           }
@@ -1174,7 +1178,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_COMMENT_UPDATE": {
-            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false });
+            this.props.incomingComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, addToNotification: false, userId: this.state.userId });
             break;
           }
           case "POST_COMMENT_CLAP_TOGGLE": {

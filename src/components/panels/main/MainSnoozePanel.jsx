@@ -315,6 +315,7 @@ const MainSnooze = (props) => {
     if (n.is_read === 0) {
       let payload = {
         id: n.id,
+        key: n.key,
       };
       if (n.sharedSlug && sharedWs[n.slug]) {
         const sharedPayload = { slug: n.slug, token: sharedWs[n.slug].access_token, is_shared: true };
@@ -384,7 +385,7 @@ const MainSnooze = (props) => {
         redirect.toPost({ workspace, post, sharedSlug: n.sharedSlug }, focusOnMessage);
       }
     }
-    actions.snooze({ id: n.id, is_snooze: false });
+    actions.snooze({ id: n.id, is_snooze: false, key: n.key ? n.key : n.id });
   };
 
   const hasMustReadAction = (n) => {
@@ -424,7 +425,7 @@ const MainSnooze = (props) => {
     snooze.map((item) => {
       const elemId = item.type + "__" + item.id;
       var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
-      const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
+      const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
       if (n) {
         const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
         if (!n.is_snooze) {
@@ -481,7 +482,7 @@ const MainSnooze = (props) => {
       items.map((item) => {
         var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
         const elemId = item.type + "__" + item.id;
-        const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
+        const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
 
         //let ca = false;
         if (!toast.isActive(elemId)) {
@@ -596,7 +597,7 @@ const MainSnooze = (props) => {
         if (n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
           counter++;
           snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "POST_SNOOZE" });
-          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
+          actions.snooze({ id: n.id, key: n.key, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
         }
       } else if (type === "todo") {
         if (n.status !== "DONE" && n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {

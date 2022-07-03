@@ -85,6 +85,7 @@ export const NotificationTimelineItem = (props) => {
     if (notification.is_read === 0) {
       let payload = {
         id: notification.id,
+        key: notification.key,
       };
       if (notification.sharedSlug && sharedWs[notification.slug]) {
         const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
@@ -147,6 +148,7 @@ export const NotificationTimelineItem = (props) => {
     e.stopPropagation();
     let payload = {
       id: notification.id,
+      key: notification.key,
     };
     if (notification.sharedSlug && sharedWs[notification.slug]) {
       const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
