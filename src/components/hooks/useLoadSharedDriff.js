@@ -22,8 +22,12 @@ const useLoadSharedDriff = () => {
       Object.keys(session.user.sharedWorkspaces).forEach((ws) => {
         const sharedPayload = { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true };
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
-        dispatch(getWorkspaces({ sharedPayload: sharedPayload }));
-        dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
+        dispatch(
+          getWorkspaces({ sharedPayload: sharedPayload }, () => {
+            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
+          })
+        );
+
         let sharedUserPayload = {
           skip: 0,
           limit: 1000,
@@ -83,8 +87,12 @@ const useLoadSharedDriff = () => {
       newSharedWs.forEach((ws) => {
         const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
-        dispatch(getWorkspaces({ sharedPayload: sharedPayload }));
-        dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+        dispatch(
+          getWorkspaces({ sharedPayload: sharedPayload }, () => {
+            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+          })
+        );
+
         let sharedUserPayload = {
           skip: 0,
           limit: 1000,
@@ -130,8 +138,12 @@ const useLoadSharedDriff = () => {
       Object.keys(sharedWs).forEach((ws) => {
         const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
-        dispatch(getWorkspaces({ sharedPayload: sharedPayload }));
-        dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+        dispatch(
+          getWorkspaces({ sharedPayload: sharedPayload }, () => {
+            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+          })
+        );
+
         let sharedUserPayload = {
           skip: 0,
           limit: 1000,

@@ -196,7 +196,7 @@ const SnoozeItem = (props) => {
     e.stopPropagation();
     if (type === "notification") {
       actions.snooze(snoozeData);
-      actions.remove({ id: item.id });
+      actions.remove({ id: item.id, key: item.key });
     } else if (type === "todo") {
       actions.removeReminderNotif({ id: item.id });
       const huddleNotif = localStorage.getItem("reminderNotif");
