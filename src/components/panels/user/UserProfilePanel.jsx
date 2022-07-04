@@ -979,9 +979,9 @@ const UserProfilePanel = (props) => {
                 <div className="row mb-2">
                   <div className="col col-label text-muted">{dictionary.password}</div>
                   <div className="col col-form">
-                    {readOnlyFields.includes("password") || isEditable ? (
+                    {readOnlyFields.includes("password") || (isEditable && !isLoggedUser) ? (
                       <Label>*****</Label>
-                    ) : (
+                    ) : isLoggedUser ? (
                       <>
                         <Label onClick={togglePasswordUpdate} className={`cursor-pointer mb-0 ${!passwordUpdate ? "" : "d-none"}`}>
                           {dictionary.clickToChangePassword}
@@ -1006,7 +1006,7 @@ const UserProfilePanel = (props) => {
                           <InputFeedback valid={formUpdate.feedbackState.password}>{formUpdate.feedbackText.password}</InputFeedback>
                         </FormGroup>
                       </>
-                    )}
+                    ) : null}
                   </div>
                 </div>
                 {user.type === "external" && (
