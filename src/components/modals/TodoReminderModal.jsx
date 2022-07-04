@@ -338,7 +338,7 @@ const TodoReminderModal = (props) => {
           })
         );
       }
-      if (!itemType && params.workspaceId && activeTopic && mode === "create") {
+      if (!itemType && params && params.hasOwnProperty("workspaceId") && activeTopic && mode === "create") {
         setSelectedWorkspace({
           ...activeTopic,
           icon: "compass",
