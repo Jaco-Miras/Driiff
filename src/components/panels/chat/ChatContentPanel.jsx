@@ -218,6 +218,14 @@ const ChatContentPanel = (props) => {
     repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
     personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
     personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list."),
+    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "The time saving collaboration platform for agencies "),
+    welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
+    setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
+    noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
+    submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
+    cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
+    generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
+    generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
