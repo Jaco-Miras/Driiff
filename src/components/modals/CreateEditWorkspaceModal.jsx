@@ -1260,14 +1260,14 @@ const CreateEditWorkspaceModal = (props) => {
             type: "confirmation",
             headerText:
               hasExternals && payload.is_lock === 1
-                ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}`
+                ? `${dictionary.lockWorkspace} / ${dictionary.externalWorkspace}`
                 : payload.new_member_ids.length && payload.is_lock === 1
-                ? `${dictionary.lockedWorkspace} / ${dictionary.newUsers}`
+                ? `${dictionary.lockWorkspace} / ${dictionary.newUsers}`
                 : hasExternals
                 ? dictionary.externalWorkspace
                 : payload.new_member_ids.length
                 ? dictionary.newUsers
-                : dictionary.lockedWorkspace,
+                : dictionary.lockWorkspace,
             submitText: dictionary.confirm,
             cancelText: dictionary.cancel,
             bodyText:
@@ -1527,7 +1527,7 @@ const CreateEditWorkspaceModal = (props) => {
         const handleShowConfirmation = () => {
           let confirmModal = {
             type: "confirmation",
-            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockedWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockedWorkspace,
+            headerText: form.has_externals && payload.is_lock === 1 ? `${dictionary.lockWorkspace} / ${dictionary.externalWorkspace}` : form.has_externals ? dictionary.externalWorkspace : dictionary.lockWorkspace,
             submitText: dictionary.confirm,
             cancelText: dictionary.cancel,
             bodyText: form.has_externals && payload.is_lock === 1 ? `${dictionary.externalUserConfirmation}<br/>${dictionary.lockedWorkspaceText}` : form.has_externals ? dictionary.externalUserConfirmation : dictionary.lockedWorkspaceText,
