@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
 import { Avatar, SvgIconFeather } from "../../common";
 import NotificationBadge from "../../list/notification/item/NotificationBadge";
 import { stripHtml } from "../../../helpers/stringFormatter";
@@ -148,6 +149,7 @@ const SnoozeItem = (props) => {
   const { _t } = useTranslationActions();
 
   const snoozeActions = useSnoozeActions();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const handleSkip = (type, n, e) => {
     e.stopPropagation();
@@ -182,7 +184,8 @@ const SnoozeItem = (props) => {
     e.stopPropagation();
     actions.snooze(snoozeData);
     if (type === "notification") {
-      snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "POST_SNOOZE" });
+      let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+      snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "POST_SNOOZE", sharedPayload: sharedPayload });
     } else if (type === "todo") {
       snoozeActions.snoozeNotif({ notification_id: item.id, is_snooze: true, type: "REMINDER_SNOOZE" });
     } else if (type === "huddle") {
@@ -195,8 +198,9 @@ const SnoozeItem = (props) => {
   const handleDeleteNotification = (e) => {
     e.stopPropagation();
     if (type === "notification") {
+      let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
       actions.snooze(snoozeData);
-      actions.remove({ id: item.id, key: item.key });
+      actions.remove({ id: item.id, key: item.key, sharedPayload: sharedPayload });
     } else if (type === "todo") {
       actions.removeReminderNotif({ id: item.id });
       const huddleNotif = localStorage.getItem("reminderNotif");

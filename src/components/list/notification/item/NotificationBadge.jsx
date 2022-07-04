@@ -2,19 +2,19 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const NotificationBadge = (props) => {
-  const { notification, dictionary, user, fromSnooze = false } = props;
+  const { notification, dictionary, fromSnooze = false } = props;
 
   const notifications = useSelector((state) => state.notifications.notifications);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const user = useSelector((state) => state.session.user);
+  const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
 
   const getMustReadText = (data) => {
-    const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
     if (data.must_read && data.must_read_users && data.must_read_users.some((u) => u.id === userId && !u.must_read)) return dictionary.mustRead;
     return null;
   };
 
   const getMustReplyText = (data) => {
-    const userId = notification.sharedSlug && sharedWs[notification.slug] ? sharedWs[notification.slug].user_auth.id : user.id;
     if (data.must_reply && data.must_reply_users && data.must_reply_users.some((u) => u.id === userId && !u.must_reply)) return dictionary.replyRequired;
     return null;
   };
@@ -43,11 +43,7 @@ const NotificationBadge = (props) => {
             <span className={"badge badge-warning ml-1"}>{getMustReplyText(notification.data)}</span>
           </p>
         )
-      ) : notification.type === "POST_REQST_APPROVAL" &&
-        notification.data &&
-        notification.data.is_close === 0 &&
-        notification.data.users_approval &&
-        notification.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) ? (
+      ) : notification.type === "POST_REQST_APPROVAL" && notification.data && notification.data.is_close === 0 && notification.data.users_approval && notification.data.users_approval.find((u) => u.ip_address === null && userId === u.id) ? (
         <span className={"badge badge-primary text-white"}>{dictionary.actionNeeded}</span>
       ) : (notification.type === "POST_ACCEPT_APPROVAL" || notification.type === "PST_CMT_ACCPT_APPRVL") && notification.data && notification.data.is_close === 0 ? (
         <span className={"badge badge-success text-white"}>{dictionary.accepted}</span>
@@ -73,7 +69,7 @@ const NotificationBadge = (props) => {
         notification.data.post_approval_label &&
         notification.data.post_approval_label === "NEED_ACTION" &&
         notification.data.users_approval &&
-        notification.data.users_approval.some((u) => user.id === u.id && !u.is_approved && u.ip_address === null) ? (
+        notification.data.users_approval.some((u) => userId === u.id && !u.is_approved && u.ip_address === null) ? (
         <span></span>
       ) : null}
     </>

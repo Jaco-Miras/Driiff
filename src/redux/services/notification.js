@@ -96,9 +96,15 @@ export function deleteAllNotification(payload) {
  * @returns {Promise<*>}
  */
 export function deleteNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v2/notification-counter/${payload.id}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -111,17 +117,29 @@ export function getAllSnoozedNotification(payload) {
 }
 
 export function snoozeAllNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/snooze-notification",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function snoozeNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: `/v2/snooze-notification/${payload.notification_id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
