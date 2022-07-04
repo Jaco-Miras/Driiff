@@ -427,7 +427,8 @@ const MainSnooze = (props) => {
       var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
       const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
       if (n) {
-        const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
+        let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime), sharedPayload: sharedPayload };
         if (!n.is_snooze) {
           toast.isActive(elemId) && toast.dismiss(elemId);
           actions.snooze(data);
@@ -435,7 +436,13 @@ const MainSnooze = (props) => {
       }
     });
     if (notifs.length) {
-      snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id), type: "POST_SNOOZE" });
+      notifs.forEach((notif) => {
+        let sharedPayload = { slug: notif.slug, token: sharedWs[notif.slug].access_token, is_shared: true };
+        let payload = { is_snooze: true, notification_ids: notifs.filter((n) => n.slug === notif.slug).map((n) => n.id), type: "POST_SNOOZE", sharedPayload: sharedPayload };
+        snoozeActions.snoozeAllNotif(payload);
+      });
+      // let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+      // snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id), type: "POST_SNOOZE" });
     }
     if (reminders.length) {
       snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: reminders.map((n) => n.id), type: "REMINDER_SNOOZE" });
@@ -535,7 +542,7 @@ const MainSnooze = (props) => {
     const snooze = [];
     items.map((n) => {
       const elemId = type + "__" + n.id;
-      const data = { type: type, id: n.id, key: type === "notification" ? n.key : n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
+      const data = { type: type, id: n.id, key: type === "notification" ? n.key : n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp, sharedSlug: n.sharedSlug, slug: n.slug };
       if (type === "notification") {
         if (n.type === "POST_MENTION") {
           if (!n.is_read && !n.is_snooze && n.data && n.data.is_close === 0) {

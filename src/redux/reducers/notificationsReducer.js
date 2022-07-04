@@ -745,7 +745,7 @@ export default (state = INITIAL_STATE, action) => {
               },
             }),
           ...(action.data.notification_approval &&
-            action.data.author.id !== state.user.id && {
+            action.data.author.id !== action.data.userId && {
               [`${action.data.notification_approval.id}-${action.data.slug}`]: {
                 key: `${action.data.notification_approval.id}-${action.data.slug}`,
                 id: action.data.notification_approval.id,
