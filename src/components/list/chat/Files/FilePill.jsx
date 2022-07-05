@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
@@ -245,7 +245,7 @@ const FilePill = (props) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          <FileVideo muted data-attempt={0} width="320" height="240" playsInline={1} controls onError={handleVideoOnError} onClick={() => handlePlayVideo(file.view_link)}>
+          <FileVideo muted data-attempt={0} width="320" height="240" playsInline controls onError={handleVideoOnError} onClick={() => handlePlayVideo(file.view_link)}>
             <source src={`${file.view_link}`} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
