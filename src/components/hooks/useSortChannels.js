@@ -131,7 +131,7 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           }
         })
         .sort((a, b) => {
-          let compare = 0;
+          // let compare = 0;
           // const aTitle = getChannelTitle(a);
           // const bTitle = getChannelTitle(b);
 
@@ -165,20 +165,20 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           // }
 
           //relevant
-          compare = b.is_relevant - a.is_relevant;
-          if (compare !== 0) return compare;
+          // compare = b.is_relevant - a.is_relevant;
+          // if (compare !== 0) return compare;
 
-          //add to user
-          if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
-            return 1;
-          }
-          if ((b.add_user || b.add_open_topic) && !(a.add_user || a.add_open_topic)) {
-            return -1;
-          }
+          // //add to user
+          // if ((a.add_user || a.add_open_topic) && !(b.add_user || b.add_open_topic)) {
+          //   return 1;
+          // }
+          // if ((b.add_user || b.add_open_topic) && !(a.add_user || a.add_open_topic)) {
+          //   return -1;
+          // }
 
           //pinned
           //compare = b.is_pinned - a.is_pinned;
-          if (compare !== 0) return compare;
+          // if (compare !== 0) return compare;
 
           // //sort by last reply
           // if (a.last_reply && b.last_reply) {
@@ -186,26 +186,26 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           // }
 
           //if search is active, direct users first
-          if (search !== "") {
-            if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
-              if (a.type === "DIRECT") return -1;
+          // if (search !== "") {
+          //   if (!(a.type === "DIRECT" && b.type === "DIRECT")) {
+          //     if (a.type === "DIRECT") return -1;
 
-              if (b.type === "DIRECT") return 1;
-            }
+          //     if (b.type === "DIRECT") return 1;
+          //   }
 
-            if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
-              if (a.type === "DIRECT") return -1;
+          //   if (!a.last_reply && !b.last_reply && (a.type === "DIRECT" || b.type === "DIRECT")) {
+          //     if (a.type === "DIRECT") return -1;
 
-              if (b.type === "DIRECT") return 1;
-            }
-          }
+          //     if (b.type === "DIRECT") return 1;
+          //   }
+          // }
 
           //hidden and archived
-          if (search.length > 2) {
-            if ((b.is_hidden || b.is_archived === true) && !(a.is_hidden || b.is_archived === true)) return -1;
+          // if (search.length > 2) {
+          //   if ((b.is_hidden || b.is_archived === true) && !(a.is_hidden || b.is_archived === true)) return -1;
 
-            if ((a.is_hidden || a.is_archived === true) && !(b.is_hidden || b.is_archived === true)) return 1;
-          }
+          //   if ((a.is_hidden || a.is_archived === true) && !(b.is_hidden || b.is_archived === true)) return 1;
+          // }
 
           if (settings.order_channel.order_by === "channel_date_updated") {
             // if (a.is_active === false && a.type === "TOPIC" && a.last_reply && a.last_reply.code_data && a.last_reply.code_data.mention_ids.some((id) => user.id === id)) {
