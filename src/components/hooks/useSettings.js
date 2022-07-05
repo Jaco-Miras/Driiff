@@ -63,7 +63,6 @@ const useSettings = () => {
   };
 
   const setGeneralSetting = (e, callback = () => {}) => {
-    console.log(e);
     dispatch(
       setUserGeneralSetting(e, () => {
         let payload = {
