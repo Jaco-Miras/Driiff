@@ -167,7 +167,7 @@ const FolderSelect = forwardRef((props, ref) => {
         className={`react-select-container ${className}`}
         classNamePrefix="react-select"
         styles={dark_mode === "0" ? lightTheme : darkTheme}
-        theme={theme}
+        menuColor={theme.colors.primary}
         isMulti={isMulti}
         isClearable={isClearable}
         components={components}
@@ -181,7 +181,7 @@ const FolderSelect = forwardRef((props, ref) => {
         ref={ref}
         className={`react-select-container ${className}`}
         styles={dark_mode === "0" ? lightTheme : darkTheme}
-        theme={theme}
+        menuColor={theme.colors.primary}
         isMulti={isMulti}
         isClearable={isClearable}
         isDisabled={isDisabled}

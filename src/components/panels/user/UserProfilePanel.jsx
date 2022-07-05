@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import Select from "react-select";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { EmailRegex, replaceChar } from "../../../helpers/stringFormatter";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { Avatar, SvgIconFeather } from "../../common";
@@ -148,7 +148,7 @@ const lettersRegExp = /[a-zA-Z]/g;
 
 const UserProfilePanel = (props) => {
   const { className = "" } = props;
-
+  const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -1119,6 +1119,7 @@ const UserProfilePanel = (props) => {
                         onChange={handleSelectAccountType}
                         options={accountOptions}
                         menuPlacement={"top"}
+                        menuColor={theme.colors.primary}
                       />
                     </div>
                   </div>

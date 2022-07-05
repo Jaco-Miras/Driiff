@@ -31,7 +31,7 @@ export const lightTheme = {
     cursor: "pointer",
     transition: "all 0.15s ease",
     "&:hover": {
-      backgroundColor: state.isSelected ? "gray" : state.selectProps.theme.colors.primary,
+      backgroundColor: state.isSelected ? "gray" : state.selectProps.menuColor,
       color: "#ffffff",
     },
   }),

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { EmailRegex, replaceChar } from "../../helpers/stringFormatter";
 import { deleteWorkspaceFiles, setPendingUploadFilesToWorkspace } from "../../redux/actions/fileActions";
 import { addToModals, clearModal } from "../../redux/actions/globalActions";
@@ -322,7 +322,7 @@ const MAX_NAME_CHAR = 25;
 
 const CreateEditWorkspaceModal = (props) => {
   const { type, mode, item = null } = props.data;
-
+  const theme = useTheme();
   const { slug } = useGetSlug();
   const { uploadFiles } = useFileActions();
   const { _t } = useTranslationActions();
@@ -2390,6 +2390,7 @@ const CreateEditWorkspaceModal = (props) => {
                       value={languageOptions.find((o) => (externalNestedMode ? o.value === invitedExternal.language : o.value === invitedSharedUser.language))}
                       onChange={handleLanguageChange}
                       options={languageOptions}
+                      menuColor={theme.colors.primary}
                     />
                     <RadioInputWrapper className="mt-3">
                       <RadioInput

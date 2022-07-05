@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
 import { putLoginSettings, putMeetingSettings } from "../../../redux/actions/adminActions";
@@ -145,7 +145,7 @@ function DriffBody() {
   const [meetingSettings, setMeetingSettings] = useState(meeting);
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
-
+  const styledTheme = useTheme();
   useEffect(() => {
     if (!loginFetched) {
       fetchLoginSettings({});
@@ -212,6 +212,7 @@ function DriffBody() {
               value={languageOptions.find((o) => settings.language === o.value)}
               onChange={handleSelectLanguage}
               options={languageOptions}
+              menuColor={styledTheme.colors.primary}
             />
           </div>
           <div className="d-flex align-items-center mt-2">
@@ -229,6 +230,7 @@ function DriffBody() {
             value={videoOptions.find((o) => meetingSettings === o.value)}
             onChange={handleSelectMeeting}
             options={videoOptions}
+            menuColor={styledTheme.colors.primary}
           />
           <div className="d-flex align-items-center mt-2">
             <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleUpdateMeeting}>

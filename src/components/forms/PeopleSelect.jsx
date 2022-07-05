@@ -115,7 +115,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         {...otherProps}
         onCreateOption={props.onCreateOption}
         onEmailClick={props.onEmailClick}
-        theme={theme}
+        menuColor={theme.colors.primary}
       />
     );
   } else {
@@ -129,7 +129,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         isClearable={isClearable}
         components={{ Option, MultiValueContainer }}
         {...otherProps}
-        theme={theme}
+        menuColor={theme.colors.primary}
       />
     );
   }

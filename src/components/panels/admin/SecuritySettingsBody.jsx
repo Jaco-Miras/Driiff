@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
@@ -40,7 +40,7 @@ const LabelInfoWrapper = styled.div`
 const SecuritySettingsBody = () => {
   const { _t } = useTranslationActions();
   const toast = useToaster();
-
+  const theme = useTheme();
   const dispatch = useDispatch();
   const dictionary = {
     securitySettings: _t("ADMIN.SECURITY_SETTINGS", "Security settings"),
@@ -219,6 +219,7 @@ const SecuritySettingsBody = () => {
               value={passwordPolicyOptions.find((o) => o.value === settings.password_policy)}
               onChange={handleSelectPasswordPolicy}
               options={passwordPolicyOptions}
+              menuColor={theme.colors.primary}
             />
             <div className="mt-2">
               <button className="btn btn-primary" onClick={handleSendManually}>
@@ -240,6 +241,7 @@ const SecuritySettingsBody = () => {
               value={roleOptions.find((o) => o.value === settings.invite_internal)}
               onChange={handleSelectInviteUsers}
               options={roleOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
           <div>
@@ -256,6 +258,7 @@ const SecuritySettingsBody = () => {
               value={roleOptions.find((o) => o.value === settings.invite_guest)}
               onChange={handleSelectInviteGuests}
               options={roleOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
           <div>
@@ -272,6 +275,7 @@ const SecuritySettingsBody = () => {
               value={roleOptions.find((o) => o.value === settings.add_workspace)}
               onChange={handleSelectCreateWs}
               options={roleOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
 
