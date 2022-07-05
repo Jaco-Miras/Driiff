@@ -208,33 +208,37 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
           }
 
           if (settings.order_channel.order_by === "channel_date_updated") {
-            if (a.is_active === false && a.type === "TOPIC" && a.last_reply && a.last_reply.code_data && a.last_reply.code_data.mention_ids.some((id) => user.id === id)) {
-              return -1;
-            }
-            if (a.is_active === false && a.type === "TOPIC" && b.is_active === false && b.type === "TOPIC") {
-              if (a.last_reply && b.last_reply) {
-                if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
-                  return a.title.localeCompare(b.title);
-                } else {
-                  return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
-                }
-              }
+            // if (a.is_active === false && a.type === "TOPIC" && a.last_reply && a.last_reply.code_data && a.last_reply.code_data.mention_ids.some((id) => user.id === id)) {
+            //   return -1;
+            // }
+            // if (a.is_active === false && a.type === "TOPIC" && b.is_active === false && b.type === "TOPIC") {
+            //   if (a.last_reply && b.last_reply) {
+            //     if (a.last_reply.created_at.timestamp === b.last_reply.created_at.timestamp) {
+            //       return a.title.localeCompare(b.title);
+            //     } else {
+            //       return b.last_reply.created_at.timestamp - a.last_reply.created_at.timestamp;
+            //     }
+            //   }
 
-              if (a.last_reply && !b.last_reply) {
-                return -1;
-              }
+            //   if (a.last_reply && !b.last_reply) {
+            //     return -1;
+            //   }
 
-              if (!a.last_reply && b.last_reply) {
-                return 1;
-              }
+            //   if (!a.last_reply && b.last_reply) {
+            //     return 1;
+            //   }
 
-              if (!a.last_reply && !b.last_reply) {
-                return a.title.localeCompare(b.title);
-              }
-            }
+            //   if (!a.last_reply && !b.last_reply) {
+            //     return a.title.localeCompare(b.title);
+            //   }
+            // }
 
             if (b.updated_at && a.updated_at) {
-              return b.updated_at?.timestamp - a.updated_at?.timestamp;
+              if (a.updated_at?.timestamp === b.updated_at?.timestamp) {
+                return a.title.localeCompare(b.title);
+              } else {
+                return b.updated_at?.timestamp - a.updated_at?.timestamp;
+              }
             }
           }
 
