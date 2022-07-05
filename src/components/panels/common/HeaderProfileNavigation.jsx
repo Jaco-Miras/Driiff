@@ -160,7 +160,7 @@ const HomeProfileNavigation = (props) => {
   //const uniqueOnlineUsers = [...new Set(onlineUsers.map((ou) => ou.user_id))];
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState(loggedUser);
   const [dropDown, setDropDown] = useState({});
   const [showUserProfileDropdown, setShowUserProfileDropdown] = useState(false);
 
@@ -216,12 +216,21 @@ const HomeProfileNavigation = (props) => {
     } else {
       fetchById(loggedUser.id, (err, res) => {
         if (err) return;
-        if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
-          sessionService.saveUser({ ...loggedUser, ...res.data });
-        }
+        setForm(res.data);
+        sessionService.saveUser({ ...res.data });
+        // if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
+        //   sessionService.saveUser({ ...loggedUser, ...res.data });
+        // }
       });
     }
   }, []);
+
+  useEffect(() => {
+    const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : null;
+    if (selectedUser) {
+      setForm(selectedUser);
+    }
+  }, [users, loggedUser]);
 
   const history = useHistory();
   const gotoNotifications = (e) => {
@@ -308,7 +317,7 @@ const HomeProfileNavigation = (props) => {
             <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_link} noDefaultClick={true} />
           </ToolTip>
         </span>
-        {showUserProfileDropdown && <UserProfileDropDown user={loggedUser} closeDropdown={toggleShowProfileDropdown} />}
+        {showUserProfileDropdown && <UserProfileDropDown user={form} closeDropdown={toggleShowProfileDropdown} />}
       </li>
     </Wrapper>
   );
