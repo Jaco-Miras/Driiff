@@ -202,6 +202,12 @@ const Avatar = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (showInitials && isLoaded) {
+      setShowInitials(false);
+    }
+  }, [imageLink, isLoaded]);
+
   const calculateOrientationPosition = () => {
     const { bottom, left } = avatarRef.current.getBoundingClientRect();
     setShowPopup((prevState) => !prevState);
