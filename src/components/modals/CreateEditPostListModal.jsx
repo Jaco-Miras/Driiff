@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 //import { useHistory, useParams } from "react-router-dom";
 import { Modal, ModalFooter, ModalBody, Label, InputGroup, Input, Button } from "reactstrap";
 import Select, { components } from "react-select";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { ModalHeaderSection } from "./index";
 import { useTranslationActions, usePostActions, useSettings } from "../hooks";
@@ -77,7 +77,7 @@ const SelectOption = styled.div`
 
 const CreateEditPostListModal = (props) => {
   const { type, mode, item, params } = props.data;
-
+  const theme = useTheme();
   //   const history = useHistory();
   //   const params = useParams();
 
@@ -329,6 +329,7 @@ const CreateEditPostListModal = (props) => {
                       components={{ Option }}
                       options={mappedPostLists()}
                       onChange={handleListChange}
+                      menuColor={theme.colors.primary}
                     />
                     <InputFeedback valid={valid.link_id}>{feedback.link_id}</InputFeedback>
                   </>

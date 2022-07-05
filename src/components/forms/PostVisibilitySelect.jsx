@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../common";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import { useSettings, useTranslationActions } from "../hooks";
+import { useTheme } from "styled-components";
 
 const StyledSelect = styled(Select)`
   .dark & {
@@ -75,7 +76,7 @@ const Option = (props) => {
 
 const PostVisibilitySelect = forwardRef((props, ref) => {
   const { className = "", ...otherProps } = props;
-
+  const theme = useTheme();
   const { _t } = useTranslationActions();
 
   const dictionary = {
@@ -102,7 +103,19 @@ const PostVisibilitySelect = forwardRef((props, ref) => {
     },
   ];
 
-  return <StyledSelect ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={false} isClearable={false} components={components} options={options} {...otherProps} />;
+  return (
+    <StyledSelect
+      ref={ref}
+      className={`react-select-container ${className}`}
+      styles={dark_mode === "0" ? lightTheme : darkTheme}
+      menuColor={theme.colors.primary}
+      isMulti={false}
+      isClearable={false}
+      components={components}
+      options={options}
+      {...otherProps}
+    />
+  );
 });
 
 export default PostVisibilitySelect;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { FolderSelect } from "../../forms";
 import Select from "react-select";
@@ -41,7 +41,7 @@ const PageSettingsBody = () => {
   const dispatch = useDispatch();
   const { _t } = useTranslationActions();
   const toast = useToaster();
-
+  const theme = useTheme();
   const dictionary = {
     loginSettings: _t("ADMIN.LOGIN_SETTINGS", "Login settings"),
     googleLogin: _t("ADMIN.GOOGLE_LOGIN", "Google login"),
@@ -230,6 +230,7 @@ const PageSettingsBody = () => {
               value={postOptions.find((o) => o.value === settings.post)}
               onChange={handlePostSelect}
               options={postOptions}
+              menuColor={theme.colors.primary}
               //isClearable={true}
             />
           </div>

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useSettings } from "../hooks";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
 import CreatableSelect from "react-select/creatable";
+import { useTheme } from "styled-components";
 
 const SelectOption = styled.div`
   display: flex;
@@ -41,6 +42,7 @@ const MultiValueLabel = ({ children, selectProps, ...props }) => {
 
 const DomainSelect = forwardRef((props, ref) => {
   const { className = "", isMulti = true, isClearable = false, ...otherProps } = props;
+  const theme = useTheme();
   const {
     generalSettings: { dark_mode },
   } = useSettings();
@@ -56,6 +58,7 @@ const DomainSelect = forwardRef((props, ref) => {
       {...otherProps}
       onCreateOption={props.onCreateOption}
       onEmailClick={props.onEmailClick}
+      menuColor={theme.colors.primary}
     />
   );
 });

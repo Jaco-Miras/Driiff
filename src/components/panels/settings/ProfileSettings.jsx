@@ -13,6 +13,7 @@ import { driffData } from "../../../config/environment.json";
 import reduxPersist from "../../../redux/store/configStore";
 import { browserName, isMobileSafari, deviceType } from "react-device-detect";
 import { SvgIconFeather, ToolTip } from "../../common";
+import { useTheme } from "styled-components";
 
 const Wrapper = styled.div`
   .card {
@@ -80,6 +81,7 @@ const ProfileSettings = (props) => {
   const { persistor } = reduxPersist();
   const [persist, setPersist] = useState(persistenceOn);
 
+  const theme = useTheme();
   const { localizeDate } = useTimeFormat();
   const dispatch = useDispatch();
   const toaster = useToaster();
@@ -761,6 +763,7 @@ const ProfileSettings = (props) => {
                     value={ChatLanguageOptions.find((o) => o.value === chat_language)}
                     onChange={handleChatLanguageChange}
                     options={ChatLanguageOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -775,6 +778,7 @@ const ProfileSettings = (props) => {
                     value={channelSortOptions.find((o) => o.value === order_channel.order_by)}
                     onChange={handleSortChannelChange}
                     options={channelSortOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -793,6 +797,7 @@ const ProfileSettings = (props) => {
                     value={channelSortOptions.find((o) => o.value === orderChannel.order_by)}
                     onChange={handleSortWorkspaceChange}
                     options={channelSortOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -812,6 +817,7 @@ const ProfileSettings = (props) => {
                     value={languageOptions.find((o) => o.value === language)}
                     onChange={handleLanguageChange}
                     options={languageOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -825,6 +831,7 @@ const ProfileSettings = (props) => {
                     value={TimezoneOptions.find((o) => o.value === timezone)}
                     onChange={handleTimezoneChange}
                     options={TimezoneOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -839,6 +846,7 @@ const ProfileSettings = (props) => {
                       value={DateFormatOptions.find((o) => o.value === date_format)}
                       onChange={handleDateFormatChange}
                       options={DateFormatOptions}
+                      menuColor={theme.colors.primary}
                     />
                     <Select
                       className={"react-select-container col-6"}
@@ -847,6 +855,7 @@ const ProfileSettings = (props) => {
                       value={TimeFormatOptions.find((o) => o.value === time_format)}
                       onChange={handleTimeFormatChange}
                       options={TimeFormatOptions}
+                      menuColor={theme.colors.primary}
                     />
                   </div>
                 </div>
@@ -905,6 +914,7 @@ const ProfileSettings = (props) => {
                     value={notificationSoundOptions.find((o) => o.value === notification_sound)}
                     onChange={handleNotificationSoundChange}
                     options={notificationSoundOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>
@@ -933,6 +943,7 @@ const ProfileSettings = (props) => {
                     value={emailOptions.find((o) => o.value === enable_all_notification_reply_in_email)}
                     onChange={handleEmailNotificationDropdown}
                     options={emailOptions}
+                    menuColor={theme.colors.primary}
                   />
                 </div>
               </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useAdminActions, useTranslationActions, useToaster } from "../../hooks";
 import { putLoginSettings, putMeetingSettings } from "../../../redux/actions/adminActions";
@@ -84,7 +84,6 @@ const LoaderContainer = styled.div`
   height: 50vh;
 `;
 
-
 function DriffBody() {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
@@ -95,7 +94,6 @@ function DriffBody() {
     videoMeeting: _t("LABEL.VIDEO_MEETING", "Video meeting"),
     updateLanguage: _t("BUTTON.UPDATE_LANGUAGE", "Update language"),
     connectGoogleDrive: _t("LAVEL.CONNECT_GOOGLEDRIVE", "Connect Google Drive"),
-    connectGoogleDrive: _t("BUTTON.CONNECT_GOOGLEDRIVE", "Connect Google Drive"),
   };
 
   const languageOptions = [
@@ -149,11 +147,8 @@ function DriffBody() {
   const [meetingSettings, setMeetingSettings] = useState(meeting);
   const generalSettings = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const { dark_mode } = generalSettings;
-  const location = useLocation();
-  const history = useHistory() 
-
+  const styledTheme = useTheme();
   useEffect(() => {
-
     if (!loginFetched) {
       fetchLoginSettings({});
     }
@@ -188,7 +183,7 @@ function DriffBody() {
         toast.success(dictionary.settingsUpdated);
       })
     );
-  }; 
+  };
 
   const handleSelectLanguage = (e) => {
     setSettings({ ...settings, language: e.value });
@@ -196,7 +191,7 @@ function DriffBody() {
 
   const handleSelectMeeting = (e) => {
     setMeetingSettings(e.value);
-  };  
+  };
 
   return (
     <Wrapper theme={theme}>
@@ -219,6 +214,7 @@ function DriffBody() {
               value={languageOptions.find((o) => settings.language === o.value)}
               onChange={handleSelectLanguage}
               options={languageOptions}
+              menuColor={styledTheme.colors.primary}
             />
           </div>
           <div className="d-flex align-items-center mt-2">
@@ -236,6 +232,7 @@ function DriffBody() {
             value={videoOptions.find((o) => meetingSettings === o.value)}
             onChange={handleSelectMeeting}
             options={videoOptions}
+            menuColor={styledTheme.colors.primary}
           />
           <div className="d-flex align-items-center mt-2">
             <SubmitButton className="btn btn-primary mr-2" id="SubmitColors" onClick={handleUpdateMeeting}>
@@ -245,7 +242,7 @@ function DriffBody() {
 
           <LabelInfoWrapper className="mt-2" style={{ marginTop: "40px" }}>
             <label>{dictionary.connectGoogleDrive}</label>
-          </LabelInfoWrapper>         
+          </LabelInfoWrapper>
         </>
       )}
     </Wrapper>

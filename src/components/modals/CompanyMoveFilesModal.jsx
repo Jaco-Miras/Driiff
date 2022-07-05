@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import Select from "react-select";
 import { Modal, ModalBody, ModalFooter } from "reactstrap";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useCompanyFiles } from "../hooks";
 import { ModalHeaderSection } from "./index";
@@ -41,7 +41,7 @@ const Wrapper = styled(Modal)`
 
 const CompanyMoveFilesModal = (props) => {
   const { className = "", type, file, folder_id, dictionary, actions } = props.data;
-
+  const theme = useTheme();
   const { folders } = useCompanyFiles();
   const dispatch = useDispatch();
 
@@ -110,7 +110,7 @@ const CompanyMoveFilesModal = (props) => {
       <ModalHeaderSection toggle={toggle}>{dictionary.headerText}</ModalHeaderSection>
       <ModalBody>
         <div>{dictionary.bodyText}</div>
-        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
+        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} menuColor={theme.colors.primary} options={options} onChange={handleSelectFolder} />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>
