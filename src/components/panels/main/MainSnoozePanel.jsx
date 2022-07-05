@@ -439,12 +439,14 @@ const MainSnooze = (props) => {
     });
     if (notifs.length) {
       notifs.forEach((notif) => {
-        let sharedPayload = { slug: notif.slug, token: sharedWs[notif.slug].access_token, is_shared: true };
+        let sharedPayload = null;
+        if (notif.slug && sharedWs[notif.slug]) {
+          sharedPayload = { slug: notif.slug, token: sharedWs[notif.slug].access_token, is_shared: true };
+        }
+
         let payload = { is_snooze: true, notification_ids: notifs.filter((n) => n.slug === notif.slug).map((n) => n.id), type: "POST_SNOOZE", sharedPayload: sharedPayload };
         snoozeActions.snoozeAllNotif(payload);
       });
-      // let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
-      // snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id), type: "POST_SNOOZE" });
     }
     if (reminders.length) {
       snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: reminders.map((n) => n.id), type: "REMINDER_SNOOZE" });
