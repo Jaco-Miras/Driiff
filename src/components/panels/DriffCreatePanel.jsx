@@ -77,7 +77,7 @@ const DriffCreatePanel = (props) => {
     slug: useRef(null),
   };
 
-  const [form, setForm] = useState({ password: "", passwordConfirm: "" });
+  const [form, setForm] = useState({});
   const [creatingDriff, setCreatingDriff] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
@@ -220,7 +220,6 @@ const DriffCreatePanel = (props) => {
   // };
 
   const handleRegister = (e) => {
-    debugger;
     e.preventDefault();
 
     if (loading) return;
@@ -245,9 +244,8 @@ const DriffCreatePanel = (props) => {
               driff_from: form.from_slug,
             };
           }
-          const { passwordConfirm, _form } = form;
           setCreatingDriff(true);
-          driffActions.create({ ..._form, token: captcha, ...extraPayload }, (err, res) => {
+          driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
             setCreatingDriff(false);
             setLoading(false);
             if (res) {
