@@ -1026,7 +1026,7 @@ const usePostActions = () => {
         if (err) return;
         dispatch(
           updateWorkspacePostCount({
-            topic_id: parseInt(payload.topic_id),
+            topic_id: payload.topic_id,
             count: res.data.result,
           })
         );

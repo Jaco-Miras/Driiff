@@ -105,6 +105,22 @@ const Posts = (props) => {
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
+  useEffect(() => {
+    if (workspace) {
+      let payload = {
+        topic_id: workspace.id,
+      };
+      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+        payload = {
+          ...payload,
+          slug: workspace.slug,
+          sharedSlug: true,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getUnreadWsPostsCount(payload);
+    }
+  }, [unreadPosts.length]);
   const handleToggleCheckbox = (post) => {
     let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
 
