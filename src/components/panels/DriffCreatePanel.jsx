@@ -11,7 +11,9 @@ import { useDispatch } from "react-redux";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { TodoCheckBox } from "../forms";
 import ReCAPTCHA from "react-google-recaptcha";
-import { acceptSharedUserInvite } from "../../redux/actions/userAction";
+//import { acceptSharedUserInvite } from "../../redux/actions/userAction";
+import { Loading } from "../common";
+import { renderToString } from "react-dom/server";
 const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
@@ -260,7 +262,7 @@ const DriffCreatePanel = (props) => {
     let e = document.querySelector("h5.title");
     if (e) {
       if (creatingDriff) {
-        e.innerHTML = dictionary.generatingDriff;
+        e.innerHTML = renderToString(<Loading text={dictionary.generatingDriff} />);
       } else if (registered) {
         e.innerHTML = dictionary.thankYou;
       } else {
