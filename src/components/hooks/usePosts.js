@@ -36,6 +36,8 @@ const usePosts = () => {
         if (workspace && workspace.sharedSlug) {
           payload = {
             ...payload,
+            slug: workspace.slug,
+            sharedSlug: true,
             sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
           };
           actions.getUnreadWsPostsCount(payload, (err, res) => {

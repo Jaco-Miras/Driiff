@@ -1238,6 +1238,23 @@ class SocketListeners extends Component {
               e.workspaces.forEach((ws) => {
                 if (this.props.sharedSlug) {
                   // update
+                  let payload = {
+                    topic_id: ws.topic_id,
+                    sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+                    slug: this.state.slug,
+                    sharedSlug: true,
+                  };
+                  if (this.props.sharedWorkspaces[this.state.slug]) {
+                    this.props.getUnreadWorkspacePostEntries(payload, (err, res) => {
+                      if (err) return;
+                      this.props.updateWorkspacePostCount({
+                        topic_id: ws.topic_id,
+                        count: res.data.result,
+                        slug: this.state.slug,
+                        sharedSlug: true,
+                      });
+                    });
+                  }
                 } else {
                   this.props.getUnreadWorkspacePostEntries({ topic_id: ws.topic_id }, (err, res) => {
                     if (err) return;

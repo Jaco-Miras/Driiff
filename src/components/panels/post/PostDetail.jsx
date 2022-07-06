@@ -437,16 +437,27 @@ const PostDetail = (props) => {
         postActions.markAsRead(post, false, sharedPayload);
       }
     }
+    let payload = {
+      topic_id: workspace.id,
+      sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      slug: workspace.slug,
+      sharedSlug: true,
+    };
+    if (workspace) postActions.getUnreadWsPostsCount(payload);
 
     postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload });
-    if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id, sharedPayload });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
         if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
       }
-
-      if (workspace) postActions.getUnreadWsPostsCount({ topic_id: workspace.id, sharedPayload });
+      // let payload = {
+      //   topic_id: workspace.id,
+      //   sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      //   slug: workspace.slug,
+      //   sharedSlug: true,
+      // };
+      // if (workspace) postActions.getUnreadWsPostsCount(payload);
     };
   }, []);
 
