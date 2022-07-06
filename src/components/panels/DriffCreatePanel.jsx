@@ -85,6 +85,8 @@ const DriffCreatePanel = (props) => {
     message: {},
   });
 
+  const [isSharedInvite, setIsSharedInvite] = useState(false);
+
   const handleInputChange = useCallback(
     (e) => {
       e.persist();
@@ -266,6 +268,7 @@ const DriffCreatePanel = (props) => {
 
   useEffect(() => {
     if (history.location.state && history.location.state.sharedWs) {
+      setIsSharedInvite(true);
       setForm({
         ...form,
         email: history.location.state.sharedWs.responseData.user.email,
@@ -369,7 +372,7 @@ const DriffCreatePanel = (props) => {
             feedback={formResponse.message.email}
             placeholder={dictionary.yourEmail}
             type="email"
-            readOnly={loading}
+            readOnly={loading || isSharedInvite}
           />
           <FormInput
             onChange={handleInputChange}
