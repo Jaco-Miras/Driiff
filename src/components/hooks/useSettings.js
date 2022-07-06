@@ -15,6 +15,7 @@ import {
 import { addToModals } from "../../redux/actions/globalActions";
 import { setPushNotification } from "../../redux/actions/notificationActions";
 import { useToaster } from "./index";
+import { userForceLogout } from "./useUserActions";
 
 const useSettings = () => {
   const dispatch = useDispatch();
@@ -127,9 +128,14 @@ const useSettings = () => {
   const fetchUserSettings = () => {
     if (!userSettings.isLoaded && !isUserSettingsIsLoading) {
       setIsUserSettingsLoading(true);
-      dispatch(getUserSettings(), () => {
-        setIsUserSettingsLoading(false);
-      });
+      dispatch(
+        getUserSettings(null, (err, res) => {
+          if (err.response.status === 401) {
+            userForceLogout();
+          }
+          setIsUserSettingsLoading(false);
+        })
+      );
     }
   };
 
