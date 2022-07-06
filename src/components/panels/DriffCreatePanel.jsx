@@ -77,7 +77,7 @@ const DriffCreatePanel = (props) => {
     slug: useRef(null),
   };
 
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({ password: "", passwordConfirm: "" });
   const [creatingDriff, setCreatingDriff] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
@@ -156,6 +156,28 @@ const DriffCreatePanel = (props) => {
     } else {
       valid.password = true;
     }
+    if (typeof form.passwordConfirm === "undefined" || form.passwordConfimr === "") {
+      valid.passwordConfirm = false;
+      message.passwordConfirm = dictionary.passwordRequired;
+    } else if (typeof form.passwordConfirm !== "undefined" && form.passwordConfirm !== "") {
+      const specialChar = /[ -/:-@[-`{-~]/;
+      const hasNum = /\d/;
+      if (specialChar.test(form.passwordConfirm) && hasNum.test(form.passwordConfirm) && form.passwordConfirm.length >= 6) {
+        if (form.password === form.passwordConfirm) {
+          valid.passwordConfirm = true;
+        } else {
+          message.password = dictionary.passwordNotMatch;
+          message.passwordConfirm = dictionary.passwordNotMatch;
+          valid.passwordConfirm = false;
+          valid.password = false;
+        }
+      } else {
+        message.passwordConfirm = dictionary.invalidPassword;
+        valid.passwordConfirm = false;
+      }
+    } else {
+      valid.passwordConfirm = true;
+    }
 
     setFormResponse({
       valid: valid,
@@ -196,6 +218,7 @@ const DriffCreatePanel = (props) => {
   // };
 
   const handleRegister = (e) => {
+    debugger;
     e.preventDefault();
 
     if (loading) return;
@@ -357,7 +380,16 @@ const DriffCreatePanel = (props) => {
             innerRef={refs.user_name}
             readOnly={loading}
           />
-          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
+          <PasswordInput onChange={handleInputChange} name="password" value={form.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
+          <PasswordInput
+            onChange={handleInputChange}
+            name="passwordConfirm"
+            value={form.passwordConfirm}
+            isValid={formResponse.valid.passwordConfirm}
+            feedback={formResponse.message.passwordConfirm}
+            readOnly={loading}
+            placeholder={dictionary.passwordConfirm}
+          />
 
           <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
             {typeof form.invitations !== "undefined" ? (
