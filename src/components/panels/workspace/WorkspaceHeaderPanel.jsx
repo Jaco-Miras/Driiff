@@ -108,8 +108,9 @@ const NavBarLeft = styled.div`
     color: ${(props) => props.theme.colors.primary} !important;
   }
   .component-user-list-pop-up-container .profile-slider {
-    right: 165px;
+    right: 235px !important;
     top: 0;
+    min-width: 450px;
   }
   .profile-slider svg {
     margin: 0;

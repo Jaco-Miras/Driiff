@@ -83,7 +83,8 @@ const Wrapper = styled.div`
     }
   }
   .component-user-list-pop-up-container .profile-slider {
-    right: 255px !important;
+    right: 210px !important;
+    min-width: 450px;
   }
   .channel-title-wrapper {
     display: flex;
@@ -293,7 +294,7 @@ const ChatHeaderPanel = (props) => {
     if (channel && channel.slug && channel.sharedSlug) {
       //check for members slug
       let ws = workspaces[`${channel.entity_id}-${channel.slug}`];
-      if (channel.members.every((m) => !m.hasOwnProperty("slug")) && ws) {
+      if (channel.members.every((m) => !m.hasOwnProperty("company_name")) && ws) {
         dispatch(addCompanyNameOnMembers({ code: channel.code, members: ws.members }));
       }
     }
