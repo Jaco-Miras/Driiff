@@ -411,7 +411,7 @@ const PostModal = (props) => {
     params,
     responsible_ids,
     user,
-    topicId: params ? activeTopic.id : null,
+    topicId: params ? (isSharedWorkspace ? `${activeTopic.id}-${activeTopic.slug}` : activeTopic.id) : null,
     toaster,
     setDraftId: setDraftId,
     savingDraft: savingDraft,
