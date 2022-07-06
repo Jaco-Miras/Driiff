@@ -536,7 +536,7 @@ const TodoReminderModal = (props) => {
 
       setForm({
         ...form,
-        topic_id: { value: parentItem.entity_id },
+        topic_id: { value: parentItem.type === "TOPIC" ? parentItem.entity_id : null },
         title: { value: `${item.user ? item.user.name : ""} | ${parentItem.title} | Chat Message` },
         description: { value: chatBody },
       });
