@@ -71,13 +71,14 @@ const DriffTalkMessage = (props) => {
     if (startingMeet || !isCreateMessage) return;
     setStartingMeet(true);
     const data = JSON.parse(reply.body.replace("DRIFF_TALK::", ""));
-    //let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
-    //let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
+    let stripTitle = channelTitle.replace(/[&\/\\#, +()$~%.'":*?<>{}]/g, "_");
+    let parseChannel = type === "DIRECT" ? "Meeting_Room" : stripTitle;
     setStartingMeet(true);
     let payload = {
       channel_id: channelId,
       host: false,
-      room_name: data.meet_event.room_name,
+      // room_name: data.meet_event.room_name,
+      room_name: data.meet_event.room_name ? data.meet_event.room_name : slug + "~" + parseChannel + "~" + channelId,
     };
     if (selectedChannel.slug && sharedWs[slug]) {
       const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
