@@ -243,8 +243,9 @@ const DriffCreatePanel = (props) => {
               driff_from: form.from_slug,
             };
           }
+          const { passwordConfirm, _form } = form;
           setCreatingDriff(true);
-          driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
+          driffActions.create({ ..._form, token: captcha, ...extraPayload }, (err, res) => {
             setCreatingDriff(false);
             setLoading(false);
             if (res) {
