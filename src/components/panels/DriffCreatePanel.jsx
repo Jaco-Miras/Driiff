@@ -79,13 +79,15 @@ const DriffCreatePanel = (props) => {
     slug: useRef(null),
   };
 
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({ password: "", passwordConfirm: "" });
   const [creatingDriff, setCreatingDriff] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
     message: {},
   });
+
+  const [isSharedInvite, setIsSharedInvite] = useState(false);
 
   const handleInputChange = useCallback(
     (e) => {
@@ -158,6 +160,28 @@ const DriffCreatePanel = (props) => {
     } else {
       valid.password = true;
     }
+    if (typeof form.passwordConfirm === "undefined" || form.passwordConfimr === "") {
+      valid.passwordConfirm = false;
+      message.passwordConfirm = dictionary.passwordRequired;
+    } else if (typeof form.passwordConfirm !== "undefined" && form.passwordConfirm !== "") {
+      const specialChar = /[ -/:-@[-`{-~]/;
+      const hasNum = /\d/;
+      if (specialChar.test(form.passwordConfirm) && hasNum.test(form.passwordConfirm) && form.passwordConfirm.length >= 6) {
+        if (form.password === form.passwordConfirm) {
+          valid.passwordConfirm = true;
+        } else {
+          message.password = dictionary.passwordNotMatch;
+          message.passwordConfirm = dictionary.passwordNotMatch;
+          valid.passwordConfirm = false;
+          valid.password = false;
+        }
+      } else {
+        message.passwordConfirm = dictionary.invalidPassword;
+        valid.passwordConfirm = false;
+      }
+    } else {
+      valid.passwordConfirm = true;
+    }
 
     setFormResponse({
       valid: valid,
@@ -198,6 +222,7 @@ const DriffCreatePanel = (props) => {
   // };
 
   const handleRegister = (e) => {
+    debugger;
     e.preventDefault();
 
     if (loading) return;
@@ -222,8 +247,9 @@ const DriffCreatePanel = (props) => {
               driff_from: form.from_slug,
             };
           }
+          const { passwordConfirm, _form } = form;
           setCreatingDriff(true);
-          driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
+          driffActions.create({ ..._form, token: captcha, ...extraPayload }, (err, res) => {
             setCreatingDriff(false);
             setLoading(false);
             if (res) {
@@ -244,6 +270,7 @@ const DriffCreatePanel = (props) => {
 
   useEffect(() => {
     if (history.location.state && history.location.state.sharedWs) {
+      setIsSharedInvite(true);
       setForm({
         ...form,
         email: history.location.state.sharedWs.responseData.user.email,
@@ -347,7 +374,7 @@ const DriffCreatePanel = (props) => {
             feedback={formResponse.message.email}
             placeholder={dictionary.yourEmail}
             type="email"
-            readOnly={loading}
+            readOnly={loading || isSharedInvite}
           />
           <FormInput
             onChange={handleInputChange}
@@ -359,7 +386,16 @@ const DriffCreatePanel = (props) => {
             innerRef={refs.user_name}
             readOnly={loading}
           />
-          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
+          <PasswordInput onChange={handleInputChange} name="password" value={form.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
+          <PasswordInput
+            onChange={handleInputChange}
+            name="passwordConfirm"
+            value={form.passwordConfirm}
+            isValid={formResponse.valid.passwordConfirm}
+            feedback={formResponse.message.passwordConfirm}
+            readOnly={loading}
+            placeholder={dictionary.passwordConfirm}
+          />
 
           <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
             {typeof form.invitations !== "undefined" ? (
