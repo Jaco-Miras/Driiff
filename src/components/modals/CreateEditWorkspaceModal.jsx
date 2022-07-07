@@ -1089,19 +1089,17 @@ const CreateEditWorkspaceModal = (props) => {
           ...payload,
           shared_workspace_member_ids: form.selectedSharedUsers.filter((ex) => !isNaN(ex.id)).map((ex) => ex.id),
           new_shared_workspace_members: [
-            ...form.selectedSharedUsers
-              .filter((ex) => isNaN(ex.id))
-              .map((ex) => {
-                return {
-                  email: ex.email,
-                  first_name: ex.first_name ? ex.first_name.trim() : ex.email,
-                  middle_name: ex.middle_name ? ex.middle_name.trim() : "",
-                  last_name: ex.last_name ? ex.last_name.trim() : "",
-                  company: ex.company ? ex.company.trim() : "",
-                  language: "en",
-                  send_by_email: true,
-                };
-              }),
+            ...invitedSharedUsers.map((ex) => {
+              return {
+                email: ex.email,
+                first_name: ex.first_name ? ex.first_name.trim() : ex.email,
+                middle_name: ex.middle_name ? ex.middle_name.trim() : "",
+                last_name: ex.last_name ? ex.last_name.trim() : "",
+                company: ex.company ? ex.company.trim() : "",
+                language: "en",
+                send_by_email: true,
+              };
+            }),
           ],
         };
       }
@@ -1168,9 +1166,10 @@ const CreateEditWorkspaceModal = (props) => {
         setLoading(true);
 
         const cb = (err, res) => {
-          toggle();
-          if (err) return;
-
+          if (err) {
+            toggle();
+            return;
+          }
           if (form.icon) {
             handleUpdateWorkspaceIcon(payload, form.icon, res.data);
           }
@@ -1178,14 +1177,16 @@ const CreateEditWorkspaceModal = (props) => {
           if (res.data) {
             const _externalUsers = res.data.members.reduce((acc, c) => {
               const found = invitedSharedUsers.find((ex) => ex.email === c.email);
-              const sharedSlug = form.is_shared_wp ? `${slug}-shared` : slug;
-              acc.push({
-                ...c,
-                profile_image_link: URL.createObjectURL(found.profile_pic),
-                profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic),
-                profile_pic: found.profile_pic,
-                sharedPayload: form.is_shared_wp ? { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true } : null,
-              });
+              if (found) {
+                const sharedSlug = form.is_shared_wp ? `${slug}-shared` : slug;
+                acc.push({
+                  ...c,
+                  profile_image_link: URL.createObjectURL(found.profile_pic),
+                  profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic),
+                  profile_pic: found.profile_pic,
+                  sharedPayload: form.is_shared_wp ? { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true } : null,
+                });
+              }
               return acc;
             }, []);
             batchEditUploadExternalUserProfilePic(_externalUsers);
@@ -1229,6 +1230,7 @@ const CreateEditWorkspaceModal = (props) => {
           } else {
             history.push(`/${ws_type}/dashboard/${res.data.id}/${replaceChar(form.name)}`);
           }
+          toggle();
         };
 
         if (item.members.length === 1 && form.selectedUsers.length === 0 && item.is_lock === 1) {
@@ -1300,7 +1302,7 @@ const CreateEditWorkspaceModal = (props) => {
               setLoading(false);
               toaster.warning(
                 <span>
-                  Workspace creation failed.
+                  Hub creation failed.
                   <br />
                   Please try again.
                 </span>
@@ -1323,6 +1325,7 @@ const CreateEditWorkspaceModal = (props) => {
                 }
                 return acc;
               }, []);
+
               batchUploadExternalUserProfilePic(_externalUsers);
 
               const updatedMembers = res.data.members.map((member) => {
@@ -1852,7 +1855,7 @@ const CreateEditWorkspaceModal = (props) => {
               });
         sharedMembers = item.members
           .filter((m) => {
-            return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
+            return m.type === "external";
           })
           .map((m) => {
             return {
