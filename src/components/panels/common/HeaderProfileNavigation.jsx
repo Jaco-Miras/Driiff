@@ -217,7 +217,7 @@ const HomeProfileNavigation = (props) => {
       fetchById(loggedUser.id, (err, res) => {
         if (err) return;
         setForm(res.data);
-        sessionService.saveUser({ ...res.data });
+        sessionService.saveUser({ ...loggedUser, ...res.data });
         // if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
         //   sessionService.saveUser({ ...loggedUser, ...res.data });
         // }
