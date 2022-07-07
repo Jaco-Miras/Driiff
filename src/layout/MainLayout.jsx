@@ -190,6 +190,7 @@ const MainLayout = (props) => {
         state_code: state_code,
         slug: slug,
         as_guest: false,
+        email: user.email,
       };
       handleAcceptInvite(payload);
     } else if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
@@ -198,6 +199,7 @@ const MainLayout = (props) => {
         state_code: history.location.state.state_code,
         slug: slug,
         as_guest: false,
+        email: user.email,
       };
       handleAcceptInvite(payload);
     }
