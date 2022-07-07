@@ -143,7 +143,6 @@ const useLoadSharedDriff = () => {
             dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
           })
         );
-
         let sharedUserPayload = {
           skip: 0,
           limit: 1000,
@@ -152,7 +151,6 @@ const useLoadSharedDriff = () => {
         if (ws.slice(0, -7) === slug) {
           dispatch(getSharedUsers(sharedUserPayload));
         }
-
         let myToken = `Bearer ${sharedWs[ws].access_token}`;
         let accessBroadcastToken = sharedWs[ws].access_broadcast_token;
         let host = process.env.REACT_APP_socketAddress;
