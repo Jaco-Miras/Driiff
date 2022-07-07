@@ -615,6 +615,7 @@ const TodoReminderModal = (props) => {
         title: { value: title },
         //title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : companyRecipient ? companyRecipient.name : ""} | Post` },
         description: { value: item.title },
+        topic_id: { value: companyRecipient.id },
       }));
     }
 
