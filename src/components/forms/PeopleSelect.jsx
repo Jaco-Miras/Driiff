@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import Select, { components } from "react-select";
+import { useTheme } from "styled-components";
 import styled from "styled-components";
 import { Avatar } from "../common";
 import { useSettings } from "../hooks";
@@ -96,6 +97,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 
 const PeopleSelect = forwardRef((props, ref) => {
   const { className = "", isMulti = true, isClearable = false, creatable = false, ...otherProps } = props;
+  const theme = useTheme();
   const {
     generalSettings: { dark_mode },
   } = useSettings();
@@ -113,6 +115,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         {...otherProps}
         onCreateOption={props.onCreateOption}
         onEmailClick={props.onEmailClick}
+        menuColor={theme.colors.primary}
       />
     );
   } else {
@@ -126,6 +129,7 @@ const PeopleSelect = forwardRef((props, ref) => {
         isClearable={isClearable}
         components={{ Option, MultiValueContainer }}
         {...otherProps}
+        menuColor={theme.colors.primary}
       />
     );
   }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector } from "react-redux";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
@@ -41,7 +41,7 @@ const LabelInfoWrapper = styled.div`
 const LoginSettingsBody = () => {
   const { _t } = useTranslationActions();
   const toast = useToaster();
-
+  const theme = useTheme();
   const dictionary = {
     loginSettings: _t("ADMIN.LOGIN_SETTINGS", "Login settings"),
     googleLogin: _t("ADMIN.GOOGLE_LOGIN", "Google login"),
@@ -299,6 +299,7 @@ const LoginSettingsBody = () => {
               value={googleOptions.find((o) => o.value === settings.google_login)}
               onChange={handleSelect}
               options={googleOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
           <div>
@@ -315,6 +316,7 @@ const LoginSettingsBody = () => {
               value={magicOptions.find((o) => o.value === settings.magic_link)}
               onChange={handleSelect}
               options={magicOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
           <div>
@@ -331,6 +333,7 @@ const LoginSettingsBody = () => {
               value={signUpOptions.find((o) => o.value === settings.sign_up)}
               onChange={handleSelect}
               options={signUpOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
 
@@ -356,6 +359,7 @@ const LoginSettingsBody = () => {
                 className={"react-select-container"}
                 classNamePrefix="react-select"
                 placeholder="Domain..."
+                menuColor={theme.colors.primary}
               />
             </div>
           )}
@@ -374,6 +378,7 @@ const LoginSettingsBody = () => {
               value={translationOptions.find((o) => o.value === settings.custom_translation)}
               onChange={handleSelect}
               options={translationOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
 
@@ -391,6 +396,7 @@ const LoginSettingsBody = () => {
               value={loginOptions.find((o) => o.value === settings.login_mode)}
               onChange={handleSelectLogin}
               options={loginOptions}
+              menuColor={theme.colors.primary}
             />
           </div>
 

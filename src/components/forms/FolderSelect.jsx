@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import { useTheme } from "styled-components";
 import Select, { components } from "react-select";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../common";
@@ -148,7 +149,7 @@ const MultiValueContainer = ({ children, selectProps, ...props }) => {
 
 const FolderSelect = forwardRef((props, ref) => {
   const { className = "", isMulti = false, isClearable = false, creatable = false, isDisabled = false, ...otherProps } = props;
-
+  const theme = useTheme();
   const {
     generalSettings: { dark_mode },
   } = useSettings();
@@ -166,6 +167,7 @@ const FolderSelect = forwardRef((props, ref) => {
         className={`react-select-container ${className}`}
         classNamePrefix="react-select"
         styles={dark_mode === "0" ? lightTheme : darkTheme}
+        menuColor={theme.colors.primary}
         isMulti={isMulti}
         isClearable={isClearable}
         components={components}
@@ -175,7 +177,17 @@ const FolderSelect = forwardRef((props, ref) => {
     );
   } else {
     return (
-      <Select ref={ref} className={`react-select-container ${className}`} styles={dark_mode === "0" ? lightTheme : darkTheme} isMulti={isMulti} isClearable={isClearable} isDisabled={isDisabled} components={components} {...otherProps} />
+      <Select
+        ref={ref}
+        className={`react-select-container ${className}`}
+        styles={dark_mode === "0" ? lightTheme : darkTheme}
+        menuColor={theme.colors.primary}
+        isMulti={isMulti}
+        isClearable={isClearable}
+        isDisabled={isDisabled}
+        components={components}
+        {...otherProps}
+      />
     );
   }
 });

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Select from "react-select";
 import { Label, Modal, ModalBody, ModalFooter } from "reactstrap";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { moveFile, putDriveLink } from "../../redux/actions/fileActions";
 import { clearModal } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
@@ -42,7 +42,7 @@ const Wrapper = styled(Modal)`
 
 const MoveFilesModal = (props) => {
   const { className = "", type, file, topic_id, folder_id, isLink = false, ...otherProps } = props;
-
+  const theme = useTheme();
   const dispatch = useDispatch();
   const toaster = useToaster();
   const { _t } = useTranslationActions();
@@ -158,7 +158,7 @@ const MoveFilesModal = (props) => {
           <span className="pl-1 mb-3">to:</span>
         </div>
         <Label className={"folder-name"}>Select a folder</Label>
-        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} options={options} onChange={handleSelectFolder} />
+        <Select className={"react-select-container"} classNamePrefix="react-select" styles={dark_mode === "0" ? lightTheme : darkTheme} menuColor={theme.colors.primary} options={options} onChange={handleSelectFolder} />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-outline-secondary" data-dismiss="modal" onClick={handleClose}>
