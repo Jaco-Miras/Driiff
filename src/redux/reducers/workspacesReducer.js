@@ -235,6 +235,8 @@ export default (state = INITIAL_STATE, action) => {
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
             show_about: ws.topic_detail.show_about,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -299,6 +301,8 @@ export default (state = INITIAL_STATE, action) => {
             team_channel: ws.topic_detail.team_channel,
             team_unread_chats: ws.topic_detail.team_unread_chats,
             workspace_counter_entries: ws.topic_detail.workspace_counter_entries,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -324,6 +328,8 @@ export default (state = INITIAL_STATE, action) => {
         is_favourite: true,
         show_about: action.data.workspace_data.topic_detail.show_about,
         active: action.data.workspace_data.topic_detail.active,
+        team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+        channel_bot: action.data.workspace_data.topic_detail.channel_bot,
       };
       return {
         ...state,
@@ -360,6 +366,8 @@ export default (state = INITIAL_STATE, action) => {
           active: action.data.workspace_data.topic_detail.active,
           is_favourite: action.data.workspace_data.topic_detail.is_favourite,
           is_active: action.data.workspace_data.topic_detail.is_active,
+          team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+          channel_bot: action.data.workspace_data.topic_detail.channel_bot,
         };
         return {
           ...state,
