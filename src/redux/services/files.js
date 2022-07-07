@@ -557,11 +557,16 @@ export function postCompanyUploadBulkFiles(payload) {
   if (payload.folder_id) {
     url += `?folder_id=${payload.folder_id}`;
   }
-  return apiCall({
-    method: "POST",
-    url: url,
-    data: payload.files,
-  });
+  const payloadRequest = Object.assign(
+    {
+      method: "POST",
+      url,
+      data: payload.files,
+    },
+    payload.options ? payload.options : {}
+  );
+
+  return apiCall({ ...payloadRequest });
 }
 
 export function deleteCompanyFiles(payload) {
