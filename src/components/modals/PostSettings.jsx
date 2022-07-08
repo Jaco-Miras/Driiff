@@ -42,12 +42,12 @@ const RadioInputWrapper = styled.div`
     width: auto;
   }
   .client-shared {
-    border-radius: 8px;
-    padding: 2px 6px;
+    border-radius: 6px;
+    padding: 0px 6px;
     background: ${(props) => props.theme.colors.fourth};
     color: #212529;
     margin-right: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     .feather {
       margin-right: 5px;
     }
@@ -56,12 +56,12 @@ const RadioInputWrapper = styled.div`
     }
   }
   .client-not-shared {
-    border-radius: 8px;
-    padding: 2px 6px;
+    border-radius: 6px;
+    padding: 4px 6px;
     background: #d6edff;
     color: #212529;
     margin-right: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     .feather {
       margin-right: 5px;
     }
@@ -71,7 +71,7 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
+const SVGIcon = styled(SvgIconFeather)`
   width: 12px;
   margin: 0;
 `;
@@ -401,8 +401,8 @@ const PostSettings = (props) => {
                 value={"external"}
                 name={"role"}
               >
-                <span class="receiver client-shared text-white">
-                  {/* <LockIcon icon="eye" /> */}
+                <span class="receiver client-shared">
+                  <SVGIcon icon="repeat" />
                   {dictionary.badgeShared}
                 </span>
               </RadioInput>
