@@ -581,7 +581,7 @@ export default function (state = INITIAL_STATE, action) {
                             ...r,
                             id: action.data.id,
                             created_at: action.data.created_at,
-                            updated_at: action.data.updated_at,
+                            updated_at: action.data.updated_at ? action.data.updated_at : action.data.created_at,
                           };
                         } else {
                           return {
@@ -607,7 +607,7 @@ export default function (state = INITIAL_STATE, action) {
           ...(channel && {
             [channel.slug ? channel.code : channel.id]: {
               ...channel,
-              updated_at: action.data.updated_at,
+              updated_at: action.data.updated_at ? action.data.updated_at : action.data.created_at,
               replies:
                 action.data.hasOwnProperty("reference_id") && channel.replies.some((r) => r.id === action.data.reference_id)
                   ? channel.replies.map((r) => {
@@ -616,7 +616,7 @@ export default function (state = INITIAL_STATE, action) {
                           ...r,
                           id: action.data.id,
                           created_at: action.data.created_at,
-                          updated_at: action.data.updated_at,
+                          updated_at: action.data.updated_at ? action.data.updated_at : action.data.created_at,
                         };
                       } else {
                         return {
