@@ -109,10 +109,16 @@ export function deleteNotification(payload) {
 }
 
 export function getAllSnoozedNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: "/v2/snooze-notification",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
