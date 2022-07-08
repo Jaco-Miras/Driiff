@@ -240,6 +240,19 @@ const useSortChannels = (channels, search, options = {}, workspace) => {
                 return b.updated_at?.timestamp - a.updated_at?.timestamp;
               }
             }
+            if (!a.updated_at && b.updated_at) {
+              return 1;
+            }
+            if (a.updated_at && !b.updated_at) {
+              return -1;
+            }
+            if (!a.updated_at && !b.updated_at) {
+              if (a.created_at?.timestamp === b.created_at?.timestamp) {
+                return a.title.localeCompare(b.title);
+              } else {
+                return a.created_at?.timestamp - b.created_at?.timestamp;
+              }
+            }
           }
 
           if (settings.order_channel.order_by === "channel_name") {
