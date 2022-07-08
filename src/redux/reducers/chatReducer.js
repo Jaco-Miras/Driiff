@@ -1177,13 +1177,13 @@ export default function (state = INITIAL_STATE, action) {
           ...state.channels,
           ...(action.data.type === "WORKSPACE" &&
             action.data.channel &&
-            state.channels[action.data.channel.id] && {
-              [action.data.channel.id]: {
-                ...state.channels[action.data.channel.id],
+            state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id] && {
+              [action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id]: {
+                ...state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id],
                 ...(action.data.system_message && {
                   // remove internal post in client chat
                   replies: [
-                    ...state.channels[action.data.channel.id].replies.filter((r) => {
+                    ...state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id].replies.filter((r) => {
                       if (r.body.startsWith("POST_CREATE::") && action.data.is_shared && !r.shared_with_client) {
                         return false;
                       } else {
@@ -1206,14 +1206,18 @@ export default function (state = INITIAL_STATE, action) {
           ...(action.data.type === "WORKSPACE" &&
             action.data.team_channel &&
             action.data.channel &&
-            state.channels[action.data.team_channel.id] && {
-              [action.data.team_channel.id]: {
+            state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id] && {
+              [action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id]: {
                 //transfer the internal post notification here
-                ...state.channels[action.data.team_channel.id],
+                ...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id],
                 replies:
-                  action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
-                    ? [...state.channels[action.data.team_channel.id].replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
-                    : [...state.channels[action.data.team_channel.id].replies, ...sysMessage],
+                  action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id] && action.data.is_shared
+                    ? [
+                        ...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies,
+                        ...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client),
+                        ...sysMessage,
+                      ]
+                    : [...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies, ...sysMessage],
                 icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
                 members: updatedMembers
@@ -1235,7 +1239,7 @@ export default function (state = INITIAL_STATE, action) {
               ...state.selectedChannel,
               ...(action.data.system_message && {
                 replies: [
-                  ...state.channels[action.data.channel.id].replies.filter((r) => {
+                  ...state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id].replies.filter((r) => {
                     if (r.body.startsWith("POST_CREATE::") && action.data.is_shared && !r.shared_with_client) {
                       return false;
                     } else {
@@ -1261,8 +1265,12 @@ export default function (state = INITIAL_STATE, action) {
             selectedChannel: {
               ...state.selectedChannel,
               replies:
-                action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.channel.id] && action.data.is_shared
-                  ? [...state.selectedChannel.replies, ...state.channels[action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client), ...sysMessage]
+                action.data.type === "WORKSPACE" && action.data.channel && state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id] && action.data.is_shared
+                  ? [
+                      ...state.selectedChannel.replies,
+                      ...state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client),
+                      ...sysMessage,
+                    ]
                   : [...state.selectedChannel.replies, ...sysMessage],
               icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
