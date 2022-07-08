@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getSharedChannels } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
-import { getNotifications } from "../../redux/actions/notificationActions";
+import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
 import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
 import { getSharedUsers } from "../../redux/actions/userAction";
@@ -24,7 +24,11 @@ const useLoadSharedDriff = () => {
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, () => {
-            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
+            dispatch(
+              getAllSnoozedNotification({ sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }, () => {
+                dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: session.user.sharedWorkspaces[ws].access_token, is_shared: true } }));
+              })
+            );
           })
         );
 
@@ -89,7 +93,11 @@ const useLoadSharedDriff = () => {
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, () => {
-            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+            dispatch(
+              getAllSnoozedNotification({ sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, () => {
+                dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+              })
+            );
           })
         );
 
@@ -140,7 +148,11 @@ const useLoadSharedDriff = () => {
         dispatch(getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
         dispatch(
           getWorkspaces({ sharedPayload: sharedPayload }, () => {
-            dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+            dispatch(
+              getAllSnoozedNotification({ sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }, () => {
+                dispatch(getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: ws, token: sharedWs[ws].access_token, is_shared: true } }));
+              })
+            );
           })
         );
         let sharedUserPayload = {

@@ -21,11 +21,12 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
       let results = action.data.notifications.map((obj) => {
-        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id && sn.type && sn.type === "POST_SNOOZE");
+        let key = `${obj.id}-${action.slug}`;
+        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.key === key && sn.type && sn.type === "POST_SNOOZE");
         return {
           ...obj,
-          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
-          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null,
+          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[key] ? state.notifications[key].is_snooze : false,
+          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[key] ? state.notifications[key].snooze_time : null,
           key: `${obj.id}-${action.slug}`,
           slug: action.slug,
           sharedSlug: action.isSharedSlug,
@@ -611,6 +612,9 @@ export default (state = INITIAL_STATE, action) => {
               const date = convertUTCDateToLocalDate(utcDate);
               return {
                 ...sn,
+                key: `${sn.notification_id}-${action.slug}`,
+                slug: action.slug,
+                sharedSlug: action.isSharedSlug,
                 is_snooze: !!sn.is_snooze,
                 snooze_time: Math.round(date / 1000),
               };
@@ -627,6 +631,8 @@ export default (state = INITIAL_STATE, action) => {
           ...action.data.data.map((sn) => {
             return {
               ...sn,
+              slug: action.slug ? action.slug : action.data.slug,
+              sharedSlug: action.isSharedSlug ? action.isSharedSlug : action.data.sharedSlug,
               is_snooze: sn.is_snooze,
               snooze_time: getCurrentTimestamp(),
             };
@@ -658,7 +664,7 @@ export default (state = INITIAL_STATE, action) => {
           }, {}),
           snoozedNotifications: state.snoozedNotifications.map((sn) => {
             if (sn.notification_id === action.data.notification_id) {
-              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), slug: action.slug ? action.slug : action.data.slug, sharedSlug: action.isSharedSlug ? action.isSharedSlug : action.data.sharedSlug };
             } else return sn;
           }),
         };

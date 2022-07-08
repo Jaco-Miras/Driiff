@@ -562,10 +562,10 @@ class SocketListeners extends Component {
         this.props.removeNotificationReducer({ id: e.notification_id, key: key });
       })
       .listen(".snooze-notification", (e) => {
-        this.props.incomingSnoozedNotification(e);
+        this.props.incomingSnoozedNotification({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".snooze-all-notification", (e) => {
-        this.props.incomingSnoozedAllNotification(e);
+        this.props.incomingSnoozedAllNotification({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".post-follow", (e) => {
         this.props.incomingFollowPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
