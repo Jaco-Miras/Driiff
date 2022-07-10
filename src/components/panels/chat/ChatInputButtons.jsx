@@ -133,7 +133,7 @@ const ChatInputButtons = (props) => {
           </Tooltip>
         </IconWrapper>
       )}
-      <IconWrapper className="btn-smile">
+      <IconWrapper className="btn-smile" style={{ paddingLeft: 10 }}>
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
