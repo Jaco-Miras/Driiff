@@ -124,7 +124,7 @@ const ChannelList = (props) => {
     }
   }, [addLoadRef, loadInView]);
 
-  const handleSelectChannel = (e) => {
+  const handleSelectChannel = () => {
     if (onSelectChannel) {
       onSelectChannel(channel);
     }
