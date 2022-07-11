@@ -844,7 +844,7 @@ const ChatInput = (props) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members: selectedChannel.slug
+    members: selectedChannel.sharedSlug
       ? selectedChannel.members
       : user.type === "external"
       ? selectedChannel.members.filter((m) => m.id !== user.id)

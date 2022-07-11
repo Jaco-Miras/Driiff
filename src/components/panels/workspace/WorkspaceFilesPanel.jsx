@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { useFiles, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { useFiles, useTranslationActions, useFetchWsCount, useGetSlug } from "../../hooks";
 import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
@@ -22,7 +22,7 @@ const WorkspaceFilesPanel = (props) => {
   const history = useHistory();
   const { _t } = useTranslationActions();
   const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
-
+  const { slug } = useGetSlug();
   useFetchWsCount();
 
   const [filter, setFilter] = useState("");
@@ -167,6 +167,8 @@ const WorkspaceFilesPanel = (props) => {
                 handleAddEditFolder={handleAddEditFolder}
                 dictionary={dictionary}
                 disableOptions={disableOptions}
+                sharedSlug={workspace && workspace.sharedSlug}
+                slug={workspace ? workspace.slug : slug}
               />
             </div>
           </>

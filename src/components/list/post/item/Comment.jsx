@@ -256,6 +256,7 @@ const Comment = (props) => {
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [approving, setApproving] = useState({ approve: false, change: false });
   const uid = userId ? userId : user.id;
+  let sharedPost = post.slug && slug !== post.slug && sharedWs[post.slug];
 
   const handleShowInput = (commentId = null) => {
     if (parentShowInput) {
@@ -299,7 +300,6 @@ const Comment = (props) => {
 
   const handleReaction = () => {
     if (disableOptions) return;
-    let sharedPost = post.slug && slug !== post.slug && sharedWs[post.slug];
     let payload = {
       id: comment.id,
       reaction: "clap",
@@ -357,14 +357,22 @@ const Comment = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (sharedPost) {
+            key = `${imgFile.id}-${post.slug}`;
+          }
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (sharedPost) {
+            key = `${imgFile.id}-${post.slug}`;
+          }
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         }
@@ -374,7 +382,11 @@ const Comment = (props) => {
 
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
-        if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
+        let key = `${file.id}-${slug}`;
+        if (sharedPost) {
+          key = `${file.id}-${post.slug}`;
+        }
+        if (!fileBlobs[key] && comment.body.includes(file.code)) {
           //setIsLoaded(false);
           sessionService.loadSession().then((current) => {
             let myToken = current.token;
@@ -396,6 +408,7 @@ const Comment = (props) => {
                 setFileSrc({
                   id: file.id,
                   src: imgObj,
+                  key: key,
                 });
                 commentActions.updateCommentImages({
                   post_id: post.id,

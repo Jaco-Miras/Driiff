@@ -9,7 +9,7 @@ import { clearModal } from "../../redux/actions/globalActions";
 import { useToaster } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
-import { useSettings, useTranslationActions } from "../hooks";
+import { useSettings, useTranslationActions, useGetSlug } from "../hooks";
 
 const Wrapper = styled(Modal)`
   .react-select__control,
@@ -43,6 +43,7 @@ const Wrapper = styled(Modal)`
 
 const MoveFilesModal = (props) => {
   const { className = "", type, file, topic_id, folder_id, isLink = false, params, ...otherProps } = props;
+  const { slug } = useGetSlug();
   const theme = useTheme();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -59,11 +60,13 @@ const MoveFilesModal = (props) => {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [loading, setLoading] = useState(false);
   let sharedPayload = null;
+  let hubKey = `${topic_id}-${slug}`;
   if (params && params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
     sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    hubKey = `${topic_id}-${workspace.slug}`;
   }
 
-  let options = Object.values(workspaceFiles[topic_id].folders)
+  let options = Object.values(workspaceFiles[hubKey].folders)
     .filter((f) => {
       if (typeof f.payload !== "undefined") return false;
 
