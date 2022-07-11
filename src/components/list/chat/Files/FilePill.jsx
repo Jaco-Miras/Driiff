@@ -237,15 +237,10 @@ const FilePill = (props) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `<video className="app__backgroundVideo" autoplay loop muted playsinline>
-      <source src=${file.view_link} type="video/mp4" />
-      Your browser does not support the video tag.
-</video>`,
-            }}
-          />
-
+          <FileVideo muted data-attempt={0} width="320" height="240" playsInline controls onError={handleVideoOnError} onClick={() => handlePlayVideo(file.view_link)}>
+            <source src={`${file.view_link}`} type={file.type} />
+            Your browser does not support the video tag.
+          </FileVideo>
         </>
       ) : (
         <DocFile>
