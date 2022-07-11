@@ -30,11 +30,28 @@ export const stripHtml = (html) => {
 };
 
 export const stripImgGif = (html) => {
-  return html.replace(FindGifRegex, "");
+  return html.replace(/<[/]?img src="(.*?gif)[^>]*>/gi, "");
 };
 
 export const stripGif = (html) => {
-  return stripImgGif(html);
+  let value = stripImgGif(html);
+
+  let gifUrls = value.match(FindGifRegex);
+
+  if (!gifUrls) return value;
+
+  gifUrls.forEach((gifUrl) => {
+    html = html.replace(gifUrl, "");
+  });
+
+  let temporalDivElement = document.createElement("p");
+  temporalDivElement.innerHTML = html;
+
+  let image = temporalDivElement.querySelectorAll("img[src='']");
+  image.forEach((node) => {
+    node.parentNode.removeChild(node);
+  });
+  return temporalDivElement.innerHTML;
 };
 
 export const stripImgTag = (html) => {
