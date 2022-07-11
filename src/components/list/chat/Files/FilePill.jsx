@@ -205,6 +205,7 @@ const FilePill = (props) => {
   const handlePlayVideo = (url) => {
     if ((isMacOs && browserName === "WebKit") || (isSafari && browserName === "WebKit") || isIOS) {
       window.webkit.messageHandlers.showVideo.postMessage({ url });
+      window.open('http://google.com', 'Google', 'location=0,status=0,allowinlinemediaplayback=YES');
     }
   };
 
