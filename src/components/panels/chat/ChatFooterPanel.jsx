@@ -472,6 +472,7 @@ const ChatFooterPanel = (props) => {
                     dictionary={dictionary}
                     //test
                   />
+
                   <ChatInputButtons
                     channel={selectedChannel}
                     showEmojiPicker={showEmojiPicker}
@@ -484,6 +485,7 @@ const ChatFooterPanel = (props) => {
                     //startingZoom={startingZoom}
                     onStartGoogleMeet={handleGoogleMeet}
                     onStartJitsi={handleJitsiMeet}
+                    activeSend={activeSend}
                     // startingMeet={startingMeet}
                   />
                 </Dflex>

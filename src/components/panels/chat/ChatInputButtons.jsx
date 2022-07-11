@@ -4,6 +4,7 @@ import Tooltip from "react-tooltip-lite";
 import { useDispatch, useSelector } from "react-redux";
 import { SvgIconFeather } from "../../common";
 import { setEditChatMessage, clearQuote } from "../../../redux/actions/chatActions";
+import { useEffect } from "react";
 //import zoomIcon from "../../../assets/icons/zoom.png";
 
 const IconWrapper = styled.div`
@@ -105,11 +106,11 @@ const ZoomIcon = styled(SvgIconFeather)`
 `;
 
 const ChatInputButtons = (props) => {
-  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, dictionary, onStartGoogleMeet, onStartJitsi } = props;
+  const { channel, showEmojiPicker, handleZoomMeet, handleShowEmojiPicker, onShowFileDialog, editChatMessage, quote, dictionary, onStartGoogleMeet, onStartJitsi, activeSend } = props;
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
-  const [showButtons, setShowButtons] = useState(false);
+  const [showButtons, setShowButtons] = useState(activeSend);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
     if (editChatMessage !== null) {
@@ -128,6 +129,9 @@ const ChatInputButtons = (props) => {
 
   const isClientChat = channel && workspaces[channel.entity_id] && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id;
 
+  useEffect(() => {
+    setShowButtons(!activeSend);
+  }, [activeSend]);
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat} disabledMeet={meet === "disable"}>
       {editChatMessage && (
@@ -137,7 +141,7 @@ const ChatInputButtons = (props) => {
           </Tooltip>
         </IconWrapper>
       )}
-      <IconWrapper className="btn-smile">
+      <IconWrapper className="btn-smile" style={{ paddingLeft: 10 }}>
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
           <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
         </Tooltip>
@@ -167,6 +171,7 @@ const ChatInputButtons = (props) => {
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
         </Tooltip>
       </IconWrapper>
+
       <IconWrapper className={"chat-buttons"}>
         <SvgIconFeather onClick={handleShowButtons} icon={showButtons ? "x" : "more-vertical"} />
       </IconWrapper>
