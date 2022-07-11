@@ -490,7 +490,7 @@ const CreateEditWorkspaceModal = (props) => {
     workspaceInfo: _t("WORKSPACE.WORKSPACE_INFO", "A workspace centers the team communication about a subject. A workspace can only be connected to one folder."),
     lockWorkspace: _t("WORKSPACE.WORKSPACE_LOCK", "Make workspace private"),
     lockWorkspaceText: _t("WORKSPACE.WORKSPACE_LOCK.DESCRIPTION", "When a workspace is private it is only visible to the members of the workspace."),
-    workspaceTypeIsInviteOnly: _t("WORKSPACE.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are always invite only."),
+    workspaceTypeIsInviteOnly: _t("WORKSPACE.WORKSPACE_TYPE_IS_INVITE_ONLY", "Shared hubs are invite only."),
     archiveThisWorkspace: _t("WORKSPACE.WORKSPACE_ARCHIVE", "Archive this workspace"),
     unArchiveThisWorkspace: _t("WORKSPACE.WORKSPACE_UNARCHIVE", "Un-archive this workspace"),
     description: _t("LABEL.DESCRIPTION", "Description"),
@@ -2352,7 +2352,7 @@ const CreateEditWorkspaceModal = (props) => {
     if (form.is_shared_wp) {
       setForm((prev) => ({ ...prev, is_private: form.is_shared_wp }));
     } else {
-      setForm((prev) => ({ ...prev, is_private: prev.is_private }));
+      setForm((prev) => ({ ...prev, is_private: null }));
     }
   }, [form.is_shared_wp]);
 
@@ -2612,6 +2612,7 @@ const CreateEditWorkspaceModal = (props) => {
                 onEmailClick={handleSharedEmailClick}
                 isDisabled={false}
               />
+              <small className="form-text text-muted">{dictionary.workspaceTypeIsInviteOnly}</small>
             </WrapperDiv>
           )}
           <StyledDescriptionInput
@@ -2639,19 +2640,21 @@ const CreateEditWorkspaceModal = (props) => {
             </WrapperDiv>
           )}
           <WrapperDiv className="action-wrapper">
-            <RadioInputWrapper className="workspace-radio-input">
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"} disabled={form.is_shared_wp}>
-                {dictionary.lockWorkspace}
-              </RadioInput>
-              <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"} disabled={form.is_shared_wp}>
-                {dictionary.publicWorkspace}
-              </RadioInput>
-            </RadioInputWrapper>
+            {!form.is_shared_wp && (
+              <RadioInputWrapper className="workspace-radio-input">
+                <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_private")} checked={form.is_private} value={"is_private"} name={"is_private"} disabled={form.is_shared_wp}>
+                  {dictionary.lockWorkspace}
+                </RadioInput>
+                <RadioInput readOnly onClick={(e) => toggleWorkspaceType(e, "is_public")} checked={form.is_private === false} value={"is_public"} name={"is_public"} disabled={form.is_shared_wp}>
+                  {dictionary.publicWorkspace}
+                </RadioInput>
+              </RadioInputWrapper>
+            )}
 
             <InputFeedback valid={form.is_private !== null}>{dictionary.feedbackWorkspaceTypeIsRequired}</InputFeedback>
 
             <div className={"lock-workspace-text-container pb-3"}>
-              {form.is_shared_wp && <Label className={"lock-workspace-text"}>{dictionary.workspaceTypeIsInviteOnly}</Label>}
+              {/* {form.is_shared_wp && <Label className={"lock-workspace-text"}>{dictionary.workspaceTypeIsInviteOnly}</Label>} */}
               {form.is_private === false && <Label className={"lock-workspace-text"}>{dictionary.lockWorkspaceText}</Label>}
             </div>
 
