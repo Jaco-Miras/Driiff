@@ -134,7 +134,7 @@ const useQuillModules = ({
               type_id: user.id,
               user_id: user.id,
               class: "user-pic all-users",
-              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
+              profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
               link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
@@ -248,11 +248,7 @@ const useQuillModules = ({
           return renderToString(
             <>
               <span className={item.class} style={avatarStyling}>
-                {item.type === "WORKSPACE" || item.type === "TOPIC" ? (
-                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />
-                ) : (
-                  <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
-                )}
+                {item.type === "WORKSPACE" || item.type === "TOPIC" ? <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" /> : <img src={item.profile_image_link} style={avatarImgStyling} alt={item.value} />}
               </span>
               &nbsp;{" "}
               <span style={{ width: "auto", lineHeight: 1.35 }}>
