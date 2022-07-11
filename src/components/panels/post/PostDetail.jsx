@@ -365,7 +365,7 @@ const PostDetail = (props) => {
     }
     if (triggerRead && !hasPendingApproval) {
       let sharedPayload = null;
-      if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
         sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
       }
       postActions.markAsRead(post, false, sharedPayload);
@@ -379,7 +379,7 @@ const PostDetail = (props) => {
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
     };
-    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+    if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
@@ -419,7 +419,9 @@ const PostDetail = (props) => {
 
   useEffect(() => {
     let sharedPayload = null;
-    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+    let isSharedhub = false;
+    if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+      isSharedhub = true;
       sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
     }
     readPostNotification({ post_id: post.id, sharedPayload });
@@ -428,7 +430,7 @@ const PostDetail = (props) => {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
-        sharedPayload: sharedPayload,
+        sharedPayload: isSharedhub ? { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true } : null,
       });
     }
 
@@ -439,13 +441,13 @@ const PostDetail = (props) => {
     }
     let payload = {
       topic_id: workspace.id,
-      sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      sharedPayload: isSharedhub ? { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true } : null,
       slug: workspace.slug,
       sharedSlug: true,
     };
     if (workspace) postActions.getUnreadWsPostsCount(payload);
 
-    postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload });
+    postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload: isSharedhub ? { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true } : null });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
