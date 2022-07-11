@@ -43,6 +43,12 @@ export const AppRoute = ({ children, ...props }) => {
   }, [session.checked, session.authenticated, fetchUserSettings, driffSettings.isSettingsLoaded]);
 
   useEffect(() => {
+    if (history && history.location.pathname.startsWith("/workspace/")) {
+      history.location.pathname.replace("/workspace/", "/hub/");
+    }
+  }, [history]);
+
+  useEffect(() => {
     if (session.user.id) {
       dispatch(
         addUserToReducers({
