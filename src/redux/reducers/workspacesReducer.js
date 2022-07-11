@@ -253,6 +253,7 @@ export default (state = INITIAL_STATE, action) => {
         isOnClientChat:
           state.activeChannel &&
           updatedWorkspaces[state.activeChannel.entity_id] &&
+          updatedWorkspaces[state.activeChannel.entity_id].team_channel &&
           updatedWorkspaces[state.activeChannel.entity_id].team_channel.code &&
           updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
             ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
@@ -721,7 +722,11 @@ export default (state = INITIAL_STATE, action) => {
           type: action.data.type,
         },
         isOnClientChat:
-          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+          action.data.type === "TOPIC" &&
+          state.workspaces[action.data.entity_id] &&
+          state.workspaces[action.data.entity_id].team_channel &&
+          state.workspaces[action.data.entity_id].team_channel.code &&
+          state.workspaces[action.data.entity_id].channel.id === action.data.id
             ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
             : null,
       };
@@ -735,7 +740,11 @@ export default (state = INITIAL_STATE, action) => {
           type: action.data.type,
         },
         isOnClientChat:
-          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+          action.data.type === "TOPIC" &&
+          state.workspaces[action.data.entity_id] &&
+          state.workspaces[action.data.entity_id].team_channel &&
+          state.workspaces[action.data.entity_id].team_channel.code &&
+          state.workspaces[action.data.entity_id].channel.id === action.data.id
             ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
             : null,
       };
