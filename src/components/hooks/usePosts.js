@@ -33,7 +33,7 @@ const usePosts = () => {
       };
 
       if (params.workspaceId && history.location.pathname.startsWith("/shared-hub")) {
-        if (workspace && workspace.sharedSlug) {
+        if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
           payload = {
             ...payload,
             slug: workspace.slug,
@@ -72,7 +72,7 @@ const usePosts = () => {
                 skip: 0,
                 limit: res.data.result,
               };
-              if (workspace && workspace.sharedSlug) {
+              if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
                 fetchPayload = {
                   ...fetchPayload,
                   sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
@@ -115,7 +115,7 @@ const usePosts = () => {
               skip: 0,
               limit: res.data.result,
             };
-            if (workspace && workspace.sharedSlug) {
+            if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
               fetchPayload = {
                 ...fetchPayload,
                 sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
@@ -176,7 +176,7 @@ const usePosts = () => {
           let payload = {
             topic_id: parseInt(params.workspaceId),
           };
-          if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+          if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspaceRef.current.slug]) {
             payload = {
               ...payload,
               sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
@@ -220,7 +220,7 @@ const usePosts = () => {
             skip: 0,
             limit: 15,
           };
-          if (workspaceRef.current && workspaceRef.current.sharedSlug) {
+          if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspaceRef.current.slug]) {
             unreadPayload = {
               ...unreadPayload,
               sharedPayload: { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true },
