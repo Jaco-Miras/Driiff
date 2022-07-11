@@ -4,7 +4,7 @@ import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
-import { browserName, isMacOs, isMobile } from "react-device-detect";
+import { browserName, isMacOs, isMobile, isIOS } from "react-device-detect";
 import { useGetSlug } from "../../../hooks";
 
 const ImgLoader = styled.div`
@@ -218,7 +218,7 @@ const FilePill = (props) => {
   const isFileRemoved = file.file_type === "trashed";
 
   const handlePlayVideo = (url) => {
-    if ((isMacOs && browserName === "WebKit") || (isMobile && browserName === "WebKit")) {
+    if ((isMacOs && browserName === "WebKit") || (isMobile && browserName === "WebKit") || isIOS) {
       window.webkit.messageHandlers.showVideo.postMessage({ url });
     }
   };
