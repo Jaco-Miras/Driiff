@@ -820,9 +820,9 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "GOOGLE_ATTACHMENT_CREATE": {
             if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
-              this.props.incomingGoogleFile(e);
+              this.props.incomingGoogleFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {
-              this.props.incomingGoogleFolder(e);
+              this.props.incomingGoogleFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             }
             break;
           }
@@ -833,15 +833,15 @@ class SocketListeners extends Component {
       .listen(".workspace-folder-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "FOLDER_CREATE": {
-            this.props.incomingFolder(e);
+            this.props.incomingFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FOLDER_UPDATE": {
-            this.props.incomingFolder(e);
+            this.props.incomingFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FOLDER_DELETE": {
-            this.props.incomingDeletedFolder(e);
+            this.props.incomingDeletedFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             if (this.props.match.url === "/hub/files") {
               if (this.props.location.pathname.includes(e.folder.id) && this.props.location.pathname.includes(e.topic_id)) {
                 let pathname = this.props.location.pathname.split("/folder/")[0];
@@ -851,11 +851,11 @@ class SocketListeners extends Component {
             break;
           }
           case "FOLDER_RESTORE": {
-            this.props.incomingRestoreFolder(e);
+            this.props.incomingRestoreFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FOLDER_FORCE_DELETE": {
-            this.props.incomingRemovedFolder(e);
+            this.props.incomingRemovedFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -865,31 +865,31 @@ class SocketListeners extends Component {
       .listen(".workspace-file-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "FILE_RESTORE": {
-            this.props.incomingRestoreFile(e);
+            this.props.incomingRestoreFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_UPDATE": {
-            this.props.incomingFile(e);
+            this.props.incomingFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_MOVE": {
-            this.props.incomingMovedFile(e);
+            this.props.incomingMovedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_TRASH": {
-            this.props.incomingDeletedFile(e);
+            this.props.incomingDeletedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_EMPTY": {
-            this.props.incomingEmptyTrash(e);
+            this.props.incomingEmptyTrash({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_DELETE": {
-            this.props.incomingRemovedFile(e);
+            this.props.incomingRemovedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_BULK_TRASH": {
-            this.props.incomingDeletedFiles(e);
+            this.props.incomingDeletedFiles({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -900,7 +900,7 @@ class SocketListeners extends Component {
         this.props.incomingTimeline(e);
       })
       .listen(".upload-bulk-private-workspace-files", (e) => {
-        this.props.incomingFiles(e);
+        this.props.incomingFiles({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
         e.channel_messages &&
           e.channel_messages.forEach((m) => {
             m.system_message.channel_id = m.channel.id;
@@ -1536,13 +1536,13 @@ class SocketListeners extends Component {
         this.props.incomingRemovedTeamMember(e);
       })
       .listen(".create-drive-link", (e) => {
-        this.props.incomingDriveLink(e);
+        this.props.incomingDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".remove-drive-link", (e) => {
-        this.props.incomingDeletedDriveLink(e);
+        this.props.incomingDeletedDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".update-drive-link", (e) => {
-        this.props.incomingUpdatedDriveLink(e);
+        this.props.incomingUpdatedDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".upload-company-logo", (e) => {
         this.props.incomingUpdatedCompanyLogo(e);
@@ -1566,7 +1566,7 @@ class SocketListeners extends Component {
       .listen(".remove-file-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "REMOVE_FILE": {
-            this.props.incomingRemoveFileAutomatically(e);
+            this.props.incomingRemoveFileAutomatically({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "REMOVE_FILE_ON_DOWNLOAD": {
@@ -1752,14 +1752,14 @@ class SocketListeners extends Component {
         switch (e.SOCKET_TYPE) {
           case "ATTACHMENT_CREATE": {
             if (e.attachment_type === "GOOGLE_DRIVE_FILE") {
-              this.props.incomingGoogleFile(e);
+              this.props.incomingGoogleFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             } else if (e.attachment_type === "GOOGLE_DRIVE_FOLDER") {
-              this.props.incomingGoogleFolder(e);
+              this.props.incomingGoogleFolder({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             }
             break;
           }
           case "ATTACHMENT_DELETE": {
-            this.props.incomingDeletedGoogleFile(e);
+            this.props.incomingDeletedGoogleFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -1791,11 +1791,11 @@ class SocketListeners extends Component {
       .listen(".post-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "POST_DELETE_ATTACHMENT": {
-            this.props.incomingDeletedPostFile(e);
+            this.props.incomingDeletedPostFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "POST_COMMENT_DELETE_ATTACHMENT": {
-            this.props.incomingDeletedPostFile(e);
+            this.props.incomingDeletedPostFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -1806,7 +1806,7 @@ class SocketListeners extends Component {
         this.props.incomingTimeline(e);
       })
       .listen(".upload-bulk-workspace-files", (e) => {
-        this.props.incomingFiles(e);
+        this.props.incomingFiles({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
         e.channel_messages &&
           e.channel_messages.forEach((m) => {
             m.system_message.channel_id = m.channel.id;
@@ -1829,31 +1829,31 @@ class SocketListeners extends Component {
       .listen(".workspace-file-notification", (e) => {
         switch (e.SOCKET_TYPE) {
           case "FILE_RESTORE": {
-            this.props.incomingRestoreFile(e);
+            this.props.incomingRestoreFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_UPDATE": {
-            this.props.incomingFile(e);
+            this.props.incomingFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_MOVE": {
-            this.props.incomingMovedFile(e);
+            this.props.incomingMovedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_TRASH": {
-            this.props.incomingDeletedFile(e);
+            this.props.incomingDeletedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_EMPTY": {
-            this.props.incomingEmptyTrash(e);
+            this.props.incomingEmptyTrash({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_DELETE": {
-            this.props.incomingRemovedFile(e);
+            this.props.incomingRemovedFile({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           case "FILE_BULK_TRASH": {
-            this.props.incomingDeletedFiles(e);
+            this.props.incomingDeletedFiles({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;
           }
           default:
@@ -2130,13 +2130,13 @@ class SocketListeners extends Component {
         this.props.incomingWorkpaceNotificationStatus(e);
       })
       .listen(".create-drive-link", (e) => {
-        this.props.incomingDriveLink(e);
+        this.props.incomingDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".remove-drive-link", (e) => {
-        this.props.incomingDeletedDriveLink(e);
+        this.props.incomingDeletedDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".update-drive-link", (e) => {
-        this.props.incomingUpdatedDriveLink(e);
+        this.props.incomingUpdatedDriveLink({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".favourite-workspace-notification", (e) => {
         this.props.incomingFavouriteWorkspace({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });

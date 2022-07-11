@@ -100,7 +100,7 @@ const useQuillModules = ({
               type_id: user.id,
               user_id: user.id,
               class: "user-pic",
-              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
+              profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
               link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });

@@ -68,13 +68,13 @@ import {
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useGetSlug } from "../hooks";
 
 const useFileActions = () => {
   const dispatch = useDispatch();
   const params = useParams();
   const history = useHistory();
-
+  const { slug } = useGetSlug();
   const toaster = useToaster();
 
   const fileName = useRef("");
@@ -606,6 +606,7 @@ const useFileActions = () => {
           file_id: file.id,
           topic_id: params.workspaceId,
           is_favorite: !file.is_favorite,
+          slug: workspace.slug,
         };
         if (params.hasOwnProperty("fileFolderId")) {
           payload = {
@@ -652,6 +653,8 @@ const useFileActions = () => {
       let payload = {
         workspace_id: params.workspaceId,
         file_id: file.id,
+        sharedSlug: workspace ? workspace.sharedSlug : false,
+        slug: workspace ? workspace.slug : slug,
       };
       dispatch(setViewFiles(payload, callback));
     }
@@ -676,6 +679,7 @@ const useFileActions = () => {
     let payload = {
       topic_id: params.workspaceId,
       search: searchValue,
+      slug: workspace.slug,
     };
     const cb = (err, res) => {
       if (err) return;
@@ -708,6 +712,7 @@ const useFileActions = () => {
   const clearSearch = () => {
     let payload = {
       topic_id: params.workspaceId,
+      slug: workspace.slug,
     };
 
     dispatch(clearFileSearchResults(payload));

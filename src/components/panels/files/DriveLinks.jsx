@@ -6,7 +6,12 @@ import { DriveLink } from ".";
 const DriveLinks = (props) => {
   const { disableOptions } = props;
   const params = useParams();
-  const driveLinks = useSelector((state) => (params && params.workspaceId && state.files.workspaceFiles[params.workspaceId] ? state.files.workspaceFiles[params.workspaceId].driveLinks : state.files.companyFiles.driveLinks));
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  let key = params.workspaceId;
+  if (params && params.workspaceId && workspace) {
+    key = `${params.workspaceId}-${workspace.slug}`;
+  }
+  const driveLinks = useSelector((state) => (params && params.workspaceId && state.files.workspaceFiles[key] ? state.files.workspaceFiles[key].driveLinks : state.files.companyFiles.driveLinks));
 
   if (driveLinks) {
     return Object.values(driveLinks)

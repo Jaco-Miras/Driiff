@@ -822,6 +822,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CHAT_MESSAGE": {
+      let hubKey = action.data.workspace_id ? `${action.data.workspace_id}-${action.data.slug}` : null;
       return {
         ...state,
         ...(action.data.files.length &&
@@ -840,13 +841,13 @@ export default (state = INITIAL_STATE, action) => {
           }),
         ...(action.data.workspace_id &&
           action.data.files.length &&
-          state.workspaceFiles[action.data.workspace_id] && {
+          state.workspaceFiles[hubKey] && {
             workspaceFiles: {
               ...state.workspaceFiles,
-              [action.data.workspace_id]: {
-                ...state.workspaceFiles[action.data.workspace_id],
+              [hubKey]: {
+                ...state.workspaceFiles[hubKey],
                 files: {
-                  ...state.workspaceFiles[action.data.workspace_id].files,
+                  ...state.workspaceFiles[hubKey].files,
                   ...action.data.files.reduce((res, file) => {
                     res[file.file_id] = {
                       ...file,
@@ -974,57 +975,21 @@ export default (state = INITIAL_STATE, action) => {
         progressWorkspaceFilesUpload: progressWorkspaceFilesUpload,
       };
     }
-    case "ADD_PRIMARY_FILES": {
-      let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.id)) {
-        newWorkspaceFiles = {
-          [action.data.id]: {
-            ...newWorkspaceFiles[action.data.id],
-            files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.id].files },
-          },
-        };
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.id]: {
-            files: convertArrayToObject(action.data.files, "id"),
-            folders: {},
-            storage: 0,
-            count: 0,
-            stars: 0,
-            trash: 0,
-            popular_files: [],
-            recently_edited: [],
-            favorite_files: [],
-            team_chat: [],
-            client_chat: [],
-            private_post: [],
-            client_post: [],
-            trash_files: {},
-            search_results: [],
-            search_value: "",
-          },
-        };
-      }
-      return {
-        ...state,
-        workspaceFiles: newWorkspaceFiles,
-      };
-    }
     case "ADD_TO_WORKSPACE_POSTS": {
       if (action.data.files && action.data.files.length) {
         let newWorkspaceFiles = { ...state.workspaceFiles };
-        if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+        let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+        if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
           newWorkspaceFiles = {
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
-              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+            [hubKey]: {
+              ...newWorkspaceFiles[hubKey],
+              files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files },
             },
           };
         } else {
           newWorkspaceFiles = {
             ...newWorkspaceFiles,
-            [action.data.topic_id]: {
+            [hubKey]: {
               files: convertArrayToObject(action.data.files, "id"),
               folders: {},
               storage: 0,
@@ -1051,11 +1016,12 @@ export default (state = INITIAL_STATE, action) => {
       } else return state;
     }
     case "GET_WORKSPACE_FILES_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       return {
         ...state,
         workspaceFiles: {
-          [action.data.topic_id]: {
-            ...(typeof state.workspaceFiles[action.data.topic_id] === "undefined"
+          [hubKey]: {
+            ...(typeof state.workspaceFiles[hubKey] === "undefined"
               ? {
                   files: convertArrayToObject(action.data.files, "id"),
                   folders: {
@@ -1083,28 +1049,29 @@ export default (state = INITIAL_STATE, action) => {
                   loaded: true,
                 }
               : {
-                  ...state.workspaceFiles[action.data.topic_id],
+                  ...state.workspaceFiles[hubKey],
                   ...(action.data.folder_id &&
-                    state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id] && {
+                    state.workspaceFiles[hubKey].folders[action.data.folder_id] && {
                       folders: {
-                        ...state.workspaceFiles[action.data.topic_id].folders,
+                        ...state.workspaceFiles[hubKey].folders,
                         [action.data.folder_id]: {
-                          ...state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id],
+                          ...state.workspaceFiles[hubKey].folders[action.data.folder_id],
                           loaded: true,
-                          files: [...new Set([...state.workspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id)])],
+                          files: [...new Set([...state.workspaceFiles[hubKey].folders[action.data.folder_id].files, ...action.data.files.filter((f) => f.folder_id === action.data.folder_id).map((f) => f.id)])],
                         },
                       },
                     }),
                   loaded: true,
-                  files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[action.data.topic_id].files },
+                  files: { ...convertArrayToObject(action.data.files, "id"), ...state.workspaceFiles[hubKey].files },
                 }),
           },
         },
       };
     }
     case "GET_WORKSPACE_GOOGLE_FILE_ATTACHMENTS_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         let gFiles = action.data.attachments.map((attachment) => {
           return {
             created_at: {
@@ -1126,7 +1093,7 @@ export default (state = INITIAL_STATE, action) => {
           };
         });
 
-        newWorkspaceFiles[action.data.topic_id].files = { ...newWorkspaceFiles[action.data.topic_id].files, ...convertArrayToObject(gFiles, "id") };
+        newWorkspaceFiles[hubKey].files = { ...newWorkspaceFiles[hubKey].files, ...convertArrayToObject(gFiles, "id") };
       }
 
       return {
@@ -1135,11 +1102,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_GOOGLE_FOLDER_ATTACHMENTS_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
           action.data.attachments.map((a) => {
-            newWorkspaceFiles[a.link_id].folders[a.id] = {
+            let key = `${a.link_id}-${action.slug}`;
+            newWorkspaceFiles[key].folders[a.id] = {
               id: a.id,
               is_archived: false,
               parent_folder: null,
@@ -1164,10 +1133,10 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_GOOGLE_FILE": {
       let updatedWorkspaceFiles = { ...state.workspaceFiles };
       let companyFiles = { ...state.companyFiles };
-
-      if (action.data.link_type === "TOPIC" && updatedWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
-        if (updatedWorkspaceFiles[action.data.link_id].hasOwnProperty("folders")) {
-          updatedWorkspaceFiles[action.data.link_id].files[action.data.id] = {
+      let hubKey = `${action.data.link_id}-${action.data.slug}`;
+      if (action.data.link_type === "TOPIC" && updatedWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (updatedWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
+          updatedWorkspaceFiles[hubKey].files[action.data.id] = {
             created_at: action.data.created_at,
             user_id: action.data.user_id,
             folder_id: null,
@@ -1224,9 +1193,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_GOOGLE_FOLDER": {
       let updatedWorkspaceFiles = { ...state.workspaceFiles };
-      if (updatedWorkspaceFiles.hasOwnProperty(action.data.link_id)) {
-        if (updatedWorkspaceFiles[action.data.link_id].hasOwnProperty("folders")) {
-          updatedWorkspaceFiles[action.data.link_id].folders[action.data.id] = {
+      let hubKey = `${action.data.link_id}-${action.data.slug}`;
+      if (updatedWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (updatedWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
+          updatedWorkspaceFiles[hubKey].folders[action.data.id] = {
             id: action.data.id,
             is_archived: false,
             parent_folder: null,
@@ -1244,11 +1214,12 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_FILE_DETAILS_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       return {
         ...state,
         workspaceFiles: {
-          [action.data.topic_id]: {
-            ...(state.workspaceFiles[action.data.topic_id] ? state.workspaceFiles[action.data.topic_id] : {}),
+          [hubKey]: {
+            ...(state.workspaceFiles[hubKey] ? state.workspaceFiles[hubKey] : {}),
             storage: action.data.total_storage,
             count: action.data.total_file_count,
             stars: action.data.total_file_stars,
@@ -1258,21 +1229,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_TRASH_FILES_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files},
             trash_files: convertArrayToObject(action.data.files, "id"),
           },
         };
       } else {
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files},
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            //files: {...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files},
             trash_files: convertArrayToObject(action.data.files, "id"),
           },
         };
@@ -1283,21 +1255,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_FAVORITE_FILES_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files },
             favorite_files: action.data.files.map((f) => f.id),
           },
         };
       } else {
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            files: { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files },
             favorite_files: action.data.files.map((f) => f.id),
           },
         };
@@ -1308,19 +1281,20 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_POPULAR_FILES_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
             popular_files: action.data.files.map((f) => f.id),
           },
         };
       } else {
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
             popular_files: action.data.files.map((f) => f.id),
           },
         };
@@ -1331,23 +1305,25 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_WORKSPACE_RECENT_EDIT_FILES_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       return {
         ...state,
         workspaceFiles: {
-          [action.data.topic_id]: {
-            ...(typeof state.workspaceFiles[action.data.topic_id] === "undefined"
+          [hubKey]: {
+            ...(typeof state.workspaceFiles[hubKey] === "undefined"
               ? {
                   recently_edited: [...new Set(action.data.files.map((f) => f.id))],
                 }
               : {
-                  ...state.workspaceFiles[action.data.topic_id],
-                  recently_edited: [...new Set(state.workspaceFiles[action.data.topic_id].recently_edited.concat(action.data.files.map((f) => f.id)))],
+                  ...state.workspaceFiles[hubKey],
+                  recently_edited: [...new Set(state.workspaceFiles[hubKey].recently_edited.concat(action.data.files.map((f) => f.id)))],
                 }),
           },
         },
       };
     }
     case "GET_WORKSPACE_FOLDER_SUCCESS": {
+      let hubKey = `${action.data.topic_id}-${action.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
       let folders = action.data.folders
         .filter((f) => !(!f.shared_with_client && state.user.type === "external"))
@@ -1357,18 +1333,18 @@ export default (state = INITIAL_STATE, action) => {
             files: [],
           };
         });
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            folders: { ...convertArrayToObject(folders, "id"), ...newWorkspaceFiles[action.data.topic_id].folders },
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            folders: { ...convertArrayToObject(folders, "id"), ...newWorkspaceFiles[hubKey].folders },
           },
         };
       } else {
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
             folders: convertArrayToObject(folders, "id"),
           },
         };
@@ -1379,15 +1355,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_FOLDER": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
           newWorkspaceFiles = {
             ...newWorkspaceFiles,
-            [action.data.topic_id]: {
-              ...newWorkspaceFiles[action.data.topic_id],
+            [hubKey]: {
+              ...newWorkspaceFiles[hubKey],
               folders: {
-                ...newWorkspaceFiles[action.data.topic_id].folders,
+                ...newWorkspaceFiles[hubKey].folders,
                 [action.data.folder.id]: {
                   ...action.data.folder,
                   loaded: true,
@@ -1408,35 +1385,36 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_DELETED_FOLDER": {
-      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined") {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+      if (typeof state.workspaceFiles[hubKey] === "undefined") {
         return state;
       }
 
       let newWorkspaceFiles = { ...state.workspaceFiles };
 
       action.data.connected_folder_ids.forEach((id) => {
-        if (typeof newWorkspaceFiles[action.data.topic_id].folders[id] !== "undefined") {
-          newWorkspaceFiles[action.data.topic_id].folders[id].is_archived = true;
+        if (typeof newWorkspaceFiles[hubKey].folders[id] !== "undefined") {
+          newWorkspaceFiles[hubKey].folders[id].is_archived = true;
         }
       });
 
       action.data.connected_file_ids.forEach((id) => {
-        if (typeof newWorkspaceFiles[action.data.topic_id].files[id] !== "undefined") {
-          newWorkspaceFiles[action.data.topic_id].trash_files[id] = newWorkspaceFiles[action.data.topic_id].files[id];
+        if (typeof newWorkspaceFiles[hubKey].files[id] !== "undefined") {
+          newWorkspaceFiles[hubKey].trash_files[id] = newWorkspaceFiles[hubKey].files[id];
 
-          newWorkspaceFiles[action.data.topic_id].count -= 1;
-          newWorkspaceFiles[action.data.topic_id].trash += 1;
+          newWorkspaceFiles[hubKey].count -= 1;
+          newWorkspaceFiles[hubKey].trash += 1;
 
-          if (newWorkspaceFiles[action.data.topic_id].files[id].is_favorite) {
-            newWorkspaceFiles[action.data.topic_id].stars -= 1;
+          if (newWorkspaceFiles[hubKey].files[id].is_favorite) {
+            newWorkspaceFiles[hubKey].stars -= 1;
 
-            const ix = newWorkspaceFiles[action.data.topic_id].favorite_files.indexOf(id);
+            const ix = newWorkspaceFiles[hubKey].favorite_files.indexOf(id);
             if (ix !== -1) {
-              newWorkspaceFiles[action.data.topic_id].favorite_files.splice(ix, 1);
+              newWorkspaceFiles[hubKey].favorite_files.splice(ix, 1);
             }
           }
 
-          delete newWorkspaceFiles[action.data.topic_id].files[id];
+          delete newWorkspaceFiles[hubKey].files[id];
         }
       });
 
@@ -1446,10 +1424,11 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_REMOVED_FOLDER": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
-          delete newWorkspaceFiles[action.data.topic_id].folders[action.data.folder.id];
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
+          delete newWorkspaceFiles[hubKey].folders[action.data.folder.id];
           return {
             ...state,
             workspaceFiles: newWorkspaceFiles,
@@ -1462,15 +1441,16 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_FILE": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        // if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        // if (newWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
             files: {
-              ...newWorkspaceFiles[action.data.topic_id].files,
+              ...newWorkspaceFiles[hubKey].files,
               [action.data.file.id]: action.data.file,
             },
           },
@@ -1487,26 +1467,27 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_FILES": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         let add = (total, num) => total + num;
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
-          if (newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id)) {
-            newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders") && action.data.folder_id) {
+          if (newWorkspaceFiles[hubKey].folders.hasOwnProperty(action.data.folder_id)) {
+            newWorkspaceFiles[hubKey].folders[action.data.folder_id].files = [...newWorkspaceFiles[hubKey].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
           }
         }
-        newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
-        Object.values(newWorkspaceFiles[action.data.topic_id].files).map((f) => {
+        newWorkspaceFiles[hubKey].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files };
+        Object.values(newWorkspaceFiles[hubKey].files).map((f) => {
           if (typeof f.id === "string") {
             action.data.files.forEach((af) => {
               if (af.size === f.size && af.search === f.search) {
-                delete newWorkspaceFiles[action.data.topic_id].files[f.id];
+                delete newWorkspaceFiles[hubKey].files[f.id];
               }
             });
           }
         });
-        newWorkspaceFiles[action.data.topic_id].count = Object.keys(newWorkspaceFiles[action.data.topic_id].files).length;
-        newWorkspaceFiles[action.data.topic_id].storage = Object.values(newWorkspaceFiles[action.data.topic_id].files)
+        newWorkspaceFiles[hubKey].count = Object.keys(newWorkspaceFiles[hubKey].files).length;
+        newWorkspaceFiles[hubKey].storage = Object.values(newWorkspaceFiles[hubKey].files)
           .filter((f) => typeof f.size === "number")
           .map((f) => f.size)
           .reduce(add);
@@ -1519,12 +1500,13 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "UPLOAD_FILES_REDUCER": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders") && action.data.folder_id) {
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders") && action.data.folder_id) {
+          newWorkspaceFiles[hubKey].folders[action.data.folder_id].files = [...newWorkspaceFiles[hubKey].folders[action.data.folder_id].files, ...action.data.files.map((f) => f.id)];
         }
-        newWorkspaceFiles[action.data.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[action.data.topic_id].files };
+        newWorkspaceFiles[hubKey].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files };
         return {
           ...state,
           workspaceFiles: newWorkspaceFiles,
@@ -1534,12 +1516,13 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "ADD_FILE_SEARCH_RESULTS": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            files: { ...convertArrayToObject(action.data.search_results, "id"), ...newWorkspaceFiles[action.data.topic_id].files },
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            files: { ...convertArrayToObject(action.data.search_results, "id"), ...newWorkspaceFiles[hubKey].files },
             search_results: action.data.search_results.map((f) => f.id),
             search_value: action.data.search,
           },
@@ -1551,11 +1534,12 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "CLEAR_FILE_SEARCH_RESULTS": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
         newWorkspaceFiles = {
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
             search_results: [],
             search_value: "",
           },
@@ -1567,9 +1551,10 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_DELETED_FILE": {
-      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined" || typeof state.workspaceFiles[action.data.topic_id].files[action.data.file_id] === "undefined") return state;
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+      if (typeof state.workspaceFiles[hubKey] === "undefined" || typeof state.workspaceFiles[hubKey].files[action.data.file_id] === "undefined") return state;
 
-      let items = state.workspaceFiles[action.data.topic_id];
+      let items = state.workspaceFiles[hubKey];
       let file = items.files[action.data.file_id];
 
       items.storage -= file.size;
@@ -1591,27 +1576,28 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceFiles: {
           ...state.workspaceFiles,
-          [action.data.topic_id]: items,
+          [hubKey]: items,
         },
       };
     }
     case "INCOMING_DELETED_FILES": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceFiles[action.data.topic_id].count = newWorkspaceFiles[action.data.topic_id].count - action.data.deleted_file_ids.length;
-        newWorkspaceFiles[action.data.topic_id].trash = newWorkspaceFiles[action.data.topic_id].trash + action.data.deleted_file_ids.length;
-        let deletedFiles = Object.values(newWorkspaceFiles[action.data.topic_id].files).filter((f) => {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        newWorkspaceFiles[hubKey].count = newWorkspaceFiles[hubKey].count - action.data.deleted_file_ids.length;
+        newWorkspaceFiles[hubKey].trash = newWorkspaceFiles[hubKey].trash + action.data.deleted_file_ids.length;
+        let deletedFiles = Object.values(newWorkspaceFiles[hubKey].files).filter((f) => {
           return action.data.deleted_file_ids.some((df) => df === f.id);
         });
-        newWorkspaceFiles[action.data.topic_id].trash_files = { ...convertArrayToObject(deletedFiles, "id"), ...newWorkspaceFiles[action.data.topic_id].trash_files };
+        newWorkspaceFiles[hubKey].trash_files = { ...convertArrayToObject(deletedFiles, "id"), ...newWorkspaceFiles[hubKey].trash_files };
         action.data.deleted_file_ids.map((df) => {
-          delete newWorkspaceFiles[action.data.topic_id].files[df];
+          delete newWorkspaceFiles[hubKey].files[df];
         });
 
-        if (newWorkspaceFiles[action.data.topic_id].hasOwnProperty("folders")) {
-          Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
-            if (f.hasOwnProperty("files") && newWorkspaceFiles[action.data.topic_id].folders[f.id].files.length) {
-              newWorkspaceFiles[action.data.topic_id].folders[f.id].files = newWorkspaceFiles[action.data.topic_id].folders[f.id].files.filter((id) => {
+        if (newWorkspaceFiles[hubKey].hasOwnProperty("folders")) {
+          Object.values(newWorkspaceFiles[hubKey].folders).forEach((f) => {
+            if (f.hasOwnProperty("files") && newWorkspaceFiles[hubKey].folders[f.id].files.length) {
+              newWorkspaceFiles[hubKey].folders[f.id].files = newWorkspaceFiles[hubKey].folders[f.id].files.filter((id) => {
                 return !action.data.deleted_file_ids.some((df) => df === id);
               });
             }
@@ -1631,12 +1617,13 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_REMOVED_FILE": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
 
-      if (typeof newWorkspaceFiles[action.data.topic_id] === "undefined") return state;
+      if (typeof newWorkspaceFiles[hubKey] === "undefined") return state;
 
-      delete newWorkspaceFiles[action.data.topic_id].trash_files[action.data.file_id];
-      newWorkspaceFiles[action.data.topic_id].trash -= 1;
+      delete newWorkspaceFiles[hubKey].trash_files[action.data.file_id];
+      newWorkspaceFiles[hubKey].trash -= 1;
 
       return {
         ...state,
@@ -1644,15 +1631,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_REMOVE_FAVORITE": {
-      if (action.data.topic_id) {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+      if (hubKey) {
         let newWorkspaceFiles = { ...state.workspaceFiles };
-        newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].is_favorite = action.data.is_favorite;
+        newWorkspaceFiles[hubKey].files[action.data.file_id].is_favorite = action.data.is_favorite;
         newWorkspaceFiles = {
           ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            ...newWorkspaceFiles[action.data.topic_id],
-            stars: action.data.is_favorite ? newWorkspaceFiles[action.data.topic_id].stars + 1 : newWorkspaceFiles[action.data.topic_id].stars - 1,
-            favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[action.data.topic_id].favorite_files, action.data.file_id] : newWorkspaceFiles[action.data.topic_id].favorite_files.filter((id) => id !== action.data.file_id),
+          [hubKey]: {
+            ...newWorkspaceFiles[hubKey],
+            stars: action.data.is_favorite ? newWorkspaceFiles[hubKey].stars + 1 : newWorkspaceFiles[hubKey].stars - 1,
+            favorite_files: action.data.is_favorite ? [...newWorkspaceFiles[hubKey].favorite_files, action.data.file_id] : newWorkspaceFiles[hubKey].favorite_files.filter((id) => id !== action.data.file_id),
           },
         };
         return {
@@ -1696,9 +1684,10 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_RESTORE_FOLDER": {
-      if (typeof state.workspaceFiles[action.data.topic_id] === "undefined") return state;
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+      if (typeof state.workspaceFiles[hubKey] === "undefined") return state;
 
-      let items = state.workspaceFiles[action.data.topic_id];
+      let items = state.workspaceFiles[hubKey];
 
       action.data.connected_folder_ids.forEach((id) => {
         items.folders[id].is_archived = false;
@@ -1724,14 +1713,15 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceFiles: {
           ...state.workspaceFiles,
-          [action.data.topic_id]: items,
+          [hubKey]: items,
         },
       };
     }
     case "INCOMING_RESTORE_FILE": {
-      if (typeof state.workspaceFiles[action.data.topic.id] === "undefined") return state;
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
+      if (typeof state.workspaceFiles[hubKey] === "undefined") return state;
 
-      let items = state.workspaceFiles[action.data.topic.id];
+      let items = state.workspaceFiles[hubKey];
 
       if (items.trash_files[action.data.file.id]) {
         items.files[action.data.file.id] = action.data.file;
@@ -1755,35 +1745,32 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         workspaceFiles: {
           ...state.workspaceFiles,
-          [action.data.topic.id]: items,
+          [hubKey]: items,
         },
       };
     }
     case "INCOMING_MOVED_FILE": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceFiles[action.data.topic_id].files[action.data.file_id].folder_id = action.data.folder_id;
-        newWorkspaceFiles[action.data.topic_id] = {
-          ...newWorkspaceFiles[action.data.topic_id],
+      if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+        newWorkspaceFiles[hubKey].files[action.data.file_id].folder_id = action.data.folder_id;
+        newWorkspaceFiles[hubKey] = {
+          ...newWorkspaceFiles[hubKey],
           files: {
-            ...newWorkspaceFiles[action.data.topic_id].files,
-            ...(typeof newWorkspaceFiles[action.data.topic_id].files[action.data.file_id] !== "undefined" && {
+            ...newWorkspaceFiles[hubKey].files,
+            ...(typeof newWorkspaceFiles[hubKey].files[action.data.file_id] !== "undefined" && {
               [action.data.file_id]: {
-                ...newWorkspaceFiles[action.data.topic_id].files[action.data.file_id],
+                ...newWorkspaceFiles[hubKey].files[action.data.file_id],
                 folder_id: action.data.folder_id,
               },
             }),
           },
         };
-        if (
-          action.data.folder_id &&
-          newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.original_folder_id) &&
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].hasOwnProperty("files")
-        ) {
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].files = newWorkspaceFiles[action.data.topic_id].folders[action.data.original_folder_id].files.filter((id) => id !== action.data.file_id);
+        if (action.data.folder_id && newWorkspaceFiles[hubKey].folders.hasOwnProperty(action.data.original_folder_id) && newWorkspaceFiles[hubKey].folders[action.data.original_folder_id].hasOwnProperty("files")) {
+          newWorkspaceFiles[hubKey].folders[action.data.original_folder_id].files = newWorkspaceFiles[hubKey].folders[action.data.original_folder_id].files.filter((id) => id !== action.data.file_id);
         }
-        if (action.data.folder_id && newWorkspaceFiles[action.data.topic_id].folders.hasOwnProperty(action.data.folder_id) && newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].hasOwnProperty("loaded")) {
-          newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files = [...newWorkspaceFiles[action.data.topic_id].folders[action.data.folder_id].files, action.data.file_id];
+        if (action.data.folder_id && newWorkspaceFiles[hubKey].folders.hasOwnProperty(action.data.folder_id) && newWorkspaceFiles[hubKey].folders[action.data.folder_id].hasOwnProperty("loaded")) {
+          newWorkspaceFiles[hubKey].folders[action.data.folder_id].files = [...newWorkspaceFiles[hubKey].folders[action.data.folder_id].files, action.data.file_id];
         }
         return {
           ...state,
@@ -1794,12 +1781,13 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "INCOMING_EMPTY_TRASH": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id) && newWorkspaceFiles[action.data.topic_id].hasOwnProperty("trash_files")) {
+      if (newWorkspaceFiles.hasOwnProperty(hubKey) && newWorkspaceFiles[hubKey].hasOwnProperty("trash_files")) {
         let add = (total, num) => total + num;
         let totalSize = 0;
         if (action.data.deleted_file_ids.length) {
-          totalSize = Object.values(state.workspaceFiles[action.data.topic_id].trash_files)
+          totalSize = Object.values(state.workspaceFiles[hubKey].trash_files)
             .filter((f) => typeof f !== "undefined")
             .filter((f) => {
               return action.data.deleted_file_ids.some((df) => df === f.id);
@@ -1808,12 +1796,12 @@ export default (state = INITIAL_STATE, action) => {
             .reduce(add);
         }
 
-        newWorkspaceFiles[action.data.topic_id].trash_files = {};
-        newWorkspaceFiles[action.data.topic_id].trash = 0;
-        newWorkspaceFiles[action.data.topic_id].storage = newWorkspaceFiles[action.data.topic_id].storage - totalSize;
-        Object.values(newWorkspaceFiles[action.data.topic_id].folders).forEach((f) => {
+        newWorkspaceFiles[hubKey].trash_files = {};
+        newWorkspaceFiles[hubKey].trash = 0;
+        newWorkspaceFiles[hubKey].storage = newWorkspaceFiles[hubKey].storage - totalSize;
+        Object.values(newWorkspaceFiles[hubKey].folders).forEach((f) => {
           if (f.is_archived) {
-            delete newWorkspaceFiles[action.data.topic_id].folders[f.id];
+            delete newWorkspaceFiles[hubKey].folders[f.id];
           }
         });
         return {
@@ -1824,51 +1812,52 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "FETCH_TIMELINE_SUCCESS": {
-      let newWorkspaceFiles = { ...state.workspaceFiles };
-      if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
-        newWorkspaceFiles[action.data.topic_id].files = {
-          ...convertArrayToObject(
-            action.data.timeline.filter((t) => t.tag === "DOCUMENT").map((i) => i.item),
-            "id"
-          ),
-          ...newWorkspaceFiles[action.data.topic_id].files,
-        };
-      } else {
-        newWorkspaceFiles = {
-          ...newWorkspaceFiles,
-          [action.data.topic_id]: {
-            files: convertArrayToObject(
-              action.data.timeline.filter((t) => t.tag === "DOCUMENT").map((i) => i.item),
-              "id"
-            ),
-            folders: {},
-            storage: 0,
-            count: 0,
-            stars: 0,
-            trash: 0,
-            popular_files: [],
-            recently_edited: [],
-            favorite_files: [],
-            trash_files: {},
-            search_results: [],
-            search_value: "",
-          },
-        };
-      }
-      return {
-        ...state,
-        workspaceFiles: newWorkspaceFiles,
-      };
-    }
+    // case "FETCH_TIMELINE_SUCCESS": {
+    //   let newWorkspaceFiles = { ...state.workspaceFiles };
+    //   if (newWorkspaceFiles.hasOwnProperty(action.data.topic_id)) {
+    //     newWorkspaceFiles[action.data.topic_id].files = {
+    //       ...convertArrayToObject(
+    //         action.data.timeline.filter((t) => t.tag === "DOCUMENT").map((i) => i.item),
+    //         "id"
+    //       ),
+    //       ...newWorkspaceFiles[action.data.topic_id].files,
+    //     };
+    //   } else {
+    //     newWorkspaceFiles = {
+    //       ...newWorkspaceFiles,
+    //       [action.data.topic_id]: {
+    //         files: convertArrayToObject(
+    //           action.data.timeline.filter((t) => t.tag === "DOCUMENT").map((i) => i.item),
+    //           "id"
+    //         ),
+    //         folders: {},
+    //         storage: 0,
+    //         count: 0,
+    //         stars: 0,
+    //         trash: 0,
+    //         popular_files: [],
+    //         recently_edited: [],
+    //         favorite_files: [],
+    //         trash_files: {},
+    //         search_results: [],
+    //         search_value: "",
+    //       },
+    //     };
+    //   }
+    //   return {
+    //     ...state,
+    //     workspaceFiles: newWorkspaceFiles,
+    //   };
+    // }
     case "INCOMING_COMMENT": {
       let newWorkspaceFiles = { ...state.workspaceFiles };
 
       if (action.data.workspaces.length && action.data.files.length) {
         if (action.data.files[0].shared_with_client === 1 || (state.user.type === "internal" && action.data.files[0].shared_with_client === 0)) {
           action.data.workspaces.forEach((ws) => {
-            if (newWorkspaceFiles.hasOwnProperty(ws.topic_id)) {
-              newWorkspaceFiles[ws.topic_id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[ws.topic_id].files };
+            let hubKey = `${ws.topic_id}-${action.data.slug}`;
+            if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+              newWorkspaceFiles[hubKey].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files };
             }
           });
         }
@@ -1885,8 +1874,9 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (action.data.files.length) {
         action.data.recipient_ids.forEach((id) => {
-          if (newWorkspaceFiles.hasOwnProperty(id)) {
-            newWorkspaceFiles[id].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[id].files };
+          let hubKey = `${id}-${action.data.slug}`;
+          if (newWorkspaceFiles.hasOwnProperty(hubKey)) {
+            newWorkspaceFiles[hubKey].files = { ...convertArrayToObject(action.data.files, "id"), ...newWorkspaceFiles[hubKey].files };
           }
         });
         return {
@@ -1901,8 +1891,9 @@ export default (state = INITIAL_STATE, action) => {
       let newWorkspaceFiles = { ...state.workspaceFiles };
       if (action.data.connected_workspace.length && Object.keys(newWorkspaceFiles).length) {
         action.data.connected_workspace.forEach((ws) => {
-          if (newWorkspaceFiles.hasOwnProperty(ws.topic_id) && newWorkspaceFiles[ws.topic_id].hasOwnProperty("files")) {
-            delete newWorkspaceFiles[ws.topic_id].files[action.data.file_id];
+          let hubKey = `${ws.topic_id}-${action.data.slug}`;
+          if (newWorkspaceFiles.hasOwnProperty(hubKey) && newWorkspaceFiles[hubKey].hasOwnProperty("files")) {
+            delete newWorkspaceFiles[hubKey].files[action.data.file_id];
           }
         });
       } else {
@@ -1931,11 +1922,12 @@ export default (state = INITIAL_STATE, action) => {
           folder_id: action.data.data_type.workspace ? action.data.data_type.workspace.id : null,
           folder_name: action.data.data_type.workspace ? action.data.data_type.workspace.name : null,
         };
+        let hubKey = `${workspace.id}-${action.data.slug}`;
         if (updatedWorkspaceFiles.hasOwnProperty(workspace.id)) {
-          if (updatedWorkspaceFiles[workspace.id].files.hasOwnProperty(action.data.attachment_id)) {
-            delete updatedWorkspaceFiles[workspace.id].files[action.data.attachment_id];
-          } else if (updatedWorkspaceFiles[workspace.id].folders.hasOwnProperty(action.data.attachment_id)) {
-            delete updatedWorkspaceFiles[workspace.id].folders[action.data.attachment_id];
+          if (updatedWorkspaceFiles[hubKey].files.hasOwnProperty(action.data.attachment_id)) {
+            delete updatedWorkspaceFiles[hubKey].files[action.data.attachment_id];
+          } else if (updatedWorkspaceFiles[hubKey].folders.hasOwnProperty(action.data.attachment_id)) {
+            delete updatedWorkspaceFiles[hubKey].folders[action.data.attachment_id];
           }
         }
       } else {
@@ -1969,7 +1961,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         fileBlobs: {
           ...state.fileBlobs,
-          [action.data.id]: action.data.src,
+          [action.data.key]: action.data.src,
         },
       };
     }
@@ -1978,7 +1970,7 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         fileThumbnailBlobs: {
           ...state.fileThumbnailBlobs,
-          [action.data.id]: action.data.src,
+          [action.data.key]: action.data.src,
         },
       };
     }
@@ -2048,20 +2040,21 @@ export default (state = INITIAL_STATE, action) => {
         workspaceFiles: {
           ...state.workspaceFiles,
           ...action.data.files.reduce((res, obj) => {
-            if (state.workspaceFiles[obj.topic_id]) {
-              res[obj.topic_id] = {
-                ...state.workspaceFiles[obj.topic_id],
+            let hubKey = `${obj.topic_id}-${action.data.slug}`;
+            if (state.workspaceFiles[hubKey]) {
+              res[hubKey] = {
+                ...state.workspaceFiles[hubKey],
                 files: {
-                  ...Object.values(state.workspaceFiles[obj.topic_id].files).reduce((fres, f) => {
+                  ...Object.values(state.workspaceFiles[hubKey].files).reduce((fres, f) => {
                     if (!action.data.files.some((file) => file.file_id === f.id)) {
                       fres[f.id] = { ...f };
                     }
                     return fres;
                   }, {}),
                 },
-                recently_edited: state.workspaceFiles[obj.topic_id].recently_edited.filter((id) => !action.data.files.some((file) => file.file_id === id)),
-                favorite_files: state.workspaceFiles[obj.topic_id].favorite_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
-                popular_files: state.workspaceFiles[obj.topic_id].popular_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+                recently_edited: state.workspaceFiles[hubKey].recently_edited.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+                favorite_files: state.workspaceFiles[hubKey].favorite_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
+                popular_files: state.workspaceFiles[hubKey].popular_files.filter((id) => !action.data.files.some((file) => file.file_id === id)),
               };
             }
             return res;
@@ -2072,13 +2065,14 @@ export default (state = INITIAL_STATE, action) => {
     case "GET_TOPIC_DRIVE_LINKS_SUCCESS": {
       if (action.data.length) {
         const workspaceId = action.data[0].link_id;
+        let hubKey = `${workspaceId}-${action.slug}`;
         return {
           ...state,
           workspaceFiles: {
             ...state.workspaceFiles,
-            ...(state.workspaceFiles[workspaceId] && {
-              [workspaceId]: {
-                ...state.workspaceFiles[workspaceId],
+            ...(state.workspaceFiles[hubKey] && {
+              [hubKey]: {
+                ...state.workspaceFiles[hubKey],
                 driveLinks: action.data.reduce((acc, f) => {
                   acc[f.id] = f;
                   return acc;
@@ -2104,19 +2098,50 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "PUT_DRIVE_LINK_SUCCESS":
-    case "INCOMING_UPDATED_DRIVE_LINK":
-    case "INCOMING_DRIVE_LINK":
     case "POST_DRIVE_LINK_SUCCESS": {
       if (action.data.data.link_id) {
+        let hubKey = `${action.data.data.link_id}-${action.slug}`;
         return {
           ...state,
           workspaceFiles: {
             ...state.workspaceFiles,
-            ...(state.workspaceFiles[action.data.data.link_id] && {
-              [action.data.data.link_id]: {
-                ...state.workspaceFiles[action.data.data.link_id],
+            ...(state.workspaceFiles[hubKey] && {
+              [hubKey]: {
+                ...state.workspaceFiles[hubKey],
                 driveLinks: {
-                  ...state.workspaceFiles[action.data.data.link_id].driveLinks,
+                  ...state.workspaceFiles[hubKey].driveLinks,
+                  [action.data.data.id]: action.data.data,
+                },
+              },
+            }),
+          },
+        };
+      } else {
+        return {
+          ...state,
+          companyFiles: {
+            ...state.companyFiles,
+            driveLinks: {
+              ...state.companyFiles.driveLinks,
+              [action.data.data.id]: action.data.data,
+            },
+          },
+        };
+      }
+    }
+    case "INCOMING_UPDATED_DRIVE_LINK":
+    case "INCOMING_DRIVE_LINK": {
+      if (action.data.data.link_id) {
+        let hubKey = `${action.data.data.link_id}-${action.data.slug}`;
+        return {
+          ...state,
+          workspaceFiles: {
+            ...state.workspaceFiles,
+            ...(state.workspaceFiles[hubKey] && {
+              [hubKey]: {
+                ...state.workspaceFiles[hubKey],
+                driveLinks: {
+                  ...state.workspaceFiles[hubKey].driveLinks,
                   [action.data.data.id]: action.data.data,
                 },
               },
@@ -2169,14 +2194,15 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DELETED_DRIVE_LINK": {
       if (action.data.data.topic_id) {
+        let hubKey = `${action.data.data.topic_id}-${action.data.slug}`;
         return {
           ...state,
           workspaceFiles: {
             ...state.workspaceFiles,
-            ...(state.workspaceFiles[action.data.data.topic_id] && {
-              [action.data.data.topic_id]: {
-                ...state.workspaceFiles[action.data.data.topic_id],
-                driveLinks: Object.values(state.workspaceFiles[action.data.data.topic_id].driveLinks)
+            ...(state.workspaceFiles[hubKey] && {
+              [hubKey]: {
+                ...state.workspaceFiles[hubKey],
+                driveLinks: Object.values(state.workspaceFiles[hubKey].driveLinks)
                   .filter((d) => d.id !== action.data.data.id)
                   .reduce((acc, f) => {
                     acc[f.id] = f;
@@ -2216,14 +2242,15 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMOVE_WORKSPACE_FILES_UPLOADING_BAR": {
+      let hubKey = `${action.data.topic_id}-${action.data.slug}`;
       return {
         ...state,
         workspaceFiles: {
           ...state.workspaceFiles,
-          ...(state.workspaceFiles[action.data.topic_id] && {
-            [action.data.topic_id]: {
-              ...state.workspaceFiles[action.data.topic_id],
-              files: Object.values(state.workspaceFiles[action.data.topic_id].files)
+          ...(state.workspaceFiles[hubKey] && {
+            [hubKey]: {
+              ...state.workspaceFiles[hubKey],
+              files: Object.values(state.workspaceFiles[hubKey].files)
                 .filter((f) => !action.data.fileIds.some((id) => id === f.id))
                 .reduce((acc, file) => {
                   acc[file.id] = file;

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize, useGetSlug } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 import { sessionService } from "redux-react-session";
 import { saveAs } from "file-saver";
@@ -239,7 +239,7 @@ const DetailsContainer = styled.div`
 
 const FileRender = (props) => {
   const { className = "", file, setFiles, files, viewFiles } = props;
-
+  const { slug } = useGetSlug();
   const dispatch = useDispatch();
   const winSize = useWindowSize();
   const {
@@ -312,9 +312,12 @@ const FileRender = (props) => {
     // handle.blur();
     // window.focus();
   };
-
+  let key = `${file.id}-${slug}`;
+  if (viewFiles.sharedSlug) {
+    key = `${file.id}-${viewFiles.slug}`;
+  }
   useEffect(() => {
-    if (!fileBlobs[file.id]) {
+    if (!fileBlobs[key]) {
       setIsLoaded(false);
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
@@ -359,6 +362,7 @@ const FileRender = (props) => {
               {
                 id: file.id,
                 src: imgObj,
+                key: key,
               },
               () => {
                 setIsLoaded(true);
@@ -430,7 +434,7 @@ const FileRender = (props) => {
               onError={handleImageOnError}
               ref={(e) => (refFiles[file.id] = e)}
               key={file.id}
-              src={fileBlobs[file.id]}
+              src={fileBlobs[key]}
               alt={file.filename ? file.filename : file.search}
             />
           </>
@@ -475,7 +479,7 @@ const FileRender = (props) => {
 
 const FileViewer = (props) => {
   const { className = "" } = props;
-
+  const { slug } = useGetSlug();
   const fileRef = useRef();
   const dispatch = useDispatch();
   const channelFiles = useSelector((state) => state.files.channelFiles);
@@ -540,6 +544,10 @@ const FileViewer = (props) => {
   };
 
   useEffect(() => {
+    let hubKey = `${viewFiles.workspace_id}-${slug}`;
+    if (viewFiles.sharedSlug) {
+      hubKey = `${viewFiles.workspace_id}-${viewFiles.slug}`;
+    }
     if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
       setFiles(channelFiles[viewFiles.channel_id]);
       channelFiles[viewFiles.channel_id].forEach((file, index) => {
@@ -547,8 +555,8 @@ const FileViewer = (props) => {
           setActiveIndex(index);
         }
       });
-    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
+    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(hubKey)) {
+      let files = Object.values(workspaceFiles[hubKey].files);
       if (viewFiles.hasOwnProperty("files")) {
         files = viewFiles.files;
       }
