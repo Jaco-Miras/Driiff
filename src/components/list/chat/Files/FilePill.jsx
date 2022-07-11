@@ -55,7 +55,6 @@ const FileVideo = styled.video`
   min-height: 150px;
   max-width: 200px;
   min-width: 200px;
-  z-index: 1
 `;
 
 const FilePillContainer = styled.div`
