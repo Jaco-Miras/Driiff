@@ -172,6 +172,7 @@ const ChatForwardModal = (props) => {
     recentChannels: _t("CHAT.FORWARD.RECENT_CHANNELS", "Recent channels"),
     transferMessageTo: _t("CHAT.FORWARD.TRANSFER_MESSAGE_TO", "Transfer the message to"),
     searchChannelPlaceholder: _t("CHAT.FORWARD.SEARCH_CHANNEL_PLACEHOLDER", "Search channel"),
+    personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
   };
 
   const emptySearchInput = () => {
@@ -222,7 +223,7 @@ const ChatForwardModal = (props) => {
                 return (
                   <StlyedList key={channel.id} onClick={() => handleChosenChannel(channel)} chosen={chosenChannel && chosenChannel.id === channel.id}>
                     <StyledChannelIcon className={"message-forward-popup"} channel={channel} />
-                    {channel.type === "DIRECT" && channel.profile ? channel.profile.name : channel.title}
+                    {channel.type === "PERSONAL_BOT" ? <>{dictionary.personalNotes}</> : channel.type === "DIRECT" && channel.profile ? channel.profile.name : channel.title}
                   </StlyedList>
                 );
               })}
