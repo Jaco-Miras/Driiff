@@ -437,7 +437,7 @@ const FileUploadModal = (props) => {
           formData.append(`files[${index}]`, file.bodyFormData.get("file"));
         });
       payload["files"] = formData;
-      if (selectedChannel.type === "COMPANY") {
+      if (selectedChannel && selectedChannel.type === "COMPANY") {
         fileActions.postCompanyUploadBulkFilesDispatch(payload, (err, result) => {
           if (err) {
             handleNetWorkError(err);

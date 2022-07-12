@@ -51,6 +51,8 @@ const useChatMessageActions = () => {
     const payload = {
       files: files,
       file_id: files[0].file_id,
+      slug: selectedChannel.slug,
+      sharedSlug: selectedChannel.sharedSlug,
     };
     dispatch(setViewFiles(payload));
   };
