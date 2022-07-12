@@ -357,20 +357,28 @@ const Comment = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          let key = `${imgFile.id}-${slug}`;
-          if (sharedPost) {
-            key = `${imgFile.id}-${post.slug}`;
+          let key = null;
+          if (imgFile) {
+            key = `${imgFile.id}-${slug}`;
+            if (sharedPost) {
+              key = `${imgFile.id}-${post.slug}`;
+            }
           }
+
           if (imgFile && fileBlobs[key]) {
             img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          let key = `${imgFile.id}-${slug}`;
-          if (sharedPost) {
-            key = `${imgFile.id}-${post.slug}`;
+          let key = null;
+          if (imgFile) {
+            key = `${imgFile.id}-${slug}`;
+            if (sharedPost) {
+              key = `${imgFile.id}-${post.slug}`;
+            }
           }
+
           if (imgFile && fileBlobs[key]) {
             img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
