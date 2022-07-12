@@ -331,7 +331,7 @@ const useQuillModules = ({
               let filePayload = {
                 user_id: user.id,
                 file: formData,
-                file_type: inlineImageType,
+                file_type: "public",
                 folder_id: null,
               };
               if (sharedSlug) {
