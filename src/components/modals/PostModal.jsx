@@ -811,6 +811,10 @@ const PostModal = (props) => {
           ...payload,
           sharedPayload: sharedPayload,
         };
+        uploadData = {
+          ...uploadData,
+          sharedPayload: { slug: slug, token: sharedWs[slug].access_token, is_shared: true },
+        };
       }
     }
     await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))

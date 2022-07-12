@@ -427,7 +427,11 @@ const MainSnooze = (props) => {
       var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
       const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
       if (n) {
-        let sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        let sharedPayload = null;
+        if (sharedWs[item.slug]) {
+          sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        }
+
         const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime), sharedPayload: sharedPayload };
         if (!n.is_snooze) {
           toast.isActive(elemId) && toast.dismiss(elemId);

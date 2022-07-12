@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { deletePostFile, setViewFiles } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
-import { useOutsideClick, useTooltipOrientation } from "../hooks";
+import { useOutsideClick, useTooltipOrientation, useGetSlug } from "../hooks";
 import { SvgIconFeather } from "./index";
 
 const Wrapper = styled.div`
@@ -121,8 +121,10 @@ const FileAttachments = (props) => {
   const { className = "", attachedFiles, handleRemoveFile, scrollRef = null, type = "modal", comment = null, showDelete = true } = props;
   const dispatch = useDispatch();
   const params = useParams();
+  const { slug } = useGetSlug();
   const [filePreview, setFilePreview] = useState(null);
   const { user: loggedUser } = useSelector((state) => state.session);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
   const refs = {
     main: useRef(null),
@@ -190,6 +192,8 @@ const FileAttachments = (props) => {
       let payload = {
         file_id: attachedFiles[index].id,
         files: attachedFiles,
+        sharedSlug: params.workspaceId && workspace ? workspace.sharedSlug : false,
+        slug: params.workspaceId && workspace ? workspace.slug : slug,
       };
       dispatch(setViewFiles(payload));
     }

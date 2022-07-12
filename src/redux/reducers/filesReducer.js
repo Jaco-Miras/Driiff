@@ -1478,7 +1478,7 @@ export default (state = INITIAL_STATE, action) => {
             });
           }
         });
-        newWorkspaceFiles[hubKey].count = Object.keys(newWorkspaceFiles[hubKey].files).length;
+        newWorkspaceFiles[hubKey].count = newWorkspaceFiles[hubKey].count + action.data.files.length;
         newWorkspaceFiles[hubKey].storage = Object.values(newWorkspaceFiles[hubKey].files)
           .filter((f) => typeof f.size === "number")
           .map((f) => f.size)

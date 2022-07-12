@@ -1541,6 +1541,7 @@ const CreateEditWorkspaceModal = (props) => {
                   />
                 );
               }
+              toggle();
             }
           })
         );
