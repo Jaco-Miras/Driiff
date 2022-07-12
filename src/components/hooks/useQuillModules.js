@@ -346,7 +346,7 @@ const useQuillModules = ({
                 .then((result) => {
                   if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
                   if (setImageLoading) setImageLoading(false);
-                  resolve(result.data.thumbnail_link);
+                  resolve(result.data.image_link);
                 })
                 .catch((error) => {
                   reject("Upload failed");
