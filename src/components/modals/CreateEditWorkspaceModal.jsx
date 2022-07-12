@@ -14,7 +14,7 @@ import { CheckBox, DescriptionInput, FolderSelect, InputFeedback, PeopleSelect, 
 import { useFileActions, useProfilePicUpload, useToaster, useTranslationActions, useGetSlug } from "../hooks";
 import { ModalHeaderSection } from "./index";
 import { putChannel, getChannel, addCompanyNameOnMembers } from "../../redux/actions/chatActions";
-import { getExternalUsers, getArchivedUsers } from "../../redux/actions/userAction";
+import { getExternalUsers, getArchivedUsers, getSharedUsers } from "../../redux/actions/userAction";
 import { debounce } from "lodash";
 import Select from "react-select";
 import { darkTheme, lightTheme } from "../../helpers/selectTheme";
@@ -1420,6 +1420,7 @@ const CreateEditWorkspaceModal = (props) => {
               if (form.is_shared_wp) {
                 // check if user has shared-auth loaded
                 if (sharedWsLoaded) {
+                  // refetch the shared users
                   if (res.data.team_channel && res.data.team_channel.code) {
                     if (sharedWs[newWorkspace.slug]) {
                       dispatch(
@@ -1451,6 +1452,12 @@ const CreateEditWorkspaceModal = (props) => {
                       workspace_id: res.data.id,
                     });
                   }
+                  let sharedUserPayload = {
+                    skip: 0,
+                    limit: 1000,
+                    sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true },
+                  };
+                  dispatch(getSharedUsers(sharedUserPayload));
                   toggle();
                 } else {
                   //fetch shared-auth before redirect
@@ -1476,6 +1483,14 @@ const CreateEditWorkspaceModal = (props) => {
                             })
                           );
                         }
+                      }
+                      if (response.data[newWorkspace.slug]) {
+                        let sharedUserPayload = {
+                          skip: 0,
+                          limit: 1000,
+                          sharedPayload: { slug: newWorkspace.slug, token: response.data[newWorkspace.slug].access_token, is_shared: true },
+                        };
+                        dispatch(getSharedUsers(sharedUserPayload));
                       }
                       sessionService.loadSession().then((current) => {
                         sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
