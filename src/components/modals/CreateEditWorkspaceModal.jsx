@@ -1058,19 +1058,6 @@ const CreateEditWorkspaceModal = (props) => {
         payload = {
           ...payload,
           new_shared_workspace_members: [
-            ...form.selectedSharedUsers
-              .filter((ex) => !invitedSharedUsers.some((e) => e.email === ex.email))
-              .map((ex) => {
-                return {
-                  email: ex.email,
-                  first_name: ex.first_name ? ex.first_name.trim() : ex.email,
-                  middle_name: ex.middle_name ? ex.middle_name.trim() : "",
-                  last_name: ex.last_name ? ex.last_name.trim() : "",
-                  company: ex.company ? ex.company.trim() : "",
-                  language: "en",
-                  send_by_email: true,
-                };
-              }),
             ...invitedSharedUsers.map((ex) => {
               return {
                 email: ex.email,
@@ -1083,6 +1070,7 @@ const CreateEditWorkspaceModal = (props) => {
               };
             }),
           ],
+          shared_workspace_member_ids: [...form.selectedSharedUsers.filter((ex) => !invitedSharedUsers.some((e) => e.email === ex.email)).map((ex) => ex.id)],
         };
       } else {
         payload = {
