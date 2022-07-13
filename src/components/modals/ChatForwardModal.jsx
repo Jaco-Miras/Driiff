@@ -233,7 +233,7 @@ const ChatForwardModal = (props) => {
       </PopUpBody>
       {chosenChannel && (
         <StyledModalFooter>
-          <span className="chosen-channel-title">{chosenChannel ? chosenChannel.title : null}</span>
+          <span className="chosen-channel-title">{chosenChannel.type === "PERSONAL_BOT" ? <>{dictionary.personalNotes}</> : chosenChannel ? chosenChannel.title : null}</span>
           <IconButton onClick={handleForwardMessage} icon="send" fill="#fff" />
         </StyledModalFooter>
       )}
