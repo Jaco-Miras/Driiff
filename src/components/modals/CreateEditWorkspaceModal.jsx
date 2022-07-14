@@ -963,7 +963,7 @@ const CreateEditWorkspaceModal = (props) => {
     if (mode === "create" && payload.is_shared_wp && sharedWs[`${slug}-shared`]) {
       sharedPayload = { slug: `${slug}-shared`, token: sharedWs[`${slug}-shared`].access_token, is_shared: true };
       const sharedMembers = workspace.members.filter((m) => {
-        return (m.type === "external" && m.slug === null) || (m.active === 1 && m.type === "internal" && m.slug && m.slug !== slug);
+        return m.type === "external";
       });
       updatePayload = {
         ...updatePayload,
@@ -1075,6 +1075,7 @@ const CreateEditWorkspaceModal = (props) => {
       } else {
         payload = {
           ...payload,
+          member_ids: form.selectedUsers.filter((u) => typeof u.id === "number").map((m) => m.id),
           shared_workspace_member_ids: form.selectedSharedUsers.filter((ex) => !isNaN(ex.id)).map((ex) => ex.id),
           new_shared_workspace_members: [
             ...invitedSharedUsers.map((ex) => {
@@ -1446,7 +1447,6 @@ const CreateEditWorkspaceModal = (props) => {
                     sharedPayload: { slug: newWorkspace.slug, token: sharedWs[newWorkspace.slug].access_token, is_shared: true },
                   };
                   dispatch(getSharedUsers(sharedUserPayload));
-                  toggle();
                 } else {
                   //fetch shared-auth before redirect
                   dispatch(
@@ -1509,7 +1509,6 @@ const CreateEditWorkspaceModal = (props) => {
                     workspace_id: res.data.id,
                   });
                 }
-                toggle();
               }
 
               const sendByMyselfEmail = invitedSharedUsers.find((ex) => !ex.send_by_email);
@@ -1544,10 +1543,10 @@ const CreateEditWorkspaceModal = (props) => {
                   />
                 );
               }
-              toggle();
             }
           })
         );
+        toggle();
       };
 
       if (payload.is_lock === 1 || (form.has_externals && payload.external_emails && payload.external_emails.length) || (form.has_externals && form.selectedExternals.length)) {
