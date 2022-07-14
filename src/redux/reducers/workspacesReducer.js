@@ -494,7 +494,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "CREATE_WORKSPACE_SUCCESS": {
-      console.log(action);
       if (action.data.topic.is_shared_wp) {
         const ws = {
           channel: action.data.channel,
@@ -532,7 +531,6 @@ export default (state = INITIAL_STATE, action) => {
     }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
-      console.log(action.data, "incoming");
       if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
