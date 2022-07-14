@@ -2,6 +2,7 @@ import React, { useEffect, lazy, Suspense } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, Route, Switch, useHistory } from "react-router-dom";
 import { useSettings } from "../components/hooks";
+import VideoMeeting from "../components/panels/VideoMeeting";
 // import { TestChat } from "../components/test";
 // import TestFiles from "../components/test/TestFiles";
 //import GuestLayout from "./GuestLayout";
@@ -85,6 +86,9 @@ export const AppRoute = ({ children, ...props }) => {
           path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token", "/authenticate-ios/:tokens"]}
           exact
         >
+          {children}
+        </Route>
+        <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"} exact>
           {children}
         </Route>
         <Redirect
