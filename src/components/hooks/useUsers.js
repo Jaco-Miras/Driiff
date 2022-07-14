@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { useUserActions } from "./index";
 import { useEffect, useState } from "react";
 import _ from "lodash";
+import { useMemo } from "react";
 
 const useUsers = () => {
   const users = useSelector((state) => state.users.users);
@@ -33,6 +34,16 @@ const useUsers = () => {
     }
   }, [users]);
 
+  const acceptedActiveUser = useMemo(() => {
+    let aUsers = {};
+    for (const key in activeUsers) {
+      if (activeUsers[key].active === 1 && activeUsers[key].has_accepted) {
+        aUsers[key] = activeUsers[key];
+      }
+    }
+    return aUsers;
+  }, [activeUsers]);
+
   return {
     users,
     getUserFilter,
@@ -40,6 +51,7 @@ const useUsers = () => {
     actions: userActions,
     activeUsers,
     guestUsers,
+    acceptedActiveUser,
   };
 };
 
