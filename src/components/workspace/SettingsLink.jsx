@@ -170,9 +170,9 @@ const SettingsLink = (props) => {
   // const isMember = useIsMember(topic && topic.member_ids.length ? [...new Set(workspaceMembers)] : []);
   const { slug } = useGetSlug();
   const isSameDriff = (topic && topic.sharedSlug && topic.slug && slug === topic.slug.slice(0, -7)) || (topic && !topic.sharedSlug);
-  const isCreator = topic && topic.slug && topic.sharedSlug && sharedWs[topic.slug] && topic.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+  const isCreator = topic && topic.slug && topic.sharedSlug && sharedWs[topic.slug] && topic.members.find((mem) => mem.is_creator).external_id === user.id && isSameDriff;
   const isTeamMember = topic && !topic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
-  const showInviteButton = (isCreator || isTeamMember) && !isExternal;
+  const showInviteButton = (isCreator || isTeamMember) && user.type !== "external";
   if (!showInviteButton) return null;
 
   return (
