@@ -87,7 +87,7 @@ const JitsiInviteModal = (props) => {
             toggle();
             return;
           }
-          window.webkit.messageHandlers.startDriffTalk.postMessage({ token: res.data._token, room: res.data.room_name });
+          window.webkit.messageHandlers.startDriffTalk.postMessage({ slug: getSlug(), token: res.data._token, room: res.data.room_name });
           toggle();
         })
       );
