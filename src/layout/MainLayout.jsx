@@ -17,6 +17,7 @@ import {
   useWorkspaceActions,
   useProfilePicUpload,
   useLoadSharedDriff,
+  useUsers,
 } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
@@ -96,6 +97,11 @@ const MainLayout = (props) => {
   } = useSettings();
 
   const { generalSettings } = useSettings();
+
+  const {
+    loggedUser,
+    actions: { fetchById },
+  } = useUsers();
 
   const history = useHistory();
 
@@ -204,11 +210,15 @@ const MainLayout = (props) => {
       handleAcceptInvite(payload);
     }
     const modalTimer = setTimeout(() => {
-      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
-        uploadModal(() => {
-          clearTimeout(modalTimer);
-        });
-      }
+      fetchById(loggedUser.id, (err, res) => {
+        if (err) return;
+        const currentUser = res.data;
+        if (!userCanceledProfileUpload && first_login && !currentUser.profile && !isExternal) {
+          uploadModal(() => {
+            clearTimeout(modalTimer);
+          });
+        }
+      });
     }, MODAL_TIMER);
 
     return () => {

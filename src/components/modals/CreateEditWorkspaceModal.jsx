@@ -1326,9 +1326,9 @@ const CreateEditWorkspaceModal = (props) => {
                   const sharedSlug = form.is_shared_wp ? `${slug}-shared` : slug;
                   acc.push({
                     ...c,
-                    profile_image_link: URL.createObjectURL(found.profile_pic),
-                    profile_image_thumbnail_link: URL.createObjectURL(found.profile_pic),
-                    profile_pic: found.profile_pic,
+                    profile_image_link: found.profile_pic ? URL.createObjectURL(found.profile_pic) : null,
+                    profile_image_thumbnail_link: found.profile_pic ? URL.createObjectURL(found.profile_pic) : null,
+                    profile_pic: found.profile_pic ? found.profile_pic : null,
                     sharedPayload: form.is_shared_wp ? { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true } : null,
                   });
                 }
@@ -1336,7 +1336,6 @@ const CreateEditWorkspaceModal = (props) => {
               }, []);
 
               batchUploadExternalUserProfilePic(_externalUsers);
-
               const updatedMembers = res.data.members.map((member) => {
                 const found = _externalUsers.find((ex) => ex.id === member.id);
                 return found ? found : member;
