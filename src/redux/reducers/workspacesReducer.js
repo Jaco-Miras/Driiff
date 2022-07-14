@@ -502,8 +502,46 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "CREATE_WORKSPACE_SUCCESS": {
+      console.log(action);
+      if (action.data.topic.is_shared_wp) {
+        const ws = {
+          channel: action.data.channel,
+          created_at: action.data.topic.created_at,
+          members: action.data.members,
+          search: action.data.topic.name,
+          timestamp: action.data.topic.created_at.timestamp,
+          workspace: action.data.workspace,
+          topic: {
+            description: action.data.topic.description,
+            icon_link: null,
+            id: action.data.topic.id,
+            is_active: true,
+            is_archive: false,
+            is_favourite: false,
+            is_locked: !!action.data.topic.private,
+            is_shared: !!action.data.topic.is_shared,
+            name: action.data.topic.name,
+            created_at: action.data.topic.created_at,
+            updated_at: action.data.topic.created_at,
+          },
+          sharedSlug: true,
+          slug: action.data.channel.slug_owner,
+        };
+        return {
+          ...state,
+          search: {
+            ...state.search,
+            results: [ws, ...state.search.results],
+          },
+        };
+      } else {
+        return state;
+      }
+    }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
+      console.log(action.data, "incoming");
       if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
