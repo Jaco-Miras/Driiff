@@ -13,6 +13,7 @@ import { addToModals } from "../../../redux/actions/globalActions";
 import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 import { ChatInputButtons } from "./index";
+import { useEffect } from "react";
 
 const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
@@ -172,6 +173,8 @@ const ChatFooterPanel = (props) => {
     picker: useRef(),
   };
   //useCountRenders("chat footer");
+  const [fileDialogActive, setFileDialogActive] = useState(false);
+  const [jitsiActive, setJitsiActive] = useState(false);
   const [activeSend, setActiveSend] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -428,6 +431,7 @@ const ChatFooterPanel = (props) => {
   };
 
   const handleJitsiMeet = () => {
+    setJitsiActive(!jitsiActive);
     if (jitsi) return;
 
     let modalPayload = {
@@ -438,6 +442,10 @@ const ChatFooterPanel = (props) => {
     dispatch(addToModals(modalPayload));
   };
 
+  const handleOnShowFileDialog = () => {
+    onShowFileDialog();
+    setFileDialogActive(!fileDialogActive);
+  };
   return (
     <Wrapper className={`chat-footer ${className}`}>
       {selectedChannel && <TypingIndicator />}
@@ -470,6 +478,9 @@ const ChatFooterPanel = (props) => {
                     onClearEmoji={onClearEmoji}
                     dropAction={dropAction}
                     dictionary={dictionary}
+                    showEmojiPicker={showEmojiPicker}
+                    jitsiActive={jitsiActive}
+                    fileDialogActive={fileDialogActive}
                     //test
                   />
 
@@ -478,7 +489,7 @@ const ChatFooterPanel = (props) => {
                     showEmojiPicker={showEmojiPicker}
                     handleShowEmojiPicker={handleShowEmojiPicker}
                     handleZoomMeet={handleZoomMeet}
-                    onShowFileDialog={onShowFileDialog}
+                    onShowFileDialog={handleOnShowFileDialog}
                     editChatMessage={editChatMessage}
                     quote={quote}
                     dictionary={dictionary}

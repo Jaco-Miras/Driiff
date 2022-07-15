@@ -141,7 +141,7 @@ const getSlug = () => {
 
 /***  Commented out code are to be visited/refactored ***/
 const ChatInput = (props) => {
-  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive, dictionary } = props;
+  const { selectedEmoji, onClearEmoji, selectedGif, onClearGif, dropAction, onActive, dictionary, showEmojiPicker, jitsiActive, fileDialogActive } = props;
   const history = useHistory();
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
@@ -885,6 +885,11 @@ const ChatInput = (props) => {
     quillData.textOnly.trim() === "" ? onActive(false) : onActive(true);
   }, [quillData.textOnly]);
 
+  useEffect(() => {
+    if (showEmojiPicker || jitsiActive || fileDialogActive) {
+      reactQuillRef.current.getEditor().root.dataset.placeholder = "";
+    }
+  }, [showEmojiPicker, jitsiActive, fileDialogActive]);
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}
