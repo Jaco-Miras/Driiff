@@ -299,6 +299,6 @@ export function incomingZoomEnded(payload, callback) {
 export function updateUnreadCounter(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_UNREAD_COUNTER", payload, callback);
 }
-export function sample(payload, callback) {
+export function reactQuillState(payload, callback) {
   return SimpleDispatchActionToReducer("QUILL_FOCUS", payload, callback);
 }

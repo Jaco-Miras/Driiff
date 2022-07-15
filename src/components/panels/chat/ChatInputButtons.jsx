@@ -107,7 +107,7 @@ const ChatInputButtons = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
   const isFocus = useSelector((state) => state.global.isFocus);
-  const [showButtons, setShowButtons] = useState(activeSend);
+  const [showButtons, setShowButtons] = useState(isFocus);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
     if (editChatMessage !== null) {
@@ -131,44 +131,48 @@ const ChatInputButtons = (props) => {
   }, [activeSend]);
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat} disabledMeet={meet === "disable"}>
-      {editChatMessage && (
-        <IconWrapper>
-          <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
-            <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
-          </Tooltip>
-        </IconWrapper>
+      {!isFocus && (
+        <>
+          {editChatMessage && (
+            <IconWrapper>
+              <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Close edit">
+                <SvgIconFeather className="close-button" icon="x" onClick={handleEditReplyClose} />
+              </Tooltip>
+            </IconWrapper>
+          )}
+          <IconWrapper className="btn-smile" style={{ paddingLeft: 10 }}>
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
+              <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
+            </Tooltip>
+          </IconWrapper>
+          {meet !== "disable" && (
+            <IconWrapper className={`btn-zoom ${meet}`}>
+              {meet === "google" && (
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
+                  <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
+                </Tooltip>
+              )}
+              {meet === "zoom" && (
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
+                  <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
+                </Tooltip>
+              )}
+              {meet === "jitsi" && (
+                <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
+                  <SvgIconFeather icon="video-driff" onClick={onStartJitsi} />
+                </Tooltip>
+              )}
+            </IconWrapper>
+          )}
+          <IconWrapper className="btn-paperclip">
+            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
+              <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
+            </Tooltip>
+          </IconWrapper>
+        </>
       )}
-      <IconWrapper className="btn-smile" style={{ paddingLeft: 10 }}>
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Emoji">
-          <SvgIconFeather className={`${showEmojiPicker ? "active" : ""}`} onClick={handleShowEmojiPicker} icon="smile" />
-        </Tooltip>
-      </IconWrapper>
-      {meet !== "disable" && (
-        <IconWrapper className={`btn-zoom ${meet}`}>
-          {meet === "google" && (
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Google meet">
-              <SvgIconFeather icon="google-meet" onClick={onStartGoogleMeet} />
-            </Tooltip>
-          )}
-          {meet === "zoom" && (
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Zoom">
-              <ZoomIcon onClick={handleZoomMeet} icon="zoom" viewBox="0 0 48 48" />
-            </Tooltip>
-          )}
-          {meet === "jitsi" && (
-            <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Driff talk">
-              <SvgIconFeather icon="video-driff" onClick={onStartJitsi} />
-            </Tooltip>
-          )}
-        </IconWrapper>
-      )}
-      {isFocus ? "HI" : "HIDE"}
-      <IconWrapper className="btn-paperclip">
-        <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
-          <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
-        </Tooltip>
-      </IconWrapper>
-      <IconWrapper className={"chat-buttons"}>
+
+      <IconWrapper className={"chat-buttons"} style={{ paddingLeft: isFocus && "5rem" }}>
         <SvgIconFeather onClick={handleShowButtons} icon={showButtons ? "x" : "more-vertical"} />
       </IconWrapper>
     </Wrapper>

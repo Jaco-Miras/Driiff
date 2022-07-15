@@ -922,7 +922,7 @@ export default (state = INITIAL_STATE, action) => {
     case "QUILL_FOCUS": {
       return {
         ...state,
-        isFocus: true,
+        isFocus: action.data,
       };
     }
     default:

@@ -6,14 +6,26 @@ import { useTranslationActions } from "../hooks";
 import MagicUrl from "quill-magic-url";
 import ImageUploader from "quill-image-uploader";
 import QuillPasteSmart from "quill-paste-smart";
+import { useDispatch } from "react-redux";
+import { reactQuillState } from "../../redux/actions/globalActions";
+import { isMobile } from "react-device-detect";
 
 const QuillEditor = forwardRef((props, ref) => {
   const { className = "", theme = "snow", placeholder = "", ...otherProps } = props;
   const { _t } = useTranslationActions();
-
+  const dispatch = useDispatch();
   const appliedPlaceholder = placeholder !== "" ? placeholder : _t("FORM.REACT_QUILL_PLACEHOLDER", "Write great things here...");
-
-  return <ReactQuill className={`quill-editor ${className}`} theme={theme} {...otherProps} bounds={".quill-editor"} ref={ref} placeholder={appliedPlaceholder} />;
+  const handleBlur = (e) => {
+    if (isMobile) {
+      dispatch(reactQuillState(false));
+    }
+  };
+  const handleFocus = (e) => {
+    if (isMobile) {
+      dispatch(reactQuillState(true));
+    }
+  };
+  return <ReactQuill onBlur={handleBlur} onFocus={handleFocus} className={`quill-editor ${className}`} theme={theme} {...otherProps} bounds={".quill-editor"} ref={ref} placeholder={appliedPlaceholder} />;
 });
 export default QuillEditor;
 

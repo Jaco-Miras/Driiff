@@ -13,6 +13,7 @@ import TypingIndicator from "../../list/chat/TypingIndicator";
 import LockedLabel from "./LockedLabel";
 import { ChatInputButtons } from "./index";
 import { useEffect } from "react";
+import { isMobile } from "react-device-detect";
 
 const CommonPicker = lazy(() => import("../../common/CommonPicker"));
 
@@ -187,7 +188,7 @@ const ChatFooterPanel = (props) => {
   //const zoomActions = useZoomActions();
   const [quote] = useSelectQuote();
 
-  const handleSend = () => {
+  const handleSend = (e) => {
     dispatch(onClickSendButton(true));
   };
 
@@ -490,7 +491,7 @@ const ChatFooterPanel = (props) => {
               </ChatInputContainer>
 
               <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
-                <SvgIconFeather onClick={handleSend} icon="send" />
+                <SvgIconFeather onKeyDown={handleSend} onClick={handleSend} icon="send" />
               </Tooltip>
             </React.Fragment>
           )}
