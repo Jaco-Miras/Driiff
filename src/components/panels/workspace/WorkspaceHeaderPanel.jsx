@@ -629,7 +629,7 @@ const WorspaceHeaderPanel = (props) => {
   const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).external_id === user.id && isSameDriff;
   const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
   const showInviteButton = (isCreator || isTeamMember) && user.type !== "external";
-  debugger;
+
   return (
     <>
       <NavBarLeft className="navbar-left">

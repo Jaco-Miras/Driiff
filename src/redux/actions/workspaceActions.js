@@ -331,3 +331,7 @@ export function updateWorkspaceMember(payload, callback) {
 export function getSharedWorkspaces(payload, callback) {
   return dispatchActionToReducer(getSharedWorkspacesService(payload), "GET_SHARED_WORKSPACES_START", "GET_SHARED_WORKSPACES_SUCCESS", "GET_SHARED_WORKSPACES_FAIL", callback);
 }
+
+export function incomingAcceptedSharedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_SHARED_USER", payload, callback);
+}

@@ -503,7 +503,6 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "CREATE_WORKSPACE_SUCCESS": {
-      console.log(action);
       if (action.data.topic.is_shared_wp) {
         const ws = {
           channel: action.data.channel,
@@ -541,7 +540,6 @@ export default (state = INITIAL_STATE, action) => {
     }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
-      console.log(action.data, "incoming");
       if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
@@ -4547,6 +4545,26 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_ACCEPTED_SHARED_USER": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`] && {
+            [`${action.data.current_topic.id}-${action.data.shared_slug}`]: {
+              ...state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`],
+              members: state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`].members.map((m) => {
+                if (m.id === action.data.current_user.id && m.external_id === action.data.current_user.external_id) {
+                  return { ...m, has_accepted: true, active: 1, slug: action.data.current_user.slug };
+                } else {
+                  return m;
+                }
+              }),
+            },
+          }),
+        },
+      };
     }
     default:
       return state;

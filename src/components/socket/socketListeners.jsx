@@ -177,6 +177,7 @@ import {
   getAllWorkspaceFolders,
   incomingWorkpaceNotificationStatus,
   incomingUpdatedWorkspaceQuickLinks,
+  incomingAcceptedSharedUser,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement, incomingFaviconImage } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -1442,6 +1443,10 @@ class SocketListeners extends Component {
 
     window[this.state.slug]
       .private(`${this.state.slug}.App.Broadcast`)
+      .listen(".shared-user-notification", (e) => {
+        console.log(e, "accepted user");
+        this.props.incomingAcceptedSharedUser(e);
+      })
       .listen(".update-meeting-option-notification", (e) => {
         this.props.incomingMeetingSettings(e);
       })
@@ -2807,6 +2812,7 @@ function mapDispatchToProps(dispatch) {
     incomingMeetingSettings: bindActionCreators(incomingMeetingSettings, dispatch),
     incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
     incomingFaviconImage: bindActionCreators(incomingFaviconImage, dispatch),
+    incomingAcceptedSharedUser: bindActionCreators(incomingAcceptedSharedUser, dispatch),
   };
 }
 

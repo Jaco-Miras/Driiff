@@ -167,7 +167,7 @@ const GuestLayout = (props) => {
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
-    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "The time saving collaboration platform for agencies "),
+    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "Game-changing online collaboration platform for ambitious agencies."),
     welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
     setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
