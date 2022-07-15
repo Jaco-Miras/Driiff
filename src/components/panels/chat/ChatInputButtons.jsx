@@ -106,6 +106,7 @@ const ChatInputButtons = (props) => {
   const dispatch = useDispatch();
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
+  const isFocus = useSelector((state) => state.global.isFocus);
   const [showButtons, setShowButtons] = useState(activeSend);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
@@ -161,13 +162,12 @@ const ChatInputButtons = (props) => {
           )}
         </IconWrapper>
       )}
-
+      {isFocus ? "HI" : "HIDE"}
       <IconWrapper className="btn-paperclip">
         <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Attach file">
           <SvgIconFeather onClick={onShowFileDialog} icon="paperclip" />
         </Tooltip>
       </IconWrapper>
-
       <IconWrapper className={"chat-buttons"}>
         <SvgIconFeather onClick={handleShowButtons} icon={showButtons ? "x" : "more-vertical"} />
       </IconWrapper>

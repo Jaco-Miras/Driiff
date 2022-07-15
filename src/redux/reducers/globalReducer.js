@@ -79,6 +79,7 @@ const INITIAL_STATE = {
   },
   dontShowIds: [],
   showNotificationStatusBar: false,
+  isFocus: false,
 };
 
 const getLink = (t) => {
@@ -916,6 +917,12 @@ export default (state = INITIAL_STATE, action) => {
             general_post: (action.data.general_post === -1 && state.unreadCounter.general_post > 0) || action.data.general_post === 1 ? state.unreadCounter.general_post + action.data.general_post : state.unreadCounter.general_post,
           }),
         },
+      };
+    }
+    case "QUILL_FOCUS": {
+      return {
+        ...state,
+        isFocus: true,
       };
     }
     default:

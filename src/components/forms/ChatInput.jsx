@@ -15,7 +15,7 @@ import {
   setSelectedChannel,
   incomingUpdatedChatMessage,
 } from "../../redux/actions/chatActions";
-import { deleteDraft } from "../../redux/actions/globalActions";
+import { deleteDraft, sample } from "../../redux/actions/globalActions";
 import { SvgIconFeather } from "../common";
 import BodyMention from "../common/BodyMention";
 import { useChannelActions, useDraft, useQuillInput, useQuillModules, useSaveInput, useSelectQuote, useTimeFormat, useHuddle, useToaster, useEnlargeEmoticons } from "../hooks";
@@ -861,8 +861,14 @@ const ChatInput = (props) => {
       reactQuillRef.current.getEditor().root.dataset.placeholder = "";
     }
   }, [showEmojiPicker, jitsiActive, fileDialogActive]);
+
+  const sampleFun = () => {
+    dispatch(sample());
+  };
+
   return (
     <div className="chat-input-wrapper">
+      <button onClick={sampleFun}>ss</button>
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} />}
       {mentionData.mentionedUserIds.length > 0 && selectedChannel && selectedChannel.type !== "TEAM" && selectedChannel.type !== "DIRECT_TEAM" && (
         <BodyMention
