@@ -4488,6 +4488,26 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    case "INCOMING_ACCEPTED_SHARED_USER": {
+      return {
+        ...state,
+        workspaces: {
+          ...state.workspaces,
+          ...(state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`] && {
+            [`${action.data.current_topic.id}-${action.data.shared_slug}`]: {
+              ...state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`],
+              members: state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`].members.map((m) => {
+                if (m.id === action.data.current_user.id && m.external_id === action.data.current_user.external_id) {
+                  return { ...m, has_accepted: true, active: 1, slug: action.data.current_user.slug };
+                } else {
+                  return m;
+                }
+              }),
+            },
+          }),
+        },
+      };
+    }
     default:
       return state;
   }
