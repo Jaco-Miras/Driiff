@@ -202,56 +202,69 @@ const TodoReminderModal = (props) => {
        * params sent to reminder modal, if params is existing then the modal is triggered in workspace
        * if params is undefined, reminder modal is triggered in the main sidebar or on the main reminder page
        * **/
-      if (!itemType && params && workspaces[params.workspaceId]) {
-        const ws = { ...workspaces[params.workspaceId] };
+      if (!itemType && params) {
+        let wsKey = params ? params.workspaceId : null;
+        if (isSharedWorkspace) {
+          wsKey = activeTopic.key;
+        }
+        const ws = workspaces[wsKey];
         // set default selected workspace and set the user options using the workspace members
-        setSelectedWorkspace({
-          ...ws,
-          icon: "compass",
-          value: ws.id,
-          label: ws.name,
-        });
-        setForm({
-          ...form,
-          topic_id: { value: ws.id },
-        });
-        setUserOptions(
-          ws.members.map((u) => {
-            return {
-              ...u,
-              icon: "user-avatar",
-              value: u.id,
-              label: u.name && u.name.trim() !== "" ? u.name : u.email,
-              type: "USER",
-              useLabel: true,
-            };
-          })
-        );
+        if (ws) {
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+          );
+        }
       }
-      if (itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC" && workspaces[parentItem.entity_id]) {
-        const ws = { ...workspaces[parentItem.entity_id] };
-        setSelectedWorkspace({
-          ...ws,
-          icon: "compass",
-          value: ws.id,
-          label: ws.name,
-        });
-        setForm({
-          ...form,
-          topic_id: { value: ws.id },
-        });
-        setUserOptions(
-          ws.members.map((u) => {
-            return {
-              ...u,
-              icon: "user-avatar",
-              value: u.id,
-              label: u.name && u.name.trim() !== "" ? u.name : u.email,
-              type: "USER",
-              useLabel: true,
-            };
-          })
-        );
+
+      if (itemType && parentItem && itemType === "CHAT" && parentItem.type === "TOPIC") {
+        let wsKey = parentItem.entity_id;
+        if (isSharedWorkspace) {
+          wsKey = `${parentItem.entity_id}-${parentItem.slug}`;
+        }
+        const ws = workspaces[wsKey];
+        if (ws) {
+          setSelectedWorkspace({
+            ...ws,
+            icon: "compass",
+            value: ws.id,
+            label: ws.name,
+          });
+          setForm({
+            ...form,
+            topic_id: { value: ws.id },
+          });
+          setUserOptions(
+            ws.members.map((u) => {
+              return {
+                ...u,
+                icon: "user-avatar",
+                value: u.id,
+                label: u.name && u.name.trim() !== "" ? u.name : u.email,
+                type: "USER",
+                useLabel: true,
+              };
+            })
+          );
+        }
       }
       if (!itemType && params && params.hasOwnProperty("workspaceId") && activeTopic && mode === "create") {
         setSelectedWorkspace({
@@ -334,9 +347,10 @@ const TodoReminderModal = (props) => {
         })
       );
     }
-  }, [mounted, workspacesLoaded, params]);
+  }, [mounted, workspacesLoaded, params, isSharedWorkspace]);
 
   useEffect(() => {
+    //mount use effect
     if (mode === "edit" && item && item.workspace) {
       if (Object.values(workspaces).some((ws) => ws.id === item.workspace.id)) {
         let ws;
