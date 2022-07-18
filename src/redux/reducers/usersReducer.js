@@ -562,6 +562,25 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    case "INCOMING_ACCEPTED_SHARED_USER": {
+      return {
+        ...state,
+        sharedUsers: {
+          ...state.sharedUsers,
+          ...(state.sharedUsers[action.data.shared_slug] && {
+            [action.data.shared_slug]: {
+              users: state.sharedUsers[action.data.shared_slug].users.map((m) => {
+                if (m.id === action.data.current_user.id) {
+                  return { ...m, active: 1, has_accepted: true, external_id: action.data.current_user.external_id };
+                } else {
+                  return m;
+                }
+              }),
+            },
+          }),
+        },
+      };
+    }
     default:
       return state;
   }

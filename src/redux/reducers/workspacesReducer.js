@@ -4497,8 +4497,8 @@ export default (state = INITIAL_STATE, action) => {
             [`${action.data.current_topic.id}-${action.data.shared_slug}`]: {
               ...state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`],
               members: state.workspaces[`${action.data.current_topic.id}-${action.data.shared_slug}`].members.map((m) => {
-                if (m.id === action.data.current_user.id && m.external_id === action.data.current_user.external_id) {
-                  return { ...m, has_accepted: true, active: 1, slug: action.data.current_user.slug };
+                if (m.id === action.data.current_user.id) {
+                  return { ...m, has_accepted: true, active: 1, slug: action.data.current_user.slug, external_id: action.data.current_user.external_id };
                 } else {
                   return m;
                 }
