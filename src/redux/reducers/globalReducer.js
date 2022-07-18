@@ -83,6 +83,7 @@ const INITIAL_STATE = {
   },
   dontShowIds: [],
   showNotificationStatusBar: false,
+  isFocus: false,
 };
 
 const getLink = (t) => {
@@ -901,6 +902,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.meetings,
           search: action.data,
         },
+      };
+    }
+    case "QUILL_FOCUS": {
+      return {
+        ...state,
+        isFocus: action.data,
       };
     }
     default:

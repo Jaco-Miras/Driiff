@@ -43,6 +43,25 @@ const Wrapper = styled.li`
       }
     }
   }
+  @media (min-width: 768px) {
+    &:focus,
+    &:hover {
+      background: #f0f0f050;
+      padding: 0 25px !important;
+      margin: 0 -25px;
+      .more-options {
+        display: inline-flex;
+        opacity: 1;
+        z-index: 1;
+        &.active {
+          color: #4d4d4d !important;
+        }
+      }
+      h6 {
+        color: ${({ theme }) => theme.colors.primary};
+      }
+    }
+  }
   h6 {
     ${(props) => props.selected && `color: ${props.theme.colors.primary};`}
   }
@@ -153,7 +172,14 @@ const ChannelList = (props) => {
   };
 
   return (
-    <Wrapper ref={firstRef} selected={selectedChannel !== null && channel.id === selectedChannel.id} onClick={handleSelectChannel} tabIndex={tabIndex} onKeyDown={(e) => handleResultKeydown(e, index)}>
+    <Wrapper
+      className={`list-group-item d-flex align-items-center link-1 pl-1 pr-1 pl-lg-0 pr-lg-0 pb-2 pt-2 ${className}`}
+      ref={firstRef}
+      selected={selectedChannel !== null && channel.id === selectedChannel.id}
+      onClick={handleSelectChannel}
+      tabIndex={tabIndex}
+      onKeyDown={(e) => handleResultKeydown(e, index)}
+    >
       <ChannelIcon channel={channel} onSelectChannel={handleSelectChannel} />
       <div className="channel-info" ref={addLoadRef ? loadRef : null}>
         <div className="channel-title-preview">

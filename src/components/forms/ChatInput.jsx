@@ -890,6 +890,7 @@ const ChatInput = (props) => {
       reactQuillRef.current.getEditor().root.dataset.placeholder = "";
     }
   }, [showEmojiPicker, jitsiActive, fileDialogActive]);
+
   return (
     <div className="chat-input-wrapper">
       {showQuestions && !editMode && draftId === null && <HuddleQuestion question={question} huddle={huddle} isFirstQuestion={isFirstQuestion} selectedChannel={selectedChannel} user={user} />}

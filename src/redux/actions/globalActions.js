@@ -299,3 +299,7 @@ export function setMeetingFilter(payload, callback) {
 export function setMeetingSearch(payload, callback) {
   return SimpleDispatchActionToReducer("SET_MEETING_SEARCH", payload, callback);
 }
+
+export function reactQuillState(payload, callback) {
+  return SimpleDispatchActionToReducer("QUILL_FOCUS", payload, callback);
+}
