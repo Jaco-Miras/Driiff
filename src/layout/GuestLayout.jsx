@@ -7,6 +7,7 @@ import useDriffActions from "../components/hooks/useDriffActions";
 import { $_GET } from "../helpers/commonFunctions";
 import LoginLogo from "../components/panels/main/LoginLogo";
 import SharedWorkspaceInvite from "../components/panels/SharedWorkspaceInvite";
+import introImage from "../assets/media/image/intro-image.png";
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
 const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
@@ -90,6 +91,15 @@ const Wrapper = styled.div`
   }`}
 `;
 
+const CenterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 const StyledLink = styled.a`
   color: ${(props) => props.theme.colors.primary}!important;
   cursor: pointer;
@@ -100,6 +110,24 @@ const StyledLink = styled.a`
 
 const StyledWelcomeNote = styled.div`
   font-size: 12px;
+`;
+const SideImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #29323f;
+  justify-content: flex-end;
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 3px 10px rgb(62 85 120 / 5%);
+`;
+const SideImage = styled.div`
+  background-image: url(${introImage});
+  background-repeat: no-repeat;
+  height: 90%;
+  width: 430px;
+  background-size: contain;
+  background-color: #29323f;
+  background-position: center;
+  border-radius: 12px 0 0 12px;
 `;
 
 const GuestLayout = (props) => {
@@ -237,50 +265,57 @@ const GuestLayout = (props) => {
 
   return (
     <>
-      <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"}>
-        <LoginLogo />
-        {/* <div id="logo">
+      <CenterContainer>
+        {location.pathname === "/shared-hub-invite" && (
+          <SideImageContainer>
+            <SideImage />
+          </SideImageContainer>
+        )}
+        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={location.pathname === "/shared-hub-invite" ? { borderRadius: "0 12px 12px 0" } : {}}>
+          <LoginLogo />
+          {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div> */}
-        {driffSettings.settings.maintenance_mode ? (
-          <>
-            <h5 className="title">Maintenance Mode</h5>
-          </>
-        ) : (
-          <>
-            <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
-              {title}
-              {$_GET("code") && $_GET("state") && (
-                <>
-                  <span>.</span>
-                  <span>.</span>
-                  <span>.</span>
-                </>
-              )}
-            </h5>
-            <Suspense fallback={<div></div>}>
-              <Switch>
-                <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-                <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
-                <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
-                <Route path={"/shared-hub-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
-                <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
-              </Switch>
-            </Suspense>
-          </>
-        )}
-      </Wrapper>
-      {location.pathname !== "/driff-register" && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <StyledLink href="#" onClick={loginClick}>
-            {dictionary.login}
-          </StyledLink>
-        </div>
-      )}
+          {driffSettings.settings.maintenance_mode ? (
+            <>
+              <h5 className="title">Maintenance Mode</h5>
+            </>
+          ) : (
+            <>
+              <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
+                {title}
+                {$_GET("code") && $_GET("state") && (
+                  <>
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                  </>
+                )}
+              </h5>
+              <Suspense fallback={<div></div>}>
+                <Switch>
+                  <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
+                  <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
+                  <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+                  <Route path={"/shared-hub-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
+                  <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
+                </Switch>
+              </Suspense>
+            </>
+          )}
+          {location.pathname !== "/driff-register" && (
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+              <StyledLink href="#" onClick={loginClick}>
+                {dictionary.login}
+              </StyledLink>
+            </div>
+          )}
+        </Wrapper>
+      </CenterContainer>
     </>
   );
 };
