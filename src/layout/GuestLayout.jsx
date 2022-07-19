@@ -8,6 +8,8 @@ import { $_GET } from "../helpers/commonFunctions";
 import LoginLogo from "../components/panels/main/LoginLogo";
 import SharedWorkspaceInvite from "../components/panels/SharedWorkspaceInvite";
 import introImage from "../assets/media/image/intro-image.png";
+import { useSelector } from "react-redux";
+import { useMemo } from "react";
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
 const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
@@ -203,10 +205,13 @@ const GuestLayout = (props) => {
     cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
     generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
     generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
+    greetingMessage: _t("GREETING.MESSAGE", "Hi there!"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
   const [countryCode, setCountryCode] = useState(null);
+
+  const companyLogo = useSelector((state) => state.settings.driff.logo);
 
   const loginClick = (e) => {
     e.preventDefault();
@@ -256,6 +261,13 @@ const GuestLayout = (props) => {
           history.push("/login");
         }
         break;
+      case "/shared-hub-invite":
+        if (driffSettings.settings.sign_up) {
+          setTitle(dictionary.greetingMessage);
+        } else {
+          history.push("/login");
+        }
+        break;
       default:
         if (location.pathname.indexOf("/authenticate/") === 0 || ($_GET("code"), $_GET("state"))) setTitle(dictionary.authentication);
         else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle(dictionary.updatePassword);
@@ -263,16 +275,24 @@ const GuestLayout = (props) => {
     }
   }, [location]);
 
+  const isSharedHubInvitePage = useMemo(() => location.pathname === "/shared-hub-invite", [location.pathname]);
+
   return (
     <>
       <CenterContainer>
-        {location.pathname === "/shared-hub-invite" && (
+        {isSharedHubInvitePage && (
           <SideImageContainer>
             <SideImage />
           </SideImageContainer>
         )}
-        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={location.pathname === "/shared-hub-invite" ? { borderRadius: "0 12px 12px 0" } : {}}>
-          <LoginLogo />
+        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={isSharedHubInvitePage ? { borderRadius: "0 12px 12px 0" } : {}}>
+          {isSharedHubInvitePage ? (
+            <div className="d-flex justify-content-center">
+              <img className="w-50" src={companyLogo} alt="company logo" />
+            </div>
+          ) : (
+            <LoginLogo />
+          )}
           {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div> */}
