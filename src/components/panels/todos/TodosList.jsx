@@ -124,7 +124,7 @@ const TodosList = (props) => {
   const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace, workspace } = props;
 
   const dispatch = useDispatch();
-  //const user = useSelector((state) => state.session.user);
+  const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
@@ -350,7 +350,12 @@ const TodosList = (props) => {
                 )}
               </div>
               <div className="avatars-container">
-                {todo.author !== null && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />}
+                <Avatar
+                  name={todo.author ? todo.author.name : user.name}
+                  tooltipName={dictionary.reminderAuthor}
+                  imageLink={todo.author ? todo.author.profile_image_link : user.profile_image_link}
+                  id={todo.author ? todo.author.id : user.id}
+                />
                 {showAssignedTo && (
                   <>
                     <Icon icon="chevron-right" />

@@ -619,15 +619,29 @@ const TodoReminderModal = (props) => {
       }));
     }
 
-    if (user.type === "external" && mode === "create") {
+    if (mode === "create") {
+      let selectedUser = user;
+      if (isSharedWorkspace && parentItem && itemType === "CHAT" && parentItem.slug && sharedWs[parentItem.slug]) {
+        selectedUser = sharedWs[parentItem.slug].user_auth;
+      } else if (isSharedWorkspace && parentItem && itemType && itemType === "POST_COMMENT" && sharedWs[parentItem.slug]) {
+        selectedUser = sharedWs[parentItem.slug].user_auth;
+      } else if (isSharedWorkspace && item && itemType && itemType === "POST" && sharedWs[item.slug]) {
+        selectedUser = sharedWs[item.slug].user_auth;
+      } else if (isSharedWorkspace && activeTopic && sharedWs[activeTopic.slug]) {
+        selectedUser = sharedWs[activeTopic.slug].user_auth;
+      }
       setSelectedUser({
-        ...user,
+        ...selectedUser,
         icon: "user-avatar",
-        value: user.id,
-        label: user.name,
+        value: selectedUser.id,
+        label: selectedUser.name,
         type: "USER",
         useLabel: true,
       });
+      setForm((prevState) => ({
+        ...prevState,
+        assigned_to: { value: selectedUser.id },
+      }));
     }
     setMounted(true);
   }, []);
