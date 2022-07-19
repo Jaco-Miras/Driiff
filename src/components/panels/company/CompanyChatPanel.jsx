@@ -67,7 +67,7 @@ const CompanyChatPanel = (props) => {
   //   }, 7000);
   // });
   return (
-    <Wrapper className={`company-chat ${className}`}>
+    <Wrapper className={`company-chat p-0 m-lg-3 ${className}`}>
       <div className="row no-gutters chat-block">
         <ChatSidebarPanel className={"col-lg-4 chat-sidebar-panel"} />
         <ChatContentPanel className={"col-lg-8 chat-content-panel"} />

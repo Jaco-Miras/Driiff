@@ -572,74 +572,76 @@ const ChatBubble = (props) => {
   //const theme = useTheme()
 
   return (
-    <ChatBubbleContainer
-      ref={refs.container}
-      tabIndex={reply.id}
-      hasFiles={hasFiles}
-      className={`chat-bubble ql-editor ${reply.is_important && "important"} ${isExternalUser && "external-chat"}`}
-      showAvatar={showAvatar}
-      isAuthor={isAuthor}
-      hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
-      hasGif={showGifPlayer}
-      hasRemoveOnDlFiles={hasRemoveOnDlFiles}
-    >
-      {
-        <>
-          {reply.is_transferred && (
-            <ForwardedSpan className="small" isAuthor={isAuthor}>
-              <SvgIconFeather icon="corner-up-right" />
-              {reply.is_from_email ? <>{dictionary.repliedViaEmail}</> : <> {dictionary.forwardedMessage}</>}
-            </ForwardedSpan>
-          )}
-          <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
-            <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
-              {!isAuthor && showAvatar && (
-                <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
-                    {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
-                  </ChatNameNotAuthor>
-                </>
-              )}
+    <>
+      <ChatBubbleContainer
+        ref={refs.container}
+        tabIndex={reply.id}
+        hasFiles={hasFiles}
+        className={`chat-bubble ql-editor ${reply.is_important && "important"} ${isExternalUser && "external-chat"}`}
+        showAvatar={showAvatar}
+        isAuthor={isAuthor}
+        hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
+        hasGif={showGifPlayer}
+        hasRemoveOnDlFiles={hasRemoveOnDlFiles}
+      >
+        {
+          <>
+            {reply.is_transferred && (
+              <ForwardedSpan className="small" isAuthor={isAuthor}>
+                <SvgIconFeather icon="corner-up-right" />
+                {reply.is_from_email ? <>{dictionary.repliedViaEmail}</> : <> {dictionary.forwardedMessage}</>}
+              </ForwardedSpan>
+            )}
+            <ChatContentClap ref={addMessageRef ? loadRef : null} className="chat-content-clap" isAuthor={isAuthor}>
+              <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
+                {!isAuthor && showAvatar && (
+                  <>
+                    <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
+                      {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
+                    </ChatNameNotAuthor>
+                  </>
+                )}
 
-              {reply.quote && reply.quote.hasOwnProperty("body") && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
-                <QuoteContainer
-                  className={"quote-container"}
-                  showAvatar={showAvatar}
-                  isEmoticonOnly={isEmoticonOnly}
-                  hasFiles={hasFiles}
-                  onClick={handleQuoteClick}
-                  //onTouchEnd={handleQuoteClick}
-                  isAuthor={isAuthor}
-                >
-                  {reply.quote.user_id === user.id ? <QuoteAuthor isAuthor={true}>{"You"}</QuoteAuthor> : <QuoteAuthor isAuthor={reply.quote.user_id === user.id}>{quoteAuthor}</QuoteAuthor>}
-                  <QuoteContent className={"quote-content"} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
-                </QuoteContainer>
-              )}
-              {hasMessage && (
-                <span ref={isLastChat ? lastChatRef : null}>
-                  <ReplyContent
-                    //ref={handleContentRef}
-                    ref={refs.replyRef}
+                {reply.quote && reply.quote.hasOwnProperty("body") && !reply.is_deleted && (reply.quote.user_id !== undefined || reply.quote.user !== undefined) && (
+                  <QuoteContainer
+                    className={"quote-container"}
+                    showAvatar={showAvatar}
+                    isEmoticonOnly={isEmoticonOnly}
                     hasFiles={hasFiles}
+                    onClick={handleQuoteClick}
+                    //onTouchEnd={handleQuoteClick}
                     isAuthor={isAuthor}
-                    className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""} ${reply.body.startsWith("ZOOM_MESSAGE::{") ? "zoom-msg" : ""}`}
-                    dangerouslySetInnerHTML={{ __html: replyBody }}
-                  />
-                </span>
-              )}
-              {reply.files.length > 0 && !reply.is_deleted && <MessageFiles dictionary={dictionary} isAuthor={isAuthor} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />}
-              {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
-            </ChatContent>
-          </ChatContentClap>
-          <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-            <span className="reply-date created">
-              <span>{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</span>
-              {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
-            </span>
-          </ChatTimeStamp>
-        </>
-      }
-    </ChatBubbleContainer>
+                  >
+                    {reply.quote.user_id === user.id ? <QuoteAuthor isAuthor={true}>{"You"}</QuoteAuthor> : <QuoteAuthor isAuthor={reply.quote.user_id === user.id}>{quoteAuthor}</QuoteAuthor>}
+                    <QuoteContent className={"quote-content"} isAuthor={isAuthor} dangerouslySetInnerHTML={{ __html: quoteBody }}></QuoteContent>
+                  </QuoteContainer>
+                )}
+                {hasMessage && (
+                  <span ref={isLastChat ? lastChatRef : null}>
+                    <ReplyContent
+                      //ref={handleContentRef}
+                      ref={refs.replyRef}
+                      hasFiles={hasFiles}
+                      isAuthor={isAuthor}
+                      className={`reply-content ${isEmoticonOnly ? "emoticon-body" : ""} ${reply.is_deleted ? "is-deleted" : ""} ${reply.body.startsWith("ZOOM_MESSAGE::{") ? "zoom-msg" : ""}`}
+                      dangerouslySetInnerHTML={{ __html: replyBody }}
+                    />
+                  </span>
+                )}
+                {reply.files.length > 0 && !reply.is_deleted && <MessageFiles dictionary={dictionary} isAuthor={isAuthor} files={reply.files} type="chat" topic_id={selectedChannel.type === "TOPIC" ? selectedChannel.entity_id : null} />}
+                {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
+              </ChatContent>
+            </ChatContentClap>
+            <ChatTimeStamp className="chat-timestamp" style={{ border: "3px solid red" }} isAuthor={isAuthor}>
+              <span className="reply-date created">
+                <div className="d-block">sad{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
+                {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
+              </span>
+            </ChatTimeStamp>
+          </>
+        }
+      </ChatBubbleContainer>
+    </>
   );
 };
 
