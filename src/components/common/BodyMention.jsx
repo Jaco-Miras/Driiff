@@ -26,7 +26,7 @@ const BodyMentionDiv = styled.div`
   }
 `;
 const BodyMention = (props) => {
-  const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false } = props;
+  const { onAddUsers, onDoNothing, userIds, type = "post", basedOnUserId = false, userMentionOnly = false, sharedSlug = null } = props;
 
   const { _t } = useTranslationActions();
   const user = useSelector((state) => state.session.user);
@@ -96,8 +96,7 @@ const BodyMention = (props) => {
     pText = dictionary.notWorkspaceMembers;
     addText = dictionary.addToWorkspace;
   }
-
-  if (isExternalUser) return null;
+  if (isExternalUser || sharedSlug) return null;
   return (
     <BodyMentionDiv>
       <div>
