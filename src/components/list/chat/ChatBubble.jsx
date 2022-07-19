@@ -79,6 +79,7 @@ const ChatBubbleContainer = styled.div`
     height: 100%;
     text-align: ${(props) => (props.isAuthor ? "right" : "left")};
     white-space: nowrap;
+    position: absolute;
   }
   ol {
     text-align: left;
@@ -341,13 +342,13 @@ const ChatContent = styled.div`
 `;
 
 const ChatTimeStamp = styled.div`
-  color: #676767;
-  display: flex;
+  display: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "flex" : "none")};
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
   .reply-date {
     margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 10px")};
     flex-flow: column;
     justify-content: center;
+    color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "#a7abc3" : "#0000")};
   }
   .reply-date.updated {
     > span:last-child {
@@ -632,15 +633,21 @@ const ChatBubble = (props) => {
                 {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
               </ChatContent>
             </ChatContentClap>
-            <ChatTimeStamp className="chat-timestamp" style={{ border: "3px solid red" }} isAuthor={isAuthor}>
+            {/*  <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
               <span className="reply-date created">
-                <div className="d-block">sad{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
+                <div className="d-block">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
                 {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
               </span>
-            </ChatTimeStamp>
+            </ChatTimeStamp> */}
           </>
         }
       </ChatBubbleContainer>
+      <ChatTimeStamp showAvatar={showAvatar} hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)} hasGif={showGifPlayer} className="chat-timestamp" isAuthor={isAuthor}>
+        <span className="reply-date created">
+          <div className="d-block">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
+          {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
+        </span>
+      </ChatTimeStamp>
     </>
   );
 };
