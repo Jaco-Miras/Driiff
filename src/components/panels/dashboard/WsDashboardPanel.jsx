@@ -171,7 +171,7 @@ const WsDashboardPanel = (props) => {
                 <ShortcutsCard dictionary={dictionary} isWorkspace={true} workspace={activeTopic} />
               </Card>
               <Card className="mb-2">
-                <PostMentionCard dictionary={dictionary} isWorkspace={true} />
+                <PostMentionCard dictionary={dictionary} isWorkspace={true} workspace={activeTopic} />
               </Card>
             </QuicklinksMentionColumn>
           </div>

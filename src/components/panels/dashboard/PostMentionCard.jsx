@@ -68,11 +68,12 @@ const Wrapper = styled.div`
 // `;
 
 const PostMentionCard = (props) => {
-  const { dictionary, isWorkspace = false } = props;
+  const { dictionary, isWorkspace = false, workspace = null } = props;
   const params = useParams();
   //const dispatch = useDispatch();
   const notifications = useSelector((state) => state.notifications.notifications);
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   // const handleShowPostModal = () => {
   //   let payload = {
   //     type: "post_modal",
@@ -83,6 +84,11 @@ const PostMentionCard = (props) => {
   //   };
   //   dispatch(addToModals(payload));
   // };
+
+  let currentUser = user;
+  if (isWorkspace && workspace && sharedWs[workspace.slug]) {
+    currentUser = sharedWs[workspace.slug].user_auth;
+  }
 
   const sortedNotifications = Object.values(notifications)
     .filter((n) => {
@@ -97,25 +103,31 @@ const PostMentionCard = (props) => {
           return (
             n.data.is_close === 0 &&
             n.data.users_approval &&
-            n.data.users_approval.find((u) => u.ip_address === null && user.id === u.id) &&
+            n.data.users_approval.find((u) => u.ip_address === null && currentUser.id === u.id) &&
             n.data &&
             n.data.workspaces &&
             n.data.workspaces.some((ws) => ws.topic_id === parseInt(params.workspaceId))
           );
         } else {
-          return n.data.is_close === 0 && n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && user.id === u.id);
+          if (n.sharedSlug && sharedWs[n.slug]) {
+            currentUser = sharedWs[n.slug].user_auth;
+          }
+          return n.data.is_close === 0 && n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && currentUser.id === u.id);
         }
       } else if (n.type === "POST_CREATE") {
         if (isWorkspace) {
           const connectedWs = n.data.workspaces && n.data.workspaces.some((ws) => ws.topic_id === parseInt(params.workspaceId));
           return (
-            (connectedWs && n.data.is_close === 0 && n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (connectedWs && n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
+            (connectedWs && n.data.is_close === 0 && n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === currentUser.id && !u.must_read)) ||
+            (connectedWs && n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === currentUser.id && !u.must_reply))
           );
         } else {
+          if (n.sharedSlug && sharedWs[n.slug]) {
+            currentUser = sharedWs[n.slug].user_auth;
+          }
           return (
-            (n.data.is_close === 0 && n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read)) ||
-            (n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply))
+            (n.data.is_close === 0 && n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === currentUser.id && !u.must_read)) ||
+            (n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === currentUser.id && !u.must_reply))
           );
         }
       } else {
