@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { FormInput, InputFeedback } from "../forms";
 import { $_GET } from "../../helpers/commonFunctions";
 import { getSharedUserInfo } from "../../redux/actions/userAction";
-import { Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import { patchCheckDriff } from "../../redux/actions/driffActions";
 // import { acceptSharedUserInvite } from "../../redux/actions/userAction";
 // import { replaceChar } from "../../helpers/stringFormatter";
@@ -18,6 +18,7 @@ const Wrapper = styled.form`
 `;
 
 const FormGroup = styled.div`
+  text-align: left;
   .form-control {
     margin-bottom: 0 !important;
   }
@@ -123,6 +124,11 @@ const SharedWorkspaceInvite = (props) => {
     createYourOwnDriff: _t("INVITE.CREATE_YOUR_OWN_DRIFF", "Create your own Driff"),
     backToLogin: _t("INVITE.BACK_TO_LOGIN_PAGE", "Go back to login page"),
     loginToDriff: _t("INVITE.LOGIN_TO_DRIFF", "Login to Driff"),
+    labelFirstName: _t("LABEL.FIRST_NAME", "First Name"),
+    labelMiddleName: _t("LABEL.MIDDLE_NAME", "Middle Name"),
+    labelLastName: _t("LABEL.LAST_NAME", "Last Name"),
+    labelCompanyName: _t("LABEL.COMPANY_NAME", "Company Name"),
+    labelEmail: _t("LABEL.EMAIL", "Email"),
   };
 
   const handleInputChange = useCallback((e) => {
@@ -328,7 +334,9 @@ const SharedWorkspaceInvite = (props) => {
           {responseData && (
             <>
               <FormGroup className="form-group">
+                <Label for="first_name">{dictionary.labelFirstName}</Label>
                 <FormInput
+                  id="first_name"
                   innerRef={refs.first_name}
                   value={form.first_name}
                   onChange={handleInputChange}
@@ -342,7 +350,9 @@ const SharedWorkspaceInvite = (props) => {
                 />
               </FormGroup>
               <FormGroup className="form-group">
+                <Label for="middle_name">{dictionary.labelMiddleName}</Label>
                 <FormInput
+                  id="middle_name"
                   onChange={handleInputChange}
                   value={form.middle_name}
                   name="middle_name"
@@ -354,13 +364,26 @@ const SharedWorkspaceInvite = (props) => {
                 />
               </FormGroup>
               <FormGroup className="form-group">
-                <FormInput onChange={handleInputChange} value={form.last_name} name="last_name" type="text" placeholder={dictionary.lastName} isValid={formResponse.valid.last_name} feedback={formResponse.message.last_name} readOnly />
+                <Label for="last_name">{dictionary.labelLastName}</Label>
+                <FormInput
+                  onChange={handleInputChange}
+                  id="last_name"
+                  value={form.last_name}
+                  name="last_name"
+                  type="text"
+                  placeholder={dictionary.lastName}
+                  isValid={formResponse.valid.last_name}
+                  feedback={formResponse.message.last_name}
+                  readOnly
+                />
               </FormGroup>
               <FormGroup className="form-group">
-                <FormInput onChange={handleInputChange} value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
+                <Label for="company_name">{dictionary.labelCompanyName}</Label>
+                <FormInput onChange={handleInputChange} id="company_name" value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
               </FormGroup>
               <FormGroup className="form-group text-left">
-                <FormInput onChange={handleInputChange} name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
+                <Label for="email">{dictionary.labelEmail}</Label>
+                <FormInput onChange={handleInputChange} id="email" name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
               </FormGroup>
             </>
           )}
@@ -375,13 +398,10 @@ const SharedWorkspaceInvite = (props) => {
               <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleCreateDriff}>
                 {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.createYourOwnDriff}
               </button>
-
-              <div>Or</div>
-
-              <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleShowDriffInput}>
+              or
+              <button className="btn btn-link text-dark mt-2 mb-2" onClick={handleShowDriffInput}>
                 {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.connectWithMyDriff}
               </button>
-
               {/* <div>Or</div>
 
               <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleLoginAsGuest}>
