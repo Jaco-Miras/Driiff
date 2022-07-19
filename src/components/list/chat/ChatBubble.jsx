@@ -345,10 +345,11 @@ const ChatTimeStamp = styled.div`
   display: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "flex" : "none")};
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
   .reply-date {
-    margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 10px")};
+    margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 0")};
     flex-flow: column;
     justify-content: center;
     color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "#a7abc3" : "#0000")};
+    font-size: 11px;
   }
   .reply-date.updated {
     > span:last-child {
