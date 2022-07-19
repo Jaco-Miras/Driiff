@@ -317,7 +317,7 @@ const DescriptionInput = (props) => {
       <Label for="firstMessage">{dictionary.description}</Label>
       <DescriptionInputWrapper className={`description-wrapper ${valid === null ? "" : valid ? "is-valid" : "is-invalid"}`} ref={wrapperRef} hasFocus={focusRef.current}>
         <StyledQuillEditor className="description-input" modules={modules} ref={reactQuillRef} onChange={onChange} height={80} defaultValue={defaultValue} readOnly={readOnly} {...otherProps} />
-        {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} />}
+        {mentionedUserIds.length > 0 && !disableBodyMention && <BodyMention onAddUsers={onAddUsers} onDoNothing={onDoNothing} userIds={mentionedUserIds} baseOnId={false} type={modal} sharedSlug={sharedSlug} />}
         {!readOnly && (
           <Buttons className="btns" onClick={handleFocus}>
             <IconButton onClick={handleShowEmojiPicker} icon="smile" />

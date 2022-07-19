@@ -885,6 +885,7 @@ const ChatInput = (props) => {
           type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}
           basedOnUserId={true}
           userMentionOnly={true}
+          sharedSlug={selectedChannel.sharedSlug}
         />
       )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />
