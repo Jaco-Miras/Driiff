@@ -709,37 +709,29 @@ const TodoReminderModal = (props) => {
       }));
     }
 
-    // if (mode === "edit" && item.link_type === "DRIFF_TALK") {
-    //   //get the channel and set the selected channel
-    //   let channel;
-    //   if (channels[item.link_id]) {
-    //     channel = { ...channels[item.link_id], value: item.link_id, label: channels[item.link_id].title, name: channels[item.link_id].title };
-    //     setSelectedChannel(channel);
-    //   } else {
-    //     //get the channel
-    //     dispatch(
-    //       getChannelDetail({ id: item.link_id }, (err, res) => {
-    //         if (err) return;
-    //         setSelectedChannel({
-    //           ...res.data,
-    //           id: res.data.id,
-    //           value: res.data.id,
-    //           label: res.data.title,
-    //         });
-    //       })
-    //     );
-    //   }
-    // }
-
     if (mode === "create") {
+      let selectedUser = user;
+      if (isSharedWorkspace && parentItem && itemType === "CHAT" && parentItem.slug && sharedWs[parentItem.slug]) {
+        selectedUser = sharedWs[parentItem.slug].user_auth;
+      } else if (isSharedWorkspace && parentItem && itemType && itemType === "POST_COMMENT" && sharedWs[parentItem.slug]) {
+        selectedUser = sharedWs[parentItem.slug].user_auth;
+      } else if (isSharedWorkspace && item && itemType && itemType === "POST" && sharedWs[item.slug]) {
+        selectedUser = sharedWs[item.slug].user_auth;
+      } else if (isSharedWorkspace && activeTopic && sharedWs[activeTopic.slug]) {
+        selectedUser = sharedWs[activeTopic.slug].user_auth;
+      }
       setSelectedUser({
-        ...user,
+        ...selectedUser,
         icon: "user-avatar",
-        value: user.id,
-        label: user.name,
+        value: selectedUser.id,
+        label: selectedUser.name,
         type: "USER",
         useLabel: true,
       });
+      setForm((prevState) => ({
+        ...prevState,
+        assigned_to: { value: selectedUser.id },
+      }));
     }
     setMounted(true);
   }, []);
