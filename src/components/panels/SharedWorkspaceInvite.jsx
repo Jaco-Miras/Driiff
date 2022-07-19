@@ -124,6 +124,11 @@ const SharedWorkspaceInvite = (props) => {
     createYourOwnDriff: _t("INVITE.CREATE_YOUR_OWN_DRIFF", "Create your own Driff"),
     backToLogin: _t("INVITE.BACK_TO_LOGIN_PAGE", "Go back to login page"),
     loginToDriff: _t("INVITE.LOGIN_TO_DRIFF", "Login to Driff"),
+    labelFirstName: _t("LABEL.FIRST_NAME", "First Name"),
+    labelMiddleName: _t("LABEL.MIDDLE_NAME", "Middle Name"),
+    labelLastName: _t("LABEL.LAST_NAME", "Last Name"),
+    labelCompanyName: _t("LABEL.COMPANY_NAME", "Company Name"),
+    labelEmail: _t("LABEL.EMAIL", "Email"),
   };
 
   const handleInputChange = useCallback((e) => {
@@ -329,7 +334,7 @@ const SharedWorkspaceInvite = (props) => {
           {responseData && (
             <>
               <FormGroup className="form-group">
-                <Label for="first_name">First Name</Label>
+                <Label for="first_name">{dictionary.labelFirstName}</Label>
                 <FormInput
                   id="first_name"
                   innerRef={refs.first_name}
@@ -345,7 +350,7 @@ const SharedWorkspaceInvite = (props) => {
                 />
               </FormGroup>
               <FormGroup className="form-group">
-                <Label for="middle_name">Middle Name</Label>
+                <Label for="middle_name">{dictionary.labelMiddleName}</Label>
                 <FormInput
                   id="middle_name"
                   onChange={handleInputChange}
@@ -359,7 +364,7 @@ const SharedWorkspaceInvite = (props) => {
                 />
               </FormGroup>
               <FormGroup className="form-group">
-                <Label for="last_name">Last Name</Label>
+                <Label for="last_name">{dictionary.labelLastName}</Label>
                 <FormInput
                   onChange={handleInputChange}
                   id="last_name"
@@ -373,11 +378,11 @@ const SharedWorkspaceInvite = (props) => {
                 />
               </FormGroup>
               <FormGroup className="form-group">
-                <Label for="company_name">Company Name</Label>
+                <Label for="company_name">{dictionary.labelCompanyName}</Label>
                 <FormInput onChange={handleInputChange} id="company_name" value={form.company_name} name="company_name" placeholder={dictionary.companyName} readOnly />
               </FormGroup>
               <FormGroup className="form-group text-left">
-                <Label for="email">Email</Label>
+                <Label for="email">{dictionary.labelEmail}</Label>
                 <FormInput onChange={handleInputChange} id="email" name="email" type="text" value={form.email} isValid={formResponse.valid.email} feedback={formResponse.message.email} readOnly />
               </FormGroup>
             </>
