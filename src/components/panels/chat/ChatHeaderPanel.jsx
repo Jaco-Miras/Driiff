@@ -261,6 +261,15 @@ const StyledChannelIcon = styled(ChannelIcon)`
   }
 `;
 
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  @media (min-width: 992px) {
+    width: fit-content;
+    justify-content: flex-start;
+  }
+`;
 const toggleTooltip = () => {
   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   tooltips.forEach((tooltip) => {
@@ -521,23 +530,35 @@ const ChatHeaderPanel = (props) => {
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
           <BackButtonChevron icon={"chevron-left"} />
-          {unreadCounter.chat_message > 0 && <span>{unreadCounter.chat_message.toString()}</span>}
+          {unreadCounter.chat_message > 0 && <span className="d-none d-lg-flex">{unreadCounter.chat_message.toString()}</span>}
         </BackButton>
         <StyledChannelIcon className="chat-header-icon" channel={channel} width="33px" />
       </div>
-      <div className="channel-title-wrapper">
+      <Container className="channel-title-wrapper">
         <div className="chat-header-title">{getChannelTitle()}</div>
-        <ChatHeaderBadgeContainer className="chat-header-badge">
+        <ChatHeaderBadgeContainer className="chat-header-badge d-flex  align-items-center d-lg-flex">
           {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
             <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
           )}
           {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
-            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+            <StyledBadge className={"badge badge-external mr-1 d-none d-lg-flex"} isTeam={channel.team ? true : false}>
               {channel.team ? dictionary.teamChat : dictionary.clientChat}
             </StyledBadge>
           )}
+          <div className="ml-1 d-lg-none">
+            <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+              {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+              {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+              <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+              <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+              <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+              {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+              {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+            </StyledMoreOptions>
+          </div>
         </ChatHeaderBadgeContainer>
-        <ChatIconsOptionsContainer>
+
+        <ChatIconsOptionsContainer className="d-none d-lg-flex">
           {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
             <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
               <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
@@ -567,7 +588,7 @@ const ChatHeaderPanel = (props) => {
         </ChatIconsOptionsContainer>
 
         <div className="chat-header-folder">{getChannelFolder()}</div>
-      </div>
+      </Container>
       <ChatHeaderMembers channel={channel} />
     </Wrapper>
   );

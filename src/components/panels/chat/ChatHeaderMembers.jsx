@@ -31,7 +31,7 @@ const ChatHeaderMembers = (props) => {
     members = [...teamAvatars, ...members];
   }
   return (
-    <div className="chat-header-right">
+    <div className="d-none d-lg-flex chat-header-right">
       <ul className="nav align-items-center justify-content-end">
         {["DIRECT", "PERSONAL_BOT"].includes(channel.type) === false && (
           <li>
