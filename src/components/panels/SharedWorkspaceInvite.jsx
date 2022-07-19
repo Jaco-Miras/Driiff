@@ -398,13 +398,10 @@ const SharedWorkspaceInvite = (props) => {
               <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleCreateDriff}>
                 {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.createYourOwnDriff}
               </button>
-
-              <div>Or</div>
-
-              <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleShowDriffInput}>
+              or
+              <button className="btn btn-link text-dark mt-2 mb-2" onClick={handleShowDriffInput}>
                 {loading && <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true" />} {dictionary.connectWithMyDriff}
               </button>
-
               {/* <div>Or</div>
 
               <button className="btn btn-primary btn-block mt-2 mb-2" onClick={handleLoginAsGuest}>
