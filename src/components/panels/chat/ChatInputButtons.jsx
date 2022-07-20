@@ -111,7 +111,7 @@ const ChatInputButtons = (props) => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const meet = useSelector((state) => state.settings.driff.meet);
   const isFocus = useSelector((state) => state.global.isFocus);
-  const [showButtons, setShowButtons] = useState(isFocus);
+  const [showButtons, setShowButtons] = useState(false);
   const handleEditReplyClose = () => {
     if (quote) dispatch(clearQuote(quote));
     if (editChatMessage !== null) {
@@ -131,7 +131,7 @@ const ChatInputButtons = (props) => {
   const isClientChat = channel && workspaces[channel.entity_id] && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].channel.id === channel.id;
 
   useEffect(() => {
-    setShowButtons(!activeSend);
+    setShowButtons(isFocus);
   }, [activeSend]);
   return (
     <Wrapper editMode={editChatMessage !== null} showButtons={showButtons} clientChat={isClientChat} disabledMeet={meet === "disable"}>

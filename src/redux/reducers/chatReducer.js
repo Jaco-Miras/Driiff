@@ -75,6 +75,7 @@ const INITIAL_STATE = {
   jitsi: null,
   initialLoad: false,
   sharedDriff: {},
+  hidePageHeader: false,
 };
 
 const date = new Date();
@@ -3198,6 +3199,12 @@ export default function (state = INITIAL_STATE, action) {
             channels: action.data.results.map((c) => c.code),
           },
         },
+      };
+    }
+    case "HIDE_PAGE_HEADER": {
+      return {
+        ...state,
+        hidePageHeader: action.data,
       };
     }
     default:

@@ -6,6 +6,9 @@ import ChatTitleDate from "./ChatTitleDate";
 import ChatIconReplyPreview from "./ChatIconReplyPreview";
 import { Badge } from "../../common";
 import { useInView } from "react-intersection-observer";
+import { useDispatch } from "react-redux";
+import { hidePageHeader } from "../../../redux/actions/chatActions";
+import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.li`
   display: flex;
@@ -126,7 +129,7 @@ const Wrapper = styled.li`
 
 const ChannelList = (props) => {
   const { className = "", channel, selectedChannel, channelDrafts, dictionary, addLoadRef, onLoadMore, onSelectChannel, onClearSearch, firstRef = null, tabIndex, index } = props;
-
+  const dispatch = useDispatch();
   // const refs = {
   //   container: useRef(null),
   // };
@@ -142,8 +145,13 @@ const ChannelList = (props) => {
       onLoadMore();
     }
   }, [addLoadRef, loadInView]);
-
+  const handlePageHeader = () => {
+    if (isMobile) {
+      dispatch(hidePageHeader(true));
+    }
+  };
   const handleSelectChannel = () => {
+    handlePageHeader();
     if (onSelectChannel) {
       onSelectChannel(channel);
     }

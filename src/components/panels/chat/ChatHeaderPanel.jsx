@@ -14,7 +14,7 @@ import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 import { isMobile } from "react-device-detect";
 import Tooltip from "react-tooltip-lite";
 import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
-import { addCompanyNameOnMembers } from "../../../redux/actions/chatActions";
+import { addCompanyNameOnMembers, hidePageHeader } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -262,6 +262,15 @@ const StyledChannelIcon = styled(ChannelIcon)`
   }
 `;
 
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  @media (min-width: 992px) {
+    width: fit-content;
+    justify-content: flex-start;
+  }
+`;
 const toggleTooltip = () => {
   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   tooltips.forEach((tooltip) => {
@@ -332,8 +341,13 @@ const ChatHeaderPanel = (props) => {
 
     dispatch(addToModals(payload));
   };
-
+  const handleHidePageHeader = () => {
+    if (isMobile) {
+      dispatch(hidePageHeader(false));
+    }
+  };
   const goBackChannelSelect = () => {
+    handleHidePageHeader();
     document.body.classList.remove("m-chat-channel-closed");
     const snoozeContainer = document.getElementById("toastS");
     if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");
@@ -553,15 +567,15 @@ const ChatHeaderPanel = (props) => {
       <div className="chat-header-left">
         <BackButton className="chat-back-button" onClick={goBackChannelSelect}>
           <BackButtonChevron icon={"chevron-left"} />
-          {unreadCounter.chat_message > 0 && <span>{unreadCounter.chat_message.toString()}</span>}
+          {unreadCounter.chat_message > 0 && <span className="d-none d-lg-flex">{unreadCounter.chat_message.toString()}</span>}
         </BackButton>
         <StyledChannelIcon className="chat-header-icon" channel={channel} width="33px" />
       </div>
-      <div className="channel-title-wrapper">
+      <Container className="channel-title-wrapper">
         <div className="chat-header-title">{getChannelTitle()}</div>
 
         {channel.sharedSlug ? (
-          <ChatHeaderBadgeContainer className="chat-header-badge">
+          <ChatHeaderBadgeContainer className="chat-header-badge d-flex  align-items-center d-lg-flex">
             {channel.type === "TOPIC" && !channel.is_archived && (
               <StyledBadge className="badge badge-external mr-1">
                 <RepeatIcon className={"ml-1"} icon="repeat" strokeWidth="2" />
@@ -577,9 +591,20 @@ const ChatHeaderPanel = (props) => {
                 {channel.team ? dictionary.teamChat : dictionary.clientChat}
               </StyledBadge>
             )}
+            <div className="ml-1 d-lg-none">
+              <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+                {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+                <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+                <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+                <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+                {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+                {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+              </StyledMoreOptions>
+            </div>
           </ChatHeaderBadgeContainer>
         ) : (
-          <ChatHeaderBadgeContainer className="chat-header-badge">
+          <ChatHeaderBadgeContainer className="chat-header-badge d-flex  align-items-center d-lg-flex">
             {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
               <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
             )}
@@ -589,6 +614,17 @@ const ChatHeaderPanel = (props) => {
                 {channel.team ? dictionary.teamChat : dictionary.clientChat}
               </StyledBadge>
             )}
+            <div className="ml-1 d-lg-none">
+              <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+                {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
+                {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
+                <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
+                <div onClick={(e) => handleMarkAsUnreadSelected(e)}>{channel.total_unread === 0 && channel.is_read === true ? dictionary.markAsUnread : dictionary.markAsRead}</div>
+                <div onClick={handleMuteChat}>{channel.is_muted ? dictionary.unmute : dictionary.mute}</div>
+                {channel.type !== "PERSONAL_BOT" && <div onClick={handleHideChat}>{!channel.is_hidden ? dictionary.hide : dictionary.unhide}</div>}
+                {<ChatTranslateActionsMenu selectedChannel={chatChannel} translated_channels={translated_channels} chatMessageActions={chatMessageActions} />}
+              </StyledMoreOptions>
+            </div>
           </ChatHeaderBadgeContainer>
         )}
 
@@ -622,7 +658,7 @@ const ChatHeaderPanel = (props) => {
         </ChatIconsOptionsContainer>
 
         <div className="chat-header-folder">{getChannelFolder()}</div>
-      </div>
+      </Container>
       <ChatHeaderMembers channel={channel} />
     </Wrapper>
   );
