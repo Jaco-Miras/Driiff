@@ -50,6 +50,7 @@ const INITIAL_STATE = {
   },
   jitsi: null,
   initialLoad: false,
+  hidePageHeader: false,
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -3051,6 +3052,12 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         initialLoad: true,
+      };
+    }
+    case "HIDE_PAGE_HEADER": {
+      return {
+        ...state,
+        hidePageHeader: action.data,
       };
     }
     default:

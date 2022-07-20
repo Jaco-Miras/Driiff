@@ -14,6 +14,7 @@ import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 import { isMobile } from "react-device-detect";
 import Tooltip from "react-tooltip-lite";
 import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
+import { hidePageHeader } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -328,8 +329,13 @@ const ChatHeaderPanel = (props) => {
 
     dispatch(addToModals(payload));
   };
-
+  const handleHidePageHeader = () => {
+    if (isMobile) {
+      dispatch(hidePageHeader(false));
+    }
+  };
   const goBackChannelSelect = () => {
+    handleHidePageHeader();
     document.body.classList.remove("m-chat-channel-closed");
     const snoozeContainer = document.getElementById("toastS");
     if (snoozeContainer && isMobile) snoozeContainer.classList.remove("d-none");

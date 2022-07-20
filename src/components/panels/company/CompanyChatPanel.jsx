@@ -4,6 +4,7 @@ import { ChatContentPanel, ChatSidebarPanel } from "../chat";
 //import Snowfall from "react-snowfall";
 
 const Wrapper = styled.div`
+  height: 100vh;
   .chat-sidebar-panel {
     //max-width: 540px;
   }

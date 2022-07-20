@@ -525,3 +525,6 @@ export function setChannelInitialLoad(payload, callback) {
 export function createJitsiMeetMobile(payload, callback) {
   return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START_MOBILE", "CREATE_JITSI_MEET_SUCCESS_MOBILE", "CREATE_JITSI_MEET_FAIL_MOBILE", callback);
 }
+export function hidePageHeader(payload, callback) {
+  return SimpleDispatchActionToReducer("HIDE_PAGE_HEADER", payload, callback);
+}
