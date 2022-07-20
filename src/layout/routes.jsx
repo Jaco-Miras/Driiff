@@ -121,12 +121,7 @@ export const AppRoute = ({ children, ...props }) => {
         >
           {children}
         </Route>
-        <Route
-          {...props}
-          component={VideoMeeting}
-          path={"/video-meeting/:room_name/:jwt_token"}
-          exact
-        >
+        <Route {...props} component={VideoMeeting} path={"/video-meeting/:room_name/:jwt_token"} exact>
           {children}
         </Route>
         <Redirect
