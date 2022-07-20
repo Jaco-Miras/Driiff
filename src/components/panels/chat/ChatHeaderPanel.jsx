@@ -575,7 +575,7 @@ const ChatHeaderPanel = (props) => {
         <div className="chat-header-title">{getChannelTitle()}</div>
 
         {channel.sharedSlug ? (
-          <ChatHeaderBadgeContainer className="chat-header-badge d-flex  align-items-center d-lg-flex">
+          <ChatHeaderBadgeContainer className="chat-header-badge d-flex align-items-center d-lg-flex">
             {channel.type === "TOPIC" && !channel.is_archived && (
               <StyledBadge className="badge badge-external mr-1">
                 <RepeatIcon className={"ml-1"} icon="repeat" strokeWidth="2" />
@@ -604,7 +604,7 @@ const ChatHeaderPanel = (props) => {
             </div>
           </ChatHeaderBadgeContainer>
         ) : (
-          <ChatHeaderBadgeContainer className="chat-header-badge d-flex  align-items-center d-lg-flex">
+          <ChatHeaderBadgeContainer className="chat-header-badge d-flex align-items-center d-lg-flex">
             {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
               <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
             )}
@@ -628,7 +628,7 @@ const ChatHeaderPanel = (props) => {
           </ChatHeaderBadgeContainer>
         )}
 
-        <ChatIconsOptionsContainer>
+        <ChatIconsOptionsContainer className="d-none d-lg-flex">
           {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
             <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>
               <Icon className="ml-1" width="16" height="16" icon={channel.is_active ? "bell" : "bell-off"} onClick={handleWorkspaceNotification} />
