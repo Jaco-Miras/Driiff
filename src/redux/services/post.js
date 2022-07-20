@@ -345,6 +345,11 @@ export function postClap(payload) {
  * @returns {Promise<*>}
  */
 export function getCompanyPosts(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   const { skip = 0, limit = 25, search = "", filters = [] } = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
@@ -363,12 +368,14 @@ export function getCompanyPosts(payload) {
       url: url,
       data: payload,
       cancelToken: payload.cancelToken,
+      sharedPayload: sharedPayload,
     });
   } else {
     return apiCall({
       method: "GET",
       url: url,
       data: payload,
+      sharedPayload: sharedPayload,
     });
   }
 }

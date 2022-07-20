@@ -66,6 +66,12 @@ import {
   readNotification,
   getPostReadAndClap,
   setShowUnread,
+  getSharedCompanyPosts,
+  getSharedMyCompanyPosts,
+  getSharedReadCompanyPosts,
+  getSharedArchivedCompanyPosts,
+  getSharedStarCompanyPosts,
+  getSharedUnreadCompanyPosts,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
@@ -1119,6 +1125,30 @@ const usePostActions = () => {
     dispatch(setShowUnread(value));
   };
 
+  const fetchSharedCompanyPosts = (payload, callback) => {
+    dispatch(getSharedCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedMyCompanyPosts = (payload, callback) => {
+    dispatch(getSharedMyCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedArchivedCompanyPosts = (payload, callback) => {
+    dispatch(getSharedArchivedCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedStarCompanyPosts = (payload, callback) => {
+    dispatch(getSharedStarCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedReadCompanyPosts = (payload, callback) => {
+    dispatch(getSharedReadCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedUnreadCompanyPosts = (payload, callback) => {
+    dispatch(getSharedUnreadCompanyPosts(payload, callback));
+  };
+
   return {
     approve,
     approveComment,
@@ -1174,6 +1204,12 @@ const usePostActions = () => {
     readPostNotification,
     fetchPostReadAndClap,
     setShowUnreadPosts,
+    fetchSharedCompanyPosts,
+    fetchSharedMyCompanyPosts,
+    fetchSharedReadCompanyPosts,
+    fetchSharedUnreadCompanyPosts,
+    fetchSharedArchivedCompanyPosts,
+    fetchSharedStarCompanyPosts,
   };
 };
 
