@@ -9,7 +9,7 @@ const useCompanyPosts = () => {
   const user = useSelector((state) => state.session.user);
   const { flipper, next_skip, posts, filter, tag, postListTag, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
   const postsLists = useSelector((state) => state.posts.postsLists);
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const archived = useSelector((state) => state.posts.archived);
   const favourites = useSelector((state) => state.posts.favourites);
@@ -17,7 +17,7 @@ const useCompanyPosts = () => {
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
   const showUnread = useSelector((state) => state.posts.showUnread);
-  const { slug } = useGetSlug();
+  //const { slug } = useGetSlug();
 
   const fetchMore = (callback = () => {}) => {
     if (filter === "inbox") {
@@ -144,13 +144,6 @@ const useCompanyPosts = () => {
   }
 
   filteredPosts = filteredPosts
-    .filter((p) => {
-      if (p.slug) {
-        return p.slug === slug;
-      } else {
-        return true;
-      }
-    })
     .filter((p) => {
       if (filter) {
         if (filter === "all") {

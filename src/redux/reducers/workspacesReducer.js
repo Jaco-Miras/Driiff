@@ -859,14 +859,14 @@ export default (state = INITIAL_STATE, action) => {
       if (action.data.isSharedSlug) {
         convertedPosts = convertArrayToObject(
           action.data.posts.map((p) => {
-            return Object.assign({}, p, { claps: [], slug: action.data.slug });
+            return Object.assign({}, p, { claps: [], slug: action.data.slug, sharedSlug: true });
           }),
           "code"
         );
       } else {
         convertedPosts = convertArrayToObject(
           action.data.posts.map((p) => {
-            return Object.assign({}, p, { claps: [], slug: action.data.slug });
+            return Object.assign({}, p, { claps: [], slug: action.data.slug, sharedSlug: false });
           }),
           "id"
         );
