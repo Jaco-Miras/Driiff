@@ -276,6 +276,7 @@ const GuestLayout = (props) => {
   }, [location]);
 
   const isSharedHubInvitePage = useMemo(() => location.pathname === "/shared-hub-invite", [location.pathname]);
+  const isDriffRegisterPage = useMemo(() => location.pathname === "/driff-register", [location.pathname]);
 
   return (
     <>
@@ -286,7 +287,7 @@ const GuestLayout = (props) => {
           </SideImageContainer>
         )}
         <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={isSharedHubInvitePage ? { borderRadius: "0 12px 12px 0" } : {}}>
-          {isSharedHubInvitePage ? (
+          {isSharedHubInvitePage || isDriffRegisterPage ? (
             <div className="d-flex justify-content-center">
               <img className="w-50" src={companyLogo} alt="company logo" />
             </div>
