@@ -269,6 +269,10 @@ const ChatBubbleQuoteDiv = styled.div`
     ${(props) => !props.showAvatar && !props.isAuthor && "margin-left: 0"};
     ${(props) => !props.isAuthor === true && "margin-left: 0"};
   }
+  margin-right: ${(props) => (props.showAvatar && !props.isAuthor ? "3rem" : "1.6rem")};
+  @media (min-width: 768px) {
+    margin-right: ${(props) => (props.showAvatar && !props.isAuthor ? "1rem" : "1.6rem")};
+  }
 `;
 const SystemMessageContainer = styled.div`
   position: relative;

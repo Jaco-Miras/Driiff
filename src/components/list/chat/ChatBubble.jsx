@@ -9,6 +9,7 @@ import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
+import moment from "moment";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -23,7 +24,6 @@ const ChatBubbleContainer = styled.div`
   font-size: 0.835rem;
   overflow: visible;
   min-height: ${(props) => (props.hasGif ? "150px" : "33px")};
-
   &:after {
     border: 10px solid #0000;
     position: absolute;
@@ -345,13 +345,17 @@ const ChatContent = styled.div`
 `;
 
 const ChatTimeStamp = styled.div`
-  display: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "flex" : "none")};
+  display: flex;
+  margin-right: 2rem;
   flex-flow: ${(props) => (props.isAuthor ? "row" : "row-reverse")};
+  width: 100%;
+  align-items: ${(props) => props.isAuthor && " flex-end"};
+  justify-content: ${(props) => props.isAuthor && " flex-end"};
   .reply-date {
     margin: ${(props) => (props.isAuthor ? "0 10px 0 0" : "0 0 0 0")};
     flex-flow: column;
     justify-content: center;
-    color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "#a7abc3" : "#0000")};
+    color: #a7abc3;
     font-size: 11px;
   }
   .reply-date.updated {
@@ -365,6 +369,13 @@ const ChatTimeStamp = styled.div`
     }
     > span:last-child {
       display: block;
+    }
+  }
+  @media (min-width: 768px) {
+    display: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "flex" : "none")};
+    .reply-date {
+      color: ${(props) => ((props.showAvatar && props.hideBg === false) || props.hasRemoveOnDlFiles || (props.showAvatar && props.hasFiles) ? "#a7abc3" : "#0000")};
+      margin-left: 0;
     }
   }
 `;
@@ -637,16 +648,16 @@ const ChatBubble = (props) => {
                 {showGifPlayer && <BlobGifPlayer body={reply.body} autoplay={true} />}
               </ChatContent>
             </ChatContentClap>
-            {/*  <ChatTimeStamp className="chat-timestamp" isAuthor={isAuthor}>
-              <span className="reply-date created">
-                <div className="d-block">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
-                {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
-              </span>
-            </ChatTimeStamp> */}
           </>
         }
+        <ChatTimeStamp className="chat-timestamp d-lg-none" showAvatar={showAvatar} hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)} hasGif={showGifPlayer} isAuthor={isAuthor}>
+          <div className="reply-date created">
+            <div className="d-block time-format">{moment.unix(reply.created_at.timestamp).format("hh:mm A")}</div>
+            {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
+          </div>
+        </ChatTimeStamp>
       </ChatBubbleContainer>
-      <ChatTimeStamp showAvatar={showAvatar} hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)} hasGif={showGifPlayer} className="chat-timestamp" isAuthor={isAuthor}>
+      <ChatTimeStamp className="chat-timestamp d-none d-lg-flex" showAvatar={showAvatar} hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)} hasGif={showGifPlayer} isAuthor={isAuthor}>
         <span className="reply-date created">
           <div className="d-block">{timeFormat.todayOrYesterdayDate(reply.created_at.timestamp)}</div>
           {hasRemoveOnDlFiles && <span>{dictionary.removeOnDownload}</span>}
