@@ -19,7 +19,7 @@ const ChatBubbleContainer = styled.div`
   border-radius: 6px;
   background: ${(props) => (props.isAuthor ? props.theme.colors.primary : "#F0F0F0")};
   text-align: left;
-  width: 17rem;
+  width: fit-content;
   color: ${(props) => (props.isAuthor ? "#ffffff" : "#000000")};
   font-size: 0.835rem;
   overflow: visible;
