@@ -167,11 +167,13 @@ const WorkspacePageHeaderPanel = (props) => {
               {isLoaded && workspaceReminders[params.workspaceId].count.todo_with_date > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.todo_with_date}</div>}
             </MainNavLink>
           </li>
-          <li className="nav-item">
-            <MainNavLink isSub={true} to={`/${ws_type}/meetings${pathname}`}>
-              {dictionary.pageTitleMeetings}
-            </MainNavLink>
-          </li>
+          {!workspace?.sharedSlug && (
+            <li className="nav-item">
+              <MainNavLink isSub={true} to={`/${ws_type}/meetings${pathname}`}>
+                {dictionary.pageTitleMeetings}
+              </MainNavLink>
+            </li>
+          )}
           <li className="nav-item">
             <MainNavLink isSub={true} to={`/${ws_type}/files${pathname}`}>
               {dictionary.pageTitleFiles}
@@ -182,11 +184,13 @@ const WorkspacePageHeaderPanel = (props) => {
               {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>
-          <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/wip${pathname}`}>
-              W.I.P.
-            </MainNavLink>
-          </li>
+          {!workspace?.sharedSlug && (
+            <li className="nav-item">
+              <MainNavLink isSub={true} to={`/hub/wip${pathname}`}>
+                W.I.P.
+              </MainNavLink>
+            </li>
+          )}
         </Navbar>
       </Wrapper>
     </>
