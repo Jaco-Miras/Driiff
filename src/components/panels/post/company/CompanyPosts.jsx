@@ -107,7 +107,7 @@ const CompanyPosts = (props) => {
   const handleToggleCheckbox = (post) => {
     let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
     setCheckedPosts(postIds);
-    dispatch(setSelectedCompanyPost({ companyPostId: post.id, isSelected: !post.is_selected }));
+    dispatch(setSelectedCompanyPost({ companyPostId: post.sharedSlug ? post.code : post.id, isSelected: !post.is_selected }));
   };
 
   const handleMarkAllAsRead = () => {
@@ -184,7 +184,7 @@ const CompanyPosts = (props) => {
   const clearCheckedPost = () => {
     setCheckedPosts([]);
     posts.map((post) => {
-      dispatch(setSelectedCompanyPost({ companyPostId: post.id, isSelected: false }));
+      dispatch(setSelectedCompanyPost({ companyPostId: post.sharedSlug ? post.code : post.id, isSelected: false }));
     });
   };
 

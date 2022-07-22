@@ -260,15 +260,19 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
-      if (action.data.sharedSlug) return state;
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.id]: action.data,
+            [postKey]: action.data,
           },
         },
       };
@@ -1621,10 +1625,12 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.companyPostId]: {
-              ...state.companyPosts.posts[action.data.companyPostId],
-              is_selected: action.data.isSelected,
-            },
+            ...(state.companyPosts.posts[action.data.companyPostId] && {
+              [action.data.companyPostId]: {
+                ...state.companyPosts.posts[action.data.companyPostId],
+                is_selected: action.data.isSelected,
+              },
+            }),
           },
         },
       };

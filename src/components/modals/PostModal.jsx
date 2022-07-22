@@ -540,7 +540,7 @@ const PostModal = (props) => {
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
             .filter((m) => {
-              if (form.shared_with_client && hasExternal) {
+              if ((form.shared_with_client || isSharedExternal) && hasExternal) {
                 return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
               } else {
                 return m.insert.mention && m.insert.mention.type === "internal";
