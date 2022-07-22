@@ -8,6 +8,8 @@ import { useSettings } from "../../hooks";
 
 const LogoWrapper = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
   ${(props) =>
     props.hasCompanyLogo &&
     `height: 100%;
@@ -29,7 +31,7 @@ const CompanyLogoWrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  justify-content: center;
+  justify-content: space-evenly;
   cursor: pointer;
   .feather-heart {
     color: #fff;
