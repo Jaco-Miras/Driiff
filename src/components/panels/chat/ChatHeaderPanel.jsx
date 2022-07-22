@@ -150,8 +150,8 @@ const BackButton = styled.div`
 
 const BackButtonChevron = styled(SvgIconFeather)`
   color: ${(props) => props.theme.colors.primary};
-  height: 24px;
-  width: 24px;
+  height: 32px;
+  width: 32px;
   transition: color 0.15s ease-in-out;
 `;
 
@@ -552,7 +552,7 @@ const ChatHeaderPanel = (props) => {
             </StyledBadge>
           )}
           <div className="ml-1 d-lg-none">
-            <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="17" width="17">
+            <StyledMoreOptions role="tabList" strokeWidth="1" fill="black" svgHeight="30" width="30">
               {["PERSONAL_BOT", "COMPANY", "TOPIC"].includes(channel.type) === false && <div onClick={handleShowArchiveConfirmation}>{!channel.is_archived ? dictionary.archive : dictionary.unarchive}</div>}
               {channel.type === "GROUP" && !channel.is_archived && <div onClick={handleShowChatEditModal}>{dictionary.edit}</div>}
               <div onClick={handlePinButton}>{channel.is_pinned ? dictionary.unfavorite : dictionary.favorite}</div>
