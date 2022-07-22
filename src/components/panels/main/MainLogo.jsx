@@ -8,6 +8,8 @@ import { useSettings } from "../../hooks";
 
 const LogoWrapper = styled.div`
   position: relative;
+  display: flex;
+  justify-content: center;
   ${(props) =>
     props.hasCompanyLogo &&
     `height: 100%;
@@ -21,8 +23,6 @@ const LogoWrapper = styled.div`
       cursor: pointer;
     }
   }
-  display: flex;
-  justify-content: center;
 `;
 
 const CompanyLogoWrapper = styled.div`
