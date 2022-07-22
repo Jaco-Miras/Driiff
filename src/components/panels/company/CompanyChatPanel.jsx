@@ -51,6 +51,9 @@ const Wrapper = styled.div`
   .row {
     flex-wrap: unset;
   }
+  @media (min-width: 768px) {
+    height: 100%;
+  }
 `;
 
 const CompanyChatPanel = (props) => {

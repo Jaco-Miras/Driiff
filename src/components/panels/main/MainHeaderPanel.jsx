@@ -11,8 +11,8 @@ const Wrapper = styled.div`
     height: 90px;
   }
   @media (min-width: 768px) {
-    height: 90px;
     display: flex;
+    height: 90px;
   }
 `;
 

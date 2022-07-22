@@ -48,7 +48,7 @@ const Wrapper = styled.div`
         flex-direction: column;
         justify-content: space-between;
         .navbar-top {
-          margin-top: 4px;
+          margin-top: 1rem;
           display: flex;
           align-items: center;
           height: 40px;
