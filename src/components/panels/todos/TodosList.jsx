@@ -350,12 +350,7 @@ const TodosList = (props) => {
                 )}
               </div>
               <div className="avatars-container">
-                <Avatar
-                  name={todo.author ? todo.author.name : user.name}
-                  tooltipName={dictionary.reminderAuthor}
-                  imageLink={todo.author ? todo.author.profile_image_link : user.profile_image_link}
-                  id={todo.author ? todo.author.id : user.id}
-                />
+                {todo.author && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} sharedUser={workspace?.sharedSlug ? todo.author : null} />}
                 {showAssignedTo && (
                   <>
                     <Icon icon="chevron-right" />
@@ -366,6 +361,7 @@ const TodosList = (props) => {
                       id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
                       type={todo.assigned_to ? "USER" : "TOPIC"}
                       noDefaultClick={todo.assigned_to ? false : true}
+                      sharedUser={workspace?.sharedSlug ? todo.assigned_to : null}
                     />
                   </>
                 )}
