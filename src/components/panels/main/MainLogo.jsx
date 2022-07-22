@@ -21,6 +21,8 @@ const LogoWrapper = styled.div`
       cursor: pointer;
     }
   }
+  display: flex;
+  justify-content: center;
 `;
 
 const CompanyLogoWrapper = styled.div`
@@ -29,7 +31,7 @@ const CompanyLogoWrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  justify-content: center;
+  justify-content: space-evenly;
   cursor: pointer;
   .feather-heart {
     color: #fff;
