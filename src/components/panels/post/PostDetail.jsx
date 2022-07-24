@@ -275,7 +275,7 @@ const PostDetail = (props) => {
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
-  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
+  const viewers = Object.values(workspace.members).filter((u) => viewerIds.some((id) => id === u.id));
 
   const handleGoBack = () => {
     onGoBack();
