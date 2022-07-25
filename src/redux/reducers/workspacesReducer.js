@@ -531,11 +531,13 @@ export default (state = INITIAL_STATE, action) => {
     }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
-      if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
+      // if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
-        updatedWorkspaces[action.data.id] = {
+        //  updatedWorkspaces[action.data.id] = {
+        updatedWorkspaces[action.data.sharedSlug ? `${action.data.id}-${action.data.topic.slug_owner}` : action.data.id] = {
+          ...action.data,
           id: action.data.id,
           name: action.data.topic.name,
           is_external: action.data.is_external,
@@ -568,8 +570,8 @@ export default (state = INITIAL_STATE, action) => {
           updated_at: action.data.topic.created_at,
           primary_files: [],
           is_shared: action.data.members.filter((m) => m.type === "external").length > 0,
-          key: action.data.id,
-          sharedSlug: false,
+          key: action.data.sharedSlug ? `${action.data.id}-${action.data.topic.slug_owner}` : action.data.id,
+          sharedSlug: action.data.sharedSlug,
         };
         if (action.data.workspace !== null && updatedFolders[action.data.workspace.id]) {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];
