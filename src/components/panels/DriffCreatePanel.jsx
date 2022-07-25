@@ -269,6 +269,7 @@ const DriffCreatePanel = (props) => {
   useEffect(() => {
     if (history.location.state && history.location.state.sharedWs) {
       setIsSharedInvite(true);
+      const email = history.location.state.sharedWs.responseData.user.email;
       setForm({
         ...form,
         email: history.location.state.sharedWs.responseData.user.email,
@@ -276,6 +277,7 @@ const DriffCreatePanel = (props) => {
         user_name: history.location.state.sharedWs.responseData.user.first_name + " " + history.location.state.sharedWs.responseData.user.last_name,
         state_code: history.location.state.sharedWs.code,
         from_slug: history.location.state.sharedWs.slug,
+        slug: email.substring(email.lastIndexOf("@") + 1).split(".")[0],
       });
     }
     if (refs.company_name.current) refs.company_name.current.focus();
@@ -348,6 +350,7 @@ const DriffCreatePanel = (props) => {
               <Input
                 ref={refs.slug}
                 onChange={handleInputChange}
+                value={form.slug ? form.slug : ""}
                 name="slug"
                 type="text"
                 placeholder="Driff"
