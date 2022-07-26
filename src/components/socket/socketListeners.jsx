@@ -178,6 +178,7 @@ import {
   incomingWorkpaceNotificationStatus,
   incomingUpdatedWorkspaceQuickLinks,
   incomingAcceptedSharedUser,
+  getSharedWorkspaces,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement, incomingFaviconImage } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -2566,6 +2567,104 @@ class SocketListeners extends Component {
           }
         }
         this.props.setUnreadNotificationCounterEntries(e);
+      })
+      .listen(".internal-lock-shared-workspace", (e) => {
+        if (e.type === "WORKSPACE" && !e.members.some((m) => m.external_id === this.state.userId)) {
+          return;
+        }
+        if (e.topic !== undefined) {
+          if (e.workspace !== null) {
+            if (!this.props.folders.hasOwnProperty(e.workspace.id)) {
+              this.props.getWorkspaceFolder({ folder_id: e.workspace.id }, (err, res) => {
+                if (err) return;
+                this.props.incomingWorkspace({
+                  ...e,
+                  channel: {
+                    id: e.channel.id ? e.channel.id : 0,
+                    code: e.channel.code ? e.channel.code : null,
+                  },
+                  slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                  sharedSlug: e.topic.is_shared_wp,
+                });
+              });
+            } else {
+              this.props.incomingWorkspace({
+                ...e,
+                channel: {
+                  id: e.channel.id ? e.channel.id : 0,
+                  code: e.channel.code ? e.channel.code : null,
+                },
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                sharedSlug: e.topic.is_shared_wp,
+              });
+            }
+          } else {
+            this.props.getSharedWorkspaces({}, (err, res) => {
+              if (err) return;
+              sessionService.loadSession().then((current) => {
+                sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
+              });
+              if (this.props.user.sharedWorkspaces) {
+                //check for new sharedWorkspaces
+                let newSharedWs = Object.keys(res.data).filter((driff) => {
+                  if (Object.keys(this.props.user.sharedWorkspaces).some((k) => k === driff)) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                });
+                if (newSharedWs.length) {
+                  this.props.incomingWorkspace({
+                    ...e,
+                    channel: {
+                      id: e.channel.id ? e.channel.id : 0,
+                      code: e.channel.code ? e.channel.code : null,
+                    },
+                    slug: e.topic.is_shared_wp ? e.topic.slug_owner : this.state.slug,
+                    sharedSlug: e.topic.is_shared_wp,
+                  });
+                } else {
+                  sessionService.saveUser({ ...this.props.user, sharedWorkspaces: res.data });
+                }
+              } else {
+                sessionService.saveUser({ ...this.props.user, sharedWorkspaces: res.data });
+              }
+            });
+          }
+          if (e.channel.code && !e.topic.is_shared_wp) {
+            this.props.getChannel({ code: e.channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          } else if (e.team_channel.code && !e.topic.is_shared_wp) {
+            this.props.getChannel({ code: e.team_channel.code }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
+        } else {
+          this.props.incomingWorkspaceFolder({
+            ...e.workspace,
+            key_id: e.key_id,
+            type: e.type,
+          });
+        }
       });
   }
 
@@ -2813,6 +2912,7 @@ function mapDispatchToProps(dispatch) {
     incomingJitsiEnded: bindActionCreators(incomingJitsiEnded, dispatch),
     incomingFaviconImage: bindActionCreators(incomingFaviconImage, dispatch),
     incomingAcceptedSharedUser: bindActionCreators(incomingAcceptedSharedUser, dispatch),
+    getSharedWorkspaces: bindActionCreators(getSharedWorkspaces, dispatch),
   };
 }
 
