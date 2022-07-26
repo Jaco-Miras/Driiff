@@ -197,6 +197,7 @@ import {
   incomingLoginSettings,
   incomingMeetingSettings,
 } from "../../redux/actions/adminActions";
+import Echo from "laravel-echo";
 
 class SocketListeners extends Component {
   constructor(props) {
@@ -2580,6 +2581,22 @@ class SocketListeners extends Component {
         // }
         this.props.getSharedWorkspaces({}, (err, res) => {
           if (err) return;
+          let myToken = `Bearer ${res.data[e.topic.slug_owner].access_token}`;
+          let accessBroadcastToken = res.data[e.topic.slug_owner].access_broadcast_token;
+          let host = process.env.REACT_APP_socketAddress;
+          if (!window.io) window.io = require("socket.io-client");
+          if (!window[e.topic.slug_owner]) {
+            window[e.topic.slug_owner] = new Echo({
+              broadcaster: "socket.io",
+              host: host,
+              auth: {
+                headers: {
+                  Authorization: myToken,
+                  "Driff-Broadcast-Token": accessBroadcastToken,
+                },
+              },
+            });
+          }
           sessionService.loadSession().then((current) => {
             sessionService.saveSession({ ...current, sharedWorkspaces: res.data });
           });
