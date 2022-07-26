@@ -51,7 +51,7 @@ const CommentCounters = (props) => {
   const { comment, dictionary, disableOptions, post, handleReaction, handleShowInput } = props;
 
   const mainUsers = useSelector((state) => state.users.users);
-  const sharedUsers = useSelector((state) => state.sharedUsers);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   let users = post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : mainUsers;
   const likers = Object.values(users).filter((u) => comment.claps.some((c) => c.user_id === u.id));
 
