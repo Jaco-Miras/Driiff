@@ -1226,7 +1226,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
-                          claps: [...state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: state.user.id }],
+                          claps: [...state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: action.data.user_id }],
                           clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
                           user_clap_count: 1,
                         },
@@ -1240,7 +1240,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[key].comments,
                       [action.data.id]: {
                         ...state.postComments[key].comments[action.data.id],
-                        claps: [...state.postComments[key].comments[action.data.id].claps, { user_id: state.user.id }],
+                        claps: [...state.postComments[key].comments[action.data.id].claps, { user_id: action.data.user_id }],
                         clap_count: state.postComments[key].comments[action.data.id].clap_count + 1,
                         user_clap_count: 1,
                       },
@@ -1269,7 +1269,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
-                          claps: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                          claps: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== action.data.user_id),
                           clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
                           user_clap_count: 0,
                         },
@@ -1283,7 +1283,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[key].comments,
                       [action.data.id]: {
                         ...state.postComments[key].comments[action.data.id],
-                        claps: state.postComments[key].comments[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                        claps: state.postComments[key].comments[action.data.id].claps.filter((c) => c.user_id !== action.data.user_id),
                         clap_count: state.postComments[key].comments[action.data.id].clap_count - 1,
                         user_clap_count: 0,
                       },
@@ -1313,7 +1313,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [key]: {
                       ...state.workspacePosts[wsId].posts[key],
-                      claps: [...state.workspacePosts[wsId].posts[key].claps, { user_id: state.user.id }],
+                      claps: [...state.workspacePosts[wsId].posts[key].claps, { user_id: action.data.user_id }],
                       clap_count: state.workspacePosts[wsId].posts[key].clap_count + 1,
                       user_clap_count: 1,
                     },
@@ -1346,7 +1346,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [key]: {
                       ...state.workspacePosts[wsId].posts[key],
-                      claps: state.workspacePosts[wsId].posts[key].claps.filter((c) => c.user_id !== state.user.id),
+                      claps: state.workspacePosts[wsId].posts[key].claps.filter((c) => c.user_id !== action.data.user_id),
                       clap_count: state.workspacePosts[wsId].posts[key].clap_count - 1,
                       user_clap_count: 0,
                     },

@@ -374,6 +374,7 @@ const CompanyPostDetail = (props) => {
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
+      user_id: user.id,
     };
     postActions.clap(payload, (err, res) => {
       if (err) {

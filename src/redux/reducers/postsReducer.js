@@ -224,7 +224,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                claps: [...state.companyPosts.posts[action.data.post_id].claps, { user_id: state.user.id }],
+                claps: [...state.companyPosts.posts[action.data.post_id].claps, { user_id: action.data.user_id }],
                 clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
                 user_clap_count: 1,
               },
@@ -243,7 +243,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [action.data.post_id]: {
                 ...state.companyPosts.posts[action.data.post_id],
-                claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== state.user.id),
+                claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.user_id),
                 clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
                 user_clap_count: 0,
               },
