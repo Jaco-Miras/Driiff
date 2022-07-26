@@ -96,7 +96,7 @@ const PostCounters = (props) => {
   const { dictionary, post, viewerIds, viewers, handleReaction } = props;
   const user = useSelector((state) => state.session.user);
   const mainUsers = useSelector((state) => state.users.users);
-  const sharedUsers = useSelector((state) => state.sharedUsers);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   const { _t } = useTranslationActions();
   const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
   const hasRead = readByUsers.some((u) => u.id === user.id);
