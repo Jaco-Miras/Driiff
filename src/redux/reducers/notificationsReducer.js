@@ -494,8 +494,8 @@ export default (state = INITIAL_STATE, action) => {
         notifications: {
           ...state.notifications,
           ...(action.data.notification_id.length && {
-            [`${action.data.notification_id[0]}-${action.data.slug_owner}`]: {
-              key: `${action.data.notification_id[0]}-${action.data.slug_owner}`,
+            [`${action.data.notification_id[0]}-${action.data.slug}`]: {
+              key: `${action.data.notification_id[0]}-${action.data.slug}`,
               author: author,
               created_at: { timestamp: getCurrentTimestamp() },
               data: {
