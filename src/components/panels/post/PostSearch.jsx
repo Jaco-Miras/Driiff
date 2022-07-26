@@ -85,7 +85,7 @@ const PostSearch = (props) => {
         cancelToken: cancelToken.current.token,
         topic_id: topic_id,
       };
-      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspace.slug]) {
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspaceRef.current.slug]) {
         const sharedPayload = { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true };
         payload = {
           ...payload,

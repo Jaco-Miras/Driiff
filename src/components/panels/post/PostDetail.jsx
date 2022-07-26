@@ -467,7 +467,7 @@ const PostDetail = (props) => {
 
   const handleClosePost = () => {
     let sharedPayload = null;
-    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+    if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
       sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
     }
     let payload = {
