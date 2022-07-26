@@ -2579,6 +2579,7 @@ class SocketListeners extends Component {
         //     type: e.type,
         //   });
         // }
+        debugger;
         this.props.getSharedWorkspaces({}, (err, res) => {
           if (err) return;
           let myToken = `Bearer ${res.data[e.topic.slug_owner].access_token}`;
@@ -2610,7 +2611,7 @@ class SocketListeners extends Component {
             sharedSlug: true,
           });
           this.props.getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
-          //this.props.getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
+          this.props.getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
         });
       });
   }
