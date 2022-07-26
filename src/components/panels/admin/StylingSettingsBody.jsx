@@ -151,6 +151,7 @@ function StylingSettingsBody() {
     companyLanguage: _t("SETTINGS.COMPANY_LANGUAGE_LABEL", "Company language"),
     updateLanguage: _t("BUTTON.UPDATE_LANGUAGE", "Update language"),
     toasterSettingsUpdated: _t("TOASTER.COMPANY_SETTINGS_UPDATED", "Successfully updated company settings"),
+    logoBackground: _t("ADMIN.LOGO_TRANSPARENT_REQUIREMENTS", "Background of logo should be transparent such that it looks better"),
   };
 
   const iconDropZone = useRef(null);
@@ -412,6 +413,8 @@ function StylingSettingsBody() {
             <label className="mb-0">{dictionary.companyLogoRequirement}</label>
             <br />
             <label className="mb-0">{dictionary.companyLogoDimensions}</label>
+            <br />
+            <label className="mb-0">{dictionary.logoBackground}</label>
           </div>
           <div>
             <DropDocument
