@@ -649,7 +649,7 @@ export default (state = INITIAL_STATE, action) => {
         });
       }
 
-      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => ws.id === action.data.id)) {
+      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => (action.data.is_shared_wp ? ws.id === action.data.id && ws.sharedSlug : ws.id === action.data.id))) {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = Object.values(state.workspaces).find((ws) => {
           if (action.data.is_shared_wp) {
