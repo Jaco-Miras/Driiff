@@ -246,11 +246,11 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
-  const handleGiftClick = (e) => {
-    e.preventDefault();
-    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
-    // history.push("/releases");
-  };
+  // const handleGiftClick = (e) => {
+  //   e.preventDefault();
+  //   window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
+  //   // history.push("/releases");
+  // };
 
   const hideSearch = () => {
     const name = "search";
@@ -262,14 +262,15 @@ const HomeProfileNavigation = (props) => {
   };
 
   const renderGifIcon = () => {
-    if (loggedUser.type === "external") return null;
-    return (
-      <li className="nav-item dropdown">
-        <a href="/" className={"nav-link"} onClick={handleGiftClick}>
-          <SvgIconFeather icon="gift" />
-        </a>
-      </li>
-    );
+    return null;
+    // if (loggedUser.type === "external") return null;
+    // return (
+    //   <li className="nav-item dropdown">
+    //     <a href="/" className={"nav-link"} onClick={handleGiftClick}>
+    //       <SvgIconFeather icon="gift" />
+    //     </a>
+    //   </li>
+    // );
   };
 
   return (
