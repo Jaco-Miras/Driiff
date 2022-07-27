@@ -512,11 +512,13 @@ const ChatInput = (props) => {
           email: sharedWs[slug].user_auth.email,
         };
       }
-      window[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
-        user: currentUser,
-        typing: true,
-        channel_id: selectedChannel.id,
-      });
+      if (window[slug]) {
+        window[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
+          user: currentUser,
+          typing: true,
+          channel_id: selectedChannel.id,
+        });
+      }
     }
   };
 
