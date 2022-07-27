@@ -171,7 +171,7 @@ const FilePill = (props) => {
       e.currentTarget.src = url;
     } else if (e.currentTarget.dataset.attemp === "1") {
       e.currentTarget.dataset.attempt = 2;
-      e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}`;
+      e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?playsinline=1`;
     }
   };
 
@@ -245,8 +245,8 @@ const FilePill = (props) => {
         </>
       ) : file.type.toLowerCase().includes("video") ? (
         <>
-          <FileVideo muted data-attempt={0} width="320" height="240" controls onError={handleVideoOnError}>
-            <source src={`${file.view_link}`} type={file.type} />
+          <FileVideo muted data-attempt={0} width="320" height="240" playsInline={1} controls onError={handleVideoOnError}>
+            <source src={`${file.view_link}?playsinline=1`} type={file.type} />
             Your browser does not support the video tag.
           </FileVideo>
         </>

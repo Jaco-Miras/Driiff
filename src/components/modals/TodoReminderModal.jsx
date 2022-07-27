@@ -461,7 +461,7 @@ const TodoReminderModal = (props) => {
 
       setForm({
         ...form,
-        topic_id: { value: parentItem.entity_id },
+        topic_id: { value: parentItem.type === "TOPIC" ? parentItem.entity_id : null },
         title: { value: `${item.user ? item.user.name : ""} | ${parentItem.title} | Chat Message` },
         description: { value: chatBody },
       });
@@ -540,6 +540,7 @@ const TodoReminderModal = (props) => {
         title: { value: title },
         //title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : companyRecipient ? companyRecipient.name : ""} | Post` },
         description: { value: item.title },
+        topic_id: { value: companyRecipient.id },
       }));
     }
 

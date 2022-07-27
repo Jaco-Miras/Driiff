@@ -204,7 +204,11 @@ const useQuillModules = ({
           } else {
             let matches = [];
             let i;
-            for (i = 0; i < values.length; i++) if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())) matches.push(values[i]);
+            for (i = 0; i < values.length; i++) {
+              if (searchTerm?.length && searchTerm?.length <= 2) {
+                if (values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase()) === 0) matches.push(values[i]);
+              } else if (~values[i].value.toLowerCase().indexOf(searchTerm.toLowerCase())) matches.push(values[i]);
+            }
             renderList(matches, searchTerm);
           }
         },

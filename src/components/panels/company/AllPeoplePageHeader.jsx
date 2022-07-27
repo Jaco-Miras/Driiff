@@ -78,7 +78,7 @@ const AllPeoplePageHeader = (props) => {
   const location = useLocation();
 
   const { _t } = useTranslationActions();
-  const { activeUsers } = useUsers();
+  const { acceptedActiveUser } = useUsers();
 
   const dictionary = {
     people: _t("ALL_PEOPLE_PAGE_HEADER_LINKS.PEOPLE", "People"),
@@ -92,7 +92,7 @@ const AllPeoplePageHeader = (props) => {
         <Navbar className="navbar-nav">
           <li className="nav-item">
             <MainNavLink to="/system/people/all" active={location.pathname === "/system/people/all"}>
-              {dictionary.people} ({Object.keys(activeUsers).length})
+              {dictionary.people} ({Object.keys(acceptedActiveUser).length})
             </MainNavLink>
           </li>
           <li className="nav-item">
