@@ -20,6 +20,7 @@ const INITIAL_STATE = {
     searchResults: [],
     unreadPosts: 0,
   },
+  sharedCompanyPosts: {},
   showUnread: true,
   archived: {
     skip: 0,
@@ -158,11 +159,15 @@ export default (state = INITIAL_STATE, action) => {
                   claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
+                  sharedSlug: false,
+                  slug: action.slug,
                 };
               } else {
                 res[obj.id] = {
                   claps: [],
                   ...obj,
+                  sharedSlug: false,
+                  slug: action.slug,
                 };
               }
 
@@ -185,11 +190,15 @@ export default (state = INITIAL_STATE, action) => {
                   claps: [],
                   ...state.companyPosts.posts[obj.id],
                   ...obj,
+                  sharedSlug: false,
+                  slug: action.slug,
                 };
               } else {
                 res[obj.id] = {
                   claps: [],
                   ...obj,
+                  sharedSlug: false,
+                  slug: action.slug,
                 };
               }
 
@@ -1677,6 +1686,197 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         showUnread: action.data,
+      };
+    }
+    case "GET_SHARED_UNREAD_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        sharedCompanyPosts: {
+          ...state.sharedCompanyPosts,
+          ...(state.sharedCompanyPosts[action.slug] && {
+            [action.slug]: {
+              ...state.sharedCompanyPosts[action.slug],
+              posts: {
+                ...(state.sharedCompanyPosts[action.slug].posts && {
+                  ...state.sharedCompanyPosts[action.slug].posts,
+                }),
+                ...action.data.posts.reduce((res, obj) => {
+                  res[obj.code] = {
+                    claps: [],
+                    ...obj,
+                    sharedSlug: true,
+                    slug: action.slug,
+                  };
+
+                  return res;
+                }, {}),
+              },
+              unreadPosts: {
+                prev_skip: parseInt(action.data.prev_skip),
+                next_skip: action.data.next_skip,
+                total_take: action.data.total_take,
+                has_more: action.data.total_take === 25,
+              },
+            },
+          }),
+          ...(!state.sharedCompanyPosts[action.slug] && {
+            [action.slug]: {
+              posts: {
+                ...action.data.posts.reduce((res, obj) => {
+                  res[obj.code] = {
+                    claps: [],
+                    ...obj,
+                    sharedSlug: true,
+                    slug: action.slug,
+                  };
+
+                  return res;
+                }, {}),
+              },
+              archived: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              favourites: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              myPosts: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              unreadPosts: {
+                prev_skip: parseInt(action.data.prev_skip),
+                next_skip: action.data.next_skip,
+                total_take: action.data.total_take,
+                has_more: action.data.total_take === 25,
+              },
+              readPosts: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+            },
+          }),
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              res[obj.code] = {
+                claps: [],
+                ...obj,
+                sharedSlug: true,
+                slug: action.slug,
+              };
+              return res;
+            }, {}),
+          },
+        },
+      };
+    }
+    case "GET_SHARED_READ_COMPANY_POSTS_SUCCESS": {
+      return {
+        ...state,
+        sharedCompanyPosts: {
+          ...state.sharedCompanyPosts,
+          ...(state.sharedCompanyPosts[action.slug] && {
+            [action.slug]: {
+              ...state.sharedCompanyPosts[action.slug],
+              posts: {
+                ...(state.sharedCompanyPosts[action.slug].posts && {
+                  ...state.sharedCompanyPosts[action.slug].posts,
+                }),
+                ...action.data.posts.reduce((res, obj) => {
+                  res[obj.code] = {
+                    claps: [],
+                    ...obj,
+                    sharedSlug: true,
+                    slug: action.slug,
+                  };
+
+                  return res;
+                }, {}),
+              },
+              readPosts: {
+                prev_skip: parseInt(action.data.prev_skip),
+                next_skip: action.data.next_skip,
+                total_take: action.data.total_take,
+                has_more: action.data.total_take === 25,
+              },
+            },
+          }),
+          ...(!state.sharedCompanyPosts[action.slug] && {
+            [action.slug]: {
+              posts: {
+                ...action.data.posts.reduce((res, obj) => {
+                  res[obj.code] = {
+                    claps: [],
+                    ...obj,
+                    sharedSlug: true,
+                    slug: action.slug,
+                  };
+
+                  return res;
+                }, {}),
+              },
+              archived: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              favourites: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              myPosts: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                next_skip: 0,
+              },
+              unreadPosts: {
+                skip: 0,
+                has_more: true,
+                limit: 25,
+                loaded: false,
+                next_skip: 0,
+              },
+              readPosts: {
+                prev_skip: parseInt(action.data.prev_skip),
+                next_skip: action.data.next_skip,
+                total_take: action.data.total_take,
+                has_more: action.data.total_take === 25,
+              },
+            },
+          }),
+        },
+        companyPosts: {
+          ...state.companyPosts,
+          posts: {
+            ...state.companyPosts.posts,
+            ...action.data.posts.reduce((res, obj) => {
+              res[obj.code] = {
+                claps: [],
+                ...obj,
+                sharedSlug: true,
+                slug: action.slug,
+              };
+              return res;
+            }, {}),
+          },
+        },
       };
     }
     default:

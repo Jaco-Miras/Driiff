@@ -517,3 +517,27 @@ export function setShowUnread(payload, callback) {
 export function incomingWorkspacePost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_POST", payload, callback);
 }
+
+export function getSharedCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_COMPANY_POSTS_START", "GET_SHARED_COMPANY_POSTS_SUCCESS", "GET_SHARED_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedMyCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_MY_COMPANY_POSTS_START", "GET_SHARED_MY_COMPANY_POSTS_SUCCESS", "GET_SHARED_MY_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedReadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_READ_COMPANY_POSTS_START", "GET_SHARED_READ_COMPANY_POSTS_SUCCESS", "GET_SHARED_READ_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedArchivedCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_ARCHIVED_OMPANY_POSTS_START", "GET_SHARED_ARCHIVED_COMPANY_POSTS_SUCCESS", "GET_SHARED_ARCHIVED_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedStarCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_STAR_COMPANY_POSTS_START", "GET_SHARED_STAR_COMPANY_POSTS_SUCCESS", "GET_SHARED_STAR_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_UNREAD_COMPANY_POSTS_START", "GET_SHARED_UNREAD_COMPANY_POSTS_SUCCESS", "GET_SHARED_UNREAD_COMPANY_POSTS_FAIL", callback);
+}

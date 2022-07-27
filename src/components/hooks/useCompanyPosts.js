@@ -2,8 +2,10 @@ import { useEffect } from "react";
 import { usePostActions, useGetSlug } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useSharedCompanyPosts } from "./index";
 
 const useCompanyPosts = () => {
+  useSharedCompanyPosts();
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
