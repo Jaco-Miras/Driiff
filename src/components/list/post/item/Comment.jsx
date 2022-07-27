@@ -307,12 +307,14 @@ const Comment = (props) => {
       post_id: post.id,
       parent_id: type === "main" ? null : parentId,
       post_code: sharedPost ? post.code : null,
+      user_id: user.id,
     };
     if (sharedPost) {
       const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
       payload = {
         ...payload,
         sharedPayload: sharedPayload,
+        user_id: sharedWs[post.slug].user_auth.id,
       };
     }
     commentActions.clap(payload, (err, res) => {

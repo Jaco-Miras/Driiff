@@ -376,12 +376,14 @@ const PostDetail = (props) => {
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
+      user_id: user.id,
     };
     if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
         post_code: post.code,
+        user_id: sharedWs[workspace.slug].user_auth.id,
       };
     }
     postActions.clap(payload, (err, res) => {
