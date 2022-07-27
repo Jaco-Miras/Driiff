@@ -996,7 +996,6 @@ const CreateEditWorkspaceModal = (props) => {
       }
     );
   };
-
   const handleConfirm = () => {
     if (loading) return;
 
@@ -1075,7 +1074,10 @@ const CreateEditWorkspaceModal = (props) => {
       } else {
         payload = {
           ...payload,
-          member_ids: item.members.filter((m) => !m.hasOwnProperty("members") && m.type === "internal" && m.external_id).map((m) => m.external_id),
+          member_ids: item.members
+            .filter((m) => !m.hasOwnProperty("members") && m.type === "internal" && m.external_id)
+            .filter((m) => form.selectedUsers.some((su) => su.id === m.id))
+            .map((m) => m.external_id),
           shared_workspace_member_ids: form.selectedSharedUsers.filter((ex) => !isNaN(ex.id)).map((ex) => ex.id),
           new_shared_workspace_members: [
             ...invitedSharedUsers.map((ex) => {

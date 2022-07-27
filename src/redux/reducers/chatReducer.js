@@ -443,7 +443,7 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         channels: {
           ...state.channels,
-          [action.data.id]: action.data,
+          [action.data.sharedSlug ? action.data.code : action.data.id]: action.data,
         },
       };
     }

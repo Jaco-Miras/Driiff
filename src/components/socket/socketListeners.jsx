@@ -1956,6 +1956,7 @@ class SocketListeners extends Component {
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
           slug: this.state.slug,
           sharedSlug: this.props.sharedSlug,
+          addNotification: e.type === "WORKSPACE" && this.state.userId !== e.user_id && e.new_member_ids.some((id) => id === this.state.userId),
         });
         if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
           this.props.getAllWorkspaceFolders();
@@ -1985,6 +1986,40 @@ class SocketListeners extends Component {
             if (this.props.user.type === "external" && e.private !== 1 && e.remove_member_ids.some((id) => id === this.state.userId)) {
               this.props.history.push("/hub/search");
             }
+          }
+        } else if (e.type === "WORKSPACE" && this.props.sharedSlug) {
+          //fetch the shared channels
+          if (e.channel && e.channel.code) {
+            this.props.getChannel({ code: e.channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+                slug: this.state.slug,
+                sharedSlug: true,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
+          if (e.team_channel && e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+                slug: this.state.slug,
+                sharedSlug: true,
+              };
+              this.props.addToChannels(channel);
+            });
           }
         }
         if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/hub") && this.props.match.url !== "/hub/search") {
@@ -2326,6 +2361,7 @@ class SocketListeners extends Component {
           channel: e.channel ? { ...e.channel } : { id: 0, code: null, icon_link: null },
           slug: this.state.slug,
           sharedSlug: this.props.sharedSlug,
+          addNotification: e.type === "WORKSPACE" && this.state.userId !== e.user_id && e.new_member_ids.some((id) => id === this.state.userId),
         });
         //get the updated members
         if (e.type === "WORKSPACE" && !this.props.sharedSlug) {
@@ -2373,6 +2409,40 @@ class SocketListeners extends Component {
               //   }
               // }
             }
+          }
+        } else if (e.type === "WORKSPACE" && this.props.sharedSlug) {
+          //fetch the shared channels
+          if (e.channel && e.channel.code) {
+            this.props.getChannel({ code: e.channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+                slug: this.state.slug,
+                sharedSlug: true,
+              };
+              this.props.addToChannels(channel);
+            });
+          }
+          if (e.team_channel && e.team_channel.code) {
+            this.props.getChannel({ code: e.team_channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+              if (err) return;
+              let channel = {
+                ...res.data,
+                hasMore: true,
+                skip: 0,
+                replies: [],
+                selected: true,
+                isFetching: false,
+                slug: this.state.slug,
+                sharedSlug: true,
+              };
+              this.props.addToChannels(channel);
+            });
           }
         }
         if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/hub") && this.props.match.url !== "/hub/search") {
@@ -2668,6 +2738,7 @@ class SocketListeners extends Component {
         //     type: e.type,
         //   });
         // }
+        debugger;
         this.props.getSharedWorkspaces({}, (err, res) => {
           if (err) return;
           let myToken = `Bearer ${res.data[e.topic.slug_owner].access_token}`;
@@ -2699,7 +2770,7 @@ class SocketListeners extends Component {
             sharedSlug: true,
           });
           this.props.getSharedChannels({ skip: 0, limit: 15, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
-          //this.props.getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
+          this.props.getNotifications({ skip: 0, limit: 50, sharedPayload: { slug: e.topic.slug_owner, token: res.data[e.topic.slug_owner].access_token, is_shared: true } });
         });
       });
   }

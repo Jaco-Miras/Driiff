@@ -452,7 +452,7 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      if (action.data.type === "WORKSPACE" && state.user && state.user.id !== action.data.user_id && action.data.new_member_ids.some((id) => id === state.user.id)) {
+      if (action.data.addNotification) {
         let author = action.data.members.find((m) => m.id === action.data.user_id);
         return {
           ...state,
