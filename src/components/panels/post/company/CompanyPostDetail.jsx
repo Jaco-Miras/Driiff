@@ -269,6 +269,8 @@ const CompanyPostDetail = (props) => {
   const commentActions = useCommentActions();
 
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
@@ -371,6 +373,13 @@ const CompanyPostDetail = (props) => {
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
     };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     postActions.clap(payload, (err, res) => {
       if (err) {
         if (payload.clap === 1) postActions.unlike(payload);
@@ -403,20 +412,26 @@ const CompanyPostDetail = (props) => {
   };
 
   useEffect(() => {
+    let sharedPayload = null;
+    let isSharedhub = false;
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      isSharedhub = true;
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     readPostNotification({ post_id: post.id });
     const viewed = post.view_user_ids.some((id) => id === user.id);
     if (!viewed && !disableMarkAsRead()) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
+        sharedPayload: isSharedhub ? { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true } : null,
       });
     }
 
     if (post.is_unread === 1 || post.unread_count > 0) {
       if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
-
-    postActions.fetchPostReadAndClap({ post_id: post.id });
+    postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload: isSharedhub ? { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true } : null });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {

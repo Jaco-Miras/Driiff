@@ -354,14 +354,12 @@ const usePostActions = () => {
       unread: 0,
       topic_id: parseInt(params.workspaceId),
     };
-    if (params.workspaceId) {
-      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
-        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
-        payload = {
-          ...payload,
-          sharedPayload: sharedPayload,
-        };
-      }
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
     }
     let count = post.unread_count;
     let cb = (err, res) => {
@@ -916,6 +914,12 @@ const usePostActions = () => {
       payload = {
         ...payload,
         sharedPayload: sharedPayload,
+      };
+    }
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true },
       };
     }
 
