@@ -390,6 +390,8 @@ const usePostActions = () => {
             unread: 0,
             user_id: user.id,
             post_code: payload.sharedPayload ? post.code : null,
+            sharedSlug: post.sharedSlug,
+            slug: post.slug,
           })
         );
       }
@@ -439,6 +441,8 @@ const usePostActions = () => {
             unread: 1,
             user_id: user.id,
             post_code: payload.sharedPayload ? post.code : null,
+            sharedSlug: post.sharedSlug,
+            slug: post.slug,
           })
         );
       }

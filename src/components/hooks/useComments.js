@@ -1,11 +1,10 @@
 import { useParams, useHistory } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useCommentActions, useGetSlug } from "./index";
+import { useCommentActions } from "./index";
 
 const useComments = (post) => {
   const commentActions = useCommentActions();
-  const { slug } = useGetSlug();
   const params = useParams();
   const history = useHistory();
   const postComments = useSelector((state) => state.workspaces.postComments);
@@ -19,7 +18,7 @@ const useComments = (post) => {
   const componentIsMounted = useRef(true);
   const workspaceRef = useRef(null);
   const sharedWsRef = useRef(null);
-  let onSharedWs = params.workspaceId && history.location.pathname.startsWith("/shared-hub");
+  let onSharedWs = (params.workspaceId && history.location.pathname.startsWith("/shared-hub")) || (post.sharedSlug && post.slug);
   let postKey = post.id;
   if (onSharedWs) {
     postKey = post.code;
@@ -47,10 +46,10 @@ const useComments = (post) => {
       let payload = {
         url,
       };
-      if (post.slug !== slug && workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+      if (post.slug && post.sharedSlug && sharedWsRef.current[post.slug]) {
         payload = {
           ...payload,
-          sharedPayload: { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true },
+          sharedPayload: { slug: post.slug, token: sharedWsRef.current[post.slug].access_token, is_shared: true },
         };
       }
       commentActions.fetchPostComments(payload, (err, res) => {
