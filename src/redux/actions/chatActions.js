@@ -500,3 +500,7 @@ export function addCompanyNameOnMembers(payload, callback) {
 export function getSharedChannels(payload, callback) {
   return dispatchActionToReducer(getChannelsService(payload), "GET_SHARED_CHANNELS_START", "GET_SHARED_CHANNELS_SUCCESS", "GET_SHARED_CHANNELS_FAIL", callback);
 }
+
+export function removeChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_CHANNEL", payload, callback);
+}

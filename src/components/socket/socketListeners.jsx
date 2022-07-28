@@ -34,6 +34,7 @@ import {
   removeWorkspaceChannelMembers,
   incomingJitsiEnded,
   getSharedChannels,
+  removeChannel,
 } from "../../redux/actions/chatActions";
 import {
   addFilesToChannel,
@@ -2322,38 +2323,56 @@ class SocketListeners extends Component {
             }
           }
         } else if (e.type === "WORKSPACE" && this.props.sharedSlug) {
-          //fetch the shared channels
-          if (e.channel && e.channel.code) {
-            this.props.getChannel({ code: e.channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
-              if (err) return;
-              let channel = {
-                ...res.data,
-                hasMore: true,
-                skip: 0,
-                replies: [],
-                selected: true,
-                isFetching: false,
-                slug: this.state.slug,
-                sharedSlug: true,
-              };
-              this.props.addToChannels(channel);
-            });
-          }
-          if (e.team_channel && e.team_channel.code) {
-            this.props.getChannel({ code: e.team_channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
-              if (err) return;
-              let channel = {
-                ...res.data,
-                hasMore: true,
-                skip: 0,
-                replies: [],
-                selected: true,
-                isFetching: false,
-                slug: this.state.slug,
-                sharedSlug: true,
-              };
-              this.props.addToChannels(channel);
-            });
+          if (e.remove_member_ids.length > 0 && this.props.match.url !== "/hub/search" && e.remove_member_ids.some((id) => id === this.state.userId) && !members.some((m) => m.id === this.state.userId)) {
+            if (this.props.match.path === "/chat") {
+              if (e.channel && e.channel.code && this.props.location.pathname === `/chat/${e.channel.code}`) {
+                this.props.history.push("/hub/search");
+              }
+              if (e.channel && e.team_channel.code && this.props.location.pathname === `/chat/${e.team_channel.code}`) {
+                this.props.history.push("/hub/search");
+              }
+            }
+            //remove the channels
+            if (e.channel && e.channel.code) {
+              this.props.removeChannel(e.channel);
+            }
+            if (e.team_channel && e.team_channel.code) {
+              this.props.removeChannel(e.team_channel);
+            }
+          } else {
+            //fetch the shared channels
+            if (e.channel && e.channel.code) {
+              this.props.getChannel({ code: e.channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+                if (err) return;
+                let channel = {
+                  ...res.data,
+                  hasMore: true,
+                  skip: 0,
+                  replies: [],
+                  selected: true,
+                  isFetching: false,
+                  slug: this.state.slug,
+                  sharedSlug: true,
+                };
+                this.props.addToChannels(channel);
+              });
+            }
+            if (e.team_channel && e.team_channel.code) {
+              this.props.getChannel({ code: e.team_channel.code, sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true } }, (err, res) => {
+                if (err) return;
+                let channel = {
+                  ...res.data,
+                  hasMore: true,
+                  skip: 0,
+                  replies: [],
+                  selected: true,
+                  isFetching: false,
+                  slug: this.state.slug,
+                  sharedSlug: true,
+                };
+                this.props.addToChannels(channel);
+              });
+            }
           }
         }
         if (this.props.activeTopic && this.props.activeTopic.id === e.id && e.type === "WORKSPACE" && this.props.match.url.startsWith("/hub") && this.props.match.url !== "/hub/search") {
@@ -2921,6 +2940,7 @@ function mapDispatchToProps(dispatch) {
     getSharedWorkspaces: bindActionCreators(getSharedWorkspaces, dispatch),
     getWorkspaces: bindActionCreators(getWorkspaces, dispatch),
     getSharedChannels: bindActionCreators(getSharedChannels, dispatch),
+    removeChannel: bindActionCreators(removeChannel, dispatch),
   };
 }
 

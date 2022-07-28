@@ -2831,6 +2831,21 @@ export default function (state = INITIAL_STATE, action) {
         },
       };
     }
+    case "REMOVE_CHANNEL": {
+      return {
+        ...state,
+        channels: {
+          ...Object.keys(state.channels).reduce((acc, channelKey) => {
+            if (channelKey !== action.data.code) {
+              acc[channelKey] = { ...state.channels[channelKey] };
+            }
+            return acc;
+          }, {}),
+        },
+        selectedChannel: state.selectedChannel && state.selectedChannel.code === action.data.code ? null : state.selectedChannel,
+        selectedChannelCode: state.selectedChannelCode === action.data.code ? null : state.selectedChannelCode,
+      };
+    }
     default:
       return state;
   }
