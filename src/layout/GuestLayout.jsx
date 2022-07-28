@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
 import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { useUserLogin } from "../components/hooks/useUserLogin";
@@ -9,7 +9,7 @@ import LoginLogo from "../components/panels/main/LoginLogo";
 import SharedWorkspaceInvite from "../components/panels/SharedWorkspaceInvite";
 import introImage from "../assets/media/image/intro-image.png";
 import { useSelector } from "react-redux";
-import { useMemo } from "react";
+import { SvgIcon } from "../components/common";
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
 const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
@@ -132,6 +132,16 @@ const SideImage = styled.div`
   border-radius: 12px 0 0 12px;
 `;
 
+const DriffLogo = styled(SvgIcon)`
+  width: 110px;
+  height: 80px;
+  cursor: pointer;
+  path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
+`;
+
 const GuestLayout = (props) => {
   useUserLogin(props);
 
@@ -210,6 +220,7 @@ const GuestLayout = (props) => {
 
   const [title, setTitle] = useState(dictionary.signIn);
   const [countryCode, setCountryCode] = useState(null);
+  const [sideBanner, setSideBanner] = useState(true);
 
   const companyLogo = useSelector((state) => state.settings.driff.logo);
 
@@ -277,23 +288,17 @@ const GuestLayout = (props) => {
 
   const isSharedHubInvitePage = useMemo(() => location.pathname === "/shared-hub-invite", [location.pathname]);
   const isDriffRegisterPage = useMemo(() => location.pathname === "/driff-register", [location.pathname]);
-
+  const showSideBanner = (isSharedHubInvitePage || isDriffRegisterPage) && sideBanner;
   return (
     <>
       <CenterContainer>
-        {isSharedHubInvitePage && (
+        {showSideBanner && (
           <SideImageContainer>
             <SideImage />
           </SideImageContainer>
         )}
-        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={isSharedHubInvitePage ? { borderRadius: "0 12px 12px 0" } : {}}>
-          {isSharedHubInvitePage || isDriffRegisterPage ? (
-            <div className="d-flex justify-content-center">
-              <img className="w-50" src={companyLogo} alt="company logo" />
-            </div>
-          ) : (
-            <LoginLogo />
-          )}
+        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={showSideBanner ? { borderRadius: "0 12px 12px 0" } : {}}>
+          {showSideBanner ? <div className="d-flex justify-content-center">{companyLogo ? <img className="w-50" src={companyLogo} alt="company logo" /> : <DriffLogo icon="driff-logo2" />}</div> : <LoginLogo />}
           {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div> */}
@@ -321,7 +326,7 @@ const GuestLayout = (props) => {
                   <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
                   <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
                   <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
-                  <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
+                  <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} hideBanner={() => setSideBanner(false)} {...props} />} />
                   <Route path={"/shared-hub-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
                   <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
                 </Switch>
