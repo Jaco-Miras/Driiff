@@ -328,7 +328,7 @@ const PostModal = (props) => {
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
-  const isSharedPost = item && item.post.sharedSlug;
+  const isSharedPost = item && item.post && item.post.sharedSlug;
 
   const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
