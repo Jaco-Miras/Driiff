@@ -276,7 +276,6 @@ export default (state = INITIAL_STATE, action) => {
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
-        return state;
       }
       return {
         ...state,
@@ -317,15 +316,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_UPDATED_POST": {
-      if (action.data.sharedSlug) return state;
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       let posts = { ...state.companyPosts.posts };
-      if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
-        delete posts[action.data.id];
+      if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === action.data.userId)) {
+        delete posts[postKey];
       } else {
-        if (posts.hasOwnProperty(action.data.id)) {
-          posts[action.data.id] = { ...action.data, claps: posts[action.data.id].claps };
+        if (posts.hasOwnProperty(postKey)) {
+          posts[postKey] = { ...action.data, claps: posts[postKey].claps };
         } else {
-          posts[action.data.id] = { ...action.data, claps: [] };
+          posts[postKey] = { ...action.data, claps: [] };
         }
       }
       return {
@@ -682,38 +684,38 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_COMMENT": {
       if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
+        let postKey = action.data.post_id;
+        if (action.data.sharedSlug) {
+          postKey = action.data.post_code;
+        }
         const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
         const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
         const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
-        const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
+        const isApprover = action.data.users_approval.some((ua) => ua.iaction.data.userId);
         return {
           ...state,
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              ...(state.companyPosts.posts[action.data.post_id] && {
-                [action.data.post_id]: {
-                  ...state.companyPosts.posts[action.data.post_id],
-                  unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
+              ...(state.companyPosts.posts[postKey] && {
+                [postKey]: {
+                  ...state.companyPosts.posts[postKey],
+                  unread_count: action.data.author.id !== action.data.userId ? state.companyPosts.posts[postKey].unread_count + 1 : state.companyPosts.posts[postKey].unread_count,
                   is_unread:
-                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true
-                      ? state.companyPosts.posts[action.data.post_id].is_unread
-                      : action.data.author.id !== state.user.id
-                      ? 1
-                      : state.companyPosts.posts[action.data.post_id].is_unread,
+                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true ? state.companyPosts.posts[postKey].is_unread : action.data.author.id !== action.data.userId ? 1 : state.companyPosts.posts[postKey].is_unread,
                   updated_at: action.data.updated_at,
-                  reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
-                  has_replied: action.data.author.id === state.user.id ? true : false,
+                  reply_count: state.companyPosts.posts[postKey].reply_count + 1,
+                  has_replied: action.data.author.id === action.data.userId ? true : false,
                   post_approval_label: allUsersAgreed
                     ? "ACCEPTED"
                     : allUsersDisagreed
                     ? "REQUEST_UPDATE"
                     : isApprover && hasPendingAproval
                     ? "NEED_ACTION"
-                    : state.companyPosts.posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                    : state.companyPosts.posts[postKey].author.id === action.data.author.id && hasPendingAproval
                     ? "REQUEST_APPROVAL"
-                    : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                    : state.companyPosts.posts[postKey].post_approval_label,
                 },
               }),
             },

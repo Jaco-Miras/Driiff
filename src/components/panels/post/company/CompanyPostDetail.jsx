@@ -380,6 +380,7 @@ const CompanyPostDetail = (props) => {
         ...payload,
         sharedPayload: sharedPayload,
         post_code: post.code,
+        user_id: sharedWs[post.slug].user_auth.id,
       };
     }
     postActions.clap(payload, (err, res) => {
