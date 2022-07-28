@@ -524,6 +524,22 @@ const CreateEditWorkspaceModal = (props) => {
     peopleInvited: _t("PEOPLE.INVITED", "Invited"),
     workspaceWithExternalsInfo1: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO1", "This function will allow users outside your company be invited on this workspace."),
     workspaceWithExternalsInfo2: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO2", "This may be your customer or supplier."),
+    workspaceWithExternalsInfo3: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO3", "Collaborating in shared hubs is as easy as fixing your morning coffee. And just as fast."),
+    workspaceWithExternalsInfo4: _t(
+      "WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO4",
+      "You can invite as many people as you like to work with to project specific hubs, by simply clicking the invite button. Driff will send an invitation to their email address."
+    ),
+    workspaceWithExternalsInfo5: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO5", "From here on there are two options:"),
+    workspaceWithExternalsInfo6: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO6", "The organization that person belongs to already uses Driff"),
+    workspaceWithExternalsInfo7: _t(
+      "WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO7",
+      "If so, great! Based on the email address (@thatpersonscompany.url), Driff will recognize if the organization that person belongs to already uses Driff. In that case, your shared hub will automatically show up in their Driff once they accept the invitation. That’s it, you’re good to go."
+    ),
+    workspaceWithExternalsInfo8: _t("WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO8", "The organization that person belongs to doesn’t use Driff yet"),
+    workspaceWithExternalsInfo9: _t(
+      "WORKSPACE.WORKSPACE_WITH_EXTERNALS_INFO9",
+      "If so, no problem! Anyone you invite can simply sign up with their company email address. For free of course. Although usage for free users is not as extensive as the functionalities paid users have, your invitees get access to everything you both need to collaborate effectively on your project."
+    ),
     emailExists: _t("WORKSPACE.EMAIL_EXISTS", "Email already used"),
     invalidEmail: _t("WORKSPACE.INVALID_EMAIL", "Invalid email"),
     newExternalInfo: _t("WORKSPACE.NEW_EXTERNAL_INFO", "You are adding a new external user (::email::). You can add extra information to this account if you like. The account can verify or change this info during his first login.", {
@@ -2523,12 +2539,25 @@ const CreateEditWorkspaceModal = (props) => {
             </div>
             <div style={{ position: "relative" }}>
               <ToolTip
+                direction="down-middle"
                 content={
                   hasGuestAccess ? (
-                    <div>
-                      {dictionary.workspaceWithExternalsInfo1}
+                    <div className="text-left small" style={{ maxWidth: 580 }}>
+                      <div>{dictionary.workspaceWithExternalsInfo1}</div>
+                      <div>{dictionary.workspaceWithExternalsInfo2}</div>
                       <br />
-                      {dictionary.workspaceWithExternalsInfo2}
+                      <div>{dictionary.workspaceWithExternalsInfo3}</div>
+                      <div>{dictionary.workspaceWithExternalsInfo4}</div>
+                      <br />
+                      <div>{dictionary.workspaceWithExternalsInfo5}</div>
+                      <br />
+                      <div className="font-weight-bold">{dictionary.workspaceWithExternalsInfo6}</div>
+                      <br />
+                      <div>{dictionary.workspaceWithExternalsInfo7}</div>
+                      <br />
+                      <div className="font-weight-bold">{dictionary.workspaceWithExternalsInfo8}</div>
+                      <br />
+                      <div>{dictionary.workspaceWithExternalsInfo9}</div>
                     </div>
                   ) : (
                     dictionary.disabledWorkspaceExternalsInfo
