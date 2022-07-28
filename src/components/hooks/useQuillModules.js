@@ -101,7 +101,8 @@ const useQuillModules = ({
               user_id: user.id,
               class: "user-pic",
               profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
-              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}` }),
+              // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
           }),
@@ -135,7 +136,8 @@ const useQuillModules = ({
               user_id: user.id,
               class: "user-pic all-users",
               profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
-              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}` }),
+              // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
           }),
@@ -156,7 +158,8 @@ const useQuillModules = ({
             type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`,
+            ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}` }),
+            // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         }),
       ];
