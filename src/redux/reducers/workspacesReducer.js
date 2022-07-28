@@ -686,7 +686,7 @@ export default (state = INITIAL_STATE, action) => {
             } else return m;
           })
           .flat();
-        if (!members.some((m) => m.id === state.user.id)) {
+        if (!action.data.sharedSlug && !members.some((m) => m.id === state.user.id)) {
           if (workspace.is_lock === 1 || state.user.type === "external") {
             delete updatedWorkspaces[workspace.id];
             if (action.data.workspace_id !== 0 && updatedFolders.hasOwnProperty(action.data.workspace_id)) {
@@ -4525,6 +4525,21 @@ export default (state = INITIAL_STATE, action) => {
             },
           }),
         },
+      };
+    }
+    case "REMOVE_WORKSPACE": {
+      return {
+        ...state,
+        workspaces: {
+          ...Object.keys(state.workspaces).reduce((acc, wsKey) => {
+            if (wsKey !== `${action.data.id}-${action.data.slug}`) {
+              acc[wsKey] = { ...state.workspaces[wsKey] };
+            }
+            return acc;
+          }, {}),
+        },
+        activeTopic: state.activeTopic && state.activeTopic.id === action.data.id && action.data.sharedSlug && state.activeTopic.sharedSlug ? null : state.activeTopic,
+        selectedWorkspaceId: state.activeTopic && state.activeTopic.id === action.data.id && action.data.sharedSlug && state.activeTopic.sharedSlug ? null : state.selectedWorkspaceId,
       };
     }
     default:
