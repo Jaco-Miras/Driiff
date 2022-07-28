@@ -940,13 +940,13 @@ class SocketListeners extends Component {
         this.props.incomingReadUnreadReducer({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
       })
       .listen(".post-notification", (e) => {
-        let payload = {};
-        if (this.props.sharedSlug) {
-          payload = {
-            ...payload,
-            sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
-          };
-        }
+        // let payload = {};
+        // if (this.props.sharedSlug) {
+        //   payload = {
+        //     ...payload,
+        //     sharedPayload: { slug: this.state.slug, token: this.props.sharedWorkspaces[this.state.slug].access_token, is_shared: true },
+        //   };
+        // }
         //this.props.getFavoriteWorkspaceCounters(payload);
         switch (e.SOCKET_TYPE) {
           case "CLOSED_POST": {

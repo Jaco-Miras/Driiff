@@ -871,6 +871,7 @@ const ChatInput = (props) => {
           }
         }),
     prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
+    sharedSlug: selectedChannel.sharedSlug,
   });
 
   //to be converted into hooks

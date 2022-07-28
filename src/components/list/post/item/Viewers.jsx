@@ -47,7 +47,7 @@ const Viewers = ({ users, show, close }) => {
   const filteredUsers = uniqBy(users, "id");
   return (
     <>
-      <Wrapper ref={userContainerRef} className="hover read-users-container" style={{ opacity: show ? 1 : 0, maxHeight: show ? 175 : 0 }}>
+      <Wrapper ref={userContainerRef} className="hover read-users-container" style={{ opacity: show ? 1 : 0, maxHeight: show ? 175 : 0, zIndex: 99 }}>
         {filteredUsers.map((u) => {
           return (
             <span key={u.id}>

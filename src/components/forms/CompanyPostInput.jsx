@@ -129,9 +129,13 @@ const CompanyPostInput = forwardRef((props, ref) => {
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
-  const users = useSelector((state) => state.users.users);
+  const mainUsers = useSelector((state) => state.users.users);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   const recipients = useSelector((state) => state.global.recipients);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
+  const users = post.slug && post.sharedSlug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : mainUsers;
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -236,6 +240,12 @@ const CompanyPostInput = forwardRef((props, ref) => {
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true },
+      };
+    }
     if (quote) {
       payload.quote = {
         id: quote.id,
@@ -279,6 +289,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
         unfurls: [],
         user_clap_count: 0,
         users_approval: [],
+        post_code: post.sharedSlug ? post.code : null,
       };
 
       commentActions.add(commentObj);
@@ -608,7 +619,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
   useSaveInput(handleClearQuillInput, text, textOnly, quillContents);
   //useQuillInput(handleClearQuillInput, reactQuillRef);
   // useDraft(loadDraftCallback, "channel", text, textOnly, draftId);
-  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== user.id);
+  let prioIds = [...new Set(prioMentionIds)].filter((id) => id !== userId);
   const { modules } = useQuillModules({
     mode: "post_comment",
     callback: handleSubmit,
@@ -616,12 +627,16 @@ const CompanyPostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members: Object.values(users).filter((u) => {
-      if (u.id === user.id) {
-        return false;
-      } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-        return true;
+      if (post.sharedSlug) {
+        return prioIds.some((id) => id === u.id);
       } else {
-        return false;
+        if (u.id === userId) {
+          return false;
+        } else if ((u.type === "external" && prioMentionIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+          return true;
+        } else {
+          return false;
+        }
       }
     }),
     workspaces: workspaces ? workspaces : [],

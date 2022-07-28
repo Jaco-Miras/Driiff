@@ -234,6 +234,8 @@ const CompanyPostDetailFooter = (props) => {
   const users = useSelector((state) => state.users.users);
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
 
   const handleSend = () => {
     setSent(true);
@@ -341,7 +343,7 @@ const CompanyPostDetailFooter = (props) => {
   let approverOptions = [
     ...Object.values(users)
       .filter((u) => {
-        return prioMentionIds.some((id) => id === u.id) && u.id !== user.id && post && post.author.id !== u.id;
+        return prioMentionIds.some((id) => id === u.id) && u.id !== userId && post && post.author.id !== u.id;
       })
       .map((u) => {
         return {
@@ -357,7 +359,7 @@ const CompanyPostDetailFooter = (props) => {
       value: "all",
       label: "All users",
       icon: "users",
-      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== user.id),
+      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== userId),
     },
   ];
 
@@ -400,7 +402,7 @@ const CompanyPostDetailFooter = (props) => {
   useEffect(() => {
     if (editPostComment) {
       // const hasApproval =
-      //   editPostComment.users_approval.length > 0 && editPostComment.users_approval.filter((u) => u.ip_address === null).length === editPostComment.users_approval.length && editPostComment.users_approval.some((u) => u.id === user.id);
+      //   editPostComment.users_approval.length > 0 && editPostComment.users_approval.filter((u) => u.ip_address === null).length === editPostComment.users_approval.length && editPostComment.users_approval.some((u) => u.id === userId);
       const hasRequestedChange = editPostComment.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length;
       if (editPostComment.users_approval.length > 0) {
         setShowApprover(true);
@@ -502,25 +504,25 @@ const CompanyPostDetailFooter = (props) => {
   };
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
-  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+  const isApprover = post.users_approval.some((ua) => ua.id === userId);
   //const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
   const approverNames = post.users_approval.map((u) => u.name);
   const isMultipleApprovers = post.users_approval.length > 1;
-  const hasAnswered = post.users_approval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  const hasAnswered = post.users_approval.some((ua) => ua.id === userId && ua.ip_address !== null);
   //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply)) {
       //postActions.markReplyRequirement(post);
       //check if post is also set as must read
       let triggerRead = true;
-      if (post.is_must_read && post.author.id !== user.id) {
-        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+      if (post.is_must_read && post.author.id !== userId) {
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read)) {
           triggerRead = false;
         }
       }
-      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === userId);
       if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
@@ -580,9 +582,14 @@ const CompanyPostDetailFooter = (props) => {
   });
 
   const handleReopen = () => {
+    let sharedPayload = null;
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     let payload = {
       post_id: post.id,
       is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
     };
 
     postActions.close(payload);
@@ -673,7 +680,7 @@ const CompanyPostDetailFooter = (props) => {
               toggleApprover={toggleApprover}
               editPostComment={editPostComment}
               mainInput={mainInput}
-              hasPostAccess={prioMentionIds.some((id) => id === user.id)}
+              hasPostAccess={prioMentionIds.some((id) => id === userId)}
             />
           </ChatInputContainer>
           <Tooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content="Send">
