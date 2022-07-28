@@ -2340,12 +2340,12 @@ class SocketListeners extends Component {
             if (e.team_channel && e.team_channel.code) {
               this.props.removeChannel(e.team_channel);
             }
-            //remove the workspace
-            this.props.removeWorkspace({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             if (this.props.activeTopic && e.id === this.props.activeTopic.id && this.props.activeTopic.sharedSlug && this.props.match.url.startsWith("/shared-hub")) {
               //redirect
               this.props.history.push("/hub/search");
             }
+            //remove the workspace
+            this.props.removeWorkspace({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
           } else {
             //fetch the shared channels
             if (e.channel && e.channel.code) {
