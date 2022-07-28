@@ -1061,7 +1061,7 @@ class SocketListeners extends Component {
             break;
           }
           case "POST_UPDATE": {
-            this.props.incomingUpdatedPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            this.props.incomingUpdatedPost({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
             if (e.channel_messages && e.post_participant_data) {
               if (!e.post_participant_data.from_company && !e.post_participant_data.all_participant_ids.some((p) => p === this.state.userId)) {
                 //user is not participant of post

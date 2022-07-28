@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { usePostActions, useGetSlug } from "./index";
+import { usePostActions } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useSharedCompanyPosts } from "./index";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const useCompanyPosts = () => {
   useSharedCompanyPosts();
@@ -221,7 +222,7 @@ const useCompanyPosts = () => {
     tag: tag,
     postListTag: postListTag,
     sort: sort,
-    post: Object.values(posts).filter((p) => p.id === parseInt(params.postId))[0],
+    post: Object.values(posts).filter((p) => p.id === parseInt(params.postId) && replaceChar(p.title) === params.postTitle)[0],
     search: search,
     user,
     //count: count,

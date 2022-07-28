@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
+import { InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
@@ -333,6 +333,7 @@ const PostModal = (props) => {
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
+  const isSharedPost = item && item.post.sharedSlug;
 
   const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
@@ -396,7 +397,7 @@ const PostModal = (props) => {
     actualUsers,
   } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
-    isSharedWorkspace: isSharedWorkspace,
+    members: isSharedWorkspace ? activeTopic.members : isSharedPost && workspaces[item.post.recipients[0].key] ? workspaces[item.post.recipients[0].key].members : null,
   });
 
   const { enlargeEmoji } = useEnlargeEmoticons();
@@ -596,6 +597,14 @@ const PostModal = (props) => {
         id: item.post.id,
         file_ids: [...uploadedFiles.map((f) => f.id), ...payload.file_ids],
       };
+      if (isSharedPost && item && sharedWs[item.post.slug]) {
+        const sharedPayload = { slug: item.post.slug, token: sharedWs[item.post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+
       if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
         delete payload.approval_user_ids;
       }
@@ -606,6 +615,7 @@ const PostModal = (props) => {
           sendNotify(dictionary.updatingPost);
           dispatch(
             putPost(payload, (err, res) => {
+              history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`);
               dismiss();
               setLoading(false);
               handleDeleteDraft();
