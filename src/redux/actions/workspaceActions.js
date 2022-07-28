@@ -335,3 +335,7 @@ export function getSharedWorkspaces(payload, callback) {
 export function incomingAcceptedSharedUser(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_SHARED_USER", payload, callback);
 }
+
+export function removeWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE", payload, callback);
+}

@@ -182,6 +182,7 @@ import {
   incomingAcceptedSharedUser,
   getSharedWorkspaces,
   getWorkspaces,
+  removeWorkspace,
 } from "../../redux/actions/workspaceActions";
 import { incomingUpdateCompanyName, updateCompanyPostAnnouncement, incomingFaviconImage } from "../../redux/actions/settingsActions";
 import { isIPAddress } from "../../helpers/commonFunctions";
@@ -2428,6 +2429,12 @@ class SocketListeners extends Component {
             if (e.team_channel && e.team_channel.code) {
               this.props.removeChannel(e.team_channel);
             }
+            //remove the workspace
+            this.props.removeWorkspace({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+            if (this.props.activeTopic && e.id === this.props.activeTopic.id && this.props.activeTopic.sharedSlug && this.props.match.url.startsWith("/shared-hub")) {
+              //redirect
+              this.props.history.push("/hub/search");
+            }
           } else {
             //fetch the shared channels
             if (e.channel && e.channel.code) {
@@ -2757,7 +2764,6 @@ class SocketListeners extends Component {
         //     type: e.type,
         //   });
         // }
-        debugger;
         this.props.getSharedWorkspaces({}, (err, res) => {
           if (err) return;
           let myToken = `Bearer ${res.data[e.topic.slug_owner].access_token}`;
@@ -3042,6 +3048,7 @@ function mapDispatchToProps(dispatch) {
     getWorkspaces: bindActionCreators(getWorkspaces, dispatch),
     getSharedChannels: bindActionCreators(getSharedChannels, dispatch),
     removeChannel: bindActionCreators(removeChannel, dispatch),
+    removeWorkspace: bindActionCreators(removeWorkspace, dispatch),
   };
 }
 
