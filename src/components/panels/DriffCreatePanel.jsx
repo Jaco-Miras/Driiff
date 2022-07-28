@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { FormInput, InputFeedback, PasswordInput } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
-import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import useDriffActions from "../hooks/useDriffActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useDispatch } from "react-redux";
@@ -247,6 +247,7 @@ const DriffCreatePanel = (props) => {
             };
           }
           setCreatingDriff(true);
+          props.hideBanner();
           driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
             setCreatingDriff(false);
             setLoading(false);
@@ -328,19 +329,20 @@ const DriffCreatePanel = (props) => {
       ) : creatingDriff ? (
         <StyledWelcomeNote>{dictionary.generateDriffMessage}</StyledWelcomeNote>
       ) : (
-        <>
-          <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>
-          <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>
-          <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>
-          <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>
+        <div className="text-left">
+          <StyledWelcomeNote className="text-center">{dictionary.welcomNote1}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.welcomNote2}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.setUpTrial}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.noCreditCard}</StyledWelcomeNote>
+          <Label for="company_name">{dictionary.companyName}</Label>
           <FormInput
             //ref={refs.company_name}
             onChange={handleInputChange}
+            id="company_name"
             name="company_name"
             value={form.company_name ? form.company_name : ""}
             isValid={formResponse.valid.company_name}
             feedback={formResponse.message.company_name}
-            placeholder={dictionary.companyName}
             innerRef={refs.company_name}
             readOnly={loading}
             autoFocus
@@ -367,50 +369,38 @@ const DriffCreatePanel = (props) => {
               <InputFeedback valid={formResponse.valid.slug}>{formResponse.message.slug}</InputFeedback>
             </InputGroup>
           </StyledFormGroup>
-          <FormInput
-            onChange={handleInputChange}
-            value={form.email ? form.email : ""}
-            name="email"
-            isValid={formResponse.valid.email}
-            feedback={formResponse.message.email}
-            placeholder={dictionary.yourEmail}
-            type="email"
-            readOnly={loading || isSharedInvite}
-          />
-          <FormInput
-            onChange={handleInputChange}
-            name="user_name"
-            value={form.user_name ? form.user_name : ""}
-            isValid={formResponse.valid.user_name}
-            feedback={formResponse.message.user_name}
-            placeholder={dictionary.yourName}
-            innerRef={refs.user_name}
-            readOnly={loading}
-          />
-          <PasswordInput onChange={handleInputChange} name="password" value={form.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
+          <Label for="email">{dictionary.yourEmail}</Label>
+          <FormInput onChange={handleInputChange} value={form.email ? form.email : ""} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} type="email" readOnly={loading || isSharedInvite} />
+          <Label for="user_name">{dictionary.yourName}</Label>
+          <FormInput onChange={handleInputChange} name="user_name" value={form.user_name ? form.user_name : ""} isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} innerRef={refs.user_name} readOnly={loading} />
+          <Label for="password">{dictionary.password}</Label>
+          <PasswordInput onChange={handleInputChange} id="password" name="password" value={form.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder="" />
+          <Label for="passwordConfirm">{dictionary.passwordConfirm}</Label>
           <PasswordInput
             onChange={handleInputChange}
+            id="passwordConfirm"
             name="passwordConfirm"
             value={form.passwordConfirm}
             isValid={formResponse.valid.passwordConfirm}
             feedback={formResponse.message.passwordConfirm}
             readOnly={loading}
-            placeholder={dictionary.passwordConfirm}
+            placeholder=""
           />
-
-          <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
-            {typeof form.invitations !== "undefined" ? (
-              <>
-                {dictionary.invitedUsers}{" "}
-                <div className={"mr-2 d-sm-inline d-none"}>
-                  <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
-                </div>
-              </>
-            ) : (
-              <>+ {dictionary.inviteUser}</>
-            )}
-          </button>
-          <CheckBoxWrapper className="mb-4">
+          <div className="d-flex justify-content-center">
+            <button className={"btn btn-outline-light btn-sm mb-4 t"} onClick={handleShowUserInvitation}>
+              {typeof form.invitations !== "undefined" ? (
+                <>
+                  {dictionary.invitedUsers}{" "}
+                  <div className={"mr-2 d-sm-inline d-none"}>
+                    <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
+                  </div>
+                </>
+              ) : (
+                <>+ {dictionary.inviteUser}</>
+              )}
+            </button>
+          </div>
+          <CheckBoxWrapper className="mb-4 text-center">
             <TodoCheckBox name="agree" checked={agreed} onClick={toggleCheck}></TodoCheckBox>
             <span>
               When creating this Driff you accept our{" "}
@@ -436,7 +426,7 @@ const DriffCreatePanel = (props) => {
           {/* <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
             {dictionary.login}
           </button> */}
-        </>
+        </div>
       )}
     </Wrapper>
   );

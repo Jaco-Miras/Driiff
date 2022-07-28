@@ -342,10 +342,10 @@ const PeopleListItem = (props) => {
 
                   {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
                   {user.external_company_name && user.type === "external" && <span className="small text-muted">{user.external_company_name}</span>}
-                  {user.invited_by && (
+                  {(user.invited_by || user.added_by) && (
                     <div>
                       <span className="small text-muted">
-                        Invited by: {user.invited_by.first_name} {user.invited_by.last_name}
+                        Invited by: {user[isSharedWorkspace ? "added_by" : "invited_by"].first_name} {user[isSharedWorkspace ? "added_by" : "invited_by"].last_name}
                       </span>
                     </div>
                   )}

@@ -542,3 +542,7 @@ export function getSharedChannels(payload, callback) {
 export function hidePageHeader(payload, callback) {
   return SimpleDispatchActionToReducer("HIDE_PAGE_HEADER", payload, callback);
 }
+
+export function removeChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_CHANNEL", payload, callback);
+}
