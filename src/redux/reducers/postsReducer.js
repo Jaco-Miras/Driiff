@@ -222,7 +222,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [key]: {
                 ...state.companyPosts.posts[key],
-                claps: [...state.companyPosts.posts[key].claps, { user_id: state.user.id }],
+                claps: [...state.companyPosts.posts[key].claps, { user_id: action.data.user_id }],
                 clap_count: state.companyPosts.posts[key].clap_count + 1,
                 user_clap_count: 1,
               },
@@ -245,7 +245,7 @@ export default (state = INITIAL_STATE, action) => {
               ...state.companyPosts.posts,
               [key]: {
                 ...state.companyPosts.posts[key],
-                claps: state.companyPosts.posts[key].claps.filter((c) => c.user_id !== state.user.id),
+                claps: state.companyPosts.posts[key].claps.filter((c) => c.user_id !== action.data.user_id),
                 clap_count: state.companyPosts.posts[key].clap_count - 1,
                 user_clap_count: 0,
               },
@@ -276,6 +276,7 @@ export default (state = INITIAL_STATE, action) => {
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
+        return state;
       }
       return {
         ...state,

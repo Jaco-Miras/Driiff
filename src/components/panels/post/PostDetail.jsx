@@ -275,7 +275,7 @@ const PostDetail = (props) => {
 
   const viewerIds = [...new Set(post.view_user_ids)];
 
-  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
+  const viewers = Object.values(workspace.members).filter((u) => viewerIds.some((id) => id === u.id));
 
   const handleGoBack = () => {
     onGoBack();
@@ -376,12 +376,14 @@ const PostDetail = (props) => {
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
+      user_id: user.id,
     };
     if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
       payload = {
         ...payload,
         sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
         post_code: post.code,
+        user_id: sharedWs[workspace.slug].user_auth.id,
       };
     }
     postActions.clap(payload, (err, res) => {
@@ -467,7 +469,7 @@ const PostDetail = (props) => {
 
   const handleClosePost = () => {
     let sharedPayload = null;
-    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+    if (slug !== post.slug && workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
       sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
     }
     let payload = {

@@ -304,9 +304,9 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author ? notification.author.name : null}{" "}
+              {notification.author ? notification.author.name : null}
             </span>
-            <span>{dictionary.addedYouInWorkspace}</span>
+            <span>&nbsp;{dictionary.addedYouInWorkspace}</span>
           </>
         );
       }

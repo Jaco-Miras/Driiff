@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Modal, ModalBody } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
@@ -43,23 +43,40 @@ const WebhookModal = (props) => {
 
   const toast = useToaster();
 
-  const { workspace } = useWorkspace();
+  // const { workspace } = useWorkspace();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   const toggle = () => {
     setModal(!modal);
     dispatch(clearModal({ type: type }));
   };
 
   const handleTeamCopy = () => {
-    navigator.clipboard.writeText(workspace.topic_detail.team_channel_bot.url_webhook).then(() => {
-      toast.info(dictionary.chatWebhooksClipboardCopy);
-      toggle();
-    });
+    navigator.clipboard
+      .writeText(workspace.team_channel_bot.url_webhook)
+      .then(() => {
+        toast.info(dictionary.chatWebhooksClipboardCopy);
+        toggle();
+        setModal(false);
+      })
+      .catch(() => {
+        toast.error("Something went wrong.");
+        toggle();
+        setModal(false);
+      });
   };
   const handleGuestCopy = () => {
-    navigator.clipboard.writeText(workspace.topic_detail.channel_bot.url_webhook).then(() => {
-      toast.info(dictionary.chatWebhooksClipboardCopy);
-      toggle();
-    });
+    navigator.clipboard
+      .writeText(workspace.channel_bot.url_webhook)
+      .then(() => {
+        toast.info(dictionary.chatWebhooksClipboardCopy);
+        toggle();
+        setModal(false);
+      })
+      .catch(() => {
+        toast.error("Something went wrong.");
+        toggle();
+        setModal(false);
+      });
   };
 
   return (

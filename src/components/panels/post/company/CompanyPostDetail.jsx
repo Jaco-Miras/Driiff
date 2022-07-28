@@ -372,6 +372,7 @@ const CompanyPostDetail = (props) => {
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
+      user_id: user.id,
     };
     if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
       const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };

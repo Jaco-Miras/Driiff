@@ -291,6 +291,8 @@ export default (state = INITIAL_STATE, action) => {
             sharedSlug: action.slug !== getSlug(),
             key: ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id,
             is_shared_wp: ws.isSharedWs,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.isSharedWs ? `${ws.id}-${action.slug}` : ws.id].topic_detail;
         }
@@ -339,6 +341,7 @@ export default (state = INITIAL_STATE, action) => {
         isOnClientChat:
           state.activeChannel &&
           updatedWorkspaces[state.activeChannel.entity_id] &&
+          updatedWorkspaces[state.activeChannel.entity_id].team_channel &&
           updatedWorkspaces[state.activeChannel.entity_id].team_channel.code &&
           updatedWorkspaces[state.activeChannel.entity_id].channel.id === state.activeChannel.id
             ? { code: updatedWorkspaces[state.activeChannel.entity_id].team_channel.code, id: updatedWorkspaces[state.activeChannel.entity_id].team_channel.id }
@@ -393,6 +396,8 @@ export default (state = INITIAL_STATE, action) => {
             sharedSlug: false,
             slug: action.slug,
             key: ws.id,
+            team_channel_bot: ws.topic_detail.team_channel_bot,
+            channel_bot: ws.topic_detail.channel_bot,
           };
           delete updatedWorkspaces[ws.id].topic_detail;
         }
@@ -418,6 +423,8 @@ export default (state = INITIAL_STATE, action) => {
         is_favourite: true,
         show_about: action.data.workspace_data.topic_detail.show_about,
         active: action.data.workspace_data.topic_detail.active,
+        team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+        channel_bot: action.data.workspace_data.topic_detail.channel_bot,
       };
       return {
         ...state,
@@ -457,6 +464,8 @@ export default (state = INITIAL_STATE, action) => {
           key: action.data.workspace_data.topic_detail.id,
           sharedSlug: false,
           slug: action.slug,
+          team_channel_bot: action.data.workspace_data.topic_detail.team_channel_bot,
+          channel_bot: action.data.workspace_data.topic_detail.channel_bot,
         };
         return {
           ...state,
@@ -531,11 +540,13 @@ export default (state = INITIAL_STATE, action) => {
     }
     //check if new workspace is shared
     case "INCOMING_WORKSPACE": {
-      if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
+      // if (action.data.sharedSlug || action.data.topic.slug_owner === `${getSlug()}-shared`) return state;
       let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspacesLoaded) {
-        updatedWorkspaces[action.data.id] = {
+        //  updatedWorkspaces[action.data.id] = {
+        updatedWorkspaces[action.data.sharedSlug ? `${action.data.id}-${action.data.topic.slug_owner}` : action.data.id] = {
+          ...action.data,
           id: action.data.id,
           name: action.data.topic.name,
           is_external: action.data.is_external,
@@ -568,8 +579,8 @@ export default (state = INITIAL_STATE, action) => {
           updated_at: action.data.topic.created_at,
           primary_files: [],
           is_shared: action.data.members.filter((m) => m.type === "external").length > 0,
-          key: action.data.id,
-          sharedSlug: false,
+          key: action.data.sharedSlug ? `${action.data.id}-${action.data.topic.slug_owner}` : action.data.id,
+          sharedSlug: action.data.sharedSlug,
         };
         if (action.data.workspace !== null && updatedFolders[action.data.workspace.id]) {
           updatedFolders[action.data.workspace.id].workspace_ids = [...updatedFolders[action.data.workspace.id].workspace_ids, action.data.id];
@@ -647,7 +658,7 @@ export default (state = INITIAL_STATE, action) => {
         });
       }
 
-      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => ws.id === action.data.id)) {
+      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => (action.data.is_shared_wp ? ws.id === action.data.id && ws.sharedSlug : ws.id === action.data.id))) {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = Object.values(state.workspaces).find((ws) => {
           if (action.data.is_shared_wp) {
@@ -751,7 +762,7 @@ export default (state = INITIAL_STATE, action) => {
       }
     }
     case "SET_ACTIVE_TOPIC": {
-      let updatedWorkspaces = { ...state.workspaces, [action.data.id]: action.data };
+      let updatedWorkspaces = { ...state.workspaces };
       let updatedFolders = { ...state.folders };
       if (state.workspaceToDelete) {
         delete updatedWorkspaces[state.workspaceToDelete];
@@ -800,7 +811,11 @@ export default (state = INITIAL_STATE, action) => {
           type: action.data.type,
         },
         isOnClientChat:
-          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+          action.data.type === "TOPIC" &&
+          state.workspaces[action.data.entity_id] &&
+          state.workspaces[action.data.entity_id].team_channel &&
+          state.workspaces[action.data.entity_id].team_channel.code &&
+          state.workspaces[action.data.entity_id].channel.id === action.data.id
             ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
             : null,
       };
@@ -814,7 +829,11 @@ export default (state = INITIAL_STATE, action) => {
           type: action.data.type,
         },
         isOnClientChat:
-          action.data.type === "TOPIC" && state.workspaces[action.data.entity_id] && state.workspaces[action.data.entity_id].team_channel.code && state.workspaces[action.data.entity_id].channel.id === action.data.id
+          action.data.type === "TOPIC" &&
+          state.workspaces[action.data.entity_id] &&
+          state.workspaces[action.data.entity_id].team_channel &&
+          state.workspaces[action.data.entity_id].team_channel.code &&
+          state.workspaces[action.data.entity_id].channel.id === action.data.id
             ? { code: state.workspaces[action.data.entity_id].team_channel.code, id: state.workspaces[action.data.entity_id].team_channel.id }
             : null,
       };
@@ -1207,7 +1226,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
-                          claps: [...state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: state.user.id }],
+                          claps: [...state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps, { user_id: action.data.user_id }],
                           clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count + 1,
                           user_clap_count: 1,
                         },
@@ -1221,7 +1240,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[key].comments,
                       [action.data.id]: {
                         ...state.postComments[key].comments[action.data.id],
-                        claps: [...state.postComments[key].comments[action.data.id].claps, { user_id: state.user.id }],
+                        claps: [...state.postComments[key].comments[action.data.id].claps, { user_id: action.data.user_id }],
                         clap_count: state.postComments[key].comments[action.data.id].clap_count + 1,
                         user_clap_count: 1,
                       },
@@ -1250,7 +1269,7 @@ export default (state = INITIAL_STATE, action) => {
                         ...state.postComments[key].comments[action.data.parent_id].replies,
                         [action.data.id]: {
                           ...state.postComments[key].comments[action.data.parent_id].replies[action.data.id],
-                          claps: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                          claps: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].claps.filter((c) => c.user_id !== action.data.user_id),
                           clap_count: state.postComments[key].comments[action.data.parent_id].replies[action.data.id].clap_count - 1,
                           user_clap_count: 0,
                         },
@@ -1264,7 +1283,7 @@ export default (state = INITIAL_STATE, action) => {
                       ...state.postComments[key].comments,
                       [action.data.id]: {
                         ...state.postComments[key].comments[action.data.id],
-                        claps: state.postComments[key].comments[action.data.id].claps.filter((c) => c.user_id !== state.user.id),
+                        claps: state.postComments[key].comments[action.data.id].claps.filter((c) => c.user_id !== action.data.user_id),
                         clap_count: state.postComments[key].comments[action.data.id].clap_count - 1,
                         user_clap_count: 0,
                       },
@@ -1294,7 +1313,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [key]: {
                       ...state.workspacePosts[wsId].posts[key],
-                      claps: [...state.workspacePosts[wsId].posts[key].claps, { user_id: state.user.id }],
+                      claps: [...state.workspacePosts[wsId].posts[key].claps, { user_id: action.data.user_id }],
                       clap_count: state.workspacePosts[wsId].posts[key].clap_count + 1,
                       user_clap_count: 1,
                     },
@@ -1327,7 +1346,7 @@ export default (state = INITIAL_STATE, action) => {
                     ...state.workspacePosts[wsId].posts,
                     [key]: {
                       ...state.workspacePosts[wsId].posts[key],
-                      claps: state.workspacePosts[wsId].posts[key].claps.filter((c) => c.user_id !== state.user.id),
+                      claps: state.workspacePosts[wsId].posts[key].claps.filter((c) => c.user_id !== action.data.user_id),
                       clap_count: state.workspacePosts[wsId].posts[key].clap_count - 1,
                       user_clap_count: 0,
                     },
