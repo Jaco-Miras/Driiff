@@ -282,7 +282,6 @@ export default (state = INITIAL_STATE, action) => {
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
-        return state;
       }
       return {
         ...state,

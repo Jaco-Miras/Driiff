@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useSharedCompanyPosts } from "./index";
 
 const useCompanyPosts = () => {
-  //useSharedCompanyPosts();
+  useSharedCompanyPosts();
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
