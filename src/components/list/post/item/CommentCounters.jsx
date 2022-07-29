@@ -52,7 +52,7 @@ const CommentCounters = (props) => {
 
   const mainUsers = useSelector((state) => state.users.users);
   const sharedUsers = useSelector((state) => state.users.sharedUsers);
-  let users = post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : mainUsers;
+  let users = post.sharedSlug && post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : !post.sharedSlug ? mainUsers : {};
   const likers = Object.values(users).filter((u) => comment.claps.some((c) => c.user_id === u.id));
 
   const [showViewer, setShowViewer] = useState(false);
