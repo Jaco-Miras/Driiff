@@ -46,7 +46,8 @@ const UserList = () => {
       return a.name.toString().localeCompare(b.name);
     })
     .filter((user) => {
-      if (["gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_channel_bot", "driff_webhook_bot", "huddle_bot"].includes(user.email)) return false;
+      if (["driffsupport@getdriff.com", "gripp_project_bot", "gripp_account_activation", "gripp_offerte_bot", "gripp_invoice_bot", "gripp_police_bot", "driff_channel_bot", "driff_webhook_bot", "huddle_bot"].includes(user.email))
+        return false;
 
       if (user.active !== 1) return false;
 
