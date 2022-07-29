@@ -46,7 +46,7 @@ const ProfileSlider = (props) => {
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
-    slugName: _t("PROFILE.SLUG_NAME", "Slug"),
+    slugName: _t("PROFILE.SLUG_NAME", "Driff"),
     // information: _t("PROFILE.INFORMATION", "Information"),
     firstName: _t("PROFILE.FIRST_NAME", "First name:"),
     middleName: _t("PROFILE.MIDDLE_NAME", "Middle name:"),
