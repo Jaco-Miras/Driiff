@@ -1428,16 +1428,19 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         workspacePosts: {
-          [action.data.topic_id]: {
-            ...state.workspacePosts[action.data.topic_id],
-            posts: {
-              ...state.workspacePosts[action.data.topic_id].posts,
-              [postKey]: {
-                ...state.workspacePosts[action.data.topic_id].posts[postKey],
-                is_favourite: !state.workspacePosts[action.data.topic_id].posts[postKey].is_favourite,
+          ...state.workspacePosts,
+          ...(state.workspacePosts[action.data.topic_id] && {
+            [action.data.topic_id]: {
+              ...state.workspacePosts[action.data.topic_id],
+              posts: {
+                ...state.workspacePosts[action.data.topic_id].posts,
+                [postKey]: {
+                  ...state.workspacePosts[action.data.topic_id].posts[postKey],
+                  is_favourite: !state.workspacePosts[action.data.topic_id].posts[postKey].is_favourite,
+                },
               },
             },
-          },
+          }),
         },
       };
     }
@@ -1986,10 +1989,18 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[id].posts,
                   ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
                     ...Object.values(state.workspacePosts[id].posts).reduce((pos, p) => {
-                      pos[action.data.post_code ? p.code : p.id] = {
-                        ...p,
-                        is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
-                      };
+                      if (p.code === action.data.post_code) {
+                        pos[p.sharedSlug ? p.code : p.id] = {
+                          ...p,
+                          is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                        };
+                      } else {
+                        pos[p.sharedSlug ? p.code : p.id] = {
+                          ...p,
+                          is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                        };
+                      }
+
                       return pos;
                     }, {}),
                   }),
@@ -2122,7 +2133,7 @@ export default (state = INITIAL_STATE, action) => {
         workspacePosts: {
           ...state.workspacePosts,
           ...Object.keys(state.workspacePosts)
-            .filter((wsId) => state.workspacePosts[wsId].posts && Object.values(state.workspacePosts[wsId].posts).some((p) => p.id === action.data.post_id))
+            .filter((wsId) => state.workspacePosts[wsId] && state.workspacePosts[wsId].posts && Object.values(state.workspacePosts[wsId].posts).some((p) => p.id === action.data.post_id))
             .map((wsId) => {
               return {
                 [wsId]: {

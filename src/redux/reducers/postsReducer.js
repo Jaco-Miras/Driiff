@@ -395,18 +395,22 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "STAR_POST_REDUCER": {
-      if (typeof state.companyPosts.posts[action.data.post_id] === "undefined") return state;
-
+      let postKey = action.data.post_id;
+      if (action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: {
-              ...state.companyPosts.posts[action.data.post_id],
-              is_favourite: !state.companyPosts.posts[action.data.post_id].is_favourite,
-            },
+            ...(state.companyPosts.posts[postKey] && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
+                is_favourite: !state.companyPosts.posts[postKey].is_favourite,
+              },
+            }),
           },
         },
       };
@@ -624,10 +628,17 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             ...(Object.values(state.companyPosts.posts).length > 0 && {
               ...Object.values(state.companyPosts.posts).reduce((pos, p) => {
-                pos[p.id] = {
-                  ...p,
-                  is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
-                };
+                if (p.code === action.data.post_code) {
+                  pos[p.sharedSlug ? p.code : p.id] = {
+                    ...p,
+                    is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                  };
+                } else {
+                  pos[p.sharedSlug ? p.code : p.id] = {
+                    ...p,
+                    is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                  };
+                }
                 return pos;
               }, {}),
             }),
@@ -636,15 +647,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_TOGGLE_FOLLOW": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+        ...(state.companyPosts.posts.hasOwnProperty(postKey) && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 is_followed: action.data.is_followed,
               },
             },
@@ -742,7 +754,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DELETED_POST": {
       let companyPosts = { ...state.companyPosts };
-      delete companyPosts.posts[action.data.id];
+      delete companyPosts.posts[action.data.sharedSlug ? action.data.post_code : action.data.id];
       return {
         ...state,
         companyPosts: companyPosts,
@@ -1406,39 +1418,71 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_FOLLOW_POST": {
+      const post = Object.values(state.companyPosts.posts).find((p) => p.id === action.data.post_id && p.sharedSlug === action.data.sharedSlug);
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
-                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+        ...(!action.data.sharedSlug &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                },
               },
             },
-          },
-        }),
+          }),
+        ...(action.data.sharedSlug &&
+          post && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [post.code]: {
+                  ...state.companyPosts.posts[post.code],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                },
+              },
+            },
+          }),
       };
     }
     case "INCOMING_UNFOLLOW_POST": {
+      const post = Object.values(state.companyPosts.posts).find((p) => p.id === action.data.post_id && p.sharedSlug === action.data.sharedSlug);
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
-                user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+        ...(!action.data.sharedSlug &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                },
               },
             },
-          },
-        }),
+          }),
+        ...(action.data.sharedSlug &&
+          post && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [post.code]: {
+                  ...state.companyPosts.posts[post.code],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: [...state.companyPosts.posts[post.code].user_unfollow, action.data.user_unfollow],
+                },
+              },
+            },
+          }),
       };
     }
     case "GET_IN_PROGRESS_COMPANY_POSTS_SUCCESS": {
