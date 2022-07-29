@@ -226,6 +226,7 @@ const ChatContentPanel = (props) => {
     cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
     generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
     generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
+    sharedIconTooltip: _t("TOOLTIP.SHARED_ICON", "This is an account from a different driff"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
