@@ -12,7 +12,6 @@ const Wrapper = styled.div`
   }
   @media (min-width: 768px) {
     display: flex;
-    height: 90px;
   }
 `;
 
