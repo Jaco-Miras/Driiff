@@ -93,7 +93,7 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostCounters = (props) => {
-  const { dictionary, post, viewerIds, viewers, handleReaction } = props;
+  const { dictionary, post, handleReaction } = props;
   const mainUser = useSelector((state) => state.session.user);
   const mainUsers = useSelector((state) => state.users.users);
   const sharedUsers = useSelector((state) => state.users.sharedUsers);
@@ -102,7 +102,10 @@ const PostCounters = (props) => {
   const { _t } = useTranslationActions();
   const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
   const hasRead = readByUsers.some((u) => u.id === user.id);
-  let users = post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : mainUsers;
+  let users = post.sharedSlug && post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : !post.sharedSlug ? mainUsers : {};
+
+  const viewerIds = [...new Set(post.view_user_ids)];
+  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
   const likers = Object.values(users).filter((u) => post.claps.some((c) => c.user_id === u.id));
 
   const [showViewer, setShowViewer] = useState(false);

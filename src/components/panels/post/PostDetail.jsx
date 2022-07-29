@@ -273,10 +273,6 @@ const PostDetail = (props) => {
 
   const { comments } = useComments(post);
 
-  const viewerIds = [...new Set(post.view_user_ids)];
-
-  const viewers = Object.values(workspace.members).filter((u) => viewerIds.some((id) => id === u.id));
-
   const handleGoBack = () => {
     onGoBack();
   };
@@ -585,7 +581,7 @@ const PostDetail = (props) => {
         </div>
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} post={post} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
