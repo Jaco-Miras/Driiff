@@ -9,6 +9,7 @@ import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
+import Tooltip from "react-tooltip-lite";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -586,6 +587,13 @@ const ChatBubble = (props) => {
 
   //const theme = useTheme()
 
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
+
   return (
     <ChatBubbleContainer
       ref={refs.container}
@@ -617,7 +625,11 @@ const ChatBubble = (props) => {
                     className={`chat-name-not-author-mobile ${reply.is_important && "important"} ${selectedChannel.sharedSlug && "text-dark font-weight-bold"}`}
                   >
                     {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
-                    {selectedChannel.sharedSlug && isNotSameDriff && <SvgIconFeather icon="repeat" height={14} />}
+                    {selectedChannel.sharedSlug && isNotSameDriff && (
+                      <Tooltip onToggle={toggleTooltip} content={dictionary.sharedIconTooltip} styles={{ display: "inline", cursor: "pointer" }}>
+                        <SvgIconFeather icon="repeat" height={14} />
+                      </Tooltip>
+                    )}
                   </ChatNameNotAuthor>
                 </>
               )}
