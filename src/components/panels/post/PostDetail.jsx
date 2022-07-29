@@ -266,7 +266,7 @@ const PostDetail = (props) => {
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
-  const users = useSelector((state) => state.users.users);
+  //const users = useSelector((state) => state.users.users);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
