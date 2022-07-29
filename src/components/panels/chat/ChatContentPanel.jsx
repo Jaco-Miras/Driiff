@@ -210,6 +210,7 @@ const ChatContentPanel = (props) => {
     repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
     personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
     personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list."),
+    sharedIconTooltip: _t("TOOLTIP.SHARED_ICON", "This is an account from a different driff"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));
