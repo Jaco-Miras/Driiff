@@ -211,6 +211,13 @@ const useCommentActions = () => {
       post_id: post.id,
       sharedPayload: sharedPayload,
     };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
       fetchPost(payload, (err, res) => {
         if (err) return;

@@ -209,17 +209,21 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "ADD_POST_REACT": {
+      let key = action.data.post_id;
+      if (action.data.post_code) {
+        key = action.data.post_code;
+      }
       return {
         ...state,
-        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+        ...(typeof state.companyPosts.posts[key] !== "undefined" && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                claps: [...state.companyPosts.posts[action.data.post_id].claps, { user_id: action.data.user_id }],
-                clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
+              [key]: {
+                ...state.companyPosts.posts[key],
+                claps: [...state.companyPosts.posts[key].claps, { user_id: action.data.user_id }],
+                clap_count: state.companyPosts.posts[key].clap_count + 1,
                 user_clap_count: 1,
               },
             },
@@ -228,17 +232,21 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "REMOVE_POST_REACT": {
+      let key = action.data.post_id;
+      if (action.data.post_code) {
+        key = action.data.post_code;
+      }
       return {
         ...state,
-        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+        ...(typeof state.companyPosts.posts[key] !== "undefined" && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.user_id),
-                clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
+              [key]: {
+                ...state.companyPosts.posts[key],
+                claps: state.companyPosts.posts[key].claps.filter((c) => c.user_id !== action.data.user_id),
+                clap_count: state.companyPosts.posts[key].clap_count - 1,
                 user_clap_count: 0,
               },
             },
@@ -268,7 +276,6 @@ export default (state = INITIAL_STATE, action) => {
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
-        return state;
       }
       return {
         ...state,
@@ -309,15 +316,18 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_UPDATED_POST": {
-      if (action.data.sharedSlug) return state;
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       let posts = { ...state.companyPosts.posts };
-      if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
-        delete posts[action.data.id];
+      if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === action.data.userId)) {
+        delete posts[postKey];
       } else {
-        if (posts.hasOwnProperty(action.data.id)) {
-          posts[action.data.id] = { ...action.data, claps: posts[action.data.id].claps };
+        if (posts.hasOwnProperty(postKey)) {
+          posts[postKey] = { ...action.data, claps: posts[postKey].claps };
         } else {
-          posts[action.data.id] = { ...action.data, claps: [] };
+          posts[postKey] = { ...action.data, claps: [] };
         }
       }
       return {
@@ -639,58 +649,73 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            flipper: !state.flipper,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                // view_user_ids:
-                //   action.data.unread === 0 ? [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.user_id] : state.companyPosts.posts[action.data.post_id].view_user_ids.filter((id) => id !== action.data.user_id),
-                is_unread: action.data.unread,
-                unread_count: action.data.unread === 0 ? 0 : state.companyPosts.posts[action.data.post_id].unread_count,
+        ...(!action.data.sharedSlug &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+            companyPosts: {
+              ...state.companyPosts,
+              flipper: !state.flipper,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  is_unread: action.data.unread,
+                  unread_count: action.data.unread === 0 ? 0 : state.companyPosts.posts[action.data.post_id].unread_count,
+                },
               },
             },
-          },
-        }),
+          }),
+        ...(action.data.sharedSlug &&
+          action.data.post_code &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_code) && {
+            companyPosts: {
+              ...state.companyPosts,
+              flipper: !state.flipper,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_code]: {
+                  ...state.companyPosts.posts[action.data.post_code],
+                  is_unread: action.data.unread,
+                  unread_count: action.data.unread === 0 ? 0 : state.companyPosts.posts[action.data.post_code].unread_count,
+                },
+              },
+            },
+          }),
       };
     }
     case "INCOMING_COMMENT": {
       if (action.data.SOCKET_TYPE === "POST_COMMENT_CREATE") {
+        let postKey = action.data.post_id;
+        if (action.data.sharedSlug) {
+          postKey = action.data.post_code;
+        }
         const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
         const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
         const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
-        const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
+        const isApprover = action.data.users_approval.some((ua) => ua.iaction.data.userId);
         return {
           ...state,
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              ...(state.companyPosts.posts[action.data.post_id] && {
-                [action.data.post_id]: {
-                  ...state.companyPosts.posts[action.data.post_id],
-                  unread_count: action.data.author.id !== state.user.id ? state.companyPosts.posts[action.data.post_id].unread_count + 1 : state.companyPosts.posts[action.data.post_id].unread_count,
+              ...(state.companyPosts.posts[postKey] && {
+                [postKey]: {
+                  ...state.companyPosts.posts[postKey],
+                  unread_count: action.data.author.id !== action.data.userId ? state.companyPosts.posts[postKey].unread_count + 1 : state.companyPosts.posts[postKey].unread_count,
                   is_unread:
-                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true
-                      ? state.companyPosts.posts[action.data.post_id].is_unread
-                      : action.data.author.id !== state.user.id
-                      ? 1
-                      : state.companyPosts.posts[action.data.post_id].is_unread,
+                    action.data.hasOwnProperty("allMuted") && action.data.allMuted === true ? state.companyPosts.posts[postKey].is_unread : action.data.author.id !== action.data.userId ? 1 : state.companyPosts.posts[postKey].is_unread,
                   updated_at: action.data.updated_at,
-                  reply_count: state.companyPosts.posts[action.data.post_id].reply_count + 1,
-                  has_replied: action.data.author.id === state.user.id ? true : false,
+                  reply_count: state.companyPosts.posts[postKey].reply_count + 1,
+                  has_replied: action.data.author.id === action.data.userId ? true : false,
                   post_approval_label: allUsersAgreed
                     ? "ACCEPTED"
                     : allUsersDisagreed
                     ? "REQUEST_UPDATE"
                     : isApprover && hasPendingAproval
                     ? "NEED_ACTION"
-                    : state.companyPosts.posts[action.data.post_id].author.id === action.data.author.id && hasPendingAproval
+                    : state.companyPosts.posts[postKey].author.id === action.data.author.id && hasPendingAproval
                     ? "REQUEST_APPROVAL"
-                    : state.companyPosts.posts[action.data.post_id].post_approval_label,
+                    : state.companyPosts.posts[postKey].post_approval_label,
                 },
               }),
             },
@@ -959,6 +984,10 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_CLOSE_POST": {
+      let postKey = action.data.post.id;
+      if (action.data.sharedSlug && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
+      }
       const mustRead = action.data.must_read_users.some((u) => u.id === state.user.id && !u.must_read);
       const mustReply = action.data.must_reply_users.some((u) => u.id === state.user.id && !u.must_reply);
       return {
@@ -967,9 +996,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(state.companyPosts.posts[action.data.post.id] && {
-              [action.data.post.id]: {
-                ...state.companyPosts.posts[action.data.post.id],
+            ...(state.companyPosts.posts[postKey] && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 is_close: action.data.is_close,
                 post_close: {
                   initiator: action.data.initiator,
@@ -1161,9 +1190,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...Object.keys(state.companyPosts.posts)
-              .filter((key) => parseInt(key) !== action.data.id)
-              .reduce((res, id) => {
-                res[id] = { ...state.companyPosts.posts[id] };
+              .filter((key) => {
+                if (action.data.sharedSlug) {
+                  return key !== action.data.post_code;
+                } else {
+                  return parseInt(key) !== action.data.id;
+                }
+              })
+              .reduce((res, key) => {
+                res[key] = { ...state.companyPosts.posts[key] };
                 return res;
               }, {}),
           },
@@ -1566,13 +1601,17 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_POST_READ_CLAP_SUCCESS": {
+      let postKey = action.data.id;
+      if (action.isSharedSlug && action.data.code) {
+        postKey = action.data.code;
+      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
             if (post.id === action.data.id) {
-              acc[post.id] = {
+              acc[action.isSharedSlug ? postKey : post.id] = {
                 ...post,
                 claps: action.data.claps,
                 post_reads: action.data.reads.map((r) => {

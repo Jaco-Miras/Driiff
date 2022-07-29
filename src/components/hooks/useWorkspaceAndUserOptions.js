@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useTranslationActions } from ".";
 
 const useWorkspaceAndUserOptions = (props) => {
-  const { addressTo, isSharedWorkspace = false } = props;
+  const { addressTo, members = null } = props;
   const { _t } = useTranslationActions();
   const dictionary = {
     teamLabel: _t("TEAM", "Team"),
@@ -220,8 +220,8 @@ const useWorkspaceAndUserOptions = (props) => {
   addressIds = [...new Set(addressIds)];
   //let addressInternalIds = addressIds.filter((id) => internalUsers.some((u) => u.id === id));
   let user_options = [];
-  if (isSharedWorkspace) {
-    user_options = activeTopic.members.map((u) => {
+  if (members) {
+    user_options = members.map((u) => {
       return {
         ...u,
         icon: "user-avatar",

@@ -1611,7 +1611,7 @@ export default (state = INITIAL_STATE, action) => {
           key = `${id}-${action.data.slug}`;
         }
         if (newWorkspacePosts.hasOwnProperty(key)) {
-          if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === state.user.id)) {
+          if (action.data.is_personal && !action.data.post_participant_data.all_participant_ids.some((id) => id === action.data.userId)) {
             delete newWorkspacePosts[key].posts[postKey];
           } else {
             if (newWorkspacePosts[key].posts.hasOwnProperty(postKey)) {
@@ -1662,7 +1662,7 @@ export default (state = INITIAL_STATE, action) => {
       const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
       const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
-      const isApprover = action.data.users_approval.some((ua) => ua.id === state.user.id);
+      const isApprover = action.data.users_approval.some((ua) => ua.id === action.data.userId);
       let postKey = action.data.post_id;
       if (action.data.sharedSlug) {
         postKey = action.data.post_code;
@@ -1710,7 +1710,7 @@ export default (state = INITIAL_STATE, action) => {
                   }
                   return res;
                 }, {}),
-                ...(state.user.id !== action.data.author.id &&
+                ...(action.data.userId !== action.data.author.id &&
                   isNewComment && {
                     //new comment from other user
                     ...(action.data.parent_id &&
@@ -1772,9 +1772,9 @@ export default (state = INITIAL_STATE, action) => {
                         : state.workspacePosts[key].posts[postKey].post_approval_label,
                       reply_count: isNewComment ? state.workspacePosts[key].posts[postKey].reply_count + 1 : state.workspacePosts[key].posts[postKey].reply_count,
                       updated_at: isNewComment ? action.data.updated_at : state.workspacePosts[key].posts[postKey].updated_at,
-                      has_replied: isNewComment && action.data.author.id === state.user.id ? true : state.workspacePosts[key].posts[postKey].has_replied,
-                      unread_count: isNewComment && action.data.author.id !== state.user.id ? state.workspacePosts[key].posts[postKey].unread_count + 1 : state.workspacePosts[key].posts[postKey].unread_count,
-                      is_unread: isNewComment && action.data.author.id !== state.user.id ? 1 : state.workspacePosts[key].posts[postKey].is_unread,
+                      has_replied: isNewComment && action.data.author.id === action.data.userId ? true : state.workspacePosts[key].posts[postKey].has_replied,
+                      unread_count: isNewComment && action.data.author.id !== action.data.userId ? state.workspacePosts[key].posts[postKey].unread_count + 1 : state.workspacePosts[key].posts[postKey].unread_count,
+                      is_unread: isNewComment && action.data.author.id !== action.data.userId ? 1 : state.workspacePosts[key].posts[postKey].is_unread,
                     },
                   }),
                 },
