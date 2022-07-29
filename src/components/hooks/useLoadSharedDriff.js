@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { getSharedChannels } from "../../redux/actions/chatActions";
 import { getSharedWorkspaces, getWorkspaces } from "../../redux/actions/workspaceActions";
 import { getNotifications, getAllSnoozedNotification } from "../../redux/actions/notificationActions";
-import Echo from "laravel-echo";
 import { sessionService } from "redux-react-session";
 import { getSharedUsers } from "../../redux/actions/userAction";
 import { useGetSlug } from ".";
@@ -39,23 +38,6 @@ const useLoadSharedDriff = () => {
         };
         if (ws.slice(0, -7) === slug) {
           dispatch(getSharedUsers(sharedUserPayload));
-        }
-
-        let myToken = `Bearer ${session.user.sharedWorkspaces[ws].access_token}`;
-        let accessBroadcastToken = session.user.sharedWorkspaces[ws].access_broadcast_token;
-        let host = process.env.REACT_APP_socketAddress;
-        if (!window.io) window.io = require("socket.io-client");
-        if (!window[ws]) {
-          window[ws] = new Echo({
-            broadcaster: "socket.io",
-            host: host,
-            auth: {
-              headers: {
-                Authorization: myToken,
-                "Driff-Broadcast-Token": accessBroadcastToken,
-              },
-            },
-          });
         }
       });
     }
@@ -109,23 +91,6 @@ const useLoadSharedDriff = () => {
         if (ws.slice(0, -7) === slug) {
           dispatch(getSharedUsers(sharedUserPayload));
         }
-
-        let myToken = `Bearer ${sharedWs[ws].access_token}`;
-        let accessBroadcastToken = sharedWs[ws].access_broadcast_token;
-        let host = process.env.REACT_APP_socketAddress;
-        if (!window.io) window.io = require("socket.io-client");
-        if (!window[ws]) {
-          window[ws] = new Echo({
-            broadcaster: "socket.io",
-            host: host,
-            auth: {
-              headers: {
-                Authorization: myToken,
-                "Driff-Broadcast-Token": accessBroadcastToken,
-              },
-            },
-          });
-        }
       });
       //sessionService.saveUser({ ...session.user, sharedWorkspaces: sharedWs });
     }
@@ -162,22 +127,6 @@ const useLoadSharedDriff = () => {
         };
         if (ws.slice(0, -7) === slug) {
           dispatch(getSharedUsers(sharedUserPayload));
-        }
-        let myToken = `Bearer ${sharedWs[ws].access_token}`;
-        let accessBroadcastToken = sharedWs[ws].access_broadcast_token;
-        let host = process.env.REACT_APP_socketAddress;
-        if (!window.io) window.io = require("socket.io-client");
-        if (!window[ws]) {
-          window[ws] = new Echo({
-            broadcaster: "socket.io",
-            host: host,
-            auth: {
-              headers: {
-                Authorization: myToken,
-                "Driff-Broadcast-Token": accessBroadcastToken,
-              },
-            },
-          });
         }
       });
     }

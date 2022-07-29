@@ -295,13 +295,13 @@ const MainLayout = (props) => {
         </MainContent>
       )} */}
       <MobileOverlay />
-      {user.id !== undefined && window[slug] !== undefined && (
+      {user.id !== undefined && window.Echo && window.Echo[slug] !== undefined && (
         <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} sharedSlug={false} />
       )}
       {sharedWsLoaded &&
         Object.keys(sharedWs).length > 0 &&
         Object.keys(sharedWs).map((ws) => {
-          if (window[ws] && sharedWs[ws].user_auth) {
+          if (window.Echo && window.Echo[ws] && sharedWs[ws].user_auth) {
             return (
               <SocketListeners
                 key={ws}

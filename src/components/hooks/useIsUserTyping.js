@@ -45,11 +45,11 @@ const useIsUserTyping = (props) => {
   const handleSubscribeToChannel = (leaveId = null) => {
     setUsersTyping([]);
     const slug = localStorage.getItem("slug");
-    if (window[slug]) {
+    if (window.Echo && window.Echo[slug]) {
       if (leaveId) {
-        window[slug].leave(localStorage.getItem("slug") + ".App.Channel." + leaveId);
+        window.Echo[slug].leave(localStorage.getItem("slug") + ".App.Channel." + leaveId);
       }
-      window[slug].private(localStorage.getItem("slug") + ".App.Channel." + channel.id).listenForWhisper("typing", (e) => {
+      window.Echo[slug].private(localStorage.getItem("slug") + ".App.Channel." + channel.id).listenForWhisper("typing", (e) => {
         handleSetUserTyping(e);
       });
     }
