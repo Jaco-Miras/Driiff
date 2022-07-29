@@ -38,7 +38,6 @@ const useSocketConnection = (props) => {
         let host = process.env.REACT_APP_socketAddress;
         if (!window.io) window.io = require("socket.io-client");
         if (window.Echo) {
-          console.log(window.Echo);
           if (!window.Echo[ws]) {
             window.Echo[ws] = new Echo({
               broadcaster: "socket.io",
@@ -54,7 +53,6 @@ const useSocketConnection = (props) => {
         }
       });
     }
-    console.log(window);
   }, [sharedWsLoaded, sharedWs]);
 };
 
