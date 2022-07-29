@@ -657,8 +657,30 @@ export default (state = INITIAL_STATE, action) => {
           }
         });
       }
-
-      if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => (action.data.is_shared_wp ? ws.id === action.data.id && ws.sharedSlug : ws.id === action.data.id))) {
+      if (
+        state.workspacesLoaded &&
+        action.data.type === "WORKSPACE" &&
+        action.data.addNotification &&
+        !Object.values(state.workspaces).some((ws) => (action.data.is_shared_wp ? ws.id === action.data.id && ws.sharedSlug : ws.id === action.data.id))
+      ) {
+        //add the workspace
+        workspace = {
+          ...action.data,
+          active: 1,
+          slug: action.data.slug,
+          sharedSlug: action.data.sharedSlug,
+          is_lock: action.data.private,
+          folder_name: action.data.current_workspace_folder_name,
+          workspace_counter_entries: 0,
+          folder_id: action.data.workspace_id,
+        };
+        updatedWorkspaces[workspace.sharedSlug ? `${action.data.id}-${action.data.slug}` : workspace.id] = workspace;
+        return {
+          ...state,
+          workspaces: updatedWorkspaces,
+          search: updatedSearch,
+        };
+      } else if (state.workspacesLoaded && action.data.type === "WORKSPACE" && Object.values(state.workspaces).some((ws) => (action.data.is_shared_wp ? ws.id === action.data.id && ws.sharedSlug : ws.id === action.data.id))) {
         let updatedTopic = state.activeTopic ? { ...state.activeTopic } : null;
         workspace = Object.values(state.workspaces).find((ws) => {
           if (action.data.is_shared_wp) {
