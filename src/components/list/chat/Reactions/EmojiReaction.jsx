@@ -34,6 +34,9 @@ const EmojiContainer = styled.div`
       visibility: visible;
     }
   }
+  @media (min-width: 768px) {
+    margin-top: -1rem;
+  }
 `;
 
 // const StyledUserListPopUp = styled(UserListPopUp)`
