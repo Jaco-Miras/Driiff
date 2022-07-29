@@ -52,11 +52,14 @@ const useTypingIndicator = (props) => {
 
   useEffect(() => {
     setUsersTyping([]);
-    window[slug].private(slug + ".App.Channel." + channelId).listenForWhisper("typing", (e) => {
-      handleSetUserTyping(e);
-    });
+    if (window.Echo && window.Echo[slug]) {
+      window.Echo[slug].private(slug + ".App.Channel." + channelId).listenForWhisper("typing", (e) => {
+        handleSetUserTyping(e);
+      });
+    }
+
     return () => {
-      window[slug].leave(slug + ".App.Channel." + channelId);
+      if (window.Echo && window.Echo[slug]) window.Echo[slug].leave(slug + ".App.Channel." + channelId);
     };
   }, [channelId, slug]);
 

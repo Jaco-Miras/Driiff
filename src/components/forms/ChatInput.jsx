@@ -523,8 +523,8 @@ const ChatInput = (props) => {
           email: sharedWs[slug].user_auth.email,
         };
       }
-      if (window[slug]) {
-        window[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
+      if (window.Echo && window.Echo[slug]) {
+        window.Echo[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
           user: currentUser,
           typing: true,
           channel_id: selectedChannel.id,

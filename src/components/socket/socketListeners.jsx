@@ -305,14 +305,14 @@ class SocketListeners extends Component {
       });
     }
 
-    window[this.state.slug].connector.socket.on("connect", () => {
+    window.Echo[this.state.slug].connector.socket.on("connect", () => {
       //console.log("socket connected");
     });
-    window[this.state.slug].connector.socket.on("disconnect", () => {
+    window.Echo[this.state.slug].connector.socket.on("disconnect", () => {
       //console.log("socket disconnected");
       this.setState({ disconnectedTimestamp: Math.floor(Date.now() / 1000) });
     });
-    window[this.state.slug].connector.socket.on("reconnect", () => {
+    window.Echo[this.state.slug].connector.socket.on("reconnect", () => {
       //console.log("socket reconnected");
       this.setState({ reconnected: true, reconnectedTimestamp: Math.floor(Date.now() / 1000) });
       this.refetch();
@@ -321,16 +321,16 @@ class SocketListeners extends Component {
       this.refetchPostComments();
       //this.props.getFavoriteWorkspaceCounters({});
     });
-    window[this.state.slug].connector.socket.on("reconnecting", function () {
+    window.Echo[this.state.slug].connector.socket.on("reconnecting", function () {
       //console.log("socket reconnecting");
     });
 
-    window[this.state.slug].private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
+    window.Echo[this.state.slug].private(`${localStorage.getItem("slug")}.App.User.Inactive`).listen(".user-inactive", (e) => {
       this.props.incomingDeletedUser(e);
     });
 
     // new socket
-    window[this.state.slug]
+    window.Echo[this.state.slug]
       .private(`${this.state.slug}.Driff.User.${this.state.userId}`)
       .listen(".proposal-version-upload-new-notification", (e) => {
         console.log(e, "new version");
@@ -1447,7 +1447,7 @@ class SocketListeners extends Component {
         });
       });
 
-    window[this.state.slug]
+    window.Echo[this.state.slug]
       .private(`${this.state.slug}.App.Broadcast`)
       .listen(".shared-user-notification", (e) => {
         console.log(e, "accepted user");
@@ -2045,7 +2045,7 @@ class SocketListeners extends Component {
         this.props.incomingFaviconImage(e.files.image_link);
       });
     // old / legacy channel
-    window[this.state.slug]
+    window.Echo[this.state.slug]
       .private(`${this.state.slug}.App.User.${this.state.userId}`)
       .listen(".update-workspace-quicklinks", (e) => {
         this.props.incomingUpdatedWorkspaceQuickLinks({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
@@ -2770,8 +2770,8 @@ class SocketListeners extends Component {
           let accessBroadcastToken = res.data[e.topic.slug_owner].access_broadcast_token;
           let host = process.env.REACT_APP_socketAddress;
           if (!window.io) window.io = require("socket.io-client");
-          if (!window[e.topic.slug_owner]) {
-            window[e.topic.slug_owner] = new Echo({
+          if (window.Echo && !window.Echo[e.topic.slug_owner]) {
+            window.Echo[e.topic.slug_owner] = new Echo({
               broadcaster: "socket.io",
               host: host,
               auth: {
