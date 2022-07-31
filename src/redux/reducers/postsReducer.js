@@ -254,6 +254,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //to update
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -288,6 +289,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
@@ -362,25 +364,29 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_CLAP": {
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
-        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+        ...(typeof state.companyPosts.posts[postKey] !== "undefined" && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 ...(action.data.clap_count === 1
                   ? {
-                      clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
-                      claps: [...state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
-                      user_clap_count: action.data.author.id === state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                      clap_count: state.companyPosts.posts[postKey].clap_count + 1,
+                      claps: [...state.companyPosts.posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
+                      user_clap_count: action.data.author.id === action.data.userId ? 1 : state.companyPosts.posts[postKey].user_clap_count,
                     }
                   : {
-                      clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
-                      claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id),
-                      user_clap_count: action.data.author.id === state.user.id ? 0 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                      clap_count: state.companyPosts.posts[postKey].clap_count - 1,
+                      claps: state.companyPosts.posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id),
+                      user_clap_count: action.data.author.id === action.data.userId ? 0 : state.companyPosts.posts[postKey].user_clap_count,
                     }),
               },
             },
@@ -409,17 +415,18 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "FETCH_RECENT_POSTS_SUCCESS": {
-      return {
-        ...state,
-        recentPosts: {
-          [action.data.topic_id]: {
-            folderId: action.data.workspace_id,
-            posts: convertArrayToObject(action.data.posts, "id"),
-          },
-        },
-      };
-    }
+    // case "FETCH_RECENT_POSTS_SUCCESS": {
+    //   return {
+    //     ...state,
+    //     recentPosts: {
+    //       [action.data.topic_id]: {
+    //         folderId: action.data.workspace_id,
+    //         posts: convertArrayToObject(action.data.posts, "id"),
+    //       },
+    //     },
+    //   };
+    // }
+    //to update
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
@@ -437,6 +444,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //to update
     case "INCOMING_POST_MARK_DONE": {
       return {
         ...state,
@@ -595,6 +603,7 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    //to update
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
@@ -622,16 +631,18 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             ...(Object.values(state.companyPosts.posts).length > 0 && {
               ...Object.values(state.companyPosts.posts).reduce((pos, p) => {
-                if (p.code === action.data.post_code) {
-                  pos[p.sharedSlug ? p.code : p.id] = {
+                if (action.data.post_code && action.data.post_code === p.code) {
+                  pos[p.code] = {
                     ...p,
-                    is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                    is_archived: action.data.is_archived,
+                  };
+                } else if (action.data.post_id === p.id) {
+                  pos[p.id] = {
+                    ...p,
+                    is_archived: action.data.is_archived,
                   };
                 } else {
-                  pos[p.sharedSlug ? p.code : p.id] = {
-                    ...p,
-                    is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
-                  };
+                  pos[p.id] = p;
                 }
                 return pos;
               }, {}),
@@ -658,6 +669,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //to update
     case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,
@@ -796,19 +808,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
+
               return res;
             }, {}),
           },
@@ -826,6 +844,8 @@ export default (state = INITIAL_STATE, action) => {
               ...action.data,
               claps: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].claps : [],
               last_visited_at: state.companyPosts.posts[action.data.id] && state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+              slug: action.slug,
+              sharedSlug: action.isSharedSlug,
             },
           },
         },
@@ -854,6 +874,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_READ_SELECTED_POSTS": {
       return {
         ...state,
@@ -877,6 +898,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
       return {
         ...state,
@@ -899,6 +921,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
@@ -938,6 +961,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_COMMENT_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
@@ -966,6 +990,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "SET_POSTREAD": {
       return {
         ...state,
@@ -1042,17 +1067,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1084,17 +1114,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...filteredPosts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...filteredPosts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1132,17 +1167,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...filteredPosts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...filteredPosts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1157,6 +1197,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "POST_LIST_SUCCESS": {
       return {
         ...state,
@@ -1217,6 +1258,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_POST_REQUIRED": {
       return {
         ...state,
@@ -1251,6 +1293,7 @@ export default (state = INITIAL_STATE, action) => {
         commentType: action.data,
       };
     }
+    //to update
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -1280,6 +1323,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
       return {
         ...state,
@@ -1288,10 +1332,11 @@ export default (state = INITIAL_STATE, action) => {
           posts: {
             ...state.companyPosts.posts,
             ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.files.some((f) => f.file_id === action.data.file_id)) {
-                res[post.id] = { ...state.companyPosts.posts[post.id], files: state.companyPosts.posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+                res[postKey] = { ...state.companyPosts.posts[postKey], files: state.companyPosts.posts[postKey].files.filter((f) => f.file_id !== action.data.file_id) };
               } else {
-                res[post.id] = { ...state.companyPosts.posts[post.id] };
+                res[postKey] = { ...state.companyPosts.posts[postKey] };
               }
               return res;
             }, {}),
@@ -1306,8 +1351,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.id !== action.data.post_id) {
-                res[post.id] = { ...state.companyPosts.posts[post.id] };
+                res[postKey] = { ...state.companyPosts.posts[postKey] };
               }
               return res;
             }, {}),
@@ -1328,17 +1374,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1360,17 +1411,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1392,17 +1448,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1438,7 +1499,7 @@ export default (state = INITIAL_STATE, action) => {
                 [post.code]: {
                   ...state.companyPosts.posts[post.code],
                   //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
-                  user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                  user_unfollow: state.companyPosts.posts[post.code].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
                 },
               },
             },
@@ -1508,8 +1569,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.map((r) => {
                     if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1520,7 +1582,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1534,8 +1596,9 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            let postKey = post.sharedSlug ? post.code : post.id;
             if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-              acc[post.id] = {
+              acc[postKey] = {
                 ...post,
                 recipients: post.recipients.map((r) => {
                   if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1546,7 +1609,7 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
@@ -1577,8 +1640,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.filter((r) => {
                     if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1589,7 +1653,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1603,8 +1667,9 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts: {
             ...state.companyPosts,
             posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.map((r) => {
                     if (r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id)) {
@@ -1615,7 +1680,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1625,25 +1690,28 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
+    //to update
     case "INCOMING_LAST_VISIT_POST": {
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            let postKey = post.sharedSlug ? post.code : post.id;
             if (post.id && action.data.post_id) {
-              acc[post.id] = {
+              acc[postKey] = {
                 ...post,
                 last_visited_at: { timestamp: action.data.last_visit },
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
         },
       };
     }
+    //to update
     case "GET_POST_READ_CLAP_SUCCESS": {
       let postKey = action.data.id;
       if (action.isSharedSlug && action.data.code) {
@@ -1655,7 +1723,7 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
             if (post.id === action.data.id) {
-              acc[action.isSharedSlug ? postKey : post.id] = {
+              acc[postKey] = {
                 ...post,
                 claps: action.data.claps,
                 post_reads: action.data.reads.map((r) => {
@@ -1666,13 +1734,14 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
         },
       };
     }
+    //to update
     case "SET_SELECTED_COMPANY_POST": {
       return {
         ...state,
@@ -1719,17 +1788,18 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.cod : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
                 };
               }
 
@@ -1784,10 +1854,10 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.sharedCompanyPosts[action.slug].posts && {
                   ...state.sharedCompanyPosts[action.slug].posts,
                 }),
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1806,10 +1876,10 @@ export default (state = INITIAL_STATE, action) => {
           ...(!state.sharedCompanyPosts[action.slug] && {
             [action.slug]: {
               posts: {
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1854,10 +1924,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              res[obj.code] = {
+            ...action.data.posts.reduce((res, post) => {
+              res[post.code] = {
                 claps: [],
-                ...obj,
+                ...post,
                 sharedSlug: true,
                 slug: action.slug,
               };
@@ -1879,10 +1949,10 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.sharedCompanyPosts[action.slug].posts && {
                   ...state.sharedCompanyPosts[action.slug].posts,
                 }),
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1901,10 +1971,10 @@ export default (state = INITIAL_STATE, action) => {
           ...(!state.sharedCompanyPosts[action.slug] && {
             [action.slug]: {
               posts: {
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1950,10 +2020,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              res[obj.code] = {
+            ...action.data.posts.reduce((res, post) => {
+              res[post.code] = {
                 claps: [],
-                ...obj,
+                ...post,
                 sharedSlug: true,
                 slug: action.slug,
               };

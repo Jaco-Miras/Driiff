@@ -268,7 +268,7 @@ const CompanyPostDetail = (props) => {
   //const params = useParams();
   const commentActions = useCommentActions();
 
-  const users = useSelector((state) => state.users.users);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
@@ -337,12 +337,14 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    const members = post.sharedSlug && sharedUsers[post.slug] ? Object.values(sharedUsers[post.slug].users).filter((su) => post.recipients[0].participant_ids.some((id) => id === su.id)) : [];
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      members: members,
+      sharedSlug: post.sharedSlug ? post.slug : null,
     };
 
     dispatch(addToModals(modal));

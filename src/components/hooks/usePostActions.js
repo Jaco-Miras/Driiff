@@ -453,13 +453,27 @@ const usePostActions = () => {
 
   const sharePost = (post) => {
     let link = "";
-    if (params.folderId) {
-      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
-    } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+    if (post.sharedSlug) {
+      if (params.workspaceId) {
+        if (params.folderId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        } else if (params.workspaceId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        }
+      } else {
+        //get the workspace
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     } else {
-      link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      if (params.folderId) {
+        link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else if (params.workspaceId) {
+        link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     }
+
     copyTextToClipboard(toaster, link);
   };
 

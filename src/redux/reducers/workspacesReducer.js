@@ -1834,12 +1834,12 @@ export default (state = INITIAL_STATE, action) => {
                               ? {
                                   clap_count: state.workspacePosts[channelId].posts[postKey].clap_count + 1,
                                   claps: [...state.workspacePosts[channelId].posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
-                                  user_clap_count: action.data.author.id === state.user.id ? 1 : state.workspacePosts[channelId].posts[postKey].user_clap_count,
+                                  user_clap_count: action.data.author.id === action.data.userId ? 1 : state.workspacePosts[channelId].posts[postKey].user_clap_count,
                                 }
                               : {
                                   clap_count: state.workspacePosts[channelId].posts[postKey].clap_count - 1,
                                   claps: state.workspacePosts[channelId].posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id),
-                                  user_clap_count: action.data.author.id === state.user.id ? 0 : state.workspacePosts[channelId].posts[postKey].user_clap_count,
+                                  user_clap_count: action.data.author.id === action.data.userId ? 0 : state.workspacePosts[channelId].posts[postKey].user_clap_count,
                                 }),
                           },
                         },
@@ -1989,18 +1989,19 @@ export default (state = INITIAL_STATE, action) => {
                   ...state.workspacePosts[id].posts,
                   ...(Object.values(state.workspacePosts[id].posts).length > 0 && {
                     ...Object.values(state.workspacePosts[id].posts).reduce((pos, p) => {
-                      if (p.code === action.data.post_code) {
-                        pos[p.sharedSlug ? p.code : p.id] = {
+                      if (action.data.post_code && action.data.post_code === p.code) {
+                        pos[p.code] = {
                           ...p,
-                          is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
+                          is_archived: action.data.is_archived,
+                        };
+                      } else if (action.data.post_id === p.id) {
+                        pos[p.id] = {
+                          ...p,
+                          is_archived: action.data.is_archived,
                         };
                       } else {
-                        pos[p.sharedSlug ? p.code : p.id] = {
-                          ...p,
-                          is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
-                        };
+                        pos[p.id] = p;
                       }
-
                       return pos;
                     }, {}),
                   }),
