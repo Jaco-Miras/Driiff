@@ -1461,6 +1461,8 @@ export default function (state = INITIAL_STATE, action) {
           skip: channels[action.data.channel_detail.id].skip,
           isFetching: false,
           team: channels[action.data.channel_detail.id].team,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels[action.data.channel_detail.id] = channel;
       } else if (action.data.channel_detail && !channels.hasOwnProperty(action.data.channel_detail.id)) {
