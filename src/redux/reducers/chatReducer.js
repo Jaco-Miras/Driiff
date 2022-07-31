@@ -174,7 +174,7 @@ export default function (state = INITIAL_STATE, action) {
               if (state.channels[c.id]) {
                 acc[c.id] = { ...state.channels[c.id] };
               } else {
-                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false, sharedSlug: false, slug: null };
               }
               return acc;
             }, {}),
