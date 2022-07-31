@@ -49,7 +49,7 @@ export const AppRoute = ({ children, ...props }) => {
           id: session.user.id,
           name: session.user.name,
           partial_name: session.user.partial_name,
-          profile_image_link: session.user.profile_image_thumbnail_link ? session.user.profile_image_thumbnail_link : session.user.profile_image_link,
+          profile_image_link: session.user.profile_image_link,
           type: session.user.type,
         })
       );
