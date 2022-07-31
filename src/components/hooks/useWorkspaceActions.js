@@ -200,7 +200,7 @@ const useWorkspaceActions = () => {
           name: loggedUser.name,
           first_name: loggedUser.first_name,
           partial_name: loggedUser.partial_name,
-          profile_image_link: loggedUser.profile_image_thumbnail_link ? loggedUser.profile_image_thumbnail_link : loggedUser.profile_image_link,
+          profile_image_link: loggedUser.profile_image_link,
         },
         title: "",
         added_members: [],
