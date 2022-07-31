@@ -207,6 +207,8 @@ export default function (state = INITIAL_STATE, action) {
                 replies: [],
                 selected: false,
                 isFetching: false,
+                sharedSlug: false,
+                slug: null,
               };
             }
           });
@@ -232,6 +234,8 @@ export default function (state = INITIAL_STATE, action) {
             replies: [],
             selected: false,
             isFetching: false,
+            sharedSlug: action.isSharedSlug,
+            slug: action.isSharedSlug ? action.slug : null,
           };
         });
 
@@ -1507,6 +1511,8 @@ export default function (state = INITIAL_STATE, action) {
           is_active: channels[action.data.id].is_active,
           skip: channels[action.data.id].skip,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
       } else {
         channels[action.data.id] = {
@@ -1515,6 +1521,8 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
       }
       return {
@@ -1551,6 +1559,8 @@ export default function (state = INITIAL_STATE, action) {
           skip: 0,
           selected: true,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels = {
           ...channels,
