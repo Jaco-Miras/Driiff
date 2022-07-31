@@ -1451,7 +1451,7 @@ export default function (state = INITIAL_STATE, action) {
           }),
         ];
         channel = {
-          ...channels[action.data.channel_detail.id],
+          ...state.channels[action.data.channel_detail.id],
           ...action.data.channel_detail,
           is_active: channels[action.data.channel_detail.id].is_active,
           icon_link: channels[action.data.channel_detail.id].icon_link,
