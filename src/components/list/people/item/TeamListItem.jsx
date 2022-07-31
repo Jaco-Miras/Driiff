@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { Avatar, Badge } from "../../../common";
+import { Avatar, Badge, SvgIconFeather } from "../../../common";
 import { MoreOptions } from "../../../panels/common";
 import { replaceChar } from "../../../../helpers/stringFormatter";
 import { addToModals } from "../../../../redux/actions/globalActions";
@@ -37,7 +37,7 @@ const Wrapper = styled.li`
   .name-designation-badge {
     display: flex;
     flex-flow: column;
-    max-width: calc(100% - 65px);
+    max-width: calc(100% - 50px);
     .badge {
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -176,6 +176,9 @@ const StyledBadge = styled(Badge)`
         case "WATCHER": {
           return "#FFEC59";
         }
+        case "SHARED_TEAM_LEAD": {
+          return "#33b5e5";
+        }
         default:
           return "#fb3";
       }
@@ -184,7 +187,23 @@ const StyledBadge = styled(Badge)`
 `;
 
 const TeamListItem = (props) => {
-  const { className = "", member, hideOptions, actions, workspace_id, dictionary, showMoreButton, showLessButton, toggleShow, loggedUser, onLeaveWorkspace = null, workspace = null, scrollRef, onAddRole = null } = props;
+  const {
+    className = "",
+    member,
+    hideOptions,
+    actions,
+    workspace_id,
+    dictionary,
+    showMoreButton,
+    showLessButton,
+    toggleShow,
+    loggedUser,
+    onLeaveWorkspace = null,
+    workspace = null,
+    scrollRef,
+    onAddRole = null,
+    isSharedWorkspace = false,
+  } = props;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -195,7 +214,7 @@ const TeamListItem = (props) => {
   const { _t } = useTranslationActions();
 
   const handleClickName = () => {
-    if (member.has_accepted) {
+    if (member.has_accepted && !isSharedWorkspace) {
       history.push(`/profile/${member.id}/${replaceChar(member.name)}`);
     }
   };
@@ -285,6 +304,8 @@ const TeamListItem = (props) => {
 
   const isUser = member.type === "internal" || member.type === "external";
 
+  const isNotSameDriff = workspace && workspace.slug && workspace.members && workspace.members.find((mem) => mem.id === member.id)?.slug !== workspace?.slug?.slice(0, -7);
+
   return (
     <Wrapper className={`team-list-item list-group-item d-flex align-items-center p-l-r-0 ${className} ${(showMoreButton || showLessButton) && "mb-3"}`}>
       <div className="d-flex align-items-center">
@@ -294,7 +315,7 @@ const TeamListItem = (props) => {
             name={member.name}
             imageLink={!isUser ? member.icon_link : member.profile_image_link}
             partialName={member.partial_name}
-            noDefaultClick={!member.has_accepted}
+            noDefaultClick={!member.has_accepted || isSharedWorkspace}
             hasAccepted={member.has_accepted}
             showSlider={false}
             scrollRef={scrollRef}
@@ -303,9 +324,12 @@ const TeamListItem = (props) => {
         </div>
         <div className="name-designation-badge">
           {isUser && (
-            <h6 className="profile-name" onClick={handleClickName}>
-              {!member.has_accepted && member.name === "" ? member.email : member.name}
-            </h6>
+            <div className="d-flex">
+              <h6 className="profile-name mr-2" onClick={handleClickName}>
+                {!member.has_accepted && member.name === "" ? member.email : member.name}
+              </h6>
+              {isNotSameDriff && <SvgIconFeather icon="repeat" />}
+            </div>
           )}
           {!isUser && (
             <div
@@ -321,20 +345,17 @@ const TeamListItem = (props) => {
               <Viewers users={member.members} close={() => setShowViewer(false)} show={showViewer} />
             </div>
           )}
-
           {member.type === "internal" && member.designation && <small className="text-muted">{member.designation}</small>}
           {member.type === "external" && member.external_company_name && <small className="text-muted">{member.external_company_name}</small>}
           <div className="badge-container">
+            {member.workspace_role}
+            {isSharedWorkspace && member.is_creator && <StyledBadge role={"SHARED_TEAM_LEAD"} badgeClassName={"text-white"} label={dictionary.roleTeamLead} />}
             {member.workspace_role && member.workspace_role !== "" && (
               <StyledBadge role={member.workspace_role} badgeClassName={member.workspace_role === "WATCHER" || member.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
             )}
-            {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />}
-            {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-info text-white" label={dictionary.peopleInvited} />}
-            {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && (
-              <>
-                <Badge badgeClassName="badge-info text-white" label={dictionary.peopleExternal} />
-              </>
-            )}
+            {member.type === "external" && loggedUser.type !== "external" && member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
+            {member.type === "external" && !member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleInvited} />}
+            {member.type === "external" && loggedUser.type !== "external" && !member.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
           </div>
         </div>
       </div>
@@ -353,7 +374,7 @@ const TeamListItem = (props) => {
           </button>
         </ShowMoreBtn>
       )}
-      {!hideOptions && isUser && (
+      {!hideOptions && isUser && !isSharedWorkspace && (
         <MoreOptions moreButton="more-horizontal" width={250} className="ml-auto">
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}

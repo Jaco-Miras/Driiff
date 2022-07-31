@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { addToModals } from "../../../redux/actions/globalActions";
+import { useGetSlug } from "../../hooks";
 
 const Wrapper = styled.div`
   height: 100%;
@@ -47,9 +48,12 @@ const AboutCard = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
+  //const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const recipients = useSelector((state) => state.global.recipients);
   const companyRecipient = recipients.find((r) => r.type === "DEPARTMENT");
   const companyWs = Object.values(workspaces).find((ws) => companyRecipient && companyRecipient.id === ws.id);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const { slug } = useGetSlug();
 
   const handleEditClick = () => {
     if (isWorkspace) {
@@ -69,12 +73,29 @@ const AboutCard = (props) => {
     }
   };
 
+  let workspaceMember = false;
+  if (isWorkspace && workspace) {
+    const workspaceMembers = workspace
+      ? workspace.members
+          .map((m) => {
+            if (m.member_ids) {
+              return m.member_ids;
+            } else return m.id;
+          })
+          .flat()
+      : [];
+    const isSameDriff = (workspace && workspace.sharedSlug && workspace.slug && slug === workspace.slug.slice(0, -7)) || (workspace && !workspace.sharedSlug);
+    const isCreator = workspace && workspace.slug && workspace.sharedSlug && sharedWs[workspace.slug] && workspace.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+    const isTeamMember = workspace && !workspace.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
+    workspaceMember = (isCreator || isTeamMember) && user.type !== "external";
+  }
+
   return (
     <Wrapper>
       <div className="card-title">
         <h5 className="card-title mb-0">{isWorkspace ? dictionary.aboutThisWorkspace : dictionary.aboutThisCompany}</h5>
 
-        {companyWs && user.role.id <= 2 && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
+        {((!isWorkspace && companyWs && user && user.role && user.role.id <= 2) || workspaceMember) && <SvgIconFeather icon="edit" onClick={handleEditClick} />}
       </div>
       <DashboardDescriptionContainer>
         {!isWorkspace && companyWs && <DashboardDescription className={"dashboard-description"} dangerouslySetInnerHTML={{ __html: companyWs.description }} />}

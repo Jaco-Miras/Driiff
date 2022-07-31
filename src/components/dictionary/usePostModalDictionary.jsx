@@ -72,6 +72,7 @@ const usePostModalDictionary = (props) => {
     titleRequired: _t("POST.TITLE_REQUIRED", "Title is required"),
     addressedToRequired: _t("POST.ADDRESS_TO_REQUIRED", "Addressed To is required"),
     radioRequired: _t("POST.RADIO_BUTTON_REQUIRED", "Please select an option"),
+    badgeShared: _t("POST.BADGE_SHARED", "Shared"),
   };
 
   return {

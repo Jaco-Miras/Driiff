@@ -13,6 +13,41 @@ import store from "./redux/store/configStore";
 
 const { REACT_APP_sentry_dsn } = process.env;
 
+(() => {
+  // overrides URL methods to be able to retrieve the original blobs later
+  const old_create = URL.createObjectURL;
+  const old_revoke = URL.revokeObjectURL;
+  Object.defineProperty(URL, "createObjectURL", {
+    get: () => storeAndCreate,
+  });
+  Object.defineProperty(URL, "revokeObjectURL", {
+    get: () => forgetAndRevoke,
+  });
+  Object.defineProperty(URL, "getFromObjectURL", {
+    get: () => getBlob,
+  });
+  const dict = {};
+
+  function storeAndCreate(blob) {
+    var url = old_create(blob);
+    dict[url] = blob;
+    return url;
+  }
+
+  function forgetAndRevoke(url) {
+    old_revoke(url);
+    try {
+      if (new URL(url).protocol === "blob:") delete dict[url];
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  function getBlob(url) {
+    return dict[url];
+  }
+})();
+
 if (localStorage.getItem("sentry") === "1") {
   Sentry.init({
     dsn: REACT_APP_sentry_dsn,

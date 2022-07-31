@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import SearchForm from "../../forms/SearchForm";
-import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount } from "../../hooks";
+import { useFocusInput, useTranslationActions, useUserChannels, useFetchWsCount, useGetSlug } from "../../hooks";
 import { PeopleListItem } from "../../list/people/item";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import { SvgIconFeather } from "../../common";
@@ -41,7 +41,9 @@ const WorkspacePeoplePanel = (props) => {
 
   const dispatch = useDispatch();
   const { selectUserChannel, loggedUser } = useUserChannels();
-  const { activeTopic } = useSelector((state) => state.workspaces);
+  const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const user = useSelector((state) => state.session.user);
 
   const history = useHistory();
 
@@ -122,6 +124,21 @@ const WorkspacePeoplePanel = (props) => {
   };
 
   useFocusInput(refs.search.current);
+  const workspaceMembers = activeTopic
+    ? activeTopic.members
+        .map((m) => {
+          if (m.member_ids) {
+            return m.member_ids;
+          } else return m.id;
+        })
+        .flat()
+    : [];
+  const { slug } = useGetSlug();
+  const sharedWorkspace = activeTopic && activeTopic.sharedSlug ? true : false;
+  const isSameDriff = (activeTopic && activeTopic.sharedSlug && activeTopic.slug && slug === activeTopic.slug.slice(0, -7)) || (activeTopic && !activeTopic.sharedSlug);
+  const isCreator = activeTopic && activeTopic.slug && activeTopic.sharedSlug && sharedWs[activeTopic.slug] && activeTopic.members.find((mem) => mem.is_creator).id === user.id && isSameDriff;
+  const isTeamMember = activeTopic && !activeTopic.sharedSlug && workspaceMembers.some((id) => id === user.id) && isSameDriff;
+  const showInviteButton = (isCreator || isTeamMember) && !isExternal;
 
   return (
     <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
@@ -129,7 +146,7 @@ const WorkspacePeoplePanel = (props) => {
         <div className="card-body">
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
-            {!isExternal && isMember && (
+            {showInviteButton && (
               <div>
                 <button className="btn btn-primary" onClick={handleEditWorkspace}>
                   <SvgIconFeather className="mr-2" icon="user-plus" /> {dictionary.peopleManage}
@@ -139,7 +156,19 @@ const WorkspacePeoplePanel = (props) => {
           </div>
           <div className="row">
             {userSort.map((user) => {
-              return <PeopleListItem key={user.id} loggedUser={loggedUser} user={user} onNameClick={handleUserNameClick} onChatClick={handleUserChat} dictionary={dictionary} showWorkspaceRole={true} />;
+              return (
+                <PeopleListItem
+                  key={user.id}
+                  loggedUser={loggedUser}
+                  user={user}
+                  onNameClick={handleUserNameClick}
+                  onChatClick={handleUserChat}
+                  dictionary={dictionary}
+                  showWorkspaceRole={true}
+                  sharedUser={workspace.sharedSlug}
+                  isSharedWorkspace={sharedWorkspace}
+                />
+              );
             })}
           </div>
         </div>

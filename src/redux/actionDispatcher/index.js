@@ -10,6 +10,21 @@
 //import React from "react";
 import { userForceLogout } from "../../components/hooks/useUserActions";
 
+const getSlug = () => {
+  let driff = localStorage.getItem("slug");
+  if (driff) {
+    return driff;
+  } else {
+    const host = window.location.host.split(".");
+    if (host.length === 3) {
+      localStorage.setItem("slug", host[0]);
+      return host[0];
+    } else {
+      return null;
+    }
+  }
+};
+
 export default function DispatchActionToReducer(service, actionTypeStart, actionTypeSuccess, actionTypeFailure, callback) {
   return (dispatch) => {
     dispatch({
@@ -18,11 +33,18 @@ export default function DispatchActionToReducer(service, actionTypeStart, action
     service
       .then((result) => {
         if (result.status === 200 || result.status === 201 || result.status === 204) {
+          let host = result.config.url.split(".");
+          let slug = null;
+          if (host.length === 3) {
+            slug = host[0].split("https://")[1];
+          }
           dispatch({
             type: actionTypeSuccess,
             data: result.data,
+            slug: slug,
+            isSharedSlug: slug !== getSlug(),
           });
-          if (callback) callback(null, result);
+          if (callback) callback(null, { ...result, isSharedSlug: slug !== getSlug(), slug: slug });
         } else {
           dispatch({
             type: actionTypeFailure,

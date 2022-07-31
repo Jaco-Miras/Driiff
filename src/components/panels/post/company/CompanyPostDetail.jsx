@@ -268,16 +268,14 @@ const CompanyPostDetail = (props) => {
   //const params = useParams();
   const commentActions = useCommentActions();
 
-  const users = useSelector((state) => state.users.users);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
 
-  const viewerIds = [...new Set(post.view_user_ids)];
-
-  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
-
-  const handleClosePost = () => {
+  const handleGoBack = () => {
     onGoBack();
   };
 
@@ -339,12 +337,14 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    const members = post.sharedSlug && sharedUsers[post.slug] ? Object.values(sharedUsers[post.slug].users).filter((su) => post.recipients[0].participant_ids.some((id) => id === su.id)) : [];
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      members: members,
+      sharedSlug: post.sharedSlug ? post.slug : null,
     };
 
     dispatch(addToModals(modal));
@@ -352,10 +352,10 @@ const CompanyPostDetail = (props) => {
 
   const markRead = () => {
     postActions.markReadRequirement(post);
-    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === userId);
     let triggerRead = true;
-    if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.is_must_reply && post.author.id !== userId) {
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply)) {
         triggerRead = false;
       }
     }
@@ -370,7 +370,17 @@ const CompanyPostDetail = (props) => {
       id: null,
       clap: post.user_clap_count === 0 ? 1 : 0,
       personalized_for_id: null,
+      user_id: user.id,
     };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+        post_code: post.code,
+        user_id: sharedWs[post.slug].user_auth.id,
+      };
+    }
     postActions.clap(payload, (err, res) => {
       if (err) {
         if (payload.clap === 1) postActions.unlike(payload);
@@ -385,14 +395,14 @@ const CompanyPostDetail = (props) => {
   };
 
   const disableMarkAsRead = () => {
-    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
-    if (post.is_must_read && post.author.id !== user.id) {
-      if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+    const hasPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === userId);
+    if (post.is_must_read && post.author.id !== userId) {
+      if (post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read)) {
         return true;
       }
     }
-    if (post.is_must_reply && post.author.id !== user.id) {
-      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.is_must_reply && post.author.id !== userId) {
+      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply)) {
         return true;
       }
     }
@@ -403,27 +413,47 @@ const CompanyPostDetail = (props) => {
   };
 
   useEffect(() => {
-    readPostNotification({ post_id: post.id });
-    const viewed = post.view_user_ids.some((id) => id === user.id);
+    let sharedPayload = null;
+    let isSharedhub = false;
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      isSharedhub = true;
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
+    readPostNotification({ post_id: post.id, sharedPayload });
+    const viewed = post.view_user_ids.some((id) => id === userId);
     if (!viewed && !disableMarkAsRead()) {
       postActions.visit({
         post_id: post.id,
         personalized_for_id: null,
+        sharedPayload: isSharedhub ? { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true } : null,
       });
     }
 
     if (post.is_unread === 1 || post.unread_count > 0) {
       if (!disableMarkAsRead()) postActions.markAsRead(post);
     }
-
-    postActions.fetchPostReadAndClap({ post_id: post.id });
+    postActions.fetchPostReadAndClap({ post_id: post.id, sharedPayload: isSharedhub ? { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true } : null });
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
-        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ sharedSlug: isSharedhub, post_code: post.code, post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
     };
   }, []);
+
+  const handleClosePost = () => {
+    let sharedPayload = null;
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
+    };
+
+    close(payload);
+  };
 
   return (
     <>
@@ -432,12 +462,12 @@ const CompanyPostDetail = (props) => {
         <div className="d-flex flex-column align-items-start">
           <div className="d-flex">
             <div className="align-self-start">
-              <Icon className="close mr-2" icon="arrow-left" onClick={handleClosePost} />
+              <Icon className="close mr-2" icon="arrow-left" onClick={handleGoBack} />
             </div>
             <div>
               <h5 ref={refs.title} className="post-title mb-0">
                 <span>
-                  {post.author.id !== user.id && !post.is_followed && <Icon icon="eye-off" />}
+                  {post.author.id !== userId && !post.is_followed && <Icon icon="eye-off" />}
                   {post.title}
                 </span>
               </h5>
@@ -453,7 +483,7 @@ const CompanyPostDetail = (props) => {
         </div>
 
         <div>
-          {post.author.id === user.id && (
+          {post.author.id === userId && (
             <ul>
               <li>
                 <span data-toggle="modal" data-target="#editTaskModal">
@@ -474,8 +504,8 @@ const CompanyPostDetail = (props) => {
               {post.todo_reminder === null && <div onClick={() => remind(post)}>{dictionary.remindMeAboutThis}</div>}
               {post.is_unread === 0 ? <div onClick={() => markAsUnread(post, true)}>{dictionary.markAsUnread}</div> : disableMarkAsRead() ? null : <div onClick={() => markAsRead(post, true)}>{dictionary.markAsRead}</div>}
               <div onClick={() => sharePost(post)}>{dictionary.share}</div>
-              {post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
-              <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+              {post.author.id !== userId && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
+              <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
               {/* <div onClick={handleSnooze}>Snooze this post</div> */}
             </StyledMoreOptions>
           </div>
@@ -491,9 +521,9 @@ const CompanyPostDetail = (props) => {
           }}
           onCancel={handleHideDropzone}
         />
-        <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === user.id} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
+        <CompanyPostBody post={post} user={user} postActions={postActions} isAuthor={post.author.id === userId} dictionary={dictionary} disableMarkAsRead={disableMarkAsRead} />
         <div className="d-flex justify-content-center align-items-center mb-3">
-          {post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read) && (
+          {post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read) && (
             <MarkAsRead className="d-sm-inline">
               <button className="btn btn-primary btn-block" onClick={markRead}>
                 {dictionary.markAsRead}
@@ -503,7 +533,7 @@ const CompanyPostDetail = (props) => {
         </div>
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} post={post} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
@@ -525,7 +555,17 @@ const CompanyPostDetail = (props) => {
         )}
         {comments && Object.keys(comments).length > 0 && (
           <>
-            <CompanyPostComments comments={comments} post={post} user={user} commentActions={commentActions} onShowFileDialog={handleOpenFileDialog} dropAction={dropAction} dictionary={dictionary} postActions={postActions} />
+            <CompanyPostComments
+              comments={comments}
+              post={post}
+              user={user}
+              commentActions={commentActions}
+              onShowFileDialog={handleOpenFileDialog}
+              dropAction={dropAction}
+              dictionary={dictionary}
+              postActions={postActions}
+              userId={userId}
+            />
             <hr className="m-0" />
           </>
         )}

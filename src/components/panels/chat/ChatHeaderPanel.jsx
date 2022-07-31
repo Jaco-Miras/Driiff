@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -7,13 +7,14 @@ import { SvgIconFeather } from "../../common";
 import useChannelActions from "../../hooks/useChannelActions";
 import ChannelIcon from "../../list/chat/ChannelIcon";
 import { MoreOptions } from "../../panels/common";
-import { useSettings, useWorkspaceActions, useToaster } from "../../hooks";
+import { useSettings, useWorkspaceActions, useToaster, useGetSlug } from "../../hooks";
 import { replaceChar } from "../../../helpers/stringFormatter";
 import useChatMessageActions from "../../hooks/useChatMessageActions";
 import { ChatTranslateActionsMenu, ChatHeaderMembers } from "./index";
 import { isMobile } from "react-device-detect";
 import Tooltip from "react-tooltip-lite";
 import { putWorkspaceNotification } from "../../../redux/actions/workspaceActions";
+import { addCompanyNameOnMembers } from "../../../redux/actions/chatActions";
 
 const Wrapper = styled.div`
   position: relative;
@@ -82,7 +83,8 @@ const Wrapper = styled.div`
     }
   }
   .component-user-list-pop-up-container .profile-slider {
-    right: 255px !important;
+    right: 210px !important;
+    min-width: 450px;
   }
   .channel-title-wrapper {
     display: flex;
@@ -126,6 +128,10 @@ const Icon = styled(SvgIconFeather)``;
 //   width: 12px;
 //   height: 12px;
 // `;
+const RepeatIcon = styled(SvgIconFeather)`
+  width: 12px;
+  height: 12px;
+`;
 
 const EyeIcon = styled(SvgIconFeather)`
   width: 0.7rem;
@@ -280,12 +286,24 @@ const ChatHeaderPanel = (props) => {
   const chatChannel = useSelector((state) => state.chat.selectedChannel);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const { slug } = useGetSlug();
 
   const { translated_channels } = useSelector((state) => state.settings.user.GENERAL_SETTINGS);
   const chatMessageActions = useChatMessageActions();
 
   const toaster = useToaster();
   const [bellClicked, setBellClicked] = useState(false);
+
+  useEffect(() => {
+    if (channel && channel.slug && channel.sharedSlug) {
+      //check for members slug
+      let ws = workspaces[`${channel.entity_id}-${channel.slug}`];
+      if (channel.members.every((m) => !m.hasOwnProperty("company_name")) && ws) {
+        dispatch(addCompanyNameOnMembers({ code: channel.code, members: ws.members }));
+      }
+    }
+  }, [channel, workspaces]);
 
   const handleArchiveChat = () => {
     channelActions.archive(channel);
@@ -345,9 +363,16 @@ const ChatHeaderPanel = (props) => {
     }
 
     document.body.classList.remove("navigation-show");
-    if (workspaces[chatChannel.entity_id]) {
-      workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
-      workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+    if (chatChannel.slug) {
+      if (workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]) {
+        workspaceAction.selectWorkspace(workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]);
+        workspaceAction.redirectTo(workspaces[`${chatChannel.entity_id}-${chatChannel.slug}`]);
+      }
+    } else {
+      if (workspaces[chatChannel.entity_id]) {
+        workspaceAction.selectWorkspace(workspaces[chatChannel.entity_id]);
+        workspaceAction.redirectTo(workspaces[chatChannel.entity_id]);
+      }
     }
   };
 
@@ -493,10 +518,17 @@ const ChatHeaderPanel = (props) => {
 
   const handleWorkspaceNotification = () => {
     if (bellClicked) return;
-    const payload = {
+    let payload = {
       id: channel.entity_id,
       is_active: !channel.is_active,
     };
+    if (channel.slug && sharedWs[channel.slug]) {
+      const sharedPayload = { slug: channel.slug, token: sharedWs[channel.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
       putWorkspaceNotification(payload, (err, res) => {
         setBellClicked(false);
@@ -511,6 +543,11 @@ const ChatHeaderPanel = (props) => {
       })
     );
   };
+
+  const isSameSlug = useMemo(() => {
+    const channelSlug = channel?.slug?.slice(0, -7); //slice removes the '-share' suffix
+    return slug === channelSlug;
+  }, [channel, slug]);
 
   if (channel === null) return null;
 
@@ -527,16 +564,39 @@ const ChatHeaderPanel = (props) => {
       </div>
       <div className="channel-title-wrapper">
         <div className="chat-header-title">{getChannelTitle()}</div>
-        <ChatHeaderBadgeContainer className="chat-header-badge">
-          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
-            <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
-          )}
-          {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
-            <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
-              {channel.team ? dictionary.teamChat : dictionary.clientChat}
-            </StyledBadge>
-          )}
-        </ChatHeaderBadgeContainer>
+
+        {channel.sharedSlug ? (
+          <ChatHeaderBadgeContainer className="chat-header-badge">
+            {channel.type === "TOPIC" && !channel.is_archived && (
+              <StyledBadge className="badge badge-external mr-1">
+                <RepeatIcon className={"ml-1"} icon="repeat" strokeWidth="2" />
+                {dictionary.sharedClient}
+              </StyledBadge>
+            )}
+            {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && isSameSlug && (
+              <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
+            )}
+            {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && isSameSlug && (
+              <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+                {/* <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} /> */}
+                {channel.team ? dictionary.teamChat : dictionary.clientChat}
+              </StyledBadge>
+            )}
+          </ChatHeaderBadgeContainer>
+        ) : (
+          <ChatHeaderBadgeContainer className="chat-header-badge">
+            {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_lock === 1 && workspaces[channel.entity_id].active === 1 && (
+              <Icon className={"ml-1"} icon={"lock"} strokeWidth="2" width={12} />
+            )}
+            {channel.type === "TOPIC" && !channel.is_archived && workspaces.hasOwnProperty(channel.entity_id) && workspaces[channel.entity_id].is_shared && workspaces[channel.entity_id].active === 1 && (
+              <StyledBadge className={"badge badge-external mr-1"} isTeam={channel.team ? true : false}>
+                {/* <EyeIcon icon={channel.team ? "eye-off" : "eye"} className={"mr-1"} /> */}
+                {channel.team ? dictionary.teamChat : dictionary.clientChat}
+              </StyledBadge>
+            )}
+          </ChatHeaderBadgeContainer>
+        )}
+
         <ChatIconsOptionsContainer>
           {channel.type === "TOPIC" && channel.hasOwnProperty("is_active") && (
             <StyledTooltip arrowSize={5} distance={10} onToggle={toggleTooltip} content={channel.is_active ? dictionary.notificationsOn : dictionary.notificationsOff}>

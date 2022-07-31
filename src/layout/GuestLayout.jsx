@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Suspense, lazy } from "react";
+import React, { useEffect, useState, Suspense, lazy, useMemo } from "react";
 import { Route, Switch, useHistory, useLocation, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { useUserLogin } from "../components/hooks/useUserLogin";
@@ -6,7 +6,10 @@ import { useSettings, useTranslationActions } from "../components/hooks";
 import useDriffActions from "../components/hooks/useDriffActions";
 import { $_GET } from "../helpers/commonFunctions";
 import LoginLogo from "../components/panels/main/LoginLogo";
-
+import SharedWorkspaceInvite from "../components/panels/SharedWorkspaceInvite";
+import introImage from "../assets/media/image/intro-image.png";
+import { useSelector } from "react-redux";
+import { SvgIcon } from "../components/common";
 const DriffCreatePanel = lazy(() => import("../components/panels/DriffCreatePanel"));
 const ExternalRegisterPanel = lazy(() => import("../components/panels/ExternalRegisterPanel"));
 const LoginPanel = lazy(() => import("../components/panels/LoginPanel"));
@@ -90,6 +93,15 @@ const Wrapper = styled.div`
   }`}
 `;
 
+const CenterContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 const StyledLink = styled.a`
   color: ${(props) => props.theme.colors.primary}!important;
   cursor: pointer;
@@ -100,6 +112,34 @@ const StyledLink = styled.a`
 
 const StyledWelcomeNote = styled.div`
   font-size: 12px;
+`;
+const SideImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  background-color: #29323f;
+  justify-content: flex-end;
+  border-radius: 12px 0 0 12px;
+  box-shadow: 0 3px 10px rgb(62 85 120 / 5%);
+`;
+const SideImage = styled.div`
+  background-image: url(${introImage});
+  background-repeat: no-repeat;
+  height: 90%;
+  width: 430px;
+  background-size: contain;
+  background-color: #29323f;
+  background-position: center;
+  border-radius: 12px 0 0 12px;
+`;
+
+const DriffLogo = styled(SvgIcon)`
+  width: 110px;
+  height: 80px;
+  cursor: pointer;
+  path {
+    color: ${(props) => props.theme.colors.primary};
+    fill: ${(props) => props.theme.colors.primary};
+  }
 `;
 
 const GuestLayout = (props) => {
@@ -132,6 +172,7 @@ const GuestLayout = (props) => {
     confirmPassword: _t("REGISTER.REPEAT_PASSWORD", "Confirm Password must be the same with your password."),
     haveAccount: _t("REGISTER.HAVE_ACCOUNT", "Already have an account?"),
     password: _t("REGISTER.PASSWORD", "Password"),
+    passwordConfirm: _t("REGISTER.PASSWORD_CONFIRM", "Password Confirm"),
     firstName: _t("REGISTER.FIRST_NAME", "First name"),
     middleName: _t("REGISTER.MIDDLE_NAME", "Middle name"),
     lastName: _t("REGISTER.LAST_NAME", "Last name"),
@@ -144,6 +185,7 @@ const GuestLayout = (props) => {
     sendLink: _t("MAGIC_LINK.SEND_LINK", "Send link"),
     emailRequired: _t("FEEDBACK.EMAIL_REQUIRED", "Email is required."),
     passwordRequired: _t("FEEDBACK.PASSWORD_REQUIRED", "Password is required."),
+    passwordNotMatch: _t("FEEDBACK.PASSWORD_NOT_MATCH", "Passwords does not match."),
     invalidEmail: _t("FEEDBACK.INVALID_EMAIL", "Invalid email format"),
     yourNameRequired: _t("FEEDBACK.YOUR_NAME_REQUIRED", "Your name is required."),
     firstNameRequired: _t("FEEDBACK.FIRST_NAME_REQUIRED", "First name is required."),
@@ -165,16 +207,22 @@ const GuestLayout = (props) => {
     invalidPassword: _t("FEEDBACK.INVALID_PASSSWORD", "The password must be at least 6 characters and contain at least one number, and one special character."),
     invalidPhoneNumber: _t("FEEDBACK.INVALID_PHONE_NUMBER", "Invalid phone number"),
     phoneNumberRequired: _t("FEEDBACK.PHONE_NUMBER_REQUIRED", "Phone number required"),
-    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "The time saving collaboration platform for agencies "),
+    welcomNote1: _t("DRIFF.WELCOME_NOTE_1", "Game-changing online collaboration platform for ambitious agencies."),
     welcomNote2: _t("DRIFF.WELCOME_NOTE_2", "Talk less, do more and get things done"),
     setUpTrial: _t("DRIFF.SET_UP_TRIAL", "Set up your own Driff and get a free trial period of 30 days."),
     noCreditCard: _t("DRIFF.NO_CREDIT_CARD", "No credit card needed"),
     submitText: _t("INVITE.SUBMIT_TEXT", "Submit"),
     cancelText: _t("INVITE.CANCEL_TEXT", "Cancel"),
+    generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
+    generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
+    greetingMessage: _t("GREETING.MESSAGE", "Hi there!"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);
   const [countryCode, setCountryCode] = useState(null);
+  const [sideBanner, setSideBanner] = useState(true);
+
+  const companyLogo = useSelector((state) => state.settings.driff.logo);
 
   const loginClick = (e) => {
     e.preventDefault();
@@ -224,6 +272,13 @@ const GuestLayout = (props) => {
           history.push("/login");
         }
         break;
+      case "/shared-hub-invite":
+        if (driffSettings.settings.sign_up) {
+          setTitle(dictionary.greetingMessage);
+        } else {
+          history.push("/login");
+        }
+        break;
       default:
         if (location.pathname.indexOf("/authenticate/") === 0 || ($_GET("code"), $_GET("state"))) setTitle(dictionary.authentication);
         else if (location.pathname.indexOf("/resetpassword/") === 0) setTitle(dictionary.updatePassword);
@@ -231,55 +286,62 @@ const GuestLayout = (props) => {
     }
   }, [location]);
 
+  const isSharedHubInvitePage = useMemo(() => location.pathname === "/shared-hub-invite", [location.pathname]);
+  const isDriffRegisterPage = useMemo(() => location.pathname === "/driff-register", [location.pathname]);
+  const showSideBanner = (isSharedHubInvitePage || isDriffRegisterPage) && sideBanner;
   return (
     <>
-      <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"}>
-        <LoginLogo />
-        {/* <div id="logo">
+      <CenterContainer>
+        {showSideBanner && (
+          <SideImageContainer>
+            <SideImage />
+          </SideImageContainer>
+        )}
+        <Wrapper className="form-wrapper fadeIn" isOnDriffRegister={location.pathname === "/driff-register"} style={showSideBanner ? { borderRadius: "0 12px 12px 0" } : {}}>
+          {showSideBanner ? <div className="d-flex justify-content-center">{companyLogo ? <img className="w-50" src={companyLogo} alt="company logo" /> : <DriffLogo icon="driff-logo2" />}</div> : <LoginLogo />}
+          {/* <div id="logo">
         <SvgIcon icon={"driff-logo2"} width="110" height="80" />
       </div> */}
-        {driffSettings.settings.maintenance_mode ? (
-          <>
-            <h5 className="title">Maintenance Mode</h5>
-          </>
-        ) : (
-          <>
-            <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
-              {title}
-              {$_GET("code") && $_GET("state") && (
-                <>
-                  <span>.</span>
-                  <span>.</span>
-                  <span>.</span>
-                </>
-              )}
-            </h5>
-            {location.pathname === "/driff-register" && <StyledWelcomeNote>{dictionary.welcomNote1}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.welcomNote2}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.setUpTrial}</StyledWelcomeNote>}
-            {location.pathname === "/driff-register" && <StyledWelcomeNote className="mb-3">{dictionary.noCreditCard}</StyledWelcomeNote>}
-            <Suspense fallback={<div></div>}>
-              <Switch>
-                <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
-                <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
-                <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
-                <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} {...props} />} />
-                <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
-              </Switch>
-            </Suspense>
-          </>
-        )}
-      </Wrapper>
-      {location.pathname === "/driff-register" && (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <StyledLink href="#" onClick={loginClick}>
-            {dictionary.login}
-          </StyledLink>
-        </div>
-      )}
+          {driffSettings.settings.maintenance_mode ? (
+            <>
+              <h5 className="title">Maintenance Mode</h5>
+            </>
+          ) : (
+            <>
+              <h5 className={`title ${$_GET("code") && $_GET("state") && "loading"}`}>
+                {title}
+                {$_GET("code") && $_GET("state") && (
+                  <>
+                    <span>.</span>
+                    <span>.</span>
+                    <span>.</span>
+                  </>
+                )}
+              </h5>
+              <Suspense fallback={<div></div>}>
+                <Switch>
+                  <Route path={"/login"} render={() => <LoginPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/magic-link"} render={() => <MagicLinkPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/resetpassword/:token/:email"} render={() => <UpdatePasswordPanel dictionary={dictionary} {...props} />} exact />
+                  <Route path={"/reset-password"} render={() => <ResetPasswordPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/register"} render={() => <RegisterPanel dictionary={dictionary} countryCode={countryCode} {...props} />} />
+                  <Route path={"/request-form"} render={() => <ExternalRegisterPanel dictionary={dictionary} {...props} />} />
+                  <Route path={"/driff-register"} render={() => <DriffCreatePanel dictionary={dictionary} setRegisteredDriff={setRegisteredDriff} hideBanner={() => setSideBanner(false)} {...props} />} />
+                  <Route path={"/shared-hub-invite"} render={() => <SharedWorkspaceInvite dictionary={dictionary} {...props} />} />
+                  <Route path={"/force-logout"} render={() => <ForceLogoutPanel />} />
+                </Switch>
+              </Suspense>
+            </>
+          )}
+          {location.pathname !== "/driff-register" && (
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "24px" }}>
+              <StyledLink href="#" onClick={loginClick}>
+                {dictionary.login}
+              </StyledLink>
+            </div>
+          )}
+        </Wrapper>
+      </CenterContainer>
     </>
   );
 };

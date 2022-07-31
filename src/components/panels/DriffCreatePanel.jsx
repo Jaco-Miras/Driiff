@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { FormInput, InputFeedback, PasswordInput } from "../forms";
 import { EmailRegex } from "../../helpers/stringFormatter";
-import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
+import { FormGroup, Input, InputGroup, InputGroupAddon, InputGroupText, Label } from "reactstrap";
 import useDriffActions from "../hooks/useDriffActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useDispatch } from "react-redux";
@@ -11,6 +11,9 @@ import { useDispatch } from "react-redux";
 import { isIPAddress } from "../../helpers/commonFunctions";
 import { TodoCheckBox } from "../forms";
 import ReCAPTCHA from "react-google-recaptcha";
+//import { acceptSharedUserInvite } from "../../redux/actions/userAction";
+import { Loading } from "../common";
+import { renderToString } from "react-dom/server";
 const ReactConfetti = lazy(() => import("../lazy/ReactConfetti"));
 
 const Wrapper = styled.form`
@@ -54,6 +57,10 @@ const CheckBoxWrapper = styled.div`
   }
 `;
 
+const StyledWelcomeNote = styled.div`
+  font-size: 12px;
+`;
+
 const DriffCreatePanel = (props) => {
   const { dictionary, setRegisteredDriff } = props;
   const history = useHistory();
@@ -73,11 +80,14 @@ const DriffCreatePanel = (props) => {
   };
 
   const [form, setForm] = useState({});
+  const [creatingDriff, setCreatingDriff] = useState(false);
 
   const [formResponse, setFormResponse] = useState({
     valid: {},
     message: {},
   });
+
+  const [isSharedInvite, setIsSharedInvite] = useState(false);
 
   const handleInputChange = useCallback(
     (e) => {
@@ -150,6 +160,28 @@ const DriffCreatePanel = (props) => {
     } else {
       valid.password = true;
     }
+    if (typeof form.passwordConfirm === "undefined" || form.passwordConfimr === "") {
+      valid.passwordConfirm = false;
+      message.passwordConfirm = dictionary.passwordRequired;
+    } else if (typeof form.passwordConfirm !== "undefined" && form.passwordConfirm !== "") {
+      const specialChar = /[ -/:-@[-`{-~]/;
+      const hasNum = /\d/;
+      if (specialChar.test(form.passwordConfirm) && hasNum.test(form.passwordConfirm) && form.passwordConfirm.length >= 6) {
+        if (form.password === form.passwordConfirm) {
+          valid.passwordConfirm = true;
+        } else {
+          message.password = dictionary.passwordNotMatch;
+          message.passwordConfirm = dictionary.passwordNotMatch;
+          valid.passwordConfirm = false;
+          valid.password = false;
+        }
+      } else {
+        message.passwordConfirm = dictionary.invalidPassword;
+        valid.passwordConfirm = false;
+      }
+    } else {
+      valid.passwordConfirm = true;
+    }
 
     setFormResponse({
       valid: valid,
@@ -191,6 +223,7 @@ const DriffCreatePanel = (props) => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+
     if (loading) return;
     if (_validate()) {
       setLoading(true);
@@ -206,7 +239,17 @@ const DriffCreatePanel = (props) => {
             },
           });
         } else {
-          driffActions.create({ ...form, token: captcha }, (err, res) => {
+          let extraPayload = {};
+          if (history.location.state && history.location.state.sharedWs) {
+            extraPayload = {
+              state_code: form.state_code,
+              driff_from: form.from_slug,
+            };
+          }
+          setCreatingDriff(true);
+          props.hideBanner();
+          driffActions.create({ ...form, token: captcha, ...extraPayload }, (err, res) => {
+            setCreatingDriff(false);
             setLoading(false);
             if (res) {
               setRegistered(true);
@@ -225,6 +268,19 @@ const DriffCreatePanel = (props) => {
   };
 
   useEffect(() => {
+    if (history.location.state && history.location.state.sharedWs) {
+      setIsSharedInvite(true);
+      const email = history.location.state.sharedWs.responseData.user.email;
+      setForm({
+        ...form,
+        email: history.location.state.sharedWs.responseData.user.email,
+        company_name: history.location.state.sharedWs.responseData.user.company,
+        user_name: history.location.state.sharedWs.responseData.user.first_name + " " + history.location.state.sharedWs.responseData.user.last_name,
+        state_code: history.location.state.sharedWs.code,
+        from_slug: history.location.state.sharedWs.slug,
+        slug: email.substring(email.lastIndexOf("@") + 1).split(".")[0],
+      });
+    }
     if (refs.company_name.current) refs.company_name.current.focus();
 
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -233,13 +289,15 @@ const DriffCreatePanel = (props) => {
   useEffect(() => {
     let e = document.querySelector("h5.title");
     if (e) {
-      if (registered) {
+      if (creatingDriff) {
+        e.innerHTML = renderToString(<Loading text={dictionary.generatingDriff} />);
+      } else if (registered) {
         e.innerHTML = dictionary.thankYou;
       } else {
         e.innerHTML = dictionary.driffRegistration;
       }
     }
-  }, [registered]);
+  }, [registered, creatingDriff]);
 
   const toggleCheck = () => {
     setAgreed(!agreed);
@@ -268,15 +326,23 @@ const DriffCreatePanel = (props) => {
             <ReactConfetti recycle={false} />
           </Suspense>
         </>
+      ) : creatingDriff ? (
+        <StyledWelcomeNote>{dictionary.generateDriffMessage}</StyledWelcomeNote>
       ) : (
-        <>
+        <div className="text-left">
+          <StyledWelcomeNote className="text-center">{dictionary.welcomNote1}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.welcomNote2}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.setUpTrial}</StyledWelcomeNote>
+          <StyledWelcomeNote className="mb-3 text-center">{dictionary.noCreditCard}</StyledWelcomeNote>
+          <Label for="company_name">{dictionary.companyName}</Label>
           <FormInput
             //ref={refs.company_name}
             onChange={handleInputChange}
+            id="company_name"
             name="company_name"
+            value={form.company_name ? form.company_name : ""}
             isValid={formResponse.valid.company_name}
             feedback={formResponse.message.company_name}
-            placeholder={dictionary.companyName}
             innerRef={refs.company_name}
             readOnly={loading}
             autoFocus
@@ -286,6 +352,7 @@ const DriffCreatePanel = (props) => {
               <Input
                 ref={refs.slug}
                 onChange={handleInputChange}
+                value={form.slug ? form.slug : ""}
                 name="slug"
                 type="text"
                 placeholder="Driff"
@@ -302,23 +369,38 @@ const DriffCreatePanel = (props) => {
               <InputFeedback valid={formResponse.valid.slug}>{formResponse.message.slug}</InputFeedback>
             </InputGroup>
           </StyledFormGroup>
-          <FormInput onChange={handleInputChange} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} placeholder={dictionary.yourEmail} type="email" readOnly={loading} />
-          <FormInput onChange={handleInputChange} name="user_name" isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} placeholder={dictionary.yourName} innerRef={refs.user_name} readOnly={loading} />
-          <PasswordInput onChange={handleInputChange} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder={dictionary.password} />
-
-          <button className={"btn btn-outline-light btn-sm mb-4"} onClick={handleShowUserInvitation}>
-            {typeof form.invitations !== "undefined" ? (
-              <>
-                {dictionary.invitedUsers}{" "}
-                <div className={"mr-2 d-sm-inline d-none"}>
-                  <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
-                </div>
-              </>
-            ) : (
-              <>+ {dictionary.inviteUser}</>
-            )}
-          </button>
-          <CheckBoxWrapper className="mb-4">
+          <Label for="email">{dictionary.yourEmail}</Label>
+          <FormInput onChange={handleInputChange} value={form.email ? form.email : ""} name="email" isValid={formResponse.valid.email} feedback={formResponse.message.email} type="email" readOnly={loading || isSharedInvite} />
+          <Label for="user_name">{dictionary.yourName}</Label>
+          <FormInput onChange={handleInputChange} name="user_name" value={form.user_name ? form.user_name : ""} isValid={formResponse.valid.user_name} feedback={formResponse.message.user_name} innerRef={refs.user_name} readOnly={loading} />
+          <Label for="password">{dictionary.password}</Label>
+          <PasswordInput onChange={handleInputChange} id="password" name="password" value={form.password} isValid={formResponse.valid.password} feedback={formResponse.message.password} readOnly={loading} placeholder="" />
+          <Label for="passwordConfirm">{dictionary.passwordConfirm}</Label>
+          <PasswordInput
+            onChange={handleInputChange}
+            id="passwordConfirm"
+            name="passwordConfirm"
+            value={form.passwordConfirm}
+            isValid={formResponse.valid.passwordConfirm}
+            feedback={formResponse.message.passwordConfirm}
+            readOnly={loading}
+            placeholder=""
+          />
+          <div className="d-flex justify-content-center">
+            <button className={"btn btn-outline-light btn-sm mb-4 t"} onClick={handleShowUserInvitation}>
+              {typeof form.invitations !== "undefined" ? (
+                <>
+                  {dictionary.invitedUsers}{" "}
+                  <div className={"mr-2 d-sm-inline d-none"}>
+                    <div className={"badge badge-info text-white"}>{form.invitations.length}</div>
+                  </div>
+                </>
+              ) : (
+                <>+ {dictionary.inviteUser}</>
+              )}
+            </button>
+          </div>
+          <CheckBoxWrapper className="mb-4 text-center">
             <TodoCheckBox name="agree" checked={agreed} onClick={toggleCheck}></TodoCheckBox>
             <span>
               When creating this Driff you accept our{" "}
@@ -344,7 +426,7 @@ const DriffCreatePanel = (props) => {
           {/* <button className="btn btn-outline-light btn-sm" onClick={handleDriff}>
             {dictionary.login}
           </button> */}
-        </>
+        </div>
       )}
     </Wrapper>
   );

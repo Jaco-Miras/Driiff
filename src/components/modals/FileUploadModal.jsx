@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Modal, ModalBody, ModalFooter } from "reactstrap";
 import styled from "styled-components";
 import { SvgIcon, SvgIconFeather, CommonPicker } from "../common";
 import { postChatMessage, setSidebarSearch } from "../../redux/actions/chatActions";
 import { clearModal, saveInputData } from "../../redux/actions/globalActions";
-import { useEnlargeEmoticons, useToaster } from "../hooks";
+import { useEnlargeEmoticons, useToaster, useFileActions } from "../hooks";
 import { uploadBulkDocument } from "../../redux/services/global";
 import QuillEditor from "../forms/QuillEditor";
 import { useQuillModules, useTranslationActions } from "../hooks";
@@ -267,10 +268,9 @@ const fileOptions = [
 ];
 
 const FileUploadModal = (props) => {
-  const { type, mode, droppedFiles, post = null, members = [] } = props.data;
+  const { type, mode, droppedFiles, post = null, members = [], sharedSlug = null } = props.data;
 
   const { enlargeEmoji } = useEnlargeEmoticons();
-
   const progressBar = useRef(0);
   const toaster = useToaster();
   const pickerRef = useRef();
@@ -284,6 +284,9 @@ const FileUploadModal = (props) => {
   const user = useSelector((state) => state.session.user);
   const savedInput = useSelector((state) => state.global.dataFromInput);
   const { parentId, editPostComment } = useSelector((state) => state.posts);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const params = useParams();
+  const fileActions = useFileActions(params);
 
   const [modal, setModal] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -409,6 +412,17 @@ const FileUploadModal = (props) => {
           },
         },
       };
+      if (sharedSlug) {
+        let slug = sharedSlug;
+        if (sharedWs[sharedSlug]) {
+          const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+          payload = {
+            ...payload,
+            sharedPayload: sharedPayload,
+          };
+        }
+      }
+
       files
         .filter((f) => {
           return typeof f.id === "string";
@@ -417,15 +431,27 @@ const FileUploadModal = (props) => {
           formData.append(`files[${index}]`, file.bodyFormData.get("file"));
         });
       payload["files"] = formData;
-      uploadBulkDocument(payload)
-        .then((result) => {
-          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+      if (selectedChannel && selectedChannel.type === "COMPANY") {
+        fileActions.postCompanyUploadBulkFilesDispatch(payload, (err, result) => {
+          if (err) {
+            handleNetWorkError(err);
+            return;
+          }
+          const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.files.map((res) => res)];
           handleSubmit(resFiles);
-          //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
-        })
-        .catch((error) => {
-          handleNetWorkError(error);
+          fileActions.deleteCompanyFilesUpload({ fileIds: resFiles.map((rFile) => rFile.id) });
         });
+      } else {
+        uploadBulkDocument(payload)
+          .then((result) => {
+            const resFiles = [...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)];
+            handleSubmit(resFiles);
+            //setUploadedFiles([...files.filter((f) => typeof f.id !== "string"), ...result.data.map((res) => res)]);
+          })
+          .catch((error) => {
+            handleNetWorkError(error);
+          });
+      }
     }
   };
 
@@ -560,6 +586,16 @@ const FileUploadModal = (props) => {
         reference_id: require("shortid").generate(),
         reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
       };
+      if (sharedSlug) {
+        let slug = selectedChannel.slug ? selectedChannel.slug : null;
+        if (selectedChannel.slug && sharedWs[slug]) {
+          const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+          msgpayload = {
+            ...msgpayload,
+            sharedPayload: sharedPayload,
+          };
+        }
+      }
       if (textOnly.trim() !== "" || mention_ids.length) dispatch(postChatMessage(msgpayload));
       setTimeout(() => {
         uFiles.forEach((file, k) => {
@@ -572,6 +608,16 @@ const FileUploadModal = (props) => {
             reference_id: require("shortid").generate(),
             reference_title: selectedChannel.type === "DIRECT" ? `${user.first_name} in a direct message` : selectedChannel.title,
           };
+          if (sharedSlug) {
+            let slug = selectedChannel.slug ? selectedChannel.slug : null;
+            if (selectedChannel.slug && sharedWs[slug]) {
+              const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+              payload = {
+                ...payload,
+                sharedPayload: sharedPayload,
+              };
+            }
+          }
           if (k === uFiles.length - 1) {
             setTimeout(() => {
               toaster.dismiss(toasterRef.current);
@@ -621,6 +667,13 @@ const FileUploadModal = (props) => {
         parent_id: parentId,
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
       };
+      if (sharedSlug && post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: sharedSlug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       //setUploadedFiles([]);
       dispatch(setParentIdForUpload(null));
       dispatch(saveInputData({ sent: true }));
@@ -667,6 +720,7 @@ const FileUploadModal = (props) => {
           user_clap_count: 0,
           claps: [],
           users_approval: [],
+          post_code: sharedSlug ? post.code : null,
         };
 
         dispatch(addComment(commentObj));
@@ -804,7 +858,7 @@ const FileUploadModal = (props) => {
 const FilesPreview = (props) => {
   const { files, onRemoveFile, onAddFile, dictionary } = props;
 
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const refs = {
     dropZoneRef: useRef(null),

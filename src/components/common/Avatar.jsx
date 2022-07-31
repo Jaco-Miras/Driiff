@@ -152,6 +152,7 @@ const Avatar = (props) => {
     tooltipName = null,
     icon = null,
     isCompany = false,
+    sharedUser = null,
     ...rest
   } = props;
 
@@ -200,6 +201,12 @@ const Avatar = (props) => {
       setIsLoaded(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (showInitials && isLoaded) {
+      setShowInitials(false);
+    }
+  }, [imageLink, isLoaded]);
 
   const calculateOrientationPosition = () => {
     const { bottom, left } = avatarRef.current.getBoundingClientRect();
@@ -310,7 +317,7 @@ const Avatar = (props) => {
       </Tooltip>
       {showPopup && (
         <CSSTransition appear in={showPopup} timeout={300} classNames="slide">
-          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} />
+          <ProfileSlider {...props} onShowPopup={handleShowPopup} showPopup={showPopup} orientation={orientation} sharedUser={sharedUser} />
         </CSSTransition>
       )}
       {children}

@@ -25,46 +25,82 @@ export function getChannelFiles(payload) {
 }
 
 export function postWorkspaceFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-bulk-files?topic_id=${payload.topic_id}&is_primary=${payload.is_primary}`;
   return apiCall({
     method: "POST",
     url: url,
     data: payload.files,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceTrashFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-trash-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceFavoriteFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-favorite-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceRecentlyEditedFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-recent-edited-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspacePopularFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-popular-files?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -76,9 +112,15 @@ export function getWorkspacePrimaryFiles(payload) {
 }
 
 export function getWorkspaceFolders(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-folders?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -90,9 +132,15 @@ export function getWorkspaceFoldersBreadcrumb(payload) {
 }
 
 export function getWorkspaceFilesDetail(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-files-detail?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -150,11 +198,17 @@ export function deleteWorkspaceFile(payload) {
 }
 
 export function putWorkspaceRestoreFile(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-restore-file";
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -174,11 +228,17 @@ export function putWorkspaceRestoreFolder(payload) {
  * @returns {Promise<*>}
  */
 export function postFolder(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-folders";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -189,11 +249,17 @@ export function postFolder(payload) {
  * @returns {Promise<*>}
  */
 export function putFolder(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-folders/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -204,6 +270,11 @@ export function putFolder(payload) {
  * @returns {Promise<*>}
  */
 export function uploadWorkspaceFiles(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-bulk-files?topic_id=${payload.topic_id}&is_primary=0`;
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
@@ -212,6 +283,7 @@ export function uploadWorkspaceFiles(payload) {
     method: "POST",
     url: url,
     data: payload.files,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -256,6 +328,11 @@ export function postFavorite(payload) {
  * @returns {Promise<*>}
  */
 export function deleteFile(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-files/${payload.file_id}?topic_id=${payload.topic_id}`;
   if (payload.force_delete) {
     url += "&force_delete=1";
@@ -264,6 +341,7 @@ export function deleteFile(payload) {
     method: "DELETE",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -275,11 +353,17 @@ export function deleteFile(payload) {
  * @returns {Promise<*>}
  */
 export function putFile(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-files/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -289,11 +373,17 @@ export function putFile(payload) {
  * @returns {Promise<*>}
  */
 export function deleteTrash(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-delete-all-trash-files?topic_id=${payload.topic_id}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -305,11 +395,17 @@ export function deleteTrash(payload) {
  * @returns {Promise<*>}
  */
 export function moveFile(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-file-move";
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -353,18 +449,30 @@ export function postGoogleAttachments(payload) {
 }
 
 export function getWorkspaceGoogleFileAttachments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FILE`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceGoogleFolderAttachments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/workspace-google-attachments?topic_id=${payload.workspace_id}&attachment_type=FOLDER`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -449,11 +557,16 @@ export function postCompanyUploadBulkFiles(payload) {
   if (payload.folder_id) {
     url += `?folder_id=${payload.folder_id}`;
   }
-  return apiCall({
-    method: "POST",
-    url: url,
-    data: payload.files,
-  });
+  const payloadRequest = Object.assign(
+    {
+      method: "POST",
+      url,
+      data: payload.files,
+    },
+    payload.options ? payload.options : {}
+  );
+
+  return apiCall({ ...payloadRequest });
 }
 
 export function deleteCompanyFiles(payload) {
@@ -574,6 +687,11 @@ export function removeFileDownload(payload) {
 }
 
 export function postDriveLink(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/drive/links";
   if (payload.topic_id) {
     url = `/v2/drive/links?topic_id=${payload.topic_id}`;
@@ -582,10 +700,16 @@ export function postDriveLink(payload) {
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getDriveLinks(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/drive/links";
   if (payload.topic_id) {
     url = `/v2/drive/links?topic_id=${payload.topic_id}`;
@@ -594,21 +718,34 @@ export function getDriveLinks(payload) {
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putDriveLink(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: `/v2/drive/links/${payload.id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function deleteDriveLink(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v2/drive/links/${payload.id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }

@@ -119,6 +119,7 @@ const ChatContentPanel = (props) => {
       droppedFiles: attachedFiles,
       mode: "chat",
       members: selectedChannel ? selectedChannel.members : [],
+      sharedSlug: selectedChannel && selectedChannel.slug ? selectedChannel.slug : null,
     };
 
     dispatch(addToModals(modal));
@@ -172,6 +173,7 @@ const ChatContentPanel = (props) => {
     replyInPrivate: _t("CHAT.REPLY_IN_PRIVATE", "Reply in private"),
     removeOnDownload: _t("CHAT.REMOVE_ON_DOWNLOAD", "Remove on download"),
     withClient: _t("PAGE.WITH_CLIENT", "With client"),
+    sharedClient: _t("PAGE.SHARED_CLIENT", "Shared"),
     teamChat: _t("PAGE.TEAM_CHAT", "Team Chat"),
     clientChat: _t("PAGE.CLIENT_CHAT", "Client Chat"),
     mute: _t("CHAT.MUTE", "Mute"),
@@ -208,6 +210,7 @@ const ChatContentPanel = (props) => {
     repliedViaEmail: _t("CHAT.REPLIED_VIA_EMAIL", "Replied via email"),
     personalNoteHeaderText: _t("PERSONAL_NOTE_HEADER_TEXT", "This space is just for you"),
     personalNoteDescription: _t("PERSONAL_NOTE_HEADER_DESCRIPTION", "Message yourself? Why not! Think of this as a scratchpad - a place for jotting down a note or drawing up a to-do list."),
+    sharedIconTooltip: _t("TOOLTIP.SHARED_ICON", "This is an account from a different driff"),
   };
 
   //useFocusInput(document.querySelector(".chat-footer .ql-editor"));

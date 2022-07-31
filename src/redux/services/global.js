@@ -73,6 +73,11 @@ export function deleteDraft(payload) {
 }
 
 export function uploadDocument(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/files?file_type=${payload.file_type}`;
   if (payload.folder_id) {
     url += `&folder_id=${payload.folder_id}`;
@@ -84,7 +89,7 @@ export function uploadDocument(payload) {
       url += "&remove_automatically=1";
     }
   }
-  const payloadRequest = Object.assign(
+  let payloadRequest = Object.assign(
     {
       method: "POST",
       url: url,
@@ -92,7 +97,7 @@ export function uploadDocument(payload) {
     },
     payload.options ? payload.options : {}
   );
-  return apiCall(payloadRequest);
+  return apiCall({ ...payloadRequest, sharedPayload: sharedPayload });
 }
 
 export function uploadBulkDocument(payload) {
@@ -115,7 +120,7 @@ export function uploadBulkDocument(payload) {
     },
     payload.options ? payload.options : {}
   );
-  return apiCall({ ...payloadRequest, cancelToken: payload.cancelToken });
+  return apiCall({ ...payloadRequest, cancelToken: payload.cancelToken, sharedPayload: payload.sharedPayload });
 }
 
 export function getTranslationObject(payload) {
@@ -202,20 +207,32 @@ export function deletePushSubscription(payload) {
 }
 
 export function postToDo(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/to-do";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putToDo(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/to-do/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -238,20 +255,32 @@ export function getToDoDetail(payload) {
 }
 
 export function putDoneToDo(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/done-to-do?${objToUrlParams(payload)}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function delRemoveToDo(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/remove-to-do?${objToUrlParams(payload)}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

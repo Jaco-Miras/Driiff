@@ -27,6 +27,7 @@ const AllWorkspaceFilters = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const isExternal = user.type === "external";
+  const workspaces = useSelector((state) => state.workspaces.workspaces);
 
   const { removeParam } = useQueryParams();
 
@@ -49,6 +50,11 @@ const AllWorkspaceFilters = (props) => {
         <span className="text-primary fa fa-circle mr-2" />
         {dictionary.all}
         <span className="small ml-auto">{counters.nonMember + counters.member > 0 && counters.nonMember + counters.member}</span>
+      </li>
+      <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "shared" ? "active" : ""}`} data-value="shared" onClick={handleClickFilter}>
+        <span className="text-external fa fa-circle mr-2" />
+        {dictionary.sharedClient}
+        <span className="small ml-auto">{Object.values(workspaces).filter((ws) => ws.sharedSlug).length}</span>
       </li>
       <li className={`list-group-item d-flex align-items-center ${filterBy && filterBy === "member" ? "active" : ""}`} data-value="member" onClick={handleClickFilter}>
         <span className="text-success fa fa-circle mr-2" />

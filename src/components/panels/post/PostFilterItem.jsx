@@ -51,6 +51,8 @@ const PostFilterItem = (props) => {
       }
       dispatch(
         addToWorkspacePosts({
+          slug: res.slug,
+          isSharedSlug: res.isSharedSlug,
           topic_id: workspace.id,
           posts: res.data.posts,
           filter: res.data.posts,
@@ -87,6 +89,8 @@ const PostFilterItem = (props) => {
           topic_id: workspace.id,
           filter: e.target.dataset.value,
           tag: null,
+          slug: workspace.slug,
+          isSharedSlug: workspace.sharedSlug,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
         onGoBack();

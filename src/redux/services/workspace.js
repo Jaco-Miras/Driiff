@@ -8,6 +8,12 @@ import { objToUrlParams } from "../../helpers/commonFunctions";
  * @returns {Promise<*>}
  */
 export function getWorkspaces(payload) {
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   if (payload.order_by === "channel_date_updated") {
     payload = {
       ...payload,
@@ -15,11 +21,12 @@ export function getWorkspaces(payload) {
     };
   }
 
-  let url = `/v2/workspace?${objToUrlParams(payload)}`;
+  url = `/v2/workspace?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -48,11 +55,17 @@ export function createWorkspace(payload) {
  * @returns {Promise<*>}
  */
 export function updateWorkspace(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace/${payload.topic_id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -376,11 +389,17 @@ export function createWorkspaceTeamChannel(payload) {
  * @returns {Promise<*>}
  */
 export function favouriteWorkspace(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace/${payload.id}/favourite`;
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -402,29 +421,47 @@ export function getWorkspaceFilterCount(payload) {
  * @returns {Promise<*>}
  */
 export function getFavoriteWorkspaceCounters(payload) {
+  let sharedPayload;
+  if (payload && payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/workspace-favourite-entries";
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceReminders(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/to-do?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceRemindersCount(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/to-do-detail?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -465,34 +502,61 @@ export function getExistingFolder(payload) {
 }
 
 export function putWorkspaceNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace-active/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspaceQuickLinks(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putWorkspaceQuickLinks(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/workspace/quick-links?topic_id=${payload.workspace_id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getRelatedWorkspace(payload) {
   let url = `/v2/workspace-shared/${payload.userId}?skip=${payload.skip}&limit=${payload.limit}`;
+  return apiCall({
+    method: "GET",
+    url: url,
+    // data: payload,
+  });
+}
+
+export function getSharedWorkspaces(payload) {
+  let url = "/shared-auth";
   return apiCall({
     method: "GET",
     url: url,

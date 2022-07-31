@@ -201,12 +201,14 @@ const useWorkspaceSearchActions = () => {
   };
 
   const toWorkspace = (workspace) => {
-    if (workspaces[workspace.id]) {
-      dispatch(setActiveTopic(workspace));
+    let wsKey = workspace.slug ? `${workspace.id}-${workspace.slug}` : workspace.id;
+    let wsType = workspace.slug ? "shared-hub" : "hub";
+    if (workspaces[wsKey]) {
+      dispatch(setActiveTopic(workspaces[wsKey]));
       if (workspace.folder_id) {
-        history.push(`/hub/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/dashboard/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/hub/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/dashboard/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
       fetchWorkspaceAndRedirect(workspace);

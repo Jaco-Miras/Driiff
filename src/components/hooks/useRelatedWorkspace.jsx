@@ -15,8 +15,8 @@ const useRelatedWorkspace = (userId) => {
   const { _t } = useTranslationActions();
 
   const dictionary = {
-    workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Workspaces you share with"),
-    noSharedWorkspace: _t("WORKSPACE_BODY.NO_SHARED_WORKSPACE", "You have no shared workspace with"),
+    workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Hubs you share with"),
+    noSharedWorkspace: _t("WORKSPACE_BODY.NO_SHARED_WORKSPACE", "You have no shared hub with"),
     loadMoreText: _t("WORKSPACE_BODY.LOAD_MORE", "Load More"),
   };
 

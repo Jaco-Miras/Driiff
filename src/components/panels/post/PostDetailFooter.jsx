@@ -7,7 +7,7 @@ import { joinWorkspace, updateWorkspacePostFilterSort } from "../../../redux/act
 import { CommonPicker, SvgIconFeather } from "../../common";
 import PostInput from "../../forms/PostInput";
 import { CommentQuote } from "../../list/post/item";
-import { useToaster, useTranslationActions, usePostActions } from "../../hooks";
+import { useToaster, useTranslationActions, usePostActions, useGetSlug } from "../../hooks";
 import { addToModals } from "../../../redux/actions/globalActions";
 import { putChannel } from "../../../redux/actions/chatActions";
 import { FolderSelect } from "../../forms";
@@ -252,6 +252,7 @@ const PostDetailFooter = (props) => {
     disableOptions,
     mainInput,
   } = props;
+  const { slug } = useGetSlug();
   const history = useHistory();
   const postActions = usePostActions();
   const dispatch = useDispatch();
@@ -278,7 +279,9 @@ const PostDetailFooter = (props) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const changeRequestedComment = useSelector((state) => state.posts.changeRequestedComment);
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
+  const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user.id;
   const handleSend = () => {
     setSent(true);
   };
@@ -442,7 +445,7 @@ const PostDetailFooter = (props) => {
   let approverOptions = [
     ...Object.values(users)
       .filter((u) => {
-        return prioMentionIds.some((id) => id === u.id) && u.id !== user.id && post && post.author.id !== u.id;
+        return prioMentionIds.some((id) => id === u.id) && u.id !== userId && post && post.author.id !== u.id;
       })
       .map((u) => {
         return {
@@ -458,9 +461,34 @@ const PostDetailFooter = (props) => {
       value: "all",
       label: "All users",
       icon: "users",
-      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== user.id),
+      all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== userId),
     },
   ];
+
+  if (workspace && workspace.sharedSlug) {
+    approverOptions = [
+      ...workspace.members
+        .filter((u) => {
+          return prioMentionIds.some((id) => id === u.id) && u.id !== userId && post && post.author.id !== u.id;
+        })
+        .map((u) => {
+          return {
+            ...u,
+            icon: "user-avatar",
+            value: u.id,
+            label: u.name ? u.name : u.email,
+            type: "USER",
+          };
+        }),
+      {
+        id: require("shortid").generate(),
+        value: "all",
+        label: "All users",
+        icon: "users",
+        all_ids: prioMentionIds.filter((id) => users[id] && users[id].active && id !== userId),
+      },
+    ];
+  }
 
   if (approvers.length && approvers.find((a) => a.value === "all")) {
     approverOptions = approverOptions.filter((a) => a.value === "all");
@@ -579,12 +607,16 @@ const PostDetailFooter = (props) => {
       topic_id: workspace.id,
       filter: "inbox",
       tag: null,
+      slug: workspace.slug,
+      isSharedSlug: workspace.sharedSlug,
     };
+    const wsType = workspace.sharedSlug ? "shared-hub" : "hub";
     const path =
-      workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+      workspace.folder_name && workspace.folder_id
+        ? `/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+        : `/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}`;
     dispatch(updateWorkspacePostFilterSort(payload));
     history.push(path);
-    console.log("go back to inbox");
   };
 
   const handleNextPost = () => {
@@ -594,39 +626,41 @@ const PostDetailFooter = (props) => {
     //   }
     //   return accumulator;
     // }, null);
-
+    const wsType = workspace.sharedSlug ? "shared-hub" : "hub";
     postActions.archivePost(post, () => {
       const nextUnreadPosts = posts.find((p) => p.is_archived !== 1 && p.is_unread === 1);
       if (!nextUnreadPosts) {
         goBackToInbox();
       } else {
         const path =
-          workspace.folder_name && workspace.folder_id ? `/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}` : `/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`;
+          workspace.folder_name && workspace.folder_id
+            ? `/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`
+            : `/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}`;
         postActions.openPost(nextUnreadPosts, path);
       }
     });
   };
 
   const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
-  const isApprover = post.users_approval.some((ua) => ua.id === user.id);
+  const isApprover = post.users_approval.some((ua) => ua.id === userId);
   //const userApproved = post.users_approval.find((u) => u.ip_address !== null && u.is_approved);
   const approverNames = post.users_approval.map((u) => u.name);
   const isMultipleApprovers = post.users_approval.length > 1;
-  const hasAnswered = post.users_approval.some((ua) => ua.id === user.id && ua.ip_address !== null);
+  const hasAnswered = post.users_approval.some((ua) => ua.id === userId && ua.ip_address !== null);
   //const isLastUserToAnswer = post.users_approval.length > 0 && post.users_approval.length - post.users_approval.filter((u) => u.ip_address === null).length === 1;
 
   const requestForChangeCallback = (err, res) => {
     if (err) return;
-    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+    if (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply)) {
       //postActions.markReplyRequirement(post);
       //check if post is also set as must read
       let triggerRead = true;
-      if (post.is_must_read && post.author.id !== user.id) {
-        if (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read)) {
+      if (post.is_must_read && post.author.id !== userId) {
+        if (post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read)) {
           triggerRead = false;
         }
       }
-      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === user.id);
+      const hasUserPendingApproval = post.users_approval.length > 0 && post.users_approval.some((u) => u.ip_address === null && u.id === userId);
       if (triggerRead && !hasUserPendingApproval) postActions.markAsRead(post);
     }
     if (post.users_approval.length === 1) {
@@ -686,7 +720,16 @@ const PostDetailFooter = (props) => {
   });
 
   const handleReopen = () => {
-    postActions.close(post);
+    let sharedPayload = null;
+    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+      sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    }
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
+    };
+    postActions.close(payload);
   };
 
   return (
@@ -785,7 +828,7 @@ const PostDetailFooter = (props) => {
                 toggleApprover={toggleApprover}
                 editPostComment={editPostComment}
                 mainInput={mainInput}
-                hasPostAccess={prioMentionIds.some((id) => id === user.id)}
+                hasPostAccess={prioMentionIds.some((id) => id === userId)}
               />
             </ChatInputContainer>
 

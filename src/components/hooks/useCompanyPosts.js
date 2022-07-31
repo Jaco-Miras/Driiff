@@ -2,14 +2,17 @@ import { useEffect } from "react";
 import { usePostActions } from "./index";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { useSharedCompanyPosts } from "./index";
+import { replaceChar } from "../../helpers/stringFormatter";
 
 const useCompanyPosts = () => {
+  //useSharedCompanyPosts();
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
   const { flipper, next_skip, posts, filter, tag, postListTag, sort, search, searchResults } = useSelector((state) => state.posts.companyPosts);
   const postsLists = useSelector((state) => state.posts.postsLists);
-  const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  //const unreadCounter = useSelector((state) => state.global.unreadCounter);
 
   const archived = useSelector((state) => state.posts.archived);
   const favourites = useSelector((state) => state.posts.favourites);
@@ -17,6 +20,8 @@ const useCompanyPosts = () => {
   const unreadPosts = useSelector((state) => state.posts.unreadPosts);
   const readPosts = useSelector((state) => state.posts.readPosts);
   const showUnread = useSelector((state) => state.posts.showUnread);
+  //const { slug } = useGetSlug();
+
   const fetchMore = (callback = () => {}) => {
     if (filter === "inbox") {
       if (unreadPosts.has_more && showUnread) {
@@ -95,7 +100,7 @@ const useCompanyPosts = () => {
 
   useEffect(() => {
     if (unreadPosts.loaded) {
-      actions.fetchPostList();
+      actions.fetchPostList({});
     }
   }, [unreadPosts.loaded]);
 
@@ -217,7 +222,7 @@ const useCompanyPosts = () => {
     tag: tag,
     postListTag: postListTag,
     sort: sort,
-    post: Object.values(posts).filter((p) => p.id === parseInt(params.postId))[0],
+    post: Object.values(posts).find((p) => p.id === parseInt(params.postId) && replaceChar(p.title.toLowerCase()) === params.postTitle.toLowerCase()),
     search: search,
     user,
     //count: count,

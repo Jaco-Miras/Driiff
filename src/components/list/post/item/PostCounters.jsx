@@ -93,12 +93,19 @@ const Icon = styled(SvgIconFeather)`
 `;
 
 const PostCounters = (props) => {
-  const { dictionary, post, viewerIds, viewers, handleReaction } = props;
-  const user = useSelector((state) => state.session.user);
-  const users = useSelector((state) => state.users.users);
+  const { dictionary, post, handleReaction } = props;
+  const mainUser = useSelector((state) => state.session.user);
+  const mainUsers = useSelector((state) => state.users.users);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  let user = post.slug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth : mainUser;
   const { _t } = useTranslationActions();
   const readByUsers = post && post.is_must_read && post.must_read_users.length > 0 ? post.must_read_users.filter((u) => u.must_read) : [];
   const hasRead = readByUsers.some((u) => u.id === user.id);
+  let users = post.sharedSlug && post.slug && sharedUsers[post.slug] ? sharedUsers[post.slug].users : !post.sharedSlug ? mainUsers : {};
+
+  const viewerIds = [...new Set(post.view_user_ids)];
+  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
   const likers = Object.values(users).filter((u) => post.claps.some((c) => c.user_id === u.id));
 
   const [showViewer, setShowViewer] = useState(false);
@@ -137,7 +144,7 @@ const PostCounters = (props) => {
               {readByUsers.map((u) => {
                 return (
                   <span key={u.id}>
-                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id].profile_image_thumbnail_link} id={u.id} /> <span className="name">{u.name}</span>
+                    <Avatar className="mr-2" key={u.id} name={u.name} imageLink={users[u.id] ? users[u.id].profile_image_link : null} id={u.id} /> <span className="name">{u.name}</span>
                   </span>
                 );
               })}

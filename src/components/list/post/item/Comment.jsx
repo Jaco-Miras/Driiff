@@ -5,7 +5,7 @@ import { Avatar, FileAttachments, ReminderNote, SvgIconFeather } from "../../../
 import { MoreOptions } from "../../../panels/common";
 import { PostDetailFooter, PostVideos, PostChangeAccept } from "../../../panels/post/index";
 import { Quote, SubComments } from "./index";
-import { useGoogleApis, useTimeFormat, useFiles } from "../../../hooks";
+import { useGoogleApis, useTimeFormat, useFiles, useGetSlug } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
 import { CompanyPostDetailFooter } from "../../../panels/post/company";
 import { useDispatch, useSelector } from "react-redux";
@@ -210,7 +210,25 @@ const CommentInput = styled(PostDetailFooter)``;
 const CompanyCommentInput = styled(CompanyPostDetailFooter)``;
 
 const Comment = (props) => {
-  const { className = "", comment, post, type = "main", user, commentActions, parentId, onShowFileDialog, dropAction, parentShowInput = null, workspace, isMember, dictionary, disableOptions, isCompanyPost = false, postActions } = props;
+  const {
+    className = "",
+    comment,
+    post,
+    type = "main",
+    user,
+    commentActions,
+    parentId,
+    onShowFileDialog,
+    dropAction,
+    parentShowInput = null,
+    workspace,
+    isMember,
+    dictionary,
+    disableOptions,
+    isCompanyPost = false,
+    postActions,
+    userId = null,
+  } = props;
 
   const dispatch = useDispatch();
 
@@ -228,13 +246,17 @@ const Comment = (props) => {
   } = useFiles();
   const history = useHistory();
   const googleApis = useGoogleApis();
+  const { slug } = useGetSlug();
 
   const clearApprovingState = useSelector((state) => state.posts.clearApprovingState);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [showInput, setShowInput] = useState(null);
   const [userMention, setUserMention] = useState(null);
   const [showGifPlayer, setShowGifPlayer] = useState(null);
   const [approving, setApproving] = useState({ approve: false, change: false });
+  const uid = userId ? userId : user.id;
+  let sharedPost = post.slug && slug !== post.slug && sharedWs[post.slug];
 
   const handleShowInput = (commentId = null) => {
     if (parentShowInput) {
@@ -278,23 +300,23 @@ const Comment = (props) => {
 
   const handleReaction = () => {
     if (disableOptions) return;
-
-    // setReact((prevState) => ({
-    //   user_clap_count: !!prevState.user_clap_count ? 0 : 1,
-    //   clap_count: !!prevState.user_clap_count ? prevState.clap_count - 1 : prevState.clap_count + 1,
-    // }));
-
-    // setUsersReacted(prevState => prevState.some(r => r.type_id === user.id) ?
-    //   prevState.filter(r => r.type_id !== user.id) :
-    //   prevState.concat(recipients.find(r => r.type_id === user.id)));
-
     let payload = {
       id: comment.id,
       reaction: "clap",
       counter: comment.user_clap_count === 0 ? 1 : 0,
       post_id: post.id,
       parent_id: type === "main" ? null : parentId,
+      post_code: sharedPost ? post.code : null,
+      user_id: user.id,
     };
+    if (sharedPost) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+        user_id: sharedWs[post.slug].user_auth.id,
+      };
+    }
     commentActions.clap(payload, (err, res) => {
       if (err) {
         if (payload.counter === 1) commentActions.unlike(payload);
@@ -311,15 +333,6 @@ const Comment = (props) => {
   const { fromNow } = useTimeFormat();
 
   const handleInlineImageClick = (e) => {
-    // let file = comment.files.find((f) => f.thumbnail_link === e.srcElement.currentSrc);
-    // if (file) {
-    //   dispatch(
-    //     setViewFiles({
-    //       file_id: file.id,
-    //       files: comment.files,
-    //     })
-    //   );
-    // }
     let id = null;
     if (e.target.dataset.id) id = e.target.dataset.id;
 
@@ -346,14 +359,30 @@ const Comment = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = null;
+          if (imgFile) {
+            key = `${imgFile.id}-${slug}`;
+            if (sharedPost) {
+              key = `${imgFile.id}-${post.slug}`;
+            }
+          }
+
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = comment.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = null;
+          if (imgFile) {
+            key = `${imgFile.id}-${slug}`;
+            if (sharedPost) {
+              key = `${imgFile.id}-${post.slug}`;
+            }
+          }
+
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         }
@@ -363,7 +392,11 @@ const Comment = (props) => {
 
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
-        if (!fileBlobs[file.id] && comment.body.includes(file.code)) {
+        let key = `${file.id}-${slug}`;
+        if (sharedPost) {
+          key = `${file.id}-${post.slug}`;
+        }
+        if (!fileBlobs[key] && comment.body.includes(file.code)) {
           //setIsLoaded(false);
           sessionService.loadSession().then((current) => {
             let myToken = current.token;
@@ -385,6 +418,7 @@ const Comment = (props) => {
                 setFileSrc({
                   id: file.id,
                   src: imgObj,
+                  key: key,
                 });
                 commentActions.updateCommentImages({
                   post_id: post.id,
@@ -394,6 +428,7 @@ const Comment = (props) => {
                     ...file,
                     blobUrl: imgObj,
                   },
+                  post_code: workspace && workspace.sharedSlug ? post.code : null,
                 });
               })
               .catch((error) => {
@@ -526,7 +561,7 @@ const Comment = (props) => {
 
   return (
     <>
-      <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={user.id}>
+      <Wrapper ref={refs.main} isImportant={comment.is_important} className={`comment card border fadeBottom ${className} animated ${comment.is_important && "important"}`} userId={uid}>
         {comment.todo_reminder !== null && <ReminderNote todoReminder={comment.todo_reminder} type="POST_COMMENT" />}
         {comment.quote && <Quote quote={comment.quote} dictionary={dictionary} />}
         <CommentWrapper ref={refs.body} className="card-body" type={type}>
@@ -543,16 +578,16 @@ const Comment = (props) => {
               ) : (
                 <span className="text-muted ml-1">{fromNow(comment.created_at.timestamp)}</span>
               )}
-              {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && user.id !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
+              {post.last_visited_at && comment.updated_at.timestamp > post.last_visited_at.timestamp && uid !== comment.author.id && <div className="ml-2 badge badge-secondary text-white text-9">{dictionary.new}</div>}
             </div>
             {!post.is_read_only && !disableOptions && (
               <MoreOptions scrollRef={refs.body.current} moreButton={"more-horizontal"}>
                 {comment.todo_reminder === null && <div onClick={() => commentActions.remind(comment, post)}>{dictionary.remindMeAboutThis}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
-                {user.id !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.remove(comment)}>{dictionary.removeReply}</div>}
-                {user.id === comment.author.id && <div onClick={() => commentActions.important(comment)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
+                {uid !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.remove(comment, post)}>{dictionary.removeReply}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.important(comment, post)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
               </MoreOptions>
             )}
           </CommentHeader>
@@ -575,6 +610,7 @@ const Comment = (props) => {
                   fromNow={fromNow}
                   usersApproval={comment.users_approval}
                   user={user}
+                  userId={userId}
                   handleApprove={handleApprove}
                   handleRequestChange={handleRequestChange}
                   post={post}
@@ -619,6 +655,7 @@ const Comment = (props) => {
           disableOptions={disableOptions}
           isCompanyPost={isCompanyPost}
           postActions={postActions}
+          userId={userId}
         />
       )}
       {showInput !== null && (

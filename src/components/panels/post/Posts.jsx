@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { SvgIconFeather } from "../../common";
 import { PostItemPanel } from "./index";
 import { useTranslationActions } from "../../hooks";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPostIsSelected } from "../../../redux/actions/workspaceActions";
 import { setShowUnread } from "../../../redux/actions/postActions";
 
@@ -90,6 +90,8 @@ const Posts = (props) => {
   const { _t } = useTranslationActions();
   const dispatch = useDispatch();
 
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
   let emptyStatesHeader = [_t("POSTS.NO_ITEMS_FOUND_HEADER_1", "WOO!"), _t("POSTS.NO_ITEMS_FOUND_HEADER_2", "Queue’s empty, time to dance!")];
 
   let emptyStatesText = [_t("POSTS.NO_ITEMS_FOUND_TEXT_1", "Nothing here but me… 👻"), _t("POSTS.NO_ITEMS_FOUND_TEXT_2", "Job well done!💃🕺")];
@@ -103,28 +105,72 @@ const Posts = (props) => {
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
 
+  useEffect(() => {
+    if (workspace) {
+      let payload = {
+        topic_id: workspace.id,
+      };
+      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+        payload = {
+          ...payload,
+          slug: workspace.slug,
+          sharedSlug: true,
+          sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+        };
+      }
+      actions.getUnreadWsPostsCount(payload);
+    }
+  }, [unreadPosts.length]);
   const handleToggleCheckbox = (post) => {
     let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
 
     setCheckedPosts(postIds);
-    dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: !post.is_selected }));
+    let payload = {
+      workspaceKey: workspace.id,
+      postKey: post.id,
+      isSelected: !post.is_selected,
+    };
+    if (workspace.sharedSlug) {
+      payload = {
+        ...payload,
+        workspaceKey: workspace.key,
+        postKey: post.code,
+      };
+    }
+    dispatch(setPostIsSelected(payload));
   };
 
   const handleMarkAllAsRead = () => {
-    actions.readAll({
+    let payload = {
       selected_post_ids: checkedPosts,
       topic_id: workspace.id,
-    });
+    };
+    if (workspace.sharedSlug && sharedWs[workspace.slug]) {
+      const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    actions.readAll(payload);
     setCheckedPosts([]);
     actions.getUnreadNotificationEntries();
     clearCheckedPost();
   };
 
   const handleArchiveAll = () => {
-    actions.archiveAll({
+    let payload = {
       selected_post_ids: checkedPosts,
       topic_id: workspace.id,
-    });
+    };
+    if (workspace.sharedSlug && sharedWs[workspace.slug]) {
+      const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    actions.archiveAll(payload);
     clearCheckedPost();
   };
 
@@ -197,7 +243,19 @@ const Posts = (props) => {
   const clearCheckedPost = () => {
     setCheckedPosts([]);
     posts.map((post) => {
-      dispatch(setPostIsSelected({ workspaceId: workspace.id, postId: post.id, isSelected: false }));
+      let payload = {
+        workspaceKey: workspace.id,
+        postKey: post.id,
+        isSelected: false,
+      };
+      if (workspace.sharedSlug) {
+        payload = {
+          ...payload,
+          workspaceKey: workspace.key,
+          postKey: post.code,
+        };
+      }
+      dispatch(setPostIsSelected(payload));
     });
   };
 

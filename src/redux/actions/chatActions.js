@@ -10,7 +10,6 @@ import {
   getChannelMembers as getChannelMembersService,
   getChannels as getChannelsService,
   getChatMessages as getChatMessagesService,
-  getChatStar as getChatStarService,
   getCompanyChannel as getCompanyChannelService,
   getGlobalRecipients as getGlobalRecipientsService,
   getHuddleChatbot as getHuddleChatbotService,
@@ -67,10 +66,6 @@ export function putMarkReadChannel(payload, callback) {
   return dispatchActionToReducer(putMarkReadChannelService(payload), "MARK_READ_CHANNEL_START", "MARK_READ_CHANNEL_SUCCESS", "MARK_READ_CHANNEL_FAIL", callback);
 }
 
-export function updateUnreadChatReplies(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_UNREAD_CHAT_REPLIES", payload, callback);
-}
-
 export function putMarkUnreadChannel(payload, callback) {
   return dispatchActionToReducer(putMarkUnreadChannelService(payload), "MARK_AS_UNREAD_CHANNEL_START", "MARK_AS_UNREAD_CHANNEL_SUCCESS", "MARK_AS_UNREAD_CHANNEL_FAIL", callback);
 }
@@ -95,10 +90,6 @@ export function getChatMessages(payload, callback) {
   return dispatchActionToReducer(getChatMessagesService(payload), "GET_CHAT_MESSAGES_START", "GET_CHAT_MESSAGES_SUCCESS", "GET_CHAT_MESSAGES_FAILURE", callback);
 }
 
-export function setAllMessagesAsRead(cbdata, callback) {
-  return SimpleDispatchActionToReducer("MARK_ALL_MESSAGES_AS_READ", cbdata, callback);
-}
-
 export function addChatMessage(payload, callback) {
   return SimpleDispatchActionToReducer("ADD_CHAT_MESSAGE", payload, callback);
 }
@@ -113,10 +104,6 @@ export function putChatMessage(payload, callback) {
 
 export function incomingChatMessage(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_CHAT_MESSAGE", payload, callback);
-}
-
-export function incomingChatMessageFromOthers(payload, callback) {
-  return SimpleDispatchActionToReducer("INCOMING_CHAT_MESSAGE_FROM_OTHERS", payload, callback);
 }
 
 export function incomingArchivedChannel(payload, callback) {
@@ -230,24 +217,12 @@ export function getChannelMembers(payload, callback) {
   return dispatchActionToReducer(getChannelMembersService(payload), "GET_CHAT_MEMBERS_START", "GET_CHAT_MEMBERS_SUCCESS", "GET_CHAT_MEMBERS_FAILURE", callback);
 }
 
-export function updateChannelMembersTitle(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_CHANNEL_MEMBERS_TITLE", payload, callback);
-}
-
 export function setLastVisitedChannel(payload, callback) {
   return SimpleDispatchActionToReducer("SAVE_LAST_VISITED_CHANNEL", payload, callback);
 }
 
-export function restoreLastVisitedChannel(payload, callback) {
-  return SimpleDispatchActionToReducer("RESTORE_LAST_VISITED_CHANNEL", payload, callback);
-}
-
 export function clearSelectedChannel(payload, callback) {
   return SimpleDispatchActionToReducer("CLEAR_SELECTED_CHANNEL", payload, callback);
-}
-
-export function unreadChannelReducer(payload, callback) {
-  return SimpleDispatchActionToReducer("UNREAD_CHANNEL_REDUCER", payload, callback);
 }
 
 export function readChannelReducer(payload, callback) {
@@ -310,16 +285,8 @@ export function putChatStar(payload, callback) {
   return dispatchActionToReducer(putChatStarService(payload), "PUT_CHAT_STAR_START", "PUT_CHAT_STAR_SUCCESS", "PUT_CHAT_STAR_FAIL", callback);
 }
 
-export function getChatStar(payload, callback) {
-  return dispatchActionToReducer(getChatStarService(payload), "GET_CHAT_STAR_START", "GET_CHAT_STAR_SUCCESS", "GET_CHAT_STAR_FAIL", callback);
-}
-
 export function setIsStarred(payload, callback) {
   return SimpleDispatchActionToReducer("SET_IS_STARRED", payload, callback);
-}
-
-export function incomingChatStar(payload, callback) {
-  return SimpleDispatchActionToReducer("INCOMING_CHAT_STAR", payload, callback);
 }
 
 export function getHuddleChatbot(payload, callback) {
@@ -524,4 +491,16 @@ export function setChannelInitialLoad(payload, callback) {
 
 export function createJitsiMeetMobile(payload, callback) {
   return dispatchActionToReducer(createJitsiMeetService(payload), "CREATE_JITSI_MEET_START_MOBILE", "CREATE_JITSI_MEET_SUCCESS_MOBILE", "CREATE_JITSI_MEET_FAIL_MOBILE", callback);
+}
+
+export function addCompanyNameOnMembers(payload, callback) {
+  return SimpleDispatchActionToReducer("ADD_COMPANY_NAME_ON_MEMBERS", payload, callback);
+}
+
+export function getSharedChannels(payload, callback) {
+  return dispatchActionToReducer(getChannelsService(payload), "GET_SHARED_CHANNELS_START", "GET_SHARED_CHANNELS_SUCCESS", "GET_SHARED_CHANNELS_FAIL", callback);
+}
+
+export function removeChannel(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_CHANNEL", payload, callback);
 }

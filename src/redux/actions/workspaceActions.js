@@ -37,6 +37,7 @@ import {
   getWorkspaceQuickLinks as getWorkspaceQuickLinksService,
   putWorkspaceQuickLinks as putWorkspaceQuickLinksService,
   getRelatedWorkspace as getRelatedWorkspaceService,
+  getSharedWorkspaces as getSharedWorkspacesService,
 } from "../services";
 
 export function getWorkspaces(payload, callback) {
@@ -123,10 +124,6 @@ export function fetchPrimaryFiles(payload, callback) {
   return dispatchActionToReducer(fetchPrimaryFilesService(payload), "FETCH_WORKSPACE_PRIMARY_FILES_START", "FETCH_WORKSPACE_PRIMARY_FILES_SUCCESS", "FETCH_WORKSPACE_PRIMARY_FILES_FAIL", callback);
 }
 
-export function addPrimaryFiles(payload, callback) {
-  return SimpleDispatchActionToReducer("ADD_PRIMARY_FILES", payload, callback);
-}
-
 export function fetchMembers(payload, callback) {
   return dispatchActionToReducer(fetchMembersService(payload), "FETCH_WORKSPACE_MEMBERS_START", "FETCH_WORKSPACE_MEMBERS_SUCCESS", "FETCH_WORKSPACE_MEMBERS_FAIL", callback);
 }
@@ -145,10 +142,6 @@ export function incomingTimeline(payload, callback) {
 
 export function getWorkspace(payload, callback) {
   return dispatchActionToReducer(getWorkspaceService(payload), "GET_WORKSPACE_START", "GET_WORKSPACE_SUCCESS", "GET_WORKSPACE_FAIL", callback);
-}
-
-export function updateWorkspaceCounter(payload, callback) {
-  return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_COUNTER", payload, callback);
 }
 
 export function incomingArchivedWorkspaceChannel(payload, callback) {
@@ -303,10 +296,6 @@ export function incomingWorkpaceNotificationStatus(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_NOTIFICATION_STATUS", payload, callback);
 }
 
-export function setUnreadPostIds(payload, callback) {
-  return SimpleDispatchActionToReducer("SET_UNREAD_POST_IDS", payload, callback);
-}
-
 export function setPostIsSelected(payload, callback) {
   return SimpleDispatchActionToReducer("SET_SELECTED_POST", payload, callback);
 }
@@ -338,4 +327,16 @@ export function removeWorkspaceFromFolder(payload, callback) {
 
 export function updateWorkspaceMember(payload, callback) {
   return SimpleDispatchActionToReducer("UPDATE_WORKSPACE_MEMBERS", payload, callback);
+}
+
+export function getSharedWorkspaces(payload, callback) {
+  return dispatchActionToReducer(getSharedWorkspacesService(payload), "GET_SHARED_WORKSPACES_START", "GET_SHARED_WORKSPACES_SUCCESS", "GET_SHARED_WORKSPACES_FAIL", callback);
+}
+
+export function incomingAcceptedSharedUser(payload, callback) {
+  return SimpleDispatchActionToReducer("INCOMING_ACCEPTED_SHARED_USER", payload, callback);
+}
+
+export function removeWorkspace(payload, callback) {
+  return SimpleDispatchActionToReducer("REMOVE_WORKSPACE", payload, callback);
 }

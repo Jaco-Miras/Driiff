@@ -16,9 +16,13 @@ const Icon = styled(SvgIconFeather)`
   opacity: ${(props) => (props.loading ? "0" : "1")};
   width: ${(props) => (props.loading ? "1px !important" : "1rem")};
 `;
+const RepeatIcon = styled(SvgIconFeather)`
+  width: 0.8rem;
+  margin-right: 4px;
+`;
 
 const ProfileSlider = (props) => {
-  const { id, onShowPopup, orientation, profile, classNames = "" } = props;
+  const { id, onShowPopup, orientation, profile, classNames = "", sharedUser = null } = props;
   const { loggedUser, selectUserChannel, users } = useUserChannels();
   const [loading, setLoading] = useState(false);
 
@@ -42,6 +46,7 @@ const ProfileSlider = (props) => {
 
   const dictionary = {
     companyName: _t("PROFILE.COMPANY_NAME", "Company name"),
+    slugName: _t("PROFILE.SLUG_NAME", "Driff"),
     // information: _t("PROFILE.INFORMATION", "Information"),
     firstName: _t("PROFILE.FIRST_NAME", "First name:"),
     middleName: _t("PROFILE.MIDDLE_NAME", "Middle name:"),
@@ -57,11 +62,16 @@ const ProfileSlider = (props) => {
   };
 
   let user = null;
-  if (profile) {
-    user = { ...profile };
+  if (sharedUser) {
+    user = sharedUser;
   } else {
-    user = allUsers.find((u) => u.id === id);
+    if (profile) {
+      user = { ...profile };
+    } else {
+      user = allUsers.find((u) => u.id === id);
+    }
   }
+
   const handleUserChat = (e) => {
     e.stopPropagation();
     e.preventDefault();
@@ -85,21 +95,27 @@ const ProfileSlider = (props) => {
     history.push(`/hub/search?user-id=${user.id}`);
   };
 
+  // this will attach an empty onclick function on the avatar if the user is shared
+  // this is to prevent the default behavior of the avatar component to redirect when the avatar is clicked
+  const sharedHandler = {
+    ...(sharedUser && { onClick: () => {} }),
+  };
+
   return (
     <ProfileWrapper className={`profile-slider ${classNames} ${orientation ? `${orientation.vertical} ${orientation.horizontal}` : ""}`} ref={sliderRef}>
       <SvgIconFeather onClick={handleClose} icon="x" />
       <div className="avatar-wrapper">
-        {user && <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} />}
+        {user && <Avatar id={user.id} type="USER" imageLink={user.profile_image_link} name={user.name} fromSlider={true} forceThumbnail={false} {...sharedHandler} />}
         <h5>{user?.name}</h5>
         <span className="text-muted small">{user?.designation}</span>
         <div style={{ display: "flex", gap: 8 }}>
-          {user.has_accepted && (
+          {!sharedUser && user && user.has_accepted && (
             <button className="ml-1 btn btn-outline-light" onClick={handleWorkspaceClick}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
               <Icon icon="compass" loading={loading} />
             </button>
           )}
-          {user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
+          {!sharedUser && user && user.type === "internal" && loggedUser.id !== user.id && loggedUser.type === "internal" && (
             <button className="ml-1 btn btn-outline-light" onClick={handleUserChat}>
               {loading && <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />}
               <Icon icon="message-circle" loading={loading} />
@@ -112,19 +128,61 @@ const ProfileSlider = (props) => {
         {/* <div className="info-x">
           <span>{dictionary.information}</span>
         </div> */}
-        <div className="d-flex">
+        {/* <div className="d-flex mt-2">
           <div className="labels-wrapper">
             <label>{dictionary.firstName}</label>
             <label>{dictionary.lastName}</label>
-            <label>{dictionary.position}</label>
-            {loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
+            {sharedUser && <label>{dictionary.companyName}</label>}
+            {sharedUser && <label>{dictionary.slugName}</label>}
+            {!sharedUser && <label>{dictionary.position}</label>}
+            {!sharedUser && loggedUser.type === "internal" && <label>{dictionary.email}:</label>}
           </div>
-          <div className="info-details">
-            <span>{user?.first_name}</span>
-            <span>{user?.last_name}</span>
-            <span>{user?.role && user?.role.display_name}</span>
-            {loggedUser.type === "internal" && <span>{user?.email}</span>}
+          <div className="info-details ">
+            <span>{sharedUser ? sharedUser.first_name : user?.first_name}</span>
+            <span>{sharedUser ? sharedUser.last_name : user?.last_name}</span>
+            {sharedUser && <label>{sharedUser.company_name}</label>}
+            {sharedUser && <label>{sharedUser.slug}</label>}
+            <span>{!sharedUser ? null : user?.role && user?.role.display_name}</span>
+            {!sharedUser && loggedUser.type === "internal" && <span>{user?.email}</span>}
           </div>
+        </div> */}
+
+        <div className="d-flex flex-column mt-3">
+          <div className="d-flex justify-content-between">
+            <div className="w-50 text-left">{dictionary.firstName}</div>
+            <div className="w-50 text-left ml-2">{sharedUser ? sharedUser.first_name : user?.first_name}</div>
+          </div>
+          <div className="d-flex justify-content-between">
+            <div className="w-50 text-left">{dictionary.lastName}</div>
+            <div className="w-50 text-left ml-2">{sharedUser ? sharedUser.last_name : user?.last_name}</div>
+          </div>
+          {sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50 text-left">{dictionary.companyName}</div>
+              <div className="w-50 text-left ml-2">{sharedUser.company_name}</div>
+            </div>
+          )}
+          {sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50 text-left">{dictionary.slugName}</div>
+              <div className="w-50 text-left ml-2">
+                <RepeatIcon icon="repeat" />
+                {sharedUser.slug}
+              </div>
+            </div>
+          )}
+          {!sharedUser && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50 text-left">{dictionary.position}</div>
+              <div className="w-50 text-left ml-2">{!sharedUser ? null : user?.role && user?.role.display_name}</div>
+            </div>
+          )}
+          {!sharedUser && loggedUser.type === "internal" && (
+            <div className="d-flex justify-content-between">
+              <div className="w-50 text-left">{dictionary.email}</div>
+              <div className="w-50 text-left ml-2">{user?.email}</div>
+            </div>
+          )}
         </div>
       </div>
     </ProfileWrapper>

@@ -78,51 +78,89 @@ export const NotificationTimelineItem = (props) => {
   const user = useSelector((state) => state.session.user);
   const darkMode = useSelector((state) => state.settings.user.GENERAL_SETTINGS.dark_mode);
   const actions = useNotificationActions();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const handleRedirect = (e) => {
     e.preventDefault();
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      let payload = {
+        id: notification.id,
+        key: notification.key,
+      };
+      if (notification.sharedSlug && sharedWs[notification.slug]) {
+        const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+      actions.read(payload);
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
     } else if (notification.type === "WORKSPACE_ADD_MEMBER") {
+      let key = notification.sharedSlug ? `${notification.data.id}-${notification.slug}` : notification.data.id;
       let payload = {
-        id: notification.data.id,
+        id: key,
         name: notification.data.title,
         folder_id: notification.data.workspace_folder_id !== 0 ? notification.data.workspace_folder_id : null,
         folder_name: notification.data.workspace_folder_name !== "" ? notification.data.workspace_folder_name : null,
+        sharedSlug: notification.sharedSlug,
+        slug: notification.slug,
       };
       redirect.toWorkspace(payload);
     } else {
       let post = { id: notification.data.post_id, title: notification.data.title };
       let workspace = null;
       let focusOnMessage = null;
-      if (notification.data.workspaces && notification.data.workspaces.length) {
+      if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
+        if (notification.data.comment_id) {
+          focusOnMessage = { focusOnMessage: notification.data.comment_id };
+        }
+      }
+
+      if (notification.sharedSlug) {
         workspace = notification.data.workspaces[0];
         workspace = {
+          key: `${workspace.topic_id}-${notification.slug}`,
+          id: workspace.topic_id,
+          name: workspace.topic_name,
+          folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+          folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+        };
+      } else if (notification.data.workspaces && notification.data.workspaces.length) {
+        workspace = notification.data.workspaces[0];
+        workspace = {
+          key: workspace.topic_id,
           id: workspace.topic_id,
           name: workspace.topic_name,
           folder_id: workspace.workspace_id ? workspace.workspace_id : null,
           folder_name: workspace.workspace_name ? workspace.workspace_name : null,
         };
       }
-      if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
-        if (notification.data.comment_id) {
-          focusOnMessage = { focusOnMessage: notification.data.comment_id };
-        }
-      }
-      redirect.toPost({ workspace, post }, focusOnMessage);
+
+      redirect.toPost({ workspace, post, sharedSlug: notification.sharedSlug }, focusOnMessage);
     }
   };
 
   const handleReadUnread = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    let payload = {
+      id: notification.id,
+      key: notification.key,
+    };
+    if (notification.sharedSlug && sharedWs[notification.slug]) {
+      const sharedPayload = { slug: notification.slug, token: sharedWs[notification.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read(payload);
     } else {
-      actions.unread({ id: notification.id });
+      actions.unread(payload);
     }
   };
 
@@ -266,9 +304,9 @@ export const NotificationTimelineItem = (props) => {
         return (
           <>
             <span onClick={handleAuthorNameClick} className="author-name text-link">
-              {notification.author ? notification.author.name : null}{" "}
+              {notification.author ? notification.author.name : null}
             </span>
-            <span>{dictionary.addedYouInWorkspace}</span>
+            <span>&nbsp;{dictionary.addedYouInWorkspace}</span>
           </>
         );
       }

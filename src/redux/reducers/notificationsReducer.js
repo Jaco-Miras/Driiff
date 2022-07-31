@@ -21,18 +21,22 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "GET_NOTIFICATIONS_SUCCESS": {
       let results = action.data.notifications.map((obj) => {
-        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.notification_id === obj.id && sn.type && sn.type === "POST_SNOOZE");
+        let key = `${obj.id}-${action.slug}`;
+        const snoozedNotif = state.snoozedNotifications.find((sn) => sn.key === key && sn.type && sn.type === "POST_SNOOZE");
         return {
           ...obj,
-          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[obj.id] ? state.notifications[obj.id].is_snooze : false,
-          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[obj.id] ? state.notifications[obj.id].snooze_time : null,
+          is_snooze: snoozedNotif ? !!snoozedNotif.is_snooze : state.notifications[key] ? state.notifications[key].is_snooze : false,
+          snooze_time: snoozedNotif ? snoozedNotif.snooze_time : state.notifications[key] ? state.notifications[key].snooze_time : null,
+          key: `${obj.id}-${action.slug}`,
+          slug: action.slug,
+          sharedSlug: action.isSharedSlug,
         };
       });
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          ...convertArrayToObject(results, "id"),
+          ...convertArrayToObject(results, "key"),
         },
         unreadCount: state.unreadCount + results.filter((n) => n.is_read === 0).length,
       };
@@ -48,11 +52,12 @@ export default (state = INITIAL_STATE, action) => {
       // });
       return {
         ...state,
-        notifications: Object.values(state.notifications).reduce((acc, notif) => {
+        notifications: Object.keys(state.notifications).reduce((acc, notifKey) => {
+          const notif = state.notifications[notifKey];
           if (notif.type === "POST_MENTION") {
-            acc[notif.id] = { ...notif, is_read: 1, is_snooze: false, snooze_time: getCurrentTimestamp() };
+            acc[notifKey] = { ...notif, is_read: 1, is_snooze: false, snooze_time: getCurrentTimestamp() };
           } else {
-            acc[notif.id] = { ...notif, is_read: 1 };
+            acc[notifKey] = { ...notif, is_read: 1 };
           }
           return acc;
         }, {}),
@@ -61,10 +66,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "READ_NOTIFICATION_REDUCER": {
       let updatedNotifications = { ...state.notifications };
-      updatedNotifications[action.data.id].is_read = 1;
-      if (updatedNotifications[action.data.id].type === "POST_MENTION") {
-        updatedNotifications[action.data.id].is_snooze = false;
-        updatedNotifications[action.data.id].snooze_time = getCurrentTimestamp();
+      updatedNotifications[action.data.key].is_read = 1;
+      if (updatedNotifications[action.data.key].type === "POST_MENTION") {
+        updatedNotifications[action.data.key].is_snooze = false;
+        updatedNotifications[action.data.key].snooze_time = getCurrentTimestamp();
       }
       return {
         ...state,
@@ -74,10 +79,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "UNREAD_NOTIFICATION_REDUCER": {
       let updatedNotifications = { ...state.notifications };
-      updatedNotifications[action.data.id].is_read = 0;
-      if (updatedNotifications[action.data.id].type === "POST_MENTION") {
-        updatedNotifications[action.data.id].is_snooze = false;
-        updatedNotifications[action.data.id].snooze_time = getCurrentTimestamp();
+      updatedNotifications[action.data.key].is_read = 0;
+      if (updatedNotifications[action.data.key].type === "POST_MENTION") {
+        updatedNotifications[action.data.key].is_snooze = false;
+        updatedNotifications[action.data.key].snooze_time = getCurrentTimestamp();
       }
       return {
         ...state,
@@ -87,7 +92,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "REMOVE_NOTIFICATION_REDUCER": {
       let updatedNotifications = { ...state.notifications };
-      delete updatedNotifications[action.data.id];
+      delete updatedNotifications[action.data.key];
       return {
         ...state,
         notifications: updatedNotifications,
@@ -100,13 +105,13 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_APPROVAL": {
-      if (action.data.user_approved && state.user && state.user.id !== action.data.user_approved.id) {
+      if (action.data.user_approved && state.user && action.data.userId !== action.data.user_approved.id) {
         return {
           ...state,
           notifications: {
             ...Object.values(state.notifications).reduce((acc, notif) => {
-              if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id) {
-                acc[notif.id] = {
+              if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id && action.data.slug === notif.slug) {
+                acc[notif.key] = {
                   ...notif,
                   data: {
                     ...notif.data,
@@ -114,12 +119,13 @@ export default (state = INITIAL_STATE, action) => {
                   },
                 };
               } else {
-                acc[notif.id] = { ...notif };
+                acc[notif.key] = { ...notif };
               }
               return acc;
             }, {}),
             ...(action.data.notification_approval && {
-              [action.data.notification_approval.id]: {
+              [`${action.data.notification_approval.id}-${action.data.slug}`]: {
+                key: `${action.data.notification_approval.id}-${action.data.slug}`,
                 id: action.data.notification_approval.id,
                 type: action.data.notification_approval.type,
                 is_read: 0,
@@ -127,6 +133,8 @@ export default (state = INITIAL_STATE, action) => {
                 snooze_time: null,
                 created_at: action.data.created_at ? action.data.created_at : action.data.user_approved.updated_at,
                 author: action.data.user_approved,
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
                 data: {
                   post_id: action.data.post.id,
                   type: "POST",
@@ -138,7 +146,7 @@ export default (state = INITIAL_STATE, action) => {
                   //post_approval_label: "",
                   post_author: action.data.post_author ? action.data.post_author : null,
                   post_approval_label:
-                    action.data.notification_approval.type === "POST_REJECT_APPROVAL" && action.data.users_approval.length === 1 && state.user && action.data.post_author && action.data.post_author.id === state.user.id
+                    action.data.notification_approval.type === "POST_REJECT_APPROVAL" && action.data.users_approval.length === 1 && state.user && action.data.post_author && action.data.post_author.id === action.data.userId
                       ? "REQUEST_UPDATE"
                       : "",
                   workspaces: action.data.workspaces.map((ws) => {
@@ -155,14 +163,16 @@ export default (state = INITIAL_STATE, action) => {
             }),
           },
         };
-      } else if (action.data.user_approved && state.user && state.user.id === action.data.user_approved.id) {
+      } else if (action.data.user_approved && state.user && action.data.userId === action.data.user_approved.id) {
         return {
           ...state,
           notifications: {
             ...Object.values(state.notifications).reduce((acc, notif) => {
               if ((notif.type === "POST_REQST_APPROVAL" || notif.type === "POST_REJECT_APPROVAL") && action.data.post.id === notif.data.post_id) {
-                acc[notif.id] = {
+                acc[notif.key] = {
                   ...notif,
+                  sharedSlug: action.data.sharedSlug,
+                  slug: action.data.slug,
                   data: {
                     ...notif.data,
                     post_approval_label: "",
@@ -170,7 +180,7 @@ export default (state = INITIAL_STATE, action) => {
                   },
                 };
               } else {
-                acc[notif.id] = { ...notif };
+                acc[notif.key] = { ...notif };
               }
               return acc;
             }, {}),
@@ -217,9 +227,17 @@ export default (state = INITIAL_STATE, action) => {
           //     },
           //   }),
           ...Object.values(state.notifications).reduce((acc, notif) => {
-            if (notif.type === "POST_COMMENT" && action.data.post.id === notif.data.post_id && action.data.user_approved.id === state.user.id && action.data.users_approval.some((u) => u.ip_address !== null && u.id === state.user.id)) {
-              acc[notif.id] = {
+            if (
+              notif.type === "POST_COMMENT" &&
+              action.data.post.id === notif.data.post_id &&
+              action.data.user_approved.id === action.data.userId &&
+              action.data.users_approval.some((u) => u.ip_address !== null && u.id === action.data.userId) &&
+              action.data.slug === notif.slug
+            ) {
+              acc[notif.key] = {
                 ...notif,
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
                 data: {
                   ...notif.data,
                   users_approval: action.data.users_approval,
@@ -227,7 +245,7 @@ export default (state = INITIAL_STATE, action) => {
                 },
               };
             } else {
-              acc[notif.id] = notif;
+              acc[notif.key] = notif;
             }
             return acc;
           }, {}),
@@ -241,8 +259,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.notifications,
           ...(action.data.notification &&
             action.data.show_post &&
-            action.data.author.id !== state.user.id && {
-              [action.data.notification.id]: {
+            action.data.author.id !== action.data.userId && {
+              [`${action.data.notification.id}-${action.data.slug}`]: {
+                key: `${action.data.notification.id}-${action.data.slug}`,
                 id: action.data.notification.id,
                 type: "POST_CREATE",
                 is_read: 0,
@@ -264,11 +283,14 @@ export default (state = INITIAL_STATE, action) => {
                   must_reply_users: action.data.must_reply_users,
                   is_close: 0,
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
           ...(action.data.notification_approval &&
-            action.data.author.id !== state.user.id && {
-              [action.data.notification_approval.id]: {
+            action.data.author.id !== action.data.userId && {
+              [`${action.data.notification_approval.id}-${action.data.slug}`]: {
+                key: `${action.data.notification_approval.id}-${action.data.slug}`,
                 id: action.data.notification_approval.id,
                 type: action.data.notification_approval.type,
                 is_read: 0,
@@ -291,19 +313,24 @@ export default (state = INITIAL_STATE, action) => {
                   must_reply_users: action.data.must_reply_users,
                   is_close: 0,
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
         },
       };
     }
     case "INCOMING_COMMENT": {
+      const isNewComment = action.data.SOCKET_TYPE === "POST_COMMENT_CREATE";
       return {
         ...state,
         notifications: {
           ...state.notifications,
-          ...(action.data.author.id !== state.user.id &&
+          ...(action.data.addToNotification &&
+            isNewComment &&
             action.data.notification && {
-              [action.data.notification.id]: {
+              [`${action.data.notification.id}-${action.data.slug}`]: {
+                key: `${action.data.notification.id}-${action.data.slug}`,
                 id: action.data.notification.id,
                 type: action.data.notification.type,
                 is_read: 0,
@@ -324,6 +351,8 @@ export default (state = INITIAL_STATE, action) => {
                   users_approval: action.data.users_approval,
                   post_approval_label: action.data.users_approval.length > 0 && action.data.users_approval.every((u) => u.ip_address === null) ? "NEED_ACTION" : "",
                 },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
               },
             }),
           ...Object.values(state.notifications).reduce((acc, notif) => {
@@ -331,9 +360,10 @@ export default (state = INITIAL_STATE, action) => {
               (notif.type === "POST_REJECT_APPROVAL" || notif.type === "PST_CMT_REJCT_APPRVL") &&
               action.data.post_id === notif.data.post_id &&
               action.data.users_approval &&
+              notif.slug === action.data.slug &&
               action.data.users_approval.every((u) => u.ip_address === null)
             ) {
-              acc[notif.id] = {
+              acc[notif.key] = {
                 ...notif,
                 data: {
                   ...notif.data,
@@ -342,7 +372,7 @@ export default (state = INITIAL_STATE, action) => {
                 },
               };
             } else {
-              acc[notif.id] = notif;
+              acc[notif.key] = notif;
             }
             return acc;
           }, {}),
@@ -364,6 +394,9 @@ export default (state = INITIAL_STATE, action) => {
           snooze_time: null,
           author: null,
           created_at: action.data.created_at,
+          sharedSlug: action.data.sharedSlug,
+          slug: action.data.slug,
+          key: `${action.data.notification.id}-${action.data.slug}`,
           data: {
             id: action.data.id,
             title: action.data.title,
@@ -374,7 +407,7 @@ export default (state = INITIAL_STATE, action) => {
         };
         return {
           ...state,
-          notifications: { ...state.notifications, [reminderNotification.id]: reminderNotification },
+          notifications: { ...state.notifications, [`${reminderNotification.id}-${reminderNotification.slug}`]: reminderNotification },
         };
       } else {
         return state;
@@ -386,19 +419,22 @@ export default (state = INITIAL_STATE, action) => {
         notifications: {
           ...Object.values(state.notifications).reduce((acc, n) => {
             if (["POST_CREATE", "POST_COMMENT", "POST_MENTION", "POST_REQST_APPROVAL", "POST_REJECT_APPROVAL", "PST_CMT_REJCT_APPRVL"].includes(n.type)) {
-              if (n.data && n.data.post_id === action.data.post.id) {
-                acc[n.id] = { ...n, data: { ...n.data, is_close: action.data.is_close ? 1 : 0 } };
+              if (n.data && n.data.post_id === action.data.post.id && n.slug === action.data.slug) {
+                acc[n.key] = { ...n, data: { ...n.data, is_close: action.data.is_close ? 1 : 0 } };
               } else {
-                acc[n.id] = n;
+                acc[n.key] = n;
               }
             } else {
-              acc[n.id] = n;
+              acc[n.key] = n;
             }
             return acc;
           }, {}),
           ...(action.data.notification && {
-            [action.data.notification.id]: {
+            [`${action.data.notification.id}-${action.data.slug}`]: {
               ...action.data.notification,
+              key: `${action.data.notification.id}-${action.data.slug}`,
+              sharedSlug: action.data.sharedSlug,
+              slug: action.data.slug,
               is_read: 0,
               is_snooze: false,
               snooze_time: null,
@@ -424,14 +460,14 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_UPDATED_WORKSPACE_FOLDER": {
-      if (action.data.type === "WORKSPACE" && state.user && state.user.id !== action.data.user_id && action.data.new_member_ids.some((id) => id === state.user.id)) {
+      if (action.data.addNotification) {
         let author = action.data.members.find((m) => m.id === action.data.user_id);
         return {
           ...state,
           notifications: {
             ...state.notifications,
             ...(action.data.notification_id.length && {
-              [action.data.notification_id[0]]: {
+              [`${action.data.notification_id[0]}-${action.data.slug_owner}`]: {
                 author: author,
                 created_at: { timestamp: getCurrentTimestamp() },
                 data: {
@@ -446,6 +482,9 @@ export default (state = INITIAL_STATE, action) => {
                 is_snooze: false,
                 snooze_time: null,
                 type: "WORKSPACE_ADD_MEMBER",
+                slug: action.data.slug_owner,
+                sharedSlug: action.data.is_shared_wp,
+                key: `${action.data.notification_id[0]}-${action.data.slug_owner}`,
               },
             }),
           },
@@ -463,7 +502,8 @@ export default (state = INITIAL_STATE, action) => {
         notifications: {
           ...state.notifications,
           ...(action.data.notification_id.length && {
-            [action.data.notification_id[0]]: {
+            [`${action.data.notification_id[0]}-${action.data.slug}`]: {
+              key: `${action.data.notification_id[0]}-${action.data.slug}`,
               author: author,
               created_at: { timestamp: getCurrentTimestamp() },
               data: {
@@ -478,6 +518,8 @@ export default (state = INITIAL_STATE, action) => {
               is_snooze: false,
               snooze_time: null,
               type: "WORKSPACE_ADD_MEMBER",
+              sharedSlug: action.data.sharedSlug,
+              slug: action.data.slug,
             },
           }),
         },
@@ -487,9 +529,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         notifications: Object.values(state.notifications).reduce((acc, notif) => {
-          if (notif.type === "POST_CREATE" && action.data.post.id === notif.data.post_id) {
-            acc[notif.id] = {
+          if (notif.type === "POST_CREATE" && action.data.post.id === notif.data.post_id && notif.slug === action.data.slug) {
+            acc[notif.key] = {
               ...notif,
+              sharedSlug: action.data.sharedSlug,
+              slug: action.data.slug,
               data: {
                 ...notif.data,
                 required_users: action.data.required_users,
@@ -498,7 +542,7 @@ export default (state = INITIAL_STATE, action) => {
               },
             };
           } else {
-            acc[notif.id] = { ...notif };
+            acc[notif.key] = { ...notif };
           }
           return acc;
         }, {}),
@@ -507,8 +551,8 @@ export default (state = INITIAL_STATE, action) => {
     case "NOTIFICATION_SNOOZE_ALL": {
       let notifications = { ...state.notifications };
       Object.values(notifications).forEach((n) => {
-        notifications[n.id].is_snooze = action.data.is_snooze;
-        notifications[n.id].snooze_time = action.data.snooze_time;
+        notifications[n.key].is_snooze = action.data.is_snooze;
+        notifications[n.key].snooze_time = action.data.snooze_time;
       });
       return {
         ...state,
@@ -517,8 +561,10 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "NOTIFICATION_SNOOZE": {
       let notifications = { ...state.notifications };
-      notifications[action.data.id].is_snooze = action.data.is_snooze;
-      notifications[action.data.id].snooze_time = action.data.snooze_time;
+      if (state.notifications[action.data.key]) {
+        notifications[action.data.key].is_snooze = action.data.is_snooze;
+        notifications[action.data.key].snooze_time = action.data.snooze_time;
+      }
       return {
         ...state,
         notifications: notifications,
@@ -528,15 +574,15 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         notifications: Object.values(state.notifications).reduce((acc, notif) => {
-          if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id && action.data.users_approval.length) {
-            acc[notif.id] = { ...notif, type: "POST_REQST_APPROVAL", data: { ...notif.data, users_approval: action.data.users_approval } };
-          } else if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id) {
-            acc[notif.id] = {
+          if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id && action.data.users_approval.length && notif.slug === action.data.slug) {
+            acc[notif.key] = { ...notif, type: "POST_REQST_APPROVAL", data: { ...notif.data, users_approval: action.data.users_approval } };
+          } else if (notif.type === "POST_CREATE" && action.data.id === notif.data.post_id && notif.slug === action.data.slug) {
+            acc[notif.key] = {
               ...notif,
               data: { ...notif.data, must_read: action.data.is_must_read ? 1 : 0, must_read_users: action.data.must_read_users, must_reply: action.data.is_must_reply ? 1 : 0, must_reply_users: action.data.must_reply_users },
             };
           } else {
-            acc[notif.id] = notif;
+            acc[notif.key] = notif;
           }
           return acc;
         }, {}),
@@ -548,13 +594,13 @@ export default (state = INITIAL_STATE, action) => {
         notifications: Object.values(state.notifications)
           .filter((notif) => {
             if (notif.type.includes("POST")) {
-              return notif.data && notif.data.post_id !== action.data.post_id;
+              return notif.data && notif.data.post_id !== action.data.post_id && notif.slug === action.data.slug;
             } else {
               return true;
             }
           })
           .reduce((acc, notif) => {
-            acc[notif.id] = notif;
+            acc[notif.key] = notif;
             return acc;
           }, {}),
       };
@@ -574,6 +620,9 @@ export default (state = INITIAL_STATE, action) => {
               const date = convertUTCDateToLocalDate(utcDate);
               return {
                 ...sn,
+                key: `${sn.notification_id}-${action.slug}`,
+                slug: action.slug,
+                sharedSlug: action.isSharedSlug,
                 is_snooze: !!sn.is_snooze,
                 snooze_time: Math.round(date / 1000),
               };
@@ -590,6 +639,8 @@ export default (state = INITIAL_STATE, action) => {
           ...action.data.data.map((sn) => {
             return {
               ...sn,
+              slug: action.slug ? action.slug : action.data.slug,
+              sharedSlug: action.isSharedSlug ? action.isSharedSlug : action.data.sharedSlug,
               is_snooze: sn.is_snooze,
               snooze_time: getCurrentTimestamp(),
             };
@@ -598,9 +649,9 @@ export default (state = INITIAL_STATE, action) => {
         notifications: Object.values(state.notifications).reduce((acc, n) => {
           const notif = action.data.data.find((d) => d.notification_id === n.id && d.type === "POST_SNOOZE");
           if (notif) {
-            acc[n.id] = { ...n, is_snooze: notif.is_snooze, snooze_time: getCurrentTimestamp() };
+            acc[n.key] = { ...n, is_snooze: notif.is_snooze, snooze_time: getCurrentTimestamp() };
           } else {
-            acc[n.id] = n;
+            acc[n.key] = n;
           }
           return acc;
         }, {}),
@@ -613,15 +664,15 @@ export default (state = INITIAL_STATE, action) => {
           ...state,
           notifications: Object.values(state.notifications).reduce((acc, n) => {
             if (n.id === action.data.notification_id) {
-              acc[n.id] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+              acc[n.key] = { ...n, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
             } else {
-              acc[n.id] = n;
+              acc[n.key] = n;
             }
             return acc;
           }, {}),
           snoozedNotifications: state.snoozedNotifications.map((sn) => {
             if (sn.notification_id === action.data.notification_id) {
-              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp() };
+              return { ...sn, is_snooze: action.data.is_snooze, snooze_time: getCurrentTimestamp(), slug: action.slug ? action.slug : action.data.slug, sharedSlug: action.isSharedSlug ? action.isSharedSlug : action.data.sharedSlug };
             } else return sn;
           }),
         };
@@ -629,17 +680,16 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    case "READ_POST_NOTIFICATION_SUCCESS":
-    case "INCOMING_READ_NOTIFICATIONS": {
+    case "READ_POST_NOTIFICATION_SUCCESS": {
       if (action.data.notification_id.length) {
         const notificationIds = action.data.notification_id.map((n) => n.id);
         return {
           ...state,
           notifications: Object.values(state.notifications).reduce((acc, n) => {
-            if (notificationIds.some((id) => id === n.id)) {
-              acc[n.id] = { ...n, is_read: 1 };
+            if (notificationIds.some((id) => id === n.id) && action.slug === n.slug) {
+              acc[n.key] = { ...n, is_read: 1 };
             } else {
-              acc[n.id] = n;
+              acc[n.key] = n;
             }
             return acc;
           }, {}),
@@ -647,6 +697,91 @@ export default (state = INITIAL_STATE, action) => {
       } else {
         return state;
       }
+    }
+    case "INCOMING_READ_NOTIFICATIONS": {
+      if (action.data.notification_id.length) {
+        const notificationIds = action.data.notification_id.map((n) => n.id);
+        return {
+          ...state,
+          notifications: Object.values(state.notifications).reduce((acc, n) => {
+            if (notificationIds.some((id) => id === n.id) && action.data.slug === n.slug) {
+              acc[n.key] = { ...n, is_read: 1 };
+            } else {
+              acc[n.key] = n;
+            }
+            return acc;
+          }, {}),
+        };
+      } else {
+        return state;
+      }
+    }
+    case "INCOMING_WORKSPACE_POST": {
+      return {
+        ...state,
+        notifications: {
+          ...state.notifications,
+          ...(action.data.notification &&
+            action.data.sharedSlug && {
+              [`${action.data.notification.id}-${action.data.slug}`]: {
+                key: `${action.data.notification.id}-${action.data.slug}`,
+                id: action.data.notification.id,
+                type: "POST_CREATE",
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.author,
+                data: {
+                  post_id: action.data.id,
+                  type: action.data.type,
+                  must_read: action.data.is_must_read,
+                  must_reply: action.data.is_must_reply,
+                  personalized_for_id: action.data.personalized_for_id,
+                  title: action.data.title,
+                  workspaces: action.data.workspaces,
+                  comment_body: null,
+                  required_users: action.data.required_users,
+                  must_read_users: action.data.must_read_users,
+                  must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
+                },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
+              },
+            }),
+          ...(action.data.notification_approval &&
+            action.data.author.id !== action.data.userId && {
+              [`${action.data.notification_approval.id}-${action.data.slug}`]: {
+                key: `${action.data.notification_approval.id}-${action.data.slug}`,
+                id: action.data.notification_approval.id,
+                type: action.data.notification_approval.type,
+                is_read: 0,
+                is_snooze: false,
+                snooze_time: null,
+                created_at: action.data.created_at,
+                author: action.data.author,
+                data: {
+                  post_id: action.data.id,
+                  type: action.data.type,
+                  must_read: action.data.is_must_read,
+                  must_reply: action.data.is_must_reply,
+                  personalized_for_id: action.data.personalized_for_id,
+                  title: action.data.title,
+                  workspaces: action.data.workspaces,
+                  comment_body: null,
+                  users_approval: action.data.users_approval,
+                  required_users: action.data.required_users,
+                  must_read_users: action.data.must_read_users,
+                  must_reply_users: action.data.must_reply_users,
+                  is_close: 0,
+                },
+                sharedSlug: action.data.sharedSlug,
+                slug: action.data.slug,
+              },
+            }),
+        },
+      };
     }
     default:
       return state;

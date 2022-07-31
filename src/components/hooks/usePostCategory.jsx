@@ -14,7 +14,22 @@ const usePostCategory = (props) => {
   const mustReply = useSelector((state) => state.posts.mustReply);
   const noReplies = useSelector((state) => state.posts.noReplies);
   const closedPost = useSelector((state) => state.posts.closedPost);
-  const wsPosts = useSelector((state) => state.workspaces.workspacePosts[params.workspaceId]);
+  const workspacePosts = useSelector((state) => state.workspaces.workspacePosts);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
+  let wsPosts = workspacePosts[params.workspaceId];
+  if (workspace && workspace.sharedSlug) {
+    wsPosts = workspacePosts[`${workspace.id}-${workspace.slug}`];
+  }
+
+  const workspaceRef = useRef(null);
+  const sharedWsRef = useRef(null);
+
+  useEffect(() => {
+    if (workspace) workspaceRef.current = workspace;
+    if (sharedWs) sharedWsRef.current = sharedWs;
+  }, [workspace, sharedWs]);
 
   const loadMoreCompany = (callback = () => {}) => {
     if (tag) {
@@ -101,6 +116,10 @@ const usePostCategory = (props) => {
   };
 
   const loadMoreWorkspaceCategory = (callback = () => {}) => {
+    let sharedPayload = null;
+    if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+      sharedPayload = { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true };
+    }
     if (wsPosts && wsPosts.tag && wsPosts.categories) {
       if (wsPosts.tag === "is_must_reply" && wsPosts.categories.mustReply.has_more) {
         fetchingWsPostsRef.current = true;
@@ -109,6 +128,7 @@ const usePostCategory = (props) => {
           skip: mustReply.skip,
           limit: mustReply.limit,
           filters: ["must_reply"],
+          sharedPayload: sharedPayload,
         };
         dispatch(
           getWorkspacePostsByCategory(payload, (err, res) => {
@@ -117,6 +137,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -136,6 +158,7 @@ const usePostCategory = (props) => {
           skip: mustRead.skip,
           limit: mustRead.limit,
           filters: ["must_read"],
+          sharedPayload: sharedPayload,
         };
         dispatch(
           getWorkspacePostsByCategory(payload, (err, res) => {
@@ -144,6 +167,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -163,6 +188,7 @@ const usePostCategory = (props) => {
           skip: noReplies.skip,
           limit: noReplies.limit,
           filters: ["no_replies"],
+          sharedPayload: sharedPayload,
         };
         dispatch(
           getWorkspacePostsByCategory(payload, (err, res) => {
@@ -171,6 +197,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -190,6 +218,7 @@ const usePostCategory = (props) => {
           skip: closedPost.skip,
           limit: closedPost.limit,
           filters: ["close_post"],
+          sharedPayload: sharedPayload,
         };
         dispatch(
           getWorkspacePostsByCategory(payload, (err, res) => {
@@ -198,6 +227,8 @@ const usePostCategory = (props) => {
             if (err) return;
             dispatch(
               addToWorkspacePosts({
+                slug: res.slug,
+                isSharedSlug: res.isSharedSlug,
                 topic_id: parseInt(params.workspaceId),
                 posts: res.data.posts,
                 category: {
@@ -223,14 +254,24 @@ const usePostCategory = (props) => {
   }, []);
 
   useEffect(() => {
+    let sharedPayload = null;
+    if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWsRef.current) {
+      sharedPayload = { slug: workspaceRef.current.slug, token: sharedWsRef.current[workspaceRef.current.slug].access_token, is_shared: true };
+    }
     if (wsPosts && !wsPosts.categoriesLoaded && fetchingWsCategoriesRef.current === false) {
       fetchingWsCategoriesRef.current = true;
+      let payload = {
+        topic_id: params.workspaceId,
+        sharedPayload: sharedPayload,
+      };
       dispatch(
-        getWorkspacePostCategoryCounter({ topic_id: params.workspaceId }, (err, res) => {
+        getWorkspacePostCategoryCounter(payload, (err, res) => {
           fetchingWsCategoriesRef.current = false;
           if (err) return;
           dispatch(
             addToWorkspacePosts({
+              slug: res.slug,
+              isSharedSlug: res.isSharedSlug,
               topic_id: parseInt(params.workspaceId),
               posts: [],
               categories: {
@@ -277,10 +318,10 @@ const usePostCategory = (props) => {
     loadMoreCompany: loadMoreCompany,
     loadMoreWorkspaceCategory: loadMoreWorkspaceCategory,
     count: {
-      is_must_read: !params.hasOwnProperty("workspaceId") ? mustRead.count : wsPosts ? wsPosts.categories.mustRead.count : 0,
-      is_must_reply: !params.hasOwnProperty("workspaceId") ? mustReply.count : wsPosts ? wsPosts.categories.mustReply.count : 0,
-      is_read_only: !params.hasOwnProperty("workspaceId") ? noReplies.count : wsPosts ? wsPosts.categories.noReplies.count : 0,
-      is_close: !params.hasOwnProperty("workspaceId") ? closedPost.count : wsPosts ? wsPosts.categories.closedPost.count : 0,
+      is_must_read: !params.hasOwnProperty("workspaceId") ? mustRead.count : wsPosts ? wsPosts.categories?.mustRead?.count : 0,
+      is_must_reply: !params.hasOwnProperty("workspaceId") ? mustReply.count : wsPosts ? wsPosts.categories?.mustReply?.count : 0,
+      is_read_only: !params.hasOwnProperty("workspaceId") ? noReplies.count : wsPosts ? wsPosts.categories?.noReplies?.count : 0,
+      is_close: !params.hasOwnProperty("workspaceId") ? closedPost.count : wsPosts ? wsPosts.categories?.closedPost?.count : 0,
     },
   };
 };

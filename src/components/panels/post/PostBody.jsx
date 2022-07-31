@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../common";
-import { useFiles, useGoogleApis, useTimeFormat, useWindowSize, useRedirect } from "../../hooks";
+import { useFiles, useGoogleApis, useTimeFormat, useWindowSize, useRedirect, useGetSlug } from "../../hooks";
 import { PostBadge, PostVideos, PostChangeAccept, PostBodyButtons } from "./index";
 import quillHelper from "../../../helpers/quillHelper";
 import { useDispatch, useSelector } from "react-redux";
@@ -214,7 +214,7 @@ const SharedBadge = styled.span`
 `;
 
 const PostBody = (props) => {
-  const { post, user, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead } = props;
+  const { post, user, userId, postActions, dictionary, disableOptions, workspaceId, disableMarkAsRead, workspace } = props;
 
   const isExternalUser = user.type === "external";
   const dispatch = useDispatch();
@@ -223,7 +223,7 @@ const PostBody = (props) => {
     container: useRef(null),
     body: useRef(null),
   };
-
+  const { slug } = useGetSlug();
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -268,14 +268,22 @@ const PostBody = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (workspace && workspace.sharedSlug) {
+            key = `${imgFile.id}-${workspace.slug}`;
+          }
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (workspace && workspace.sharedSlug) {
+            key = `${imgFile.id}-${workspace.slug}`;
+          }
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         }
@@ -285,7 +293,11 @@ const PostBody = (props) => {
 
     if (imageFiles.length && workspaceId) {
       imageFiles.forEach((file) => {
-        if (!fileBlobs[file.id] && post.body.includes(file.code)) {
+        let key = `${file.id}-${slug}`;
+        if (workspace && workspace.sharedSlug) {
+          key = `${file.id}-${workspace.slug}`;
+        }
+        if (!fileBlobs[key] && post.body.includes(file.code)) {
           //setIsLoaded(false);
           sessionService.loadSession().then((current) => {
             let myToken = current.token;
@@ -307,14 +319,16 @@ const PostBody = (props) => {
                 setFileSrc({
                   id: file.id,
                   src: imgObj,
+                  key: key,
                 });
                 postActions.updatePostImages({
                   post_id: post.id,
-                  topic_id: workspaceId,
+                  topic_id: workspace && workspace.sharedSlug ? `${workspace.id}-${workspace.slug}` : workspaceId,
                   file: {
                     ...file,
                     blobUrl: imgObj,
                   },
+                  post_code: workspace && workspace.sharedSlug ? post.code : null,
                 });
               })
               .catch((error) => {
@@ -444,7 +458,9 @@ const PostBody = (props) => {
       <div className="d-flex align-items-center">
         <div className="w-100 post-body-content ql-editor" ref={refs.body} dangerouslySetInnerHTML={{ __html: quillHelper.parseEmoji(post.body) }} />
       </div>
-      {(hasPendingAproval || isMultipleApprovers) && <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} user={user} post={post} isMultipleApprovers={isMultipleApprovers} />}
+      {(hasPendingAproval || isMultipleApprovers) && (
+        <PostChangeAccept postBody={true} approving={approving} fromNow={fromNow} usersApproval={post.users_approval} userId={userId} user={user} post={post} isMultipleApprovers={isMultipleApprovers} />
+      )}
     </Wrapper>
   );
 };

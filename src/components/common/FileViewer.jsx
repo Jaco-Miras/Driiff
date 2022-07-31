@@ -4,9 +4,10 @@ import styled from "styled-components";
 import { getAPIUrl } from "../../helpers/slugHelper";
 import { setViewFiles, removeFileDownload } from "../../redux/actions/fileActions";
 import "../../vendors/lightbox/magnific-popup.css";
-import { useFiles, useOutsideClick, useTimeFormat, useWindowSize } from "../hooks";
+import { useFiles, useOutsideClick, useTimeFormat, useWindowSize, useGetSlug } from "../hooks";
 import { SvgIconFeather } from "./SvgIcon";
 import { sessionService } from "redux-react-session";
+import { saveAs } from "file-saver";
 
 const FileViewerContainer = styled.div`
   position: fixed;
@@ -177,7 +178,7 @@ const FileWrapper = styled.figure`
 
 const StyledFileRender = styled.div`
   text-align: center;
-  height: ${({ isLoaded }) => (isLoaded ? "60vh" : "initial")};
+  max-height: 60vh;
 
   .spinner-border {
     border-width: 3px;
@@ -238,7 +239,7 @@ const DetailsContainer = styled.div`
 
 const FileRender = (props) => {
   const { className = "", file, setFiles, files, viewFiles } = props;
-
+  const { slug } = useGetSlug();
   const dispatch = useDispatch();
   const winSize = useWindowSize();
   const {
@@ -246,8 +247,11 @@ const FileRender = (props) => {
     actions: { setFileSrc },
   } = useFiles();
 
-  const [isLoaded, setIsLoaded] = useState(false);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
+  const [isLoaded, setIsLoaded] = useState(false);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[viewFiles.slug]);
   let refFiles = {};
 
   const handlePdfOnLoad = (e) => {
@@ -276,7 +280,8 @@ const FileRender = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}`;
+      let token = viewFiles.workspace_id && workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].auth_token : viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken");
+      e.currentTarget.src = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug || workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
     } else {
       let img = document.querySelector(`.file-item[data-index="${e.currentTarget.dataset.index}"] img`);
       img.classList.remove("d-none");
@@ -299,16 +304,32 @@ const FileRender = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    window.open(file.download_link);
+    let token = viewFiles.workspace_id && workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].auth_token : viewFiles.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken");
+
+    const retrieved = `${getAPIUrl({ isDNS: true, sharedSlug: viewFiles.slug || workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
+    saveAs(retrieved, file.filename ? file.filename : file.search ? file.search : file.name);
     // handle.blur();
     // window.focus();
   };
-
+  let key = `${file.id}-${slug}`;
+  if (viewFiles.sharedSlug) {
+    key = `${file.id}-${viewFiles.slug}`;
+  }
   useEffect(() => {
-    if (!fileBlobs[file.id]) {
+    if (!fileBlobs[key]) {
       setIsLoaded(false);
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
+        if (viewFiles && viewFiles.sharedSlug) {
+          if (current.sharedWorkspaces[viewFiles.slug]) {
+            myToken = `Bearer ${current.sharedWorkspaces[viewFiles.slug].access_token}`;
+          }
+        }
+        if (viewFiles.workspace_id && workspace && workspace.sharedSlug) {
+          if (sharedWs[workspace.slug]) {
+            myToken = `Bearer ${sharedWs[workspace.slug].access_token}`;
+          }
+        }
         fetch(file.view_link, {
           method: "GET",
           keepalive: true,
@@ -340,6 +361,7 @@ const FileRender = (props) => {
               {
                 id: file.id,
                 src: imgObj,
+                key: key,
               },
               () => {
                 setIsLoaded(true);
@@ -399,7 +421,7 @@ const FileRender = (props) => {
               onError={handleImageOnError}
               ref={(e) => (refFiles[file.id] = e)}
               key={file.id}
-              src={fileBlobs[file.id]}
+              src={fileBlobs[key]}
               alt={file.filename ? file.filename : file.search}
             />
           </>
@@ -444,14 +466,16 @@ const FileRender = (props) => {
 
 const FileViewer = (props) => {
   const { className = "" } = props;
-
+  const { slug } = useGetSlug();
   const fileRef = useRef();
   const dispatch = useDispatch();
   const channelFiles = useSelector((state) => state.files.channelFiles);
   const viewFiles = useSelector((state) => state.files.viewFiles);
   const workspaceFiles = useSelector((state) => state.files.workspaceFiles);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
   //const companyFiles = useSelector((state) => state.files.companyFiles.items);
   const { localizeDate } = useTimeFormat();
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [files, setFiles] = useState([]);
@@ -492,12 +516,25 @@ const FileViewer = (props) => {
       dispatch(removeFileDownload(payload));
     }
     e.preventDefault();
-    window.open(file.download_link);
+
+    let token = currentSharedWorkspace?.auth_token;
+    let retrieved = `${getAPIUrl({ isDNS: true, sharedSlug: workspace?.slug })}/file-view-attempt/${file.file_id}/${token}`;
+
+    if (file.imgSrc) {
+      retrieved = URL.getFromObjectURL(file.imgSrc);
+    }
+    saveAs(retrieved, file.filename ? file.filename : file.search ? file.search : file.name);
+
+    // window.open(file.download_link);
     // handle.blur();
     // window.focus();
   };
 
   useEffect(() => {
+    let hubKey = `${viewFiles.workspace_id}-${slug}`;
+    if (viewFiles.sharedSlug) {
+      hubKey = `${viewFiles.workspace_id}-${viewFiles.slug}`;
+    }
     if (Object.keys(channelFiles).length && channelFiles.hasOwnProperty(viewFiles.channel_id)) {
       setFiles(channelFiles[viewFiles.channel_id]);
       channelFiles[viewFiles.channel_id].forEach((file, index) => {
@@ -505,8 +542,8 @@ const FileViewer = (props) => {
           setActiveIndex(index);
         }
       });
-    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(viewFiles.workspace_id)) {
-      let files = Object.values(workspaceFiles[viewFiles.workspace_id].files);
+    } else if (Object.keys(workspaceFiles).length && workspaceFiles.hasOwnProperty(hubKey)) {
+      let files = Object.values(workspaceFiles[hubKey].files);
       if (viewFiles.hasOwnProperty("files")) {
         files = viewFiles.files;
       }
@@ -517,18 +554,6 @@ const FileViewer = (props) => {
         setFiles(viewFiles.files);
         setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
       }
-
-      // let files = Object.values(companyFiles);
-      // if (!Object.keys(viewFiles).some((k) => ["channel_id", "workspace_id"].includes(k))) {
-      //   //console.log("default", viewFiles);
-      //   if (files.length) {
-      //     setFiles(files);
-      //     setActiveIndex(files.findIndex((f) => f.file_id === viewFiles.file_id));
-      //   } else {
-      //     setFiles(viewFiles.files);
-      //     setActiveIndex(viewFiles.files.findIndex((f) => f.file_id === viewFiles.file_id));
-      //   }
-      // }
     }
   }, []);
 

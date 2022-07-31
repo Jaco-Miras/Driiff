@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { addToModals, delRemoveToDo, getTodayToDo, getDoneToDo, getOverdueToDo, getToDo, getToDoDetail, postToDo, putDoneToDo, putToDo, snoozeTodo, snoozeTodoAll, removeReminderNotification } from "../../redux/actions/globalActions";
 import {
   getDoneWorkspaceRemindersCallback,
@@ -18,6 +18,7 @@ const useTodoActions = () => {
   const toaster = useToaster();
   const { _t } = useTranslationActions();
   const params = useParams();
+  const location = useLocation();
 
   const dictionary = {
     toasterGeneraError: _t("TOASTER.GENERAL_ERROR", "An error has occurred try again!"),
@@ -49,6 +50,7 @@ const useTodoActions = () => {
   };
 
   const fetchWs = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -57,6 +59,7 @@ const useTodoActions = () => {
           getWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -64,6 +67,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsDone = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -72,6 +76,7 @@ const useTodoActions = () => {
           getDoneWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -79,6 +84,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsOverdue = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -87,6 +93,7 @@ const useTodoActions = () => {
           getOverdueWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -94,6 +101,7 @@ const useTodoActions = () => {
   };
 
   const fetchWsToday = (payload, callback) => {
+    const key = payload.sharedPayload ? payload.sharedPayload.key : payload.topic_id;
     dispatch(
       getWorkspaceReminders(payload, (err, res) => {
         if (callback) callback();
@@ -102,6 +110,7 @@ const useTodoActions = () => {
           getTodayWorkspaceRemindersCallback({
             ...res.data,
             topic_id: payload.topic_id,
+            wsKey: key,
           })
         );
       })
@@ -135,7 +144,7 @@ const useTodoActions = () => {
           toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterCreateTodo }} />);
         }
         if (params.workspaceId) {
-          fetchWsCount({ topic_id: params.workspaceId });
+          //fetchWsCount({ topic_id: params.workspaceId });
         } else {
           fetchDetail();
         }
@@ -166,7 +175,7 @@ const useTodoActions = () => {
         (err, res) => {
           if (callback) callback(err, res);
           if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
+            //fetchWsCount({ topic_id: params.workspaceId });
           } else {
             fetchDetail();
           }
@@ -185,9 +194,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (callback) callback(err, res);
-          if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
-          } else {
+          if (!params.workspaceId) {
             fetchDetail();
           }
         }
@@ -205,9 +212,7 @@ const useTodoActions = () => {
         },
         (err, res) => {
           if (callback) callback(err, res);
-          if (params.workspaceId) {
-            fetchWsCount({ topic_id: params.workspaceId });
-          } else {
+          if (!params.workspaceId) {
             fetchDetail();
           }
         }
@@ -232,9 +237,7 @@ const useTodoActions = () => {
           }
           if (res) {
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUpdateTodo }} />);
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
           }
@@ -260,6 +263,7 @@ const useTodoActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
     };
 
     dispatch(addToModals(payload));
@@ -270,12 +274,11 @@ const useTodoActions = () => {
       putDoneToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
         },
         (err, res) => {
           if (res) {
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
@@ -291,13 +294,12 @@ const useTodoActions = () => {
       putDoneToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
           ...(payload.status === "DONE" && { undo: 1 }),
         },
         (err, res) => {
           if (res) {
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterUnDoneTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
@@ -334,13 +336,12 @@ const useTodoActions = () => {
       delRemoveToDo(
         {
           todo_id: payload.id,
+          sharedPayload: payload.sharedPayload,
         },
         (err, res) => {
           if (res) {
             toaster.success(<span dangerouslySetInnerHTML={{ __html: dictionary.toasterDeleteTodo.replace("::todo_title::", `<b>${payload.title}</b>`) }} />);
-            if (params.workspaceId) {
-              fetchWsCount({ topic_id: params.workspaceId });
-            } else {
+            if (!params.workspaceId) {
               fetchDetail();
             }
           }

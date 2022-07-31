@@ -8,6 +8,7 @@ import VideoMeeting from "../components/panels/VideoMeeting";
 //import GuestLayout from "./GuestLayout";
 //import MainLayout from "./MainLayout";
 import { addUserToReducers } from "../redux/actions/globalActions";
+import { $_GET } from "../helpers/commonFunctions";
 
 const MainLayout = lazy(() => import("./MainLayout"));
 const GuestLayout = lazy(() => import("./GuestLayout"));
@@ -21,6 +22,16 @@ export const AppRoute = ({ children, ...props }) => {
   const history = useHistory();
   const session = useSelector((state) => state.session);
   //const i18nLoaded = useSelector((state) => state.global.i18nLoaded);
+
+  useEffect(() => {
+    if ($_GET("state_code") && $_GET("invite_slug")) {
+      const state_code = $_GET("state_code");
+      const invite_slug = $_GET("invite_slug");
+      localStorage.setItem("stateCode", state_code);
+      localStorage.setItem("inviteSlug", invite_slug);
+      history.replace({ state: { state_code: $_GET("state_code"), invite_slug: $_GET("invite_slug") } });
+    }
+  }, []);
 
   useEffect(() => {
     if (session.checked) {
@@ -64,14 +75,18 @@ export const AppRoute = ({ children, ...props }) => {
           <Route {...props} component={MainLayout} path={["/notifications", "/profile", "/dashboard", "/posts", "/chat", "/files", "/people", "/search", "/settings", "/system/people", "/todos", "/releases", "/admin-settings"]}>
             {children}
           </Route>
-          <Route {...props} component={MainLayout} path={["/hub/chat", "/hub/:page", "/magic-link/:token"]}>
+          <Route {...props} component={MainLayout} path={["/hub/chat", "/hub/:page", "/magic-link/:token", "/shared-hub/chat", "/shared-hub/:page"]}>
             {children}
           </Route>
           <Redirect
             path="*"
             to={{
-              pathname: session.user.type === "external" ? "/hub/chat" : "/dashboard",
-              state: { from: history.location },
+              pathname: session.user.type === "external" ? "/hub/search" : "/dashboard",
+              state: {
+                from: history.location,
+                state_code: history.location.state && history.location.state.state_code ? history.location.state.state_code : null,
+                invite_slug: history.location.state && history.location.state.invite_slug ? history.location.state.invite_slug : null,
+              },
             }}
           />
         </Switch>
@@ -83,7 +98,19 @@ export const AppRoute = ({ children, ...props }) => {
         <Route
           {...props}
           component={GuestLayout}
-          path={["/driff-register", "/register", "/magic-link", "/resetpassword/:token/:email", "/reset-password", "/login", "/authenticate/:token/:returnUrl?", "/request-form", "/magic-link/:token", "/authenticate-ios/:tokens"]}
+          path={[
+            "/driff-register",
+            "/register",
+            "/magic-link",
+            "/resetpassword/:token/:email",
+            "/reset-password",
+            "/login",
+            "/authenticate/:token/:returnUrl?",
+            "/request-form",
+            "/magic-link/:token",
+            "/authenticate-ios/:tokens",
+            "/shared-hub-invite",
+          ]}
           exact
         >
           {children}

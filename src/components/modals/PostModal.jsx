@@ -1,7 +1,7 @@
 import moment from "moment";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Input, InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
+import { InputGroup, Label, Modal, ModalBody, ModalFooter, Button } from "reactstrap";
 import styled from "styled-components";
 import { clearModal } from "../../redux/actions/globalActions";
 import { postCreate, putPost, updateCompanyPostFilterSort } from "../../redux/actions/postActions";
@@ -325,6 +325,11 @@ const PostModal = (props) => {
   const recipients = useSelector((state) => state.global.recipients);
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const activeTopic = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+
+  const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
+  const isSharedPost = item && item.post && item.post.sharedSlug;
+  const userId = isSharedWorkspace ? sharedWs[activeTopic.slug].user_auth.id : isSharedPost ? sharedWs[item.post.slug].user_auth.id : user.id;
 
   const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
@@ -388,6 +393,8 @@ const PostModal = (props) => {
     actualUsers,
   } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
+    members: isSharedWorkspace ? activeTopic.members : isSharedPost && workspaces[item.post.recipients[0].key] ? workspaces[item.post.recipients[0].key].members : null,
+    userId: userId,
   });
 
   const { enlargeEmoji } = useEnlargeEmoticons();
@@ -402,7 +409,7 @@ const PostModal = (props) => {
     params,
     responsible_ids,
     user,
-    topicId: params ? activeTopic.id : null,
+    topicId: params ? (isSharedWorkspace ? `${activeTopic.id}-${activeTopic.slug}` : activeTopic.id) : null,
     toaster,
     setDraftId: setDraftId,
     savingDraft: savingDraft,
@@ -495,9 +502,9 @@ const PostModal = (props) => {
     } else {
       valid.selectedAddressTo = true;
     }
-    if (hasExternalWs && !shareOption) {
+    if (hasExternalWs && !shareOption && !isSharedExternal) {
       valid.radio = false;
-      message.radio = dictionary.radioRequired;
+      message.radio = "";
     } else {
       valid.radio = true;
     }
@@ -531,7 +538,7 @@ const PostModal = (props) => {
       quillContents.ops && quillContents.ops.length > 0
         ? quillContents.ops
             .filter((m) => {
-              if (form.shared_with_client && hasExternal) {
+              if ((form.shared_with_client || isSharedExternal) && hasExternal) {
                 return m.insert.mention && (m.insert.mention.type === "internal" || m.insert.mention.type === "external");
               } else {
                 return m.insert.mention && m.insert.mention.type === "internal";
@@ -566,19 +573,35 @@ const PostModal = (props) => {
       //     : form.must_read || form.reply_required
       //     ? form.requiredUsers.map((a) => a.value).filter((id) => user.id !== id)
       //     : [],
-      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser ? 1 : 0,
+      shared_with_client: (form.shared_with_client && hasExternal) || isExternalUser || isSharedExternal ? 1 : 0,
       body_mention_ids: rawMentionIds.includes(NaN) ? addressIds : mentionedIds.filter((id) => addressIds.some((aid) => aid === id)),
       must_read_user_ids: form.must_read && form.mustReadUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.must_read ? form.mustReadUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
       must_reply_user_ids:
         form.reply_required && form.mustReplyUsers.find((a) => a.value === "all") ? addressIds.filter((id) => id !== user.id) : form.reply_required ? form.mustReplyUsers.map((a) => a.value).filter((id) => user.id !== id) : [],
     };
 
+    if (isSharedWorkspace) {
+      const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        recipient_ids: [activeTopic.id],
+        sharedPayload: sharedPayload,
+      };
+    }
     if (mode === "edit") {
       payload = {
         ...payload,
         id: item.post.id,
         file_ids: [...uploadedFiles.map((f) => f.id), ...payload.file_ids],
       };
+      if (isSharedPost && item && sharedWs[item.post.slug]) {
+        const sharedPayload = { slug: item.post.slug, token: sharedWs[item.post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+
       if (item.post.users_approval.find((u) => u.ip_address !== null && u.is_approved)) {
         delete payload.approval_user_ids;
       }
@@ -589,6 +612,7 @@ const PostModal = (props) => {
           sendNotify(dictionary.updatingPost);
           dispatch(
             putPost(payload, (err, res) => {
+              history.push(`/posts/${res.data.id}/${replaceChar(res.data.title)}`);
               dismiss();
               setLoading(false);
               handleDeleteDraft();
@@ -613,12 +637,18 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
+                let wsType = "hub";
+                if (activeTopic.sharedSlug) {
+                  wsType = "shared-hub";
+                }
                 if (activeTopic.folder_id) {
-                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -785,6 +815,20 @@ const PostModal = (props) => {
     attachedFiles.map((file, index) => formData.append(`files[${index}]`, file.bodyFormData.get("file")));
     uploadData["files"] = formData;
 
+    if (isSharedWorkspace) {
+      let slug = activeTopic.slug;
+      if (sharedWs[slug]) {
+        const sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+        uploadData = {
+          ...uploadData,
+          sharedPayload: { slug: slug, token: sharedWs[slug].access_token, is_shared: true },
+        };
+      }
+    }
     await new Promise((resolve, reject) => resolve(uploadBulkDocument(uploadData)))
       .then((result) => {
         if (type === "edit") {
@@ -815,12 +859,18 @@ const PostModal = (props) => {
                   topic_id: activeTopic.id,
                   filter: "my_posts",
                   tag: null,
+                  slug: res.slug,
+                  isSharedSlug: res.isSharedSlug,
                 };
                 dispatch(updateWorkspacePostFilterSort(payload));
+                let wsType = "hub";
+                if (activeTopic.sharedSlug) {
+                  wsType = "shared-hub";
+                }
                 if (activeTopic.folder_id) {
-                  history.push(`/hub/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.folder_id}/${replaceChar(activeTopic.folder_name)}/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 } else {
-                  history.push(`/hub/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
+                  history.push(`/${wsType}/posts/${activeTopic.id}/${replaceChar(activeTopic.name)}/post/${res.data.id}/${replaceChar(res.data.title)}`);
                 }
               } else {
                 let payload = {
@@ -1113,6 +1163,11 @@ const PostModal = (props) => {
     return (r.type === "TOPIC" || r.type === "WORKSPACE") && r.is_shared;
   });
 
+  // const isSharedExternal = useMemo(() => {
+  //   return isSharedWorkspace && activeTopic?.members.find((aMember) => aMember?.external_id === user.id)?.type === "external";
+  // }, [isSharedWorkspace, activeTopic]);
+  const isSharedExternal = isSharedWorkspace && sharedWs[activeTopic.slug] && sharedWs[activeTopic.slug].user_auth.type === "external";
+
   return (
     <Modal isOpen={modal} toggle={toggle} size={"xl"} onOpened={onOpened} centered className="post-modal">
       <ModalHeaderSection toggle={toggle}>{draftSaved ? "Draft saved" : savingDraft ? "Saving draft..." : mode === "edit" ? dictionary.editPost : dictionary.createNewPost}</ModalHeaderSection>
@@ -1154,16 +1209,21 @@ const PostModal = (props) => {
             <FormInput name="title" isValid={formResponse.valid.title} feedback={formResponse.message.title} value={form.title} onChange={handleNameChange} innerRef={inputRef} />
           </div>
         </WrapperDiv>
+
         <WrapperDiv className={"modal-input addressed-to-container"}>
           <Label className={"modal-label"} for="workspace">
             {dictionary.addressedTo}
           </Label>
-          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} />
+          <FolderSelect className=" border-red" name="selectedAddressTo" options={addressToOptions} value={form.selectedAddressTo} onChange={handleSelectAddressTo} isMulti={true} isClearable={true} isDisabled={isSharedWorkspace} />
           {!formResponse.valid.selectedAddressTo && <p style={{ color: "#fa4a68", fontSize: "11px" }}>{formResponse.message.selectedAddressTo}</p>}
         </WrapperDiv>
-        <WrapperDiv className={"m-0"}>
-          <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
-        </WrapperDiv>
+
+        {!isSharedWorkspace && (
+          <WrapperDiv className={"m-0"}>
+            <PostVisibility dictionary={dictionary} formRef={formRef} selectedAddressTo={form.selectedAddressTo} workspaceIds={workspace_ids} userOptions={userOptions} />
+          </WrapperDiv>
+        )}
+
         <StyledDescriptionInput
           className="modal-description"
           height={winSize.height - 660}
@@ -1181,19 +1241,24 @@ const PostModal = (props) => {
           setImageLoading={setImageLoading}
           disableBodyMention={isExternalUser}
           prioMentionIds={addressIds.filter((id) => id !== user.id)}
-          members={Object.values(actualUsers).filter((u) => {
-            if (user.type === "external") {
-              return addressIds.some((id) => u.id === id);
-            } else {
-              if (u.id === user.id) {
-                return false;
-              } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-          })}
+          members={
+            isSharedWorkspace
+              ? activeTopic.members
+              : Object.values(actualUsers).filter((u) => {
+                  if (user.type === "external") {
+                    return addressIds.some((id) => u.id === id);
+                  } else {
+                    if (u.id === user.id) {
+                      return false;
+                    } else if ((u.type === "external" && addressIds.some((id) => id === u.id)) || (u.type === "internal" && u.role !== null)) {
+                      return true;
+                    } else {
+                      return false;
+                    }
+                  }
+                })
+          }
+          sharedSlug={isSharedWorkspace ? activeTopic.slug : null}
         />
         {(attachedFiles.length > 0 || uploadedFiles.length > 0) && (
           <WrapperDiv className="file-attachment-wrapper">
@@ -1223,6 +1288,7 @@ const PostModal = (props) => {
             setForm={setForm}
             user={user}
             setShowNestedModal={setShowNestedModal}
+            isSharedExternal={isSharedExternal}
           />
           {!formResponse.valid.radio && <p style={{ color: "red" }}>{formResponse.message.radio}</p>}
         </WrapperDiv>

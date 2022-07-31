@@ -45,6 +45,8 @@ const PostFilterTag = (props) => {
       topic_id: workspace.id,
       tag: e.target.dataset.value,
       filter: null,
+      slug: workspace.slug,
+      isSharedSlug: workspace.sharedSlug,
     };
     if (tag === e.target.dataset.value) {
       payload = {

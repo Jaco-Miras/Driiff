@@ -3,7 +3,7 @@ import { apiCall } from "./index";
 
 export function getChannels(payload) {
   payload = {
-    order_by: "channel_name",
+    order_by: "updated_at",
     sort_by: "desc",
     ...payload,
   };
@@ -14,31 +14,45 @@ export function getChannels(payload) {
       order_by: "updated_at",
     };
   }
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
 
   return apiCall({
     method: "GET",
     url: `/v2/post-channels?${objToUrlParams(payload)}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putChannel(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channels/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putMarkReadChannel(payload) {
-  const { channel_id, ...rest } = payload;
-
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
-    url: `/v2/read-notification-counter/all-chat?channel_id=${channel_id}`,
-    is_shared: !!payload.is_shared,
-    data: rest,
+    url: `/v2/read-notification-counter/all-chat?channel_id=${payload.channel_id}`,
+    data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -58,6 +72,7 @@ export function getChannel(payload) {
   return apiCall({
     method: "GET",
     url: url,
+    sharedPayload: payload.sharedPayload,
   });
 }
 
@@ -71,59 +86,79 @@ export function getLastVisitedChannel(payload) {
 }
 
 export function getChatMessages(payload) {
-  //const { channel_id, skip, limit, topic_id, ...rest } = payload;
-
-  // let url = `/v2/post-channel-messages?channel_id=${channel_id}&skip=${skip}&limit=${limit}`;
-  // if (payload.is_shared_topic) {
-  //   url += `&topic_id=${topic_id}`;
-  // }
-  let url = `/v2/post-channel-messages?${objToUrlParams(payload)}`;
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
+  url = `/v2/post-channel-messages?${objToUrlParams(payload)}`;
 
   return apiCall({
     method: "GET",
     url: url,
     //is_shared: !!payload.topic_id,
-    //data: rest,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function postChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-channel-messages";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: !!payload.topic_id,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function putChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channel-messages/${payload.message_id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
-    is_shared: !!payload.topic_id,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function postChatReaction(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-message-react";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function deleteChatMessage(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v2/post-channel-messages/${payload.message_id}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
-    is_shared: !!payload.is_shared,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -274,11 +309,17 @@ export function getSelectChannel(payload) {
  * @returns {Promise<*>}
  */
 export function putImportantChat(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/set-message-important";
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -306,20 +347,6 @@ export function putChatStar(payload) {
   let url = "/v2/chat-star";
   return apiCall({
     method: "PUT",
-    url: url,
-    data: payload,
-  });
-}
-
-/**
- * @param payload
- * @param number payload.message_id
- * @returns {Promise<*>}
- */
-export function getChatStar(payload) {
-  let url = `/v2/chat-star?${objToUrlParams(payload)}`;
-  return apiCall({
-    method: "GET",
     url: url,
     data: payload,
   });
@@ -470,11 +497,17 @@ export function getChatMsgsForFancy(payload) {
 }
 
 export function postChatMessageTranslate(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-channel-messages-translate";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -497,11 +530,17 @@ export function createZoomMeeting(payload) {
 }
 
 export function getChatMsgsSearch(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/search-on-chat";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -515,10 +554,17 @@ export function createGoogleMeet(payload) {
 }
 
 export function createJitsiMeet(payload) {
-  let url = `/meet/signature?${objToUrlParams(payload)}`;
+  let url;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
+  url = `/meet/signature?channel_id=${payload.channel_id}&host=${payload.host}&room_name=${payload.room_name}`;
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }

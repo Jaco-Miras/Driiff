@@ -39,7 +39,7 @@ const StyledUserListPopUp = styled(UserListPopUp)`
 `;
 
 const PlusRecipients = (props) => {
-  const { className = "", recipients } = props;
+  const { className = "", recipients, sharedUsers = false } = props;
   const [showUsersPopUp, setShowUsersPopUp] = useState(false);
   const handleShowSeenUsers = (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const PlusRecipients = (props) => {
         <span>+</span>
         {recipients.length}
       </TotalPeopleCircle>
-      {showUsersPopUp && <StyledUserListPopUp className={"people-list"} users={recipients} onShowList={() => setShowUsersPopUp(!showUsersPopUp)} />}
+      {showUsersPopUp && <StyledUserListPopUp className={"people-list"} sharedUsers={sharedUsers} users={recipients} onShowList={() => setShowUsersPopUp(!showUsersPopUp)} />}
     </PlusRecipientsDiv>
   );
 };

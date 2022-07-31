@@ -4,6 +4,7 @@ import { getAPIUrl } from "../../../../helpers/slugHelper";
 import { useSelector, useDispatch } from "react-redux";
 import { incomingFileThumbnailData } from "../../../../redux/actions/fileActions";
 import { sessionService } from "redux-react-session";
+import { useGetSlug } from "../../../hooks";
 
 const ImgLoader = styled.div`
   position: relative;
@@ -88,12 +89,19 @@ const DocFile = styled.div`
 `;
 
 const FilePill = (props) => {
-  let { className = "", file, cbFilePreview = () => {}, dictionary, ...otherProps } = props;
+  let { className = "", file, cbFilePreview = () => {}, dictionary, sharedSlug = null, ...otherProps } = props;
+  const { slug } = useGetSlug();
+  let key = `${file.id}-${slug}`;
+  if (sharedSlug) {
+    key = `${file.id}-${sharedSlug}`;
+  }
   if (typeof file.type === "undefined") {
     file.type = file.mime_type;
   }
 
   const dispatch = useDispatch();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const currentSharedWorkspace = useSelector((state) => state.workspaces.sharedWorkspaces[workspace?.slug]);
   //const refImageLoader = useRef();
   const refImage = useRef();
 
@@ -159,7 +167,8 @@ const FilePill = (props) => {
   const handleVideoOnError = (e) => {
     if (e.currentTarget.dataset.attempt === "0") {
       e.currentTarget.dataset.attempt = 1;
-      e.currentTarget.src = `${getAPIUrl({ isDNS: true })}/file-view-attempt/${file.file_id}/${localStorage.getItem("atoken")}?playsinline=1`;
+      let url = `${getAPIUrl({ isDNS: true, sharedSlug: workspace?.slug })}/file-view-attempt/${file.file_id}/${workspace?.sharedSlug ? currentSharedWorkspace.auth_token : localStorage.getItem("atoken")}`;
+      e.currentTarget.src = url;
     } else if (e.currentTarget.dataset.attemp === "1") {
       e.currentTarget.dataset.attempt = 2;
       e.currentTarget.src = `${e.currentTarget.src}&timestamp=${new Date().getTime()}?playsinline=1`;
@@ -167,10 +176,15 @@ const FilePill = (props) => {
   };
 
   useEffect(() => {
-    if (!fileThumbnailBlobs[file.id] && file.type.toLowerCase().includes("image")) {
+    if (!fileThumbnailBlobs[key] && file.type.toLowerCase().includes("image")) {
       sessionService.loadSession().then((current) => {
         let myToken = current.token;
         let link = file.thumbnail_link ? file.thumbnail_link : file.view_link;
+        if (sharedSlug && current.sharedWorkspaces) {
+          if (current.sharedWorkspaces[sharedSlug]) {
+            myToken = `Bearer ${current.sharedWorkspaces[sharedSlug].access_token}`;
+          }
+        }
         fetch(link, {
           method: "GET",
           keepalive: true,
@@ -190,6 +204,7 @@ const FilePill = (props) => {
             setFileThumbnailSrc({
               id: file.id,
               src: imgObj,
+              key: key,
             });
           })
           .catch((error) => {
@@ -214,16 +229,16 @@ const FilePill = (props) => {
         </DocFile>
       ) : file.type.toLowerCase() === "image" ? (
         <>
-          <ImgLoader className={fileThumbnailBlobs[file.id] ? "d-none" : ""}>
+          <ImgLoader className={fileThumbnailBlobs[key] ? "d-none" : ""}>
             <ImgLoaderDiv className={"img-loader"} />
           </ImgLoader>
           <FileImage
             ref={refImage}
             data-attempt={0}
-            className={fileThumbnailBlobs[file.id] ? "" : "d-none"}
+            className={fileThumbnailBlobs[key] ? "" : "d-none"}
             onError={handleImageOnError}
             height={150}
-            src={fileThumbnailBlobs[file.id] ? fileThumbnailBlobs[file.id] : file.view_link ? file.view_link : ""}
+            src={fileThumbnailBlobs[key] ? fileThumbnailBlobs[key] : file.view_link ? file.view_link : ""}
             alt={file.filename ? file.filename : file.search}
             title={file.filename ? file.filename : file.search}
           />

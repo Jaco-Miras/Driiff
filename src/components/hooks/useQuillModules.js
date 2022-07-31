@@ -26,6 +26,7 @@ const useQuillModules = ({
   post = null,
   setImageLoading = null,
   inlineImageType = "private",
+  sharedSlug = null,
 }) => {
   const dispatch = useDispatch();
   const [modules, setModules] = useState({});
@@ -42,6 +43,7 @@ const useQuillModules = ({
   const previousPost = usePreviousValue(post);
   const savedCallback = useRef(callback);
   const removeCallback = useRef(removeMention);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   useEffect(() => {
     savedCallback.current = callback;
@@ -98,8 +100,9 @@ const useQuillModules = ({
               type_id: user.id,
               user_id: user.id,
               class: "user-pic",
-              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
-              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
+              ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}` }),
+              // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
           }),
@@ -132,8 +135,9 @@ const useQuillModules = ({
               type_id: user.id,
               user_id: user.id,
               class: "user-pic all-users",
-              profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : defaultIcon,
-              link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
+              profile_image_link: user.profile_image_link ? user.profile_image_link : defaultIcon,
+              ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}` }),
+              // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/profile/${user.id}/${replaceChar(user.name)}`,
               show_line: prioMentionIds.length === k + 1,
             });
           }),
@@ -141,9 +145,10 @@ const useQuillModules = ({
       ];
     }
 
-    if (Object.keys(workspaces).length) {
+    if (Object.keys(workspaces).length && !sharedSlug) {
       newWorkSpaceValues = [
         ...Object.entries(workspaces).map(([id, workspace], index) => {
+          let ws_type = workspace.sharedSlug ? "shared-hub" : "hub";
           return Object.assign({}, workspace, {
             ...workspace,
             value: workspace.name,
@@ -153,7 +158,8 @@ const useQuillModules = ({
             type_id: workspace.id,
             icon: "compass",
             profile_image_link: workspaceIcon,
-            link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`,
+            ...(!sharedSlug && { link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}` }),
+            // link: `${REACT_APP_apiProtocol}${localStorage.getItem("slug")}.${REACT_APP_localDNSName}/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`,
           });
         }),
       ];
@@ -245,11 +251,7 @@ const useQuillModules = ({
           return renderToString(
             <>
               <span className={item.class} style={avatarStyling}>
-                {item.type === "WORKSPACE" || item.type === "TOPIC" ? (
-                  <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" />
-                ) : (
-                  <img src={item.profile_image_thumbnail_link ? item.profile_image_thumbnail_link : item.profile_image_link} style={avatarImgStyling} alt={item.value} />
-                )}
+                {item.type === "WORKSPACE" || item.type === "TOPIC" ? <SvgIconFeather icon={"compass"} width={24} height={24} strokeWidth="3" /> : <img src={item.profile_image_link} style={avatarImgStyling} alt={item.value} />}
               </span>
               &nbsp;{" "}
               <span style={{ width: "auto", lineHeight: 1.35 }}>
@@ -333,16 +335,25 @@ const useQuillModules = ({
             return new Promise((resolve, reject) => {
               var formData = new FormData();
               formData.append("file", file);
-              uploadDocument({
+              let filePayload = {
                 user_id: user.id,
                 file: formData,
-                file_type: inlineImageType,
+                file_type: "public",
                 folder_id: null,
-              })
+              };
+              if (sharedSlug) {
+                const sharedPayload = { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true };
+                filePayload = {
+                  ...filePayload,
+                  sharedPayload: sharedPayload,
+                  user_id: sharedWs[sharedSlug].user_auth.id,
+                };
+              }
+              uploadDocument(filePayload)
                 .then((result) => {
                   if (setInlineImages) setInlineImages((prevState) => [...prevState, result.data]);
                   if (setImageLoading) setImageLoading(false);
-                  resolve(result.data.thumbnail_link);
+                  resolve(result.data.image_link);
                 })
                 .catch((error) => {
                   reject("Upload failed");

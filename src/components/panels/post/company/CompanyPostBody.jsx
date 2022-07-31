@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Avatar, SvgIconFeather } from "../../../common";
-import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize } from "../../../hooks";
+import { useFiles, useGoogleApis, useRedirect, useTimeFormat, useWindowSize, useGetSlug } from "../../../hooks";
 import quillHelper from "../../../../helpers/quillHelper";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -226,7 +226,7 @@ const CompanyPostBody = (props) => {
     container: useRef(null),
     body: useRef(null),
   };
-
+  const { slug } = useGetSlug();
   const {
     fileBlobs,
     actions: { setFileSrc },
@@ -271,14 +271,16 @@ const CompanyPostBody = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         } else {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          if (imgFile && fileBlobs[imgFile.id]) {
-            img.setAttribute("src", fileBlobs[imgFile.id]);
+          let key = `${imgFile.id}-${slug}`;
+          if (imgFile && fileBlobs[key]) {
+            img.setAttribute("src", fileBlobs[key]);
             img.setAttribute("data-id", imgFile.id);
           }
         }
@@ -287,7 +289,8 @@ const CompanyPostBody = (props) => {
     const imageFiles = post.files.filter((f) => f.type.includes("image"));
     if (imageFiles.length) {
       imageFiles.forEach((file) => {
-        if (!fileBlobs[file.id]) {
+        let key = `${file.id}-${slug}`;
+        if (!fileBlobs[key]) {
           //setIsLoaded(false);
           sessionService.loadSession().then((current) => {
             let myToken = current.token;
@@ -309,6 +312,7 @@ const CompanyPostBody = (props) => {
                 setFileSrc({
                   id: file.id,
                   src: imgObj,
+                  key: key,
                 });
                 postActions.updatePostImages({
                   post_id: post.id,

@@ -138,9 +138,12 @@ const FavoriteWorkspaceCard = (props) => {
         }
       }
       //if (selected && onWorkspace) return;
-      if (selectedChannelId && selectedChannelId !== ws.channel.id && channelIds.some((id) => parseInt(id) === ws.channel.id)) {
-        actions.selectChannel({ id: ws.channel.id });
+      if (!ws.sharedSlug) {
+        if (selectedChannelId && selectedChannelId !== ws.channel.id && channelIds.some((id) => parseInt(id) === ws.channel.id)) {
+          actions.selectChannel({ id: ws.channel.id });
+        }
       }
+
       actions.selectWorkspace(ws);
       actions.redirectTo(ws);
     }

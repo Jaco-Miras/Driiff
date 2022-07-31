@@ -3,9 +3,11 @@ import { useSelector } from "react-redux";
 
 const useTypingIndicator = (props) => {
   const channelId = useSelector((state) => state.chat.selectedChannelId);
+  const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
 
   const [usersTyping, setUsersTyping] = useState([]);
+  const [slug, setSlug] = useState(selectedChannel.slug ? selectedChannel.slug : localStorage.getItem("slug"));
 
   const timerRef = useRef(null);
 
@@ -41,14 +43,25 @@ const useTypingIndicator = (props) => {
   };
 
   useEffect(() => {
+    if (selectedChannel.slug) {
+      setSlug(selectedChannel.slug);
+    } else {
+      setSlug(localStorage.getItem("slug"));
+    }
+  }, [selectedChannel.slug]);
+
+  useEffect(() => {
     setUsersTyping([]);
-    window.Echo.private(localStorage.getItem("slug") + ".App.Channel." + channelId).listenForWhisper("typing", (e) => {
-      handleSetUserTyping(e);
-    });
+    if (window.Echo && window.Echo[slug]) {
+      window.Echo[slug].private(slug + ".App.Channel." + channelId).listenForWhisper("typing", (e) => {
+        handleSetUserTyping(e);
+      });
+    }
+
     return () => {
-      window.Echo.leave(localStorage.getItem("slug") + ".App.Channel." + channelId);
+      if (window.Echo && window.Echo[slug]) window.Echo[slug].leave(slug + ".App.Channel." + channelId);
     };
-  }, [channelId]);
+  }, [channelId, slug]);
 
   if (usersTyping.length) {
     let userNames = usersTyping

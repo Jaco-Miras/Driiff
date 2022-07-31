@@ -1,5 +1,6 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useHistory } from "react-router-dom";
 import {
   addCommentReact,
   addComment,
@@ -8,7 +9,6 @@ import {
   commentApprove,
   deleteComment,
   fetchComments,
-  getReplyClapHover,
   postComment,
   postCommentClap,
   putComment,
@@ -29,7 +29,15 @@ import { useToaster, useTodoActions, useTranslationActions } from "./index";
 
 const useCommentActions = () => {
   const dispatch = useDispatch();
+  const params = useParams();
+  const history = useHistory();
   const todoActions = useTodoActions();
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
   const toaster = useToaster();
   const { _t } = useTranslationActions();
 
@@ -71,8 +79,12 @@ const useCommentActions = () => {
     dispatch(postCommentClap(payload));
   };
 
-  const remove = (comment) => {
+  const remove = (comment, post) => {
     const onConfirm = () => {
+      let sharedPayload = null;
+      if (post && post.sharedSlug && sharedWs[post.slug]) {
+        sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      }
       if (Object.keys(comment.replies).length > 0) {
         let obj = {
           post_id: comment.post_id,
@@ -84,10 +96,11 @@ const useCommentActions = () => {
           mention_ids: [],
           personalized_for_id: null,
           parent_id: comment.parent_id,
+          sharedPayload: sharedPayload,
         };
         dispatch(putComment(obj));
       } else {
-        dispatch(deleteComment({ comment_id: comment.id }));
+        dispatch(deleteComment({ comment_id: comment.id, sharedPayload: sharedPayload }));
       }
     };
 
@@ -134,20 +147,11 @@ const useCommentActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
+      isSharedWs: post.sharedSlug,
     };
 
     dispatch(addToModals(payload));
-  };
-
-  const fetchPostReplyHover = (messageId, callback = () => {}) => {
-    dispatch(
-      getReplyClapHover(
-        {
-          message_id: messageId,
-        },
-        callback
-      )
-    );
   };
 
   const like = (payload = {}, callback) => {
@@ -162,11 +166,16 @@ const useCommentActions = () => {
     dispatch(updateCommentFiles(payload));
   };
 
-  const important = (comment) => {
+  const important = (comment, post) => {
+    let sharedPayload = null;
+    if (post && post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     dispatch(
       putCommentImportant({
         message_id: comment.id,
         is_important: comment.is_important ? 0 : 1,
+        sharedPayload: sharedPayload,
       })
     );
   };
@@ -197,10 +206,21 @@ const useCommentActions = () => {
   const setRequestForChangeComment = (payload, callback) => {
     dispatch(setChangeRequestedComment(payload, callback));
   };
-
+  // need update
   const fetchPostAndComments = (post, callback) => {
+    let payload = {
+      post_id: post.id,
+      sharedPayload: sharedPayload,
+    };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
-      fetchPost({ post_id: post.id }, (err, res) => {
+      fetchPost(payload, (err, res) => {
         if (err) return;
         if (res) {
           let url = `/v1/messages?post_id=${post.id}&skip=${0}&limit=${res.data.reply_count}`;
@@ -236,7 +256,6 @@ const useCommentActions = () => {
     setToEdit,
     remove,
     remind,
-    fetchPostReplyHover,
     like,
     unlike,
     updateCommentImages,

@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { Avatar, ProfileSlider } from "../common";
+import { Avatar, ProfileSlider, SvgIconFeather } from "../common";
 import { useOutsideClick } from "../hooks";
 //import { useHistory } from "react-router-dom";
 //import { replaceChar } from "../../helpers/stringFormatter";
@@ -92,11 +93,13 @@ const UserListPopUpContainer = styled.div`
 `;
 
 const UserListPopUp = (props) => {
-  const { users, className, onShowList } = props;
+  const { users, className, onShowList, sharedUsers = false } = props;
   const listRef = useRef();
   //const history = useHistory();
   const [showSlider, setShowSlider] = useState(false);
   const [user, setUser] = useState(null);
+
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
 
   const handleShowList = () => {
     if (onShowList) onShowList();
@@ -135,7 +138,10 @@ const UserListPopUp = (props) => {
                 onClick={(e) => handleUserClick(e, u)}
               />
               <span className={"user-list-name"} onClick={(e) => handleUserClick(e, u)}>
-                {u.name ? u.name : u.email}
+                {u.name ? u.name : u.email}{" "}
+                {workspace && workspace.hasOwnProperty("sharedSlug") && workspace.sharedSlug && workspace.slug && workspace.members.find((mem) => mem.id === u.id)?.slug !== workspace.slug.slice(0, -7) && (
+                  <SvgIconFeather icon="repeat" height={14} />
+                )}
               </span>
             </li>
           );
@@ -143,7 +149,7 @@ const UserListPopUp = (props) => {
       </ul>
       {showSlider && (
         <CSSTransition appear in={showSlider} timeout={300} classNames="slide">
-          <ProfileSlider id={user ? user.id : null} onShowPopup={() => setShowSlider((prevState) => !prevState)} showPopup={showSlider} orientation={orientation} />
+          <ProfileSlider sharedUser={sharedUsers ? user : null} id={user ? user.id : null} onShowPopup={() => setShowSlider((prevState) => !prevState)} showPopup={showSlider} orientation={orientation} />
         </CSSTransition>
       )}
     </UserListPopUpContainer>
