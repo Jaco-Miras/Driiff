@@ -268,23 +268,27 @@ const PostBody = (props) => {
           img.addEventListener("click", handleInlineImageClick, false);
           img.classList.add("has-listener");
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          let key = `${imgFile.id}-${slug}`;
-          if (workspace && workspace.sharedSlug) {
-            key = `${imgFile.id}-${workspace.slug}`;
-          }
-          if (imgFile && fileBlobs[key]) {
-            img.setAttribute("src", fileBlobs[key]);
-            img.setAttribute("data-id", imgFile.id);
+          if (imgFile) {
+            let key = `${imgFile.id}-${slug}`;
+            if (workspace && workspace.sharedSlug) {
+              key = `${imgFile.id}-${workspace.slug}`;
+            }
+            if (imgFile && fileBlobs[key]) {
+              img.setAttribute("src", fileBlobs[key]);
+              img.setAttribute("data-id", imgFile.id);
+            }
           }
         } else {
           const imgFile = post.files.find((f) => imgSrc.includes(f.code));
-          let key = `${imgFile.id}-${slug}`;
-          if (workspace && workspace.sharedSlug) {
-            key = `${imgFile.id}-${workspace.slug}`;
-          }
-          if (imgFile && fileBlobs[key]) {
-            img.setAttribute("src", fileBlobs[key]);
-            img.setAttribute("data-id", imgFile.id);
+          if (imgFile) {
+            let key = `${imgFile.id}-${slug}`;
+            if (workspace && workspace.sharedSlug) {
+              key = `${imgFile.id}-${workspace.slug}`;
+            }
+            if (imgFile && fileBlobs[key]) {
+              img.setAttribute("src", fileBlobs[key]);
+              img.setAttribute("data-id", imgFile.id);
+            }
           }
         }
       });
