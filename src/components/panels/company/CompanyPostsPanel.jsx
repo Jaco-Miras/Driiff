@@ -270,22 +270,23 @@ const CompanyPostsPanel = (props) => {
   }, []);
 
   useEffect(() => {
-    if (params.postId && !post) {
-      actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
-        if (componentIsMounted.current) {
-          if (err) {
-            // set to all
-            let payload = {
-              filter: "inbox",
-              tag: null,
-            };
-            actions.setCompanyFilterPosts(payload);
-            history.push("/posts");
-            toaster.error(dictionary.errorLoadingPost);
-          }
-        }
-      });
-    }
+    //need to revisit
+    // if (params.postId && !post) {
+    //   actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
+    //     if (componentIsMounted.current) {
+    //       if (err) {
+    //         // set to all
+    //         let payload = {
+    //           filter: "inbox",
+    //           tag: null,
+    //         };
+    //         actions.setCompanyFilterPosts(payload);
+    //         history.push("/posts");
+    //         toaster.error(dictionary.errorLoadingPost);
+    //       }
+    //     }
+    //   });
+    // }
   }, [params.postId, post]);
 
   useEffect(() => {

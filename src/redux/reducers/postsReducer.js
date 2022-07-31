@@ -426,62 +426,23 @@ export default (state = INITIAL_STATE, action) => {
     //     },
     //   };
     // }
-    //to update
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.type_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.type_id]: {
-                ...state.companyPosts.posts[action.data.type_id],
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.keys(state.companyPosts.posts).reduce((acc, key) => {
+            if (state.companyPosts.posts[key].id === action.data.type_id && state.companyPosts.posts[key].sharedSlug === action.data.sharedSlug) {
+              acc[key] = {
+                ...state.companyPosts.posts[key],
                 is_favourite: action.data.is_favourite,
-              },
-            },
-          },
-        }),
-      };
-    }
-    //to update
-    case "INCOMING_POST_MARK_DONE": {
-      return {
-        ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                is_mark_done: action.data.is_done,
-              },
-            },
-          },
-        }),
-        // recentPosts: {
-        //   ...state.recentPosts,
-        //   ...Object.keys(state.recentPosts)
-        //     .filter((wsId) => state.recentPosts[wsId].posts.hasOwnProperty(action.data.post_id))
-        //     .map((wsId) => {
-        //       return {
-        //         [wsId]: {
-        //           ...state.recentPosts[wsId],
-        //           posts: {
-        //             ...state.recentPosts[wsId].posts,
-        //             [action.data.post_id]: {
-        //               ...state.recentPosts[wsId].posts[action.data.post_id],
-        //               is_mark_done: action.data.is_done,
-        //             },
-        //           },
-        //         },
-        //       };
-        //     })
-        //     .reduce((obj, workspace) => {
-        //       return { ...obj, ...workspace };
-        //     }, {}),
-        // },
+              };
+            } else {
+              acc[key] = state.companyPosts.posts[key];
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "GET_DRAFTS_SUCCESS": {
@@ -603,23 +564,36 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    //to update
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+        // ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+        //   companyPosts: {
+        //     ...state.companyPosts,
+        //     posts: {
+        //       ...state.companyPosts.posts,
+        //       [action.data.post_id]: {
+        //         ...state.companyPosts.posts[action.data.post_id],
+        //         view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+        //         //is_unread: 0,
+        //       },
+        //     },
+        //   },
+        // }),
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.keys(state.companyPosts.posts).reduce((acc, key) => {
+            if (state.companyPosts.posts[key].id === action.data.post_id && state.companyPosts.posts[key].sharedSlug === action.data.sharedSlug) {
+              acc[key] = {
+                ...state.companyPosts.posts[key],
                 view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                //is_unread: 0,
-              },
-            },
-          },
-        }),
+              };
+            } else {
+              acc[key] = state.companyPosts.posts[key];
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "ARCHIVE_POST_REDUCER": {
@@ -669,7 +643,6 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    //to update
     case "INCOMING_READ_UNREAD_REDUCER": {
       return {
         ...state,
@@ -1258,17 +1231,17 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "INCOMING_POST_REQUIRED": {
+      let postKey = action.data.sharedSlug ? action.data.post.post_code : action.data.post.id;
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
-              [action.data.post.id]: {
-                ...state.companyPosts.posts[action.data.post.id],
+            ...(typeof state.companyPosts.posts[postKey] !== "undefined" && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 required_users: action.data.required_users,
                 user_reads: action.data.user_reads,
                 must_read_users: action.data.must_read_users,
@@ -1279,11 +1252,11 @@ export default (state = INITIAL_STATE, action) => {
         },
         mustRead: {
           ...state.mustRead,
-          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === action.data.userId && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
         },
         mustReply: {
           ...state.mustReply,
-          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
+          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === action.data.userId && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
         },
       };
     }
@@ -1690,7 +1663,6 @@ export default (state = INITIAL_STATE, action) => {
         return state;
       }
     }
-    //to update
     case "INCOMING_LAST_VISIT_POST": {
       return {
         ...state,
@@ -1711,18 +1683,17 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "GET_POST_READ_CLAP_SUCCESS": {
-      let postKey = action.data.id;
-      if (action.isSharedSlug && action.data.code) {
-        postKey = action.data.code;
-      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
-            if (post.id === action.data.id) {
+            let postKey = post.id;
+            if (post.sharedSlug) {
+              postKey = post.code;
+            }
+            if (post.code === action.data.code) {
               acc[postKey] = {
                 ...post,
                 claps: action.data.claps,
