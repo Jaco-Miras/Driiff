@@ -1470,6 +1470,8 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels[action.data.channel_detail.id] = channel;
       }
