@@ -79,11 +79,11 @@ const useCommentActions = () => {
     dispatch(postCommentClap(payload));
   };
 
-  const remove = (comment, workspace) => {
+  const remove = (comment, post) => {
     const onConfirm = () => {
       let sharedPayload = null;
-      if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
-        sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      if (post && post.sharedSlug && sharedWs[post.slug]) {
+        sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
       }
       if (Object.keys(comment.replies).length > 0) {
         let obj = {
@@ -148,6 +148,7 @@ const useCommentActions = () => {
         onSubmit: onConfirm,
       },
       params: params,
+      isSharedWs: post.sharedSlug,
     };
 
     dispatch(addToModals(payload));
@@ -165,10 +166,10 @@ const useCommentActions = () => {
     dispatch(updateCommentFiles(payload));
   };
 
-  const important = (comment, workspace) => {
+  const important = (comment, post) => {
     let sharedPayload = null;
-    if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
-      sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+    if (post && post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
     }
     dispatch(
       putCommentImportant({

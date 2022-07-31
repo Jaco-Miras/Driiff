@@ -6,7 +6,7 @@ import { useSharedCompanyPosts } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
 
 const useCompanyPosts = () => {
-  useSharedCompanyPosts();
+  //useSharedCompanyPosts();
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);
@@ -222,7 +222,7 @@ const useCompanyPosts = () => {
     tag: tag,
     postListTag: postListTag,
     sort: sort,
-    post: Object.values(posts).filter((p) => p.id === parseInt(params.postId) && replaceChar(p.title) === params.postTitle)[0],
+    post: Object.values(posts).find((p) => p.id === parseInt(params.postId) && replaceChar(p.title.toLowerCase()) === params.postTitle.toLowerCase()),
     search: search,
     user,
     //count: count,

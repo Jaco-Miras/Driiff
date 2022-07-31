@@ -254,6 +254,7 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
+    //to update
     case "INCOMING_MARK_AS_READ": {
       return {
         ...state,
@@ -273,6 +274,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
+      if (action.data.sharedSlug) return state;
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
@@ -288,6 +290,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_TO_DO":
     case "INCOMING_UPDATE_TO_DO":
     case "INCOMING_DONE_TO_DO":
@@ -362,25 +365,29 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_CLAP": {
+      let postKey = action.data.id;
+      if (action.data.sharedSlug && action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
-        ...(typeof state.companyPosts.posts[action.data.post_id] !== "undefined" && {
+        ...(typeof state.companyPosts.posts[postKey] !== "undefined" && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 ...(action.data.clap_count === 1
                   ? {
-                      clap_count: state.companyPosts.posts[action.data.post_id].clap_count + 1,
-                      claps: [...state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
-                      user_clap_count: action.data.author.id === state.user.id ? 1 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                      clap_count: state.companyPosts.posts[postKey].clap_count + 1,
+                      claps: [...state.companyPosts.posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id), { user_id: action.data.author.id }],
+                      user_clap_count: action.data.author.id === action.data.userId ? 1 : state.companyPosts.posts[postKey].user_clap_count,
                     }
                   : {
-                      clap_count: state.companyPosts.posts[action.data.post_id].clap_count - 1,
-                      claps: state.companyPosts.posts[action.data.post_id].claps.filter((c) => c.user_id !== action.data.author.id),
-                      user_clap_count: action.data.author.id === state.user.id ? 0 : state.companyPosts.posts[action.data.post_id].user_clap_count,
+                      clap_count: state.companyPosts.posts[postKey].clap_count - 1,
+                      claps: state.companyPosts.posts[postKey].claps.filter((c) => c.user_id !== action.data.author.id),
+                      user_clap_count: action.data.author.id === action.data.userId ? 0 : state.companyPosts.posts[postKey].user_clap_count,
                     }),
               },
             },
@@ -389,87 +396,54 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "STAR_POST_REDUCER": {
-      if (typeof state.companyPosts.posts[action.data.post_id] === "undefined") return state;
-
+      let postKey = action.data.post_id;
+      if (action.data.post_code) {
+        postKey = action.data.post_code;
+      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            [action.data.post_id]: {
-              ...state.companyPosts.posts[action.data.post_id],
-              is_favourite: !state.companyPosts.posts[action.data.post_id].is_favourite,
-            },
+            ...(state.companyPosts.posts[postKey] && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
+                is_favourite: !state.companyPosts.posts[postKey].is_favourite,
+              },
+            }),
           },
         },
       };
     }
-    case "FETCH_RECENT_POSTS_SUCCESS": {
-      return {
-        ...state,
-        recentPosts: {
-          [action.data.topic_id]: {
-            folderId: action.data.workspace_id,
-            posts: convertArrayToObject(action.data.posts, "id"),
-          },
-        },
-      };
-    }
+    // case "FETCH_RECENT_POSTS_SUCCESS": {
+    //   return {
+    //     ...state,
+    //     recentPosts: {
+    //       [action.data.topic_id]: {
+    //         folderId: action.data.workspace_id,
+    //         posts: convertArrayToObject(action.data.posts, "id"),
+    //       },
+    //     },
+    //   };
+    // }
     case "INCOMING_FAVOURITE_ITEM": {
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.type_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.type_id]: {
-                ...state.companyPosts.posts[action.data.type_id],
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.keys(state.companyPosts.posts).reduce((acc, key) => {
+            if (state.companyPosts.posts[key].id === action.data.type_id && state.companyPosts.posts[key].sharedSlug === action.data.sharedSlug) {
+              acc[key] = {
+                ...state.companyPosts.posts[key],
                 is_favourite: action.data.is_favourite,
-              },
-            },
-          },
-        }),
-      };
-    }
-    case "INCOMING_POST_MARK_DONE": {
-      return {
-        ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                is_mark_done: action.data.is_done,
-              },
-            },
-          },
-        }),
-        // recentPosts: {
-        //   ...state.recentPosts,
-        //   ...Object.keys(state.recentPosts)
-        //     .filter((wsId) => state.recentPosts[wsId].posts.hasOwnProperty(action.data.post_id))
-        //     .map((wsId) => {
-        //       return {
-        //         [wsId]: {
-        //           ...state.recentPosts[wsId],
-        //           posts: {
-        //             ...state.recentPosts[wsId].posts,
-        //             [action.data.post_id]: {
-        //               ...state.recentPosts[wsId].posts[action.data.post_id],
-        //               is_mark_done: action.data.is_done,
-        //             },
-        //           },
-        //         },
-        //       };
-        //     })
-        //     .reduce((obj, workspace) => {
-        //       return { ...obj, ...workspace };
-        //     }, {}),
-        // },
+              };
+            } else {
+              acc[key] = state.companyPosts.posts[key];
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "GET_DRAFTS_SUCCESS": {
@@ -594,19 +568,33 @@ export default (state = INITIAL_STATE, action) => {
     case "INCOMING_POST_VIEWER": {
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+        // ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+        //   companyPosts: {
+        //     ...state.companyPosts,
+        //     posts: {
+        //       ...state.companyPosts.posts,
+        //       [action.data.post_id]: {
+        //         ...state.companyPosts.posts[action.data.post_id],
+        //         view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+        //         //is_unread: 0,
+        //       },
+        //     },
+        //   },
+        // }),
+        companyPosts: {
+          ...state.companyPosts,
+          posts: Object.keys(state.companyPosts.posts).reduce((acc, key) => {
+            if (state.companyPosts.posts[key].id === action.data.post_id && state.companyPosts.posts[key].sharedSlug === action.data.sharedSlug) {
+              acc[key] = {
+                ...state.companyPosts.posts[key],
                 view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
-                //is_unread: 0,
-              },
-            },
-          },
-        }),
+              };
+            } else {
+              acc[key] = state.companyPosts.posts[key];
+            }
+            return acc;
+          }, {}),
+        },
       };
     }
     case "ARCHIVE_POST_REDUCER": {
@@ -618,10 +606,19 @@ export default (state = INITIAL_STATE, action) => {
             ...state.companyPosts.posts,
             ...(Object.values(state.companyPosts.posts).length > 0 && {
               ...Object.values(state.companyPosts.posts).reduce((pos, p) => {
-                pos[p.id] = {
-                  ...p,
-                  is_archived: p.id === action.data.post_id ? action.data.is_archived : p.is_archived,
-                };
+                if (action.data.post_code && action.data.post_code === p.code) {
+                  pos[p.code] = {
+                    ...p,
+                    is_archived: action.data.is_archived,
+                  };
+                } else if (action.data.post_id === p.id) {
+                  pos[p.id] = {
+                    ...p,
+                    is_archived: action.data.is_archived,
+                  };
+                } else {
+                  pos[p.id] = p;
+                }
                 return pos;
               }, {}),
             }),
@@ -630,15 +627,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_TOGGLE_FOLLOW": {
+      let postKey = action.data.post_code ? action.data.post_code : action.data.post_id;
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+        ...(state.companyPosts.posts.hasOwnProperty(postKey) && {
           companyPosts: {
             ...state.companyPosts,
             posts: {
               ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 is_followed: action.data.is_followed,
               },
             },
@@ -736,7 +734,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_DELETED_POST": {
       let companyPosts = { ...state.companyPosts };
-      delete companyPosts.posts[action.data.id];
+      delete companyPosts.posts[action.data.sharedSlug ? action.data.post_code : action.data.id];
       return {
         ...state,
         companyPosts: companyPosts,
@@ -784,19 +782,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
+
               return res;
             }, {}),
           },
@@ -814,6 +818,8 @@ export default (state = INITIAL_STATE, action) => {
               ...action.data,
               claps: state.companyPosts.posts[action.data.id] ? state.companyPosts.posts[action.data.id].claps : [],
               last_visited_at: state.companyPosts.posts[action.data.id] && state.companyPosts.posts[action.data.id].last_visited_at ? state.companyPosts.posts[action.data.id].last_visited_at : { timestamp: null },
+              slug: action.slug,
+              sharedSlug: action.isSharedSlug,
             },
           },
         },
@@ -842,6 +848,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_READ_SELECTED_POSTS": {
       return {
         ...state,
@@ -865,6 +872,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
       return {
         ...state,
@@ -887,6 +895,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
@@ -926,6 +935,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_COMMENT_APPROVAL": {
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
@@ -954,6 +964,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "SET_POSTREAD": {
       return {
         ...state,
@@ -1030,17 +1041,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1072,17 +1088,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...filteredPosts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...filteredPosts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1120,17 +1141,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...filteredPosts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...filteredPosts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
 
@@ -1145,6 +1171,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "POST_LIST_SUCCESS": {
       return {
         ...state,
@@ -1206,15 +1233,16 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_POST_REQUIRED": {
+      let postKey = action.data.sharedSlug ? action.data.post.post_code : action.data.post.id;
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
-              [action.data.post.id]: {
-                ...state.companyPosts.posts[action.data.post.id],
+            ...(typeof state.companyPosts.posts[postKey] !== "undefined" && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 required_users: action.data.required_users,
                 user_reads: action.data.user_reads,
                 must_read_users: action.data.must_read_users,
@@ -1225,11 +1253,11 @@ export default (state = INITIAL_STATE, action) => {
         },
         mustRead: {
           ...state.mustRead,
-          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === state.user.id && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
+          count: action.data.must_read_users && action.data.must_read_users.some((u) => u.id === action.data.userId && u.must_read) ? state.mustRead.count - 1 : state.mustRead.count,
         },
         mustReply: {
           ...state.mustReply,
-          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === state.user.id && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
+          count: action.data.must_reply_users && action.data.must_reply_users.some((u) => u.id === action.data.userId && u.must_reply) ? state.mustReply.count - 1 : state.mustReply.count,
         },
       };
     }
@@ -1239,6 +1267,7 @@ export default (state = INITIAL_STATE, action) => {
         commentType: action.data,
       };
     }
+    //to update
     case "INCOMING_REMOVED_FILE_AUTOMATICALLY": {
       return {
         ...state,
@@ -1268,6 +1297,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
+    //to update
     case "INCOMING_REMOVED_FILE_AFTER_DOWNLOAD": {
       return {
         ...state,
@@ -1276,10 +1306,11 @@ export default (state = INITIAL_STATE, action) => {
           posts: {
             ...state.companyPosts.posts,
             ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.files.some((f) => f.file_id === action.data.file_id)) {
-                res[post.id] = { ...state.companyPosts.posts[post.id], files: state.companyPosts.posts[post.id].files.filter((f) => f.file_id !== action.data.file_id) };
+                res[postKey] = { ...state.companyPosts.posts[postKey], files: state.companyPosts.posts[postKey].files.filter((f) => f.file_id !== action.data.file_id) };
               } else {
-                res[post.id] = { ...state.companyPosts.posts[post.id] };
+                res[postKey] = { ...state.companyPosts.posts[postKey] };
               }
               return res;
             }, {}),
@@ -1294,8 +1325,9 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...Object.values(state.companyPosts.posts).reduce((res, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.id !== action.data.post_id) {
-                res[post.id] = { ...state.companyPosts.posts[post.id] };
+                res[postKey] = { ...state.companyPosts.posts[postKey] };
               }
               return res;
             }, {}),
@@ -1316,17 +1348,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1348,17 +1385,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1380,17 +1422,22 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.code : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
+                  slug: action.slug,
+                  sharedSlug: action.isSharedSlug,
                 };
               }
               return res;
@@ -1400,39 +1447,71 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "INCOMING_FOLLOW_POST": {
+      const post = Object.values(state.companyPosts.posts).find((p) => p.id === action.data.post_id && p.sharedSlug === action.data.sharedSlug);
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
-                user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+        ...(!action.data.sharedSlug &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  //is_followed: action.data.new_recipient_id === state.user.id ? true : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: state.companyPosts.posts[action.data.post_id].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                },
               },
             },
-          },
-        }),
+          }),
+        ...(action.data.sharedSlug &&
+          post && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [post.code]: {
+                  ...state.companyPosts.posts[post.code],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: state.companyPosts.posts[post.code].user_unfollow.filter((p) => p.id !== action.data.user_follow.id),
+                },
+              },
+            },
+          }),
       };
     }
     case "INCOMING_UNFOLLOW_POST": {
+      const post = Object.values(state.companyPosts.posts).find((p) => p.id === action.data.post_id && p.sharedSlug === action.data.sharedSlug);
       return {
         ...state,
-        ...(state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.post_id]: {
-                ...state.companyPosts.posts[action.data.post_id],
-                //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
-                user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+        ...(!action.data.sharedSlug &&
+          state.companyPosts.posts.hasOwnProperty(action.data.post_id) && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [action.data.post_id]: {
+                  ...state.companyPosts.posts[action.data.post_id],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: [...state.companyPosts.posts[action.data.post_id].user_unfollow, action.data.user_unfollow],
+                },
               },
             },
-          },
-        }),
+          }),
+        ...(action.data.sharedSlug &&
+          post && {
+            companyPosts: {
+              ...state.companyPosts,
+              posts: {
+                ...state.companyPosts.posts,
+                [post.code]: {
+                  ...state.companyPosts.posts[post.code],
+                  //is_followed: action.data.user_unfollow.id === state.user.id ? false : state.companyPosts.posts[action.data.post_id].is_followed,
+                  user_unfollow: [...state.companyPosts.posts[post.code].user_unfollow, action.data.user_unfollow],
+                },
+              },
+            },
+          }),
       };
     }
     case "INCOMING_REMOVED_TEAM_MEMBER":
@@ -1464,8 +1543,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.map((r) => {
                     if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1476,7 +1556,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1490,8 +1570,9 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            let postKey = post.sharedSlug ? post.code : post.id;
             if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-              acc[post.id] = {
+              acc[postKey] = {
                 ...post,
                 recipients: post.recipients.map((r) => {
                   if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1502,7 +1583,7 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
@@ -1533,8 +1614,9 @@ export default (state = INITIAL_STATE, action) => {
               }
             })
             .reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && r.id === parseInt(action.data.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.filter((r) => {
                     if (r.type === "TEAM" && r.id === parseInt(action.data.id)) {
@@ -1545,7 +1627,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1559,8 +1641,9 @@ export default (state = INITIAL_STATE, action) => {
           companyPosts: {
             ...state.companyPosts,
             posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+              let postKey = post.sharedSlug ? post.code : post.id;
               if (post.recipients.some((r) => r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id))) {
-                acc[post.id] = {
+                acc[postKey] = {
                   ...post,
                   recipients: post.recipients.map((r) => {
                     if (r.type === "TEAM" && action.data.team_ids.some((id) => id === r.id)) {
@@ -1571,7 +1654,7 @@ export default (state = INITIAL_STATE, action) => {
                   }),
                 };
               } else {
-                acc[post.id] = post;
+                acc[postKey] = post;
               }
               return acc;
             }, {}),
@@ -1587,13 +1670,14 @@ export default (state = INITIAL_STATE, action) => {
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
+            let postKey = post.sharedSlug ? post.code : post.id;
             if (post.id && action.data.post_id) {
-              acc[post.id] = {
+              acc[postKey] = {
                 ...post,
                 last_visited_at: { timestamp: action.data.last_visit },
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
@@ -1601,17 +1685,17 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_POST_READ_CLAP_SUCCESS": {
-      let postKey = action.data.id;
-      if (action.isSharedSlug && action.data.code) {
-        postKey = action.data.code;
-      }
       return {
         ...state,
         companyPosts: {
           ...state.companyPosts,
           posts: Object.values(state.companyPosts.posts).reduce((acc, post) => {
-            if (post.id === action.data.id) {
-              acc[action.isSharedSlug ? postKey : post.id] = {
+            let postKey = post.id;
+            if (post.sharedSlug) {
+              postKey = post.code;
+            }
+            if (post.code === action.data.code) {
+              acc[postKey] = {
                 ...post,
                 claps: action.data.claps,
                 post_reads: action.data.reads.map((r) => {
@@ -1622,13 +1706,14 @@ export default (state = INITIAL_STATE, action) => {
                 }),
               };
             } else {
-              acc[post.id] = post;
+              acc[postKey] = post;
             }
             return acc;
           }, {}),
         },
       };
     }
+    //to update
     case "SET_SELECTED_COMPANY_POST": {
       return {
         ...state,
@@ -1675,17 +1760,18 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              if (state.companyPosts.posts[obj.id]) {
-                res[obj.id] = {
+            ...action.data.posts.reduce((res, post) => {
+              let postKey = action.isSharedSlug ? post.cod : post.id;
+              if (state.companyPosts.posts[postKey]) {
+                res[postKey] = {
                   claps: [],
-                  ...state.companyPosts.posts[obj.id],
-                  ...obj,
+                  ...state.companyPosts.posts[postKey],
+                  ...post,
                 };
               } else {
-                res[obj.id] = {
+                res[postKey] = {
                   claps: [],
-                  ...obj,
+                  ...post,
                 };
               }
 
@@ -1740,10 +1826,10 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.sharedCompanyPosts[action.slug].posts && {
                   ...state.sharedCompanyPosts[action.slug].posts,
                 }),
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1762,10 +1848,10 @@ export default (state = INITIAL_STATE, action) => {
           ...(!state.sharedCompanyPosts[action.slug] && {
             [action.slug]: {
               posts: {
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1810,10 +1896,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              res[obj.code] = {
+            ...action.data.posts.reduce((res, post) => {
+              res[post.code] = {
                 claps: [],
-                ...obj,
+                ...post,
                 sharedSlug: true,
                 slug: action.slug,
               };
@@ -1835,10 +1921,10 @@ export default (state = INITIAL_STATE, action) => {
                 ...(state.sharedCompanyPosts[action.slug].posts && {
                   ...state.sharedCompanyPosts[action.slug].posts,
                 }),
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1857,10 +1943,10 @@ export default (state = INITIAL_STATE, action) => {
           ...(!state.sharedCompanyPosts[action.slug] && {
             [action.slug]: {
               posts: {
-                ...action.data.posts.reduce((res, obj) => {
-                  res[obj.code] = {
+                ...action.data.posts.reduce((res, post) => {
+                  res[post.code] = {
                     claps: [],
-                    ...obj,
+                    ...post,
                     sharedSlug: true,
                     slug: action.slug,
                   };
@@ -1906,10 +1992,10 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.posts.reduce((res, obj) => {
-              res[obj.code] = {
+            ...action.data.posts.reduce((res, post) => {
+              res[post.code] = {
                 claps: [],
-                ...obj,
+                ...post,
                 sharedSlug: true,
                 slug: action.slug,
               };

@@ -193,6 +193,7 @@ const CompanyPostItemPanel = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const { fromNow } = useTimeFormat();
 
@@ -269,10 +270,16 @@ const CompanyPostItemPanel = (props) => {
   };
 
   const handleClosePost = () => {
+    let sharedPayload = null;
+    if (post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     let payload = {
       post_id: post.id,
       is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
     };
+
     close(payload);
   };
 

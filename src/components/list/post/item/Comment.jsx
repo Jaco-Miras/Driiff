@@ -586,8 +586,8 @@ const Comment = (props) => {
                 {uid === comment.author.id && <div onClick={() => commentActions.setToEdit(comment)}>{dictionary.editReply}</div>}
                 <div onClick={handleQuote}>{dictionary.quote}</div>
                 {uid !== comment.author.id && <div onClick={handleMentionUser}>{dictionary.mentionUser}</div>}
-                {uid === comment.author.id && <div onClick={() => commentActions.remove(comment, workspace)}>{dictionary.removeReply}</div>}
-                {uid === comment.author.id && <div onClick={() => commentActions.important(comment, workspace)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.remove(comment, post)}>{dictionary.removeReply}</div>}
+                {uid === comment.author.id && <div onClick={() => commentActions.important(comment, post)}>{comment.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
               </MoreOptions>
             )}
           </CommentHeader>

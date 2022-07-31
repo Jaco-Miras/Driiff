@@ -540,7 +540,7 @@ const TodoReminderModal = (props) => {
         title: { value: title },
         //title: { value: `${item.author ? item.author.name : ""} | ${workspaceRecipient ? workspaceRecipient.name : companyRecipient ? companyRecipient.name : ""} | Post` },
         description: { value: item.title },
-        topic_id: { value: companyRecipient.id },
+        topic_id: { value: isSharedWorkspace ? item.recipient_ids : companyRecipient.id },
       }));
     }
 
@@ -790,7 +790,21 @@ const TodoReminderModal = (props) => {
       file_ids: [...inlineImages.map((i) => i.id), ...uploadedFiles.map((f) => f.id)],
       remove_file_ids: removedFiles.map((f) => f.id),
     };
-    if (isSharedWorkspace) {
+    if (isSharedWs) {
+      if (parentItem && parentItem.slug && sharedWs[parentItem.slug]) {
+        const sharedPayload = { slug: parentItem.slug, token: sharedWs[parentItem.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      } else if (item && item.slug && sharedWs[item.slug]) {
+        const sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    } else if (isSharedWorkspace) {
       const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
       payload = {
         ...payload,

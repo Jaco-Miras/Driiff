@@ -188,7 +188,7 @@ const usePostActions = () => {
         ...payload,
         sharedPayload: sharedPayload,
       };
-      topic_id = `${params.workspaceId}-${post.slug}`;
+      topic_id = params.workspaceId ? `${params.workspaceId}-${post.slug}` : `${post.recipient_ids[0]}-${post.slug}`;
     }
     dispatch(
       postFavorite(payload, (err, res) => {
@@ -209,7 +209,7 @@ const usePostActions = () => {
       })
     );
 
-    dispatch(starPostReducer({ post_id: post.id, topic_id, post_code: post.slug && slug !== post.slug ? post.code : null }));
+    dispatch(starPostReducer({ post_id: post.id, topic_id, post_code: post.sharedSlug ? post.code : null }));
   };
 
   const markPost = (post) => {
@@ -301,7 +301,7 @@ const usePostActions = () => {
         post_id: post.id,
         is_archived: post.is_archived === 1 ? 0 : 1,
       };
-      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+      if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
         const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
         payload = {
           ...payload,
@@ -337,7 +337,7 @@ const usePostActions = () => {
             dispatch(
               archiveReducer({
                 post_id: post.id,
-                post_code: slug !== post.slug ? post.code : null,
+                post_code: post.sharedSlug ? post.code : null,
                 //topic_id: parseInt(params.workspaceId),
                 is_archived: post.is_archived === 1 ? 0 : 1,
               })
@@ -405,15 +405,15 @@ const usePostActions = () => {
       unread: 1,
       topic_id: params.workspaceId,
     };
-    if (params.workspaceId) {
-      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
-        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
-        payload = {
-          ...payload,
-          sharedPayload: sharedPayload,
-        };
-      }
+
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
     }
+
     let cb = (err, res) => {
       if (err) {
         toaster.error(<>Action failed.</>);
@@ -440,7 +440,7 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 1,
             user_id: user.id,
-            post_code: payload.sharedPayload ? post.code : null,
+            post_code: post.sharedSlug ? post.code : null,
             sharedSlug: post.sharedSlug,
             slug: post.slug,
           })
@@ -453,13 +453,27 @@ const usePostActions = () => {
 
   const sharePost = (post) => {
     let link = "";
-    if (params.folderId) {
-      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
-    } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+    if (post.sharedSlug) {
+      if (params.workspaceId) {
+        if (params.folderId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        } else if (params.workspaceId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        }
+      } else {
+        //get the workspace
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     } else {
-      link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      if (params.folderId) {
+        link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else if (params.workspaceId) {
+        link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     }
+
     copyTextToClipboard(toaster, link);
   };
 
@@ -467,14 +481,12 @@ const usePostActions = () => {
     let payload = {
       post_id: post.id,
     };
-    if (params.workspaceId) {
-      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
-        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
-        payload = {
-          ...payload,
-          sharedPayload: sharedPayload,
-        };
-      }
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
     }
     if (post.is_followed) {
       //When: The user is following/recipient of the post - and not the creator.
@@ -487,7 +499,7 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: false,
-              post_code: slug !== post.slug ? post.code : null,
+              post_code: post.sharedSlug ? post.code : null,
             })
           );
           getUnreadNotificationEntries();
@@ -504,7 +516,7 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: true,
-              post_code: slug !== post.slug ? post.code : null,
+              post_code: post.sharedSlug ? post.code : null,
             })
           );
         })
@@ -977,6 +989,7 @@ const usePostActions = () => {
         onSubmit: onConfirm,
       },
       params: params,
+      isSharedWs: post.sharedSlug ? true : false,
     };
 
     dispatch(addToModals(payload));

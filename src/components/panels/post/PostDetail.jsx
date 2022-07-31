@@ -266,16 +266,12 @@ const PostDetail = (props) => {
   const dispatch = useDispatch();
   const commentActions = useCommentActions();
 
-  const users = useSelector((state) => state.users.users);
+  //const users = useSelector((state) => state.users.users);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const userId = workspace && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const viewerIds = [...new Set(post.view_user_ids)];
-
-  const viewers = Object.values(workspace.members).filter((u) => viewerIds.some((id) => id === u.id));
 
   const handleGoBack = () => {
     onGoBack();
@@ -451,7 +447,7 @@ const PostDetail = (props) => {
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
-        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ sharedSlug: isSharedhub, post_code: post.code, post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
       }
       // let payload = {
       //   topic_id: workspace.id,
@@ -585,7 +581,7 @@ const PostDetail = (props) => {
         </div>
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} post={post} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">

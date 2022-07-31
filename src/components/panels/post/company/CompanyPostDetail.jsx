@@ -268,16 +268,12 @@ const CompanyPostDetail = (props) => {
   //const params = useParams();
   const commentActions = useCommentActions();
 
-  const users = useSelector((state) => state.users.users);
+  const sharedUsers = useSelector((state) => state.users.sharedUsers);
   const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const userId = post && post.sharedSlug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user ? user.id : 0;
   const [showDropZone, setShowDropZone] = useState(false);
 
   const { comments } = useComments(post);
-
-  const viewerIds = [...new Set(post.view_user_ids)];
-
-  const viewers = Object.values(users).filter((u) => viewerIds.some((id) => id === u.id));
 
   const handleGoBack = () => {
     onGoBack();
@@ -341,12 +337,14 @@ const CompanyPostDetail = (props) => {
       }
     });
     handleHideDropzone();
-
+    const members = post.sharedSlug && sharedUsers[post.slug] ? Object.values(sharedUsers[post.slug].users).filter((su) => post.recipients[0].participant_ids.some((id) => id === su.id)) : [];
     let modal = {
       type: "file_upload",
       droppedFiles: attachedFiles,
       mode: "post",
       post: post,
+      members: members,
+      sharedSlug: post.sharedSlug ? post.slug : null,
     };
 
     dispatch(addToModals(modal));
@@ -438,7 +436,7 @@ const CompanyPostDetail = (props) => {
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
-        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ sharedSlug: isSharedhub, post_code: post.code, post_id: post.id, last_visit: Math.floor(Date.now() / 1000) }));
       }
     };
   }, []);
@@ -535,7 +533,7 @@ const CompanyPostDetail = (props) => {
         </div>
         {post.user_unfollow.length > 0 && <PostUnfollowLabel user_unfollow={post.user_unfollow} />}
         <hr className="m-0" />
-        <PostCounters dictionary={dictionary} post={post} viewerIds={viewerIds} viewers={viewers} handleReaction={handleReaction} />
+        <PostCounters dictionary={dictionary} post={post} handleReaction={handleReaction} />
         {post.files.length > 0 && (
           <>
             <div className="card-body">
