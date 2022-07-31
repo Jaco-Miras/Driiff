@@ -174,7 +174,7 @@ export default function (state = INITIAL_STATE, action) {
               if (state.channels[c.id]) {
                 acc[c.id] = { ...state.channels[c.id] };
               } else {
-                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false };
+                acc[c.id] = { ...c, hasMore: true, skip: 0, replies: [], selected: false, isFetching: false, sharedSlug: false, slug: null };
               }
               return acc;
             }, {}),
@@ -207,6 +207,8 @@ export default function (state = INITIAL_STATE, action) {
                 replies: [],
                 selected: false,
                 isFetching: false,
+                sharedSlug: false,
+                slug: null,
               };
             }
           });
@@ -232,6 +234,8 @@ export default function (state = INITIAL_STATE, action) {
             replies: [],
             selected: false,
             isFetching: false,
+            sharedSlug: action.isSharedSlug,
+            slug: action.isSharedSlug ? action.slug : null,
           };
         });
 
@@ -1447,6 +1451,7 @@ export default function (state = INITIAL_STATE, action) {
           }),
         ];
         channel = {
+          ...state.channels[action.data.channel_detail.id],
           ...action.data.channel_detail,
           is_active: channels[action.data.channel_detail.id].is_active,
           icon_link: channels[action.data.channel_detail.id].icon_link,
@@ -1457,6 +1462,8 @@ export default function (state = INITIAL_STATE, action) {
           skip: channels[action.data.channel_detail.id].skip,
           isFetching: false,
           team: channels[action.data.channel_detail.id].team,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels[action.data.channel_detail.id] = channel;
       } else if (action.data.channel_detail && !channels.hasOwnProperty(action.data.channel_detail.id)) {
@@ -1466,6 +1473,9 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
+          updated_at: action.data.channel_detail.updated_at ? action.data.channel_detail.updated_at : action.data.channel_detail.created_at,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels[action.data.channel_detail.id] = channel;
       }
@@ -1507,6 +1517,8 @@ export default function (state = INITIAL_STATE, action) {
           is_active: channels[action.data.id].is_active,
           skip: channels[action.data.id].skip,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
       } else {
         channels[action.data.id] = {
@@ -1515,6 +1527,8 @@ export default function (state = INITIAL_STATE, action) {
           hasMore: true,
           skip: 0,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
       }
       return {
@@ -1551,6 +1565,8 @@ export default function (state = INITIAL_STATE, action) {
           skip: 0,
           selected: true,
           isFetching: false,
+          sharedSlug: action.isSharedSlug,
+          slug: action.isSharedSlug ? action.slug : null,
         };
         channels = {
           ...channels,
