@@ -674,8 +674,8 @@ const FileUploadModal = (props) => {
         approval_user_ids: savedInput && savedInput.approvers ? savedInput.approvers : [],
         shared_with_client: commentType && commentType === "internal" ? false : true,
       };
-      if (sharedSlug && sharedWs[sharedSlug]) {
-        const sharedPayload = { slug: sharedSlug, token: sharedWs[sharedSlug].access_token, is_shared: true };
+      if (sharedSlug && post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: sharedSlug, token: sharedWs[post.slug].access_token, is_shared: true };
         payload = {
           ...payload,
           sharedPayload: sharedPayload,

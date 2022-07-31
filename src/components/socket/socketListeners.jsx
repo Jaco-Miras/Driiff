@@ -1125,7 +1125,7 @@ class SocketListeners extends Component {
           }
           case "POST_CLAP_TOGGLE": {
             if (this.state.userId !== e.author.id) {
-              this.props.incomingPostClap({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
+              this.props.incomingPostClap({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug, userId: this.state.userId });
               if (this.state.userId === e.post_user_id && e.clap_count === 1) {
                 toast(`${e.author.name} ${this.props.dictionary.likedYourPost}`, { position: toast.POSITION.BOTTOM_LEFT });
               }

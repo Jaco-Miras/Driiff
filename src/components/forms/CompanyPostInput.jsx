@@ -647,6 +647,7 @@ const CompanyPostInput = forwardRef((props, ref) => {
       .filter((u) => prioIds.some((id) => id === u.id))
       .map((u) => u.id),
     post,
+    sharedSlug: post.sharedSlug ? post.slug : null,
   });
 
   return (

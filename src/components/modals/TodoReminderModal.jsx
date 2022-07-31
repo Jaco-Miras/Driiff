@@ -901,7 +901,21 @@ const TodoReminderModal = (props) => {
       }
     }
 
-    if (isSharedWorkspace) {
+    if (isSharedWs) {
+      if (parentItem && parentItem.slug && sharedWs[parentItem.slug]) {
+        const sharedPayload = { slug: parentItem.slug, token: sharedWs[parentItem.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      } else if (item && item.slug && sharedWs[item.slug]) {
+        const sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+    } else if (isSharedWorkspace) {
       const sharedPayload = { slug: activeTopic.slug, token: sharedWs[activeTopic.slug].access_token, is_shared: true };
       payload = {
         ...payload,
