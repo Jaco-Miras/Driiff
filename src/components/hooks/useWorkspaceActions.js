@@ -98,6 +98,8 @@ const useWorkspaceActions = () => {
             replies: [],
             selected: true,
             isFetching: false,
+            sharedSlug: false,
+            slug: null,
           };
           dispatch(addToChannels(channel));
           selectChannel(channel);

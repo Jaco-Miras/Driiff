@@ -778,6 +778,8 @@ const ChatInput = (props) => {
           replies: [],
           selected: true,
           search: res.data.search,
+          sharedSlug: false,
+          slug: null,
         };
 
         dispatch(addToChannels(payload));
