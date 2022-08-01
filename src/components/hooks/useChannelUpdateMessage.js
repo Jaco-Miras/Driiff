@@ -69,7 +69,7 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
             return data.shared_added_members.includes(u.id);
           }
         });
-        addedMembers = [...addedMembers, ...sharedMembers];
+        addedMembers = uniqBy([...addedMembers, ...sharedMembers], "id");
       }
       let removedMembers = Object.values(users).filter((u) => data.removed_members.includes(u.id));
       if (data.shared_removed_members && selectedChannel.slug && sharedUsers[selectedChannel.slug]) {
