@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useTranslationActions } from ".";
 
 const useWorkspaceAndUserOptions = (props) => {
-  const { addressTo, members = null } = props;
+  const { addressTo, members = null, userId } = props;
   const { _t } = useTranslationActions();
   const dictionary = {
     teamLabel: _t("TEAM", "Team"),
@@ -221,16 +221,18 @@ const useWorkspaceAndUserOptions = (props) => {
   //let addressInternalIds = addressIds.filter((id) => internalUsers.some((u) => u.id === id));
   let user_options = [];
   if (members) {
-    user_options = members.map((u) => {
-      return {
-        ...u,
-        icon: "user-avatar",
-        value: u.id,
-        label: u.name ? u.name : u.email,
-        type: "USER",
-        user_type: u.type,
-      };
-    });
+    user_options = members
+      .filter((u) => u.id !== userId)
+      .map((u) => {
+        return {
+          ...u,
+          icon: "user-avatar",
+          value: u.id,
+          label: u.name ? u.name : u.email,
+          type: "USER",
+          user_type: u.type,
+        };
+      });
   } else {
     user_options = Object.values(actualUsers)
       .filter((u) => addressIds.some((id) => id === u.id))

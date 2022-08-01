@@ -512,7 +512,7 @@ const ChatInput = (props) => {
       let currentUser = {
         id: user.id,
         name: user.name,
-        profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+        profile_image_link: user.profile_image_link,
         email: user.email,
       };
       if (selectedChannel.slug && sharedWs[slug]) {

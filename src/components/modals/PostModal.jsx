@@ -334,6 +334,7 @@ const PostModal = (props) => {
 
   const isSharedWorkspace = params && params.workspaceId && activeTopic && activeTopic.sharedSlug;
   const isSharedPost = item && item.post && item.post.sharedSlug;
+  const userId = isSharedWorkspace ? sharedWs[activeTopic.slug].user_auth.id : isSharedPost ? sharedWs[item.post.slug].user_auth.id : user.id;
 
   const [initTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [modal, setModal] = useState(true);
@@ -398,6 +399,7 @@ const PostModal = (props) => {
   } = useWorkspaceAndUserOptions({
     addressTo: form.selectedAddressTo,
     members: isSharedWorkspace ? activeTopic.members : isSharedPost && workspaces[item.post.recipients[0].key] ? workspaces[item.post.recipients[0].key].members : null,
+    userId: userId,
   });
 
   const { enlargeEmoji } = useEnlargeEmoticons();

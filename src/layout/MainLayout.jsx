@@ -192,7 +192,7 @@ const MainLayout = (props) => {
     };
     if (invite_slug && state_code) {
       let payload = {
-        url: `https://${invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        url: `https://${invite_slug}.${process.env.REACT_APP_apiDNSName}/api/v2/shared-workspace-invite-accept`,
         state_code: state_code,
         slug: slug,
         as_guest: false,
@@ -201,7 +201,7 @@ const MainLayout = (props) => {
       handleAcceptInvite(payload);
     } else if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
       let payload = {
-        url: `https://${history.location.state.invite_slug}.driff.network/api/v2/shared-workspace-invite-accept`,
+        url: `https://${history.location.state.invite_slug}.${process.env.REACT_APP_apiDNSName}/api/v2/shared-workspace-invite-accept`,
         state_code: history.location.state.state_code,
         slug: slug,
         as_guest: false,

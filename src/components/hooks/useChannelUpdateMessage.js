@@ -53,7 +53,7 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
       );
     } else if (data.hasOwnProperty("added_teams")) {
       // for added teams - new system message
-      let addedMembers = Object.values(allUsers).filter((u) => {
+      let addedMembers = Object.values(users).filter((u) => {
         if (data.added_members[0] && data.added_members[0].hasOwnProperty("id")) {
           return data.added_members.some((ad) => ad.id === u.id);
         } else {
@@ -70,7 +70,7 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
         });
         addedMembers = [...addedMembers, ...sharedMembers];
       }
-      let removedMembers = Object.values(allUsers).filter((u) => data.removed_members.includes(u.id));
+      let removedMembers = Object.values(users).filter((u) => data.removed_members.includes(u.id));
       if (data.shared_removed_members && selectedChannel.slug && sharedUsers[selectedChannel.slug]) {
         let sharedRemovedMembers = sharedUsers[selectedChannel.slug].users.filter((u) => data.shared_removed_members.includes(u.id));
         removedMembers = [...removedMembers, ...sharedRemovedMembers];

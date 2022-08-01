@@ -156,7 +156,7 @@ const HomeProfileNavigation = (props) => {
     driffSettings,
     userSettings,
   } = useSettings();
-  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const onlineUsers = useSelector((state) => state.users.onlineUsers);
   //const uniqueOnlineUsers = [...new Set(onlineUsers.map((ou) => ou.user_id))];
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
@@ -225,12 +225,12 @@ const HomeProfileNavigation = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : null;
-    if (selectedUser) {
-      setForm(selectedUser);
-    }
-  }, [users, loggedUser]);
+  // useEffect(() => {
+  //   const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : null;
+  //   if (selectedUser) {
+  //     setForm(selectedUser);
+  //   }
+  // }, [users, loggedUser]);
 
   const history = useHistory();
   const gotoNotifications = (e) => {

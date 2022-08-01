@@ -1132,10 +1132,6 @@ class SocketListeners extends Component {
             }
             break;
           }
-          // case "MARKED_DONE": {
-          //   this.props.incomingPostMarkDone(e);
-          //   break;
-          // }
           case "COMMENT_IMPORTANT": {
             this.props.incomingImportantComment({ ...e, slug: this.state.slug, sharedSlug: this.props.sharedSlug });
             break;

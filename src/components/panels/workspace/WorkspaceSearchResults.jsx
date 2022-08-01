@@ -89,7 +89,7 @@ const WorkspaceSearchResults = (props) => {
           name: user.name,
           first_name: user.first_name,
           partial_name: user.partial_name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
+          profile_image_link: user.profile_image_link,
         },
         title: "",
         added_members: [],

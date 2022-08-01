@@ -449,7 +449,7 @@ const PostDetail = (props) => {
 
     return () => {
       if (post.is_unread === 1 || post.unread_count > 0) {
-        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
+        if (!disableMarkAsRead()) dispatch(incomingLastVisitPost({ sharedSlug: isSharedhub, post_code: post.code, post_id: post.id, last_visit: Math.floor(Date.now() / 1000), workspace: workspace }));
       }
       // let payload = {
       //   topic_id: workspace.id,
