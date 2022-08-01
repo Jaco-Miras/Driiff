@@ -1,6 +1,7 @@
 import React from "react";
 import { SvgIconFeather } from "../common";
 import { useSelector } from "react-redux";
+import { uniqBy } from "lodash";
 
 const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedChannel }) => {
   const teams = useSelector((state) => state.users.teams);
@@ -9,9 +10,9 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
   const userId = selectedChannel.sharedSlug && sharedWs[selectedChannel.slug] ? sharedWs[selectedChannel.slug].user_auth.id : user.id;
   const users = selectedChannel.sharedSlug && sharedUsers[selectedChannel.slug] ? sharedUsers[selectedChannel.slug].users : allUsers;
   let newBody = "";
+
   if (reply.body.includes("CHANNEL_UPDATE::")) {
     const data = JSON.parse(reply.body.replace("CHANNEL_UPDATE::", ""));
-
     let author = {
       name: dictionary.someone,
       id: null,
@@ -53,7 +54,7 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
       );
     } else if (data.hasOwnProperty("added_teams")) {
       // for added teams - new system message
-      let addedMembers = Object.values(users).filter((u) => {
+      let addedMembers = Object.values(allUsers).filter((u) => {
         if (data.added_members[0] && data.added_members[0].hasOwnProperty("id")) {
           return data.added_members.some((ad) => ad.id === u.id);
         } else {
@@ -73,7 +74,7 @@ const useChannelUpdateMessage = ({ reply, dictionary, allUsers, user, selectedCh
       let removedMembers = Object.values(users).filter((u) => data.removed_members.includes(u.id));
       if (data.shared_removed_members && selectedChannel.slug && sharedUsers[selectedChannel.slug]) {
         let sharedRemovedMembers = sharedUsers[selectedChannel.slug].users.filter((u) => data.shared_removed_members.includes(u.id));
-        removedMembers = [...removedMembers, ...sharedRemovedMembers];
+        removedMembers = uniqBy([...removedMembers, ...sharedRemovedMembers], "id");
       }
       if (titleChanged) {
         newBody = (

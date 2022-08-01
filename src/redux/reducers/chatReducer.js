@@ -1162,18 +1162,16 @@ export default function (state = INITIAL_STATE, action) {
       updatedMembers = [...new Map(updatedMembers.map((item) => [item["id"], item])).values()];
       const sysMessage =
         action.data.type === "WORKSPACE" && action.data.system_message
-          ? [
-              {
-                ...action.data.system_message,
-                created_at: action.data.updated_at,
-                editable: false,
-                is_read: true,
-                is_deleted: false,
-                files: [],
-                reactions: [],
-                unfurls: [],
-              },
-            ]
+          ? {
+              ...action.data.system_message,
+              created_at: action.data.updated_at,
+              editable: false,
+              is_read: true,
+              is_deleted: false,
+              files: [],
+              reactions: [],
+              unfurls: [],
+            }
           : [];
       return {
         ...state,
@@ -1219,9 +1217,9 @@ export default function (state = INITIAL_STATE, action) {
                     ? [
                         ...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies,
                         ...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client),
-                        ...sysMessage,
+                        action.data.team_channel.id === action.data.system_message.channel_id ? sysMessage : {},
                       ]
-                    : [...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies, ...sysMessage],
+                    : [...state.channels[action.data.is_shared_wp ? action.data.team_channel.code : action.data.team_channel.id].replies, action.data.team_channel.id === action.data.system_message.channel_id ? sysMessage : {}],
                 icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
                 title: action.data.name,
                 members: updatedMembers
@@ -1273,9 +1271,9 @@ export default function (state = INITIAL_STATE, action) {
                   ? [
                       ...state.selectedChannel.replies,
                       ...state.channels[action.data.is_shared_wp ? action.data.channel.code : action.data.channel.id].replies.filter((r) => r.body.startsWith("POST_CREATE::") && !r.shared_with_client),
-                      ...sysMessage,
+                      state.selectedChannel.id === action.data.system_message.channel_id ? sysMessage : {},
                     ]
-                  : [...state.selectedChannel.replies, ...sysMessage],
+                  : [...state.selectedChannel.replies, state.selectedChannel.id === action.data.system_message.channel_id ? sysMessage : {}],
               icon_link: action.data.channel && action.data.channel.icon_link ? action.data.channel.icon_link : null,
               title: action.data.name,
               members: updatedMembers
