@@ -213,7 +213,7 @@ const MainLayout = (props) => {
       fetchById(loggedUser.id, (err, res) => {
         if (err) return;
         const currentUser = res.data;
-        if (!userCanceledProfileUpload && first_login && !currentUser.profile && !isExternal) {
+        if (!userCanceledProfileUpload && first_login && (!currentUser.profile || !currentUser.user_image) && !isExternal) {
           uploadModal(() => {
             clearTimeout(modalTimer);
           });
