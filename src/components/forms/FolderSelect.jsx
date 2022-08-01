@@ -107,13 +107,7 @@ const Option = (props) => {
         {props.data && (
           <span className="d-flex justify-content-start align-items-center">
             {props.data.icon === "user-avatar" ? (
-              <StyledAvatar
-                className="react-select-avatar mr-2"
-                key={props.data.id}
-                imageLink={props.data.profile_image_thumbnail_link ? props.data.profile_image_thumbnail_link : props.data.profile_image_link}
-                name={props.data.name}
-                partialName={props.data.partial_name}
-              />
+              <StyledAvatar className="react-select-avatar mr-2" key={props.data.id} imageLink={props.data.profile_image_link} name={props.data.name} partialName={props.data.partial_name} />
             ) : (
               <Icon className="mr-2" icon={props.data.icon ? props.data.icon : "folder"} />
             )}
