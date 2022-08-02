@@ -2729,7 +2729,7 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    case "POST_APPROVE_SUCCESS":
+    //case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
       let postKey = action.data.post.id;
       if ((action.data.sharedSlug || action.isSharedSlug) && action.data.post.post_code) {
@@ -2767,7 +2767,7 @@ export default (state = INITIAL_STATE, action) => {
                           ? "REQUEST_UPDATE"
                           : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
                           ? "SPLIT"
-                          : action.data.user_approved.id === state.user.id
+                          : action.data.user_approved.id === action.data.userId
                           ? null
                           : state.workspacePosts[key].posts[postKey].post_approval_label,
                         users_approval: state.workspacePosts[key].posts[postKey].users_approval.map((u) => {
