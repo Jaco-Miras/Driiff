@@ -457,10 +457,15 @@ const CompanyPostDetailFooter = (props) => {
         ...approving,
         change: true,
       });
+      let sharedPayload = null;
+      if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+        sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      }
       postActions.approve(
         {
           post_id: post.id,
           approved: 0,
+          sharedPayload: sharedPayload,
         },
         (err, res) => {
           setApproving({

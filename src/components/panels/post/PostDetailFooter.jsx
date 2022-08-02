@@ -573,6 +573,10 @@ const PostDetailFooter = (props) => {
         },
       ]);
     } else {
+      let sharedPayload = null;
+      if (post.sharedSlug && workspace && workspace.sharedSlug) {
+        sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      }
       setApproving({
         ...approving,
         change: true,
@@ -581,6 +585,7 @@ const PostDetailFooter = (props) => {
         {
           post_id: post.id,
           approved: 0,
+          sharedPayload: sharedPayload,
         },
         (err, res) => {
           setApproving({
@@ -721,7 +726,7 @@ const PostDetailFooter = (props) => {
 
   const handleReopen = () => {
     let sharedPayload = null;
-    if (slug !== post.slug && workspace && workspace.sharedSlug) {
+    if (post.sharedSlug && workspace && workspace.sharedSlug) {
       sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
     }
     let payload = {
