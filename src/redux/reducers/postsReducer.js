@@ -254,24 +254,6 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    //to update
-    case "INCOMING_MARK_AS_READ": {
-      return {
-        ...state,
-        ...(typeof state.companyPosts.posts[action.data.result.post_id] !== "undefined" && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.result.post_id]: {
-                ...state.companyPosts.posts[action.data.result.post_id],
-                user_reads: action.data.result.user_reads,
-              },
-            },
-          },
-        }),
-      };
-    }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
       if (action.data.sharedSlug) return state;
@@ -587,7 +569,7 @@ export default (state = INITIAL_STATE, action) => {
             if (state.companyPosts.posts[key].id === action.data.post_id && state.companyPosts.posts[key].sharedSlug === action.data.sharedSlug) {
               acc[key] = {
                 ...state.companyPosts.posts[key],
-                view_user_ids: [...state.companyPosts.posts[action.data.post_id].view_user_ids, action.data.viewer.id],
+                view_user_ids: [...state.companyPosts.posts[key].view_user_ids, action.data.viewer.id],
               };
             } else {
               acc[key] = state.companyPosts.posts[key];
@@ -689,7 +671,7 @@ export default (state = INITIAL_STATE, action) => {
         const hasPendingAproval = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address === null).length === action.data.users_approval.length;
         const allUsersDisagreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
         const allUsersAgreed = action.data.users_approval.length > 0 && action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
-        const isApprover = action.data.users_approval.some((ua) => ua.iaction.data.userId);
+        const isApprover = action.data.users_approval.some((ua) => ua.id === action.data.userId);
         return {
           ...state,
           companyPosts: {
@@ -848,7 +830,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "INCOMING_READ_SELECTED_POSTS": {
       return {
         ...state,
@@ -856,14 +837,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.post_ids.reduce((res, id) => {
-              if (state.companyPosts.posts[id]) {
-                res[id] = {
-                  ...state.companyPosts.posts[id],
-                  is_read: true,
-                  unread_count: 0,
-                  is_unread: 0,
-                };
+            ...action.data.posts.reduce((res, p) => {
+              if (action.data.sharedSlug) {
+                if (state.companyPosts.posts[p.post_code]) {
+                  res[p.post_code] = {
+                    ...state.companyPosts.posts[p.post_code],
+                    is_read: true,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
+              } else {
+                if (state.companyPosts.posts[p.post_id]) {
+                  res[p.post_id] = {
+                    ...state.companyPosts.posts[p.post_id],
+                    is_read: true,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
               }
 
               return res;
@@ -872,7 +864,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
       return {
         ...state,
@@ -880,14 +871,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.post_ids.reduce((res, id) => {
-              if (state.companyPosts.posts[id]) {
-                res[id] = {
-                  ...state.companyPosts.posts[id],
-                  is_archived: 1,
-                  unread_count: 0,
-                  is_unread: 0,
-                };
+            ...action.data.posts.reduce((res, p) => {
+              if (action.data.sharedSlug) {
+                if (state.companyPosts.posts[p.post_code]) {
+                  res[p.post_code] = {
+                    ...state.companyPosts.posts[p.post_code],
+                    is_archived: 1,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
+              } else {
+                if (state.companyPosts.posts[p.post_id]) {
+                  res[p.post_id] = {
+                    ...state.companyPosts.posts[p.post_id],
+                    is_archived: 1,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
               }
               return res;
             }, {}),
@@ -895,9 +897,12 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
-    case "POST_APPROVE_SUCCESS":
+    //case "POST_APPROVE_SUCCESS":
     case "INCOMING_POST_APPROVAL": {
+      let postKey = action.data.post.id;
+      if ((action.data.sharedSlug || action.isSharedSlug) && action.data.post.post_code) {
+        postKey = action.data.post.post_code;
+      }
       const allUsersDisagreed = action.data.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length === action.data.users_approval.length;
       const allUsersAgreed = action.data.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === action.data.users_approval.length;
       const allUsersAnswered = !action.data.users_approval.some((ua) => ua.ip_address === null);
@@ -907,19 +912,19 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...(typeof state.companyPosts.posts[action.data.post.id] !== "undefined" && {
-              [action.data.post.id]: {
-                ...state.companyPosts.posts[action.data.post.id],
+            ...(typeof state.companyPosts.posts[postKey] !== "undefined" && {
+              [postKey]: {
+                ...state.companyPosts.posts[postKey],
                 post_approval_label: allUsersAgreed
                   ? "ACCEPTED"
                   : allUsersDisagreed
                   ? "REQUEST_UPDATE"
                   : allUsersAnswered && !allUsersDisagreed && !allUsersAgreed
                   ? "SPLIT"
-                  : action.data.user_approved.id === state.user.id
+                  : action.data.user_approved.id === action.data.userId
                   ? null
-                  : state.companyPosts.posts[action.data.post.id].post_approval_label,
-                users_approval: state.companyPosts.posts[action.data.post.id].users_approval.map((u) => {
+                  : state.companyPosts.posts[postKey].post_approval_label,
+                users_approval: state.companyPosts.posts[postKey].users_approval.map((u) => {
                   if (u.id === action.data.user_approved.id) {
                     return {
                       ...u,
@@ -958,24 +963,6 @@ export default (state = INITIAL_STATE, action) => {
                   : action.data.user_approved.id === state.user.id
                   ? null
                   : state.companyPosts.posts[action.data.post.id].post_approval_label,
-              },
-            }),
-          },
-        },
-      };
-    }
-    //to update
-    case "SET_POSTREAD": {
-      return {
-        ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            ...(state.companyPosts.posts[action.data.postId] && {
-              [action.data.postId]: {
-                ...state.companyPosts.posts[action.data.postId],
-                post_reads: [...action.data.readPosts],
               },
             }),
           },
@@ -1713,7 +1700,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "SET_SELECTED_COMPANY_POST": {
       return {
         ...state,
