@@ -299,7 +299,7 @@ const ChatHeaderPanel = (props) => {
     if (channel && channel.slug && channel.sharedSlug) {
       //check for members slug
       let ws = workspaces[`${channel.entity_id}-${channel.slug}`];
-      if (channel.members.every((m) => !m.hasOwnProperty("company_name")) && ws) {
+      if (channel.members.length && channel.members.every((m) => !m.hasOwnProperty("company_name")) && ws) {
         dispatch(addCompanyNameOnMembers({ code: channel.code, members: ws.members }));
       }
     }
