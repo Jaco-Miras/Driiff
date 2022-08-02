@@ -11,6 +11,7 @@ const useSharedCompanyPosts = () => {
     //fetch the company post
     const sharedWorkspaces = session.user && session.user.sharedWorkspaces ? session.user.sharedWorkspaces : Object.keys(sharedWs).length ? sharedWs : [];
     Object.keys(sharedWorkspaces).forEach((slug) => {
+      actions.getUnreadNotificationEntries({ sharedPayload: { slug: slug, token: sharedWorkspaces[slug].access_token, is_shared: true } });
       if (sharedCompanyPosts[slug]) {
         //check the existing shared company posts
         if (sharedCompanyPosts[slug].readPosts && sharedCompanyPosts[slug].readPosts.has_more) {

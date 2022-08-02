@@ -167,11 +167,17 @@ export function getPushNotification(payload) {
 }
 
 export function getUnreadNotificationCounterEntries(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/notification-counter-entries";
   return apiCall({
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 

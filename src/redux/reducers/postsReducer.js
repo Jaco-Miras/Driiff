@@ -260,24 +260,6 @@ export default (state = INITIAL_STATE, action) => {
         }),
       };
     }
-    //to update
-    case "INCOMING_MARK_AS_READ": {
-      return {
-        ...state,
-        ...(typeof state.companyPosts.posts[action.data.result.post_id] !== "undefined" && {
-          companyPosts: {
-            ...state.companyPosts,
-            posts: {
-              ...state.companyPosts.posts,
-              [action.data.result.post_id]: {
-                ...state.companyPosts.posts[action.data.result.post_id],
-                user_reads: action.data.result.user_reads,
-              },
-            },
-          },
-        }),
-      };
-    }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
       //if (action.data.sharedSlug) return state;
@@ -854,7 +836,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "INCOMING_READ_SELECTED_POSTS": {
       return {
         ...state,
@@ -862,14 +843,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.post_ids.reduce((res, id) => {
-              if (state.companyPosts.posts[id]) {
-                res[id] = {
-                  ...state.companyPosts.posts[id],
-                  is_read: true,
-                  unread_count: 0,
-                  is_unread: 0,
-                };
+            ...action.data.posts.reduce((res, p) => {
+              if (action.data.sharedSlug) {
+                if (state.companyPosts.posts[p.post_code]) {
+                  res[p.post_code] = {
+                    ...state.companyPosts.posts[p.post_code],
+                    is_read: true,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
+              } else {
+                if (state.companyPosts.posts[p.post_id]) {
+                  res[p.post_id] = {
+                    ...state.companyPosts.posts[p.post_id],
+                    is_read: true,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
               }
 
               return res;
@@ -878,7 +870,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "INCOMING_ARCHIVED_SELECTED_POSTS": {
       return {
         ...state,
@@ -886,14 +877,25 @@ export default (state = INITIAL_STATE, action) => {
           ...state.companyPosts,
           posts: {
             ...state.companyPosts.posts,
-            ...action.data.post_ids.reduce((res, id) => {
-              if (state.companyPosts.posts[id]) {
-                res[id] = {
-                  ...state.companyPosts.posts[id],
-                  is_archived: 1,
-                  unread_count: 0,
-                  is_unread: 0,
-                };
+            ...action.data.posts.reduce((res, p) => {
+              if (action.data.sharedSlug) {
+                if (state.companyPosts.posts[p.post_code]) {
+                  res[p.post_code] = {
+                    ...state.companyPosts.posts[p.post_code],
+                    is_archived: 1,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
+              } else {
+                if (state.companyPosts.posts[p.post_id]) {
+                  res[p.post_id] = {
+                    ...state.companyPosts.posts[p.post_id],
+                    is_archived: 1,
+                    unread_count: 0,
+                    is_unread: 0,
+                  };
+                }
               }
               return res;
             }, {}),
@@ -967,24 +969,6 @@ export default (state = INITIAL_STATE, action) => {
                   : action.data.user_approved.id === state.user.id
                   ? null
                   : state.companyPosts.posts[action.data.post.id].post_approval_label,
-              },
-            }),
-          },
-        },
-      };
-    }
-    //to update
-    case "SET_POSTREAD": {
-      return {
-        ...state,
-        companyPosts: {
-          ...state.companyPosts,
-          posts: {
-            ...state.companyPosts.posts,
-            ...(state.companyPosts.posts[action.data.postId] && {
-              [action.data.postId]: {
-                ...state.companyPosts.posts[action.data.postId],
-                post_reads: [...action.data.readPosts],
               },
             }),
           },
@@ -1754,7 +1738,6 @@ export default (state = INITIAL_STATE, action) => {
         },
       };
     }
-    //to update
     case "SET_SELECTED_COMPANY_POST": {
       return {
         ...state,

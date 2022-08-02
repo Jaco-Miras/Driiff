@@ -36,9 +36,16 @@ const CompanyPostFilterItem = (props) => {
 
   const { setCompanyFilterPosts, fetchCompanyPosts } = usePostActions();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
+  const sharedDriffCounters = useSelector((state) => state.global.sharedDriffCounters);
   const archived = useSelector((state) => state.posts.archived);
 
   const [fetching, setFetching] = useState(false);
+
+  const combinedUnreadCount = Object.values(sharedDriffCounters).reduce((acc, current) => {
+    acc = acc + current.general_post;
+    return acc;
+  }, 0);
+  const inboxCount = unreadCounter.general_post + combinedUnreadCount;
 
   const handleClickFilter = (e) => {
     e.persist();
@@ -71,7 +78,8 @@ const CompanyPostFilterItem = (props) => {
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "inbox" ? "active" : ""}`} data-value="inbox" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="inbox" />
         {dictionary.inbox}
-        {unreadCounter.general_post > 0 && <span className="small ml-auto">{unreadCounter.general_post}</span>}
+        {inboxCount && <span className="small ml-auto">{inboxCount}</span>}
+        {/* {unreadCounter.general_post > 0 && <span className="small ml-auto">{unreadCounter.general_post}</span>} */}
       </span>
       <span className={`list-group-item d-flex align-items-center ${filter && filter === "all" ? "active" : ""}`} data-value="all" onClick={handleClickFilter}>
         <SvgIconFeather className="mr-2" icon="mail" />

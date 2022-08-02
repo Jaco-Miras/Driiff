@@ -2187,9 +2187,9 @@ class SocketListeners extends Component {
       .listen(".favourite-workspace-notification", (e) => {
         this.props.incomingFavouriteWorkspace({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
       })
-      .listen(".post-read-require", (e) => {
-        this.props.incomingMarkAsRead({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
-      })
+      // .listen(".post-read-require", (e) => {
+      //   this.props.incomingMarkAsRead({ ...e, fromSharedWs: this.props.sharedSlug, slug: this.state.slug });
+      // })
       .listen(".new-workspace", (e) => {
         if (e.type === "WORKSPACE" && !e.members.some((m) => m.id === this.state.userId)) {
           return;
