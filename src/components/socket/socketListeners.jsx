@@ -1830,6 +1830,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: this.props.sharedSlug ? this.state.slug : null,
+                sharedSlug: this.props.sharedSlug,
               };
               this.props.addToChannels(channel);
             });
@@ -1843,6 +1845,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: this.props.sharedSlug ? this.state.slug : null,
+                sharedSlug: this.props.sharedSlug,
               };
               this.props.addToChannels(channel);
             });
@@ -2149,6 +2153,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : null,
+                sharedSlug: e.topic.is_shared_wp,
               };
               this.props.addToChannels(channel);
             });
@@ -2162,6 +2168,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : null,
+                sharedSlug: e.topic.is_shared_wp,
               };
               this.props.addToChannels(channel);
             });
@@ -2225,6 +2233,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : null,
+                sharedSlug: e.topic.is_shared_wp,
               };
               this.props.addToChannels(channel);
             });
@@ -2238,6 +2248,8 @@ class SocketListeners extends Component {
                 replies: [],
                 selected: true,
                 isFetching: false,
+                slug: e.topic.is_shared_wp ? e.topic.slug_owner : null,
+                sharedSlug: e.topic.is_shared_wp,
               };
               this.props.addToChannels(channel);
             });
@@ -2496,6 +2508,8 @@ class SocketListeners extends Component {
                 selected: true,
                 is_archived: res.data.is_archived === 1,
                 isFetching: false,
+                slug: this.props.sharedSlug ? this.state.slug : null,
+                sharedSlug: this.props.sharedSlug,
               };
               this.props.addToChannels(channel);
             });
@@ -2548,6 +2562,8 @@ class SocketListeners extends Component {
               hasMore: true,
               isFetching: false,
               creator: e.channel_data.creator_by,
+              slug: this.props.sharedSlug ? this.state.slug : null,
+              sharedSlug: this.props.sharedSlug,
             };
             this.props.addToChannels(channel);
           });

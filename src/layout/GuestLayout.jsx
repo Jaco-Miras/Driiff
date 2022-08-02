@@ -216,6 +216,8 @@ const GuestLayout = (props) => {
     generatingDriff: _t("GENERATING_DRIFF", "We are generating your Driff."),
     generateDriffMessage: _t("GENERATE_DRIFF_MESSAGE", "You may continue working your other tasks but please don’t close this tab. We will send you an email once we have your Driff ready."),
     greetingMessage: _t("GREETING.MESSAGE", "Hi there!"),
+    acceptPolicy: _t("DRIFF_CREATE.ACCEPT_POLICY", "When creating this Driff you accept our"),
+    and: _t("GENERAL.AND", "and"),
   };
 
   const [title, setTitle] = useState(dictionary.signIn);

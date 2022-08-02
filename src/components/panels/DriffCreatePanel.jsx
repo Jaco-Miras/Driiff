@@ -403,11 +403,11 @@ const DriffCreatePanel = (props) => {
           <CheckBoxWrapper className="mb-4 text-center">
             <TodoCheckBox name="agree" checked={agreed} onClick={toggleCheck}></TodoCheckBox>
             <span>
-              When creating this Driff you accept our{" "}
+              {dictionary.acceptPolicy}{" "}
               <a href="https://getdriff.com/privacy-policy/" target="_blank" rel="noopener noreferrer">
                 privacy policy
               </a>{" "}
-              and{" "}
+              {dictionary.and}{" "}
               <a href="https://getdriff.com/terms-of-use-of-driff/" target="_blank" rel="noopener noreferrer">
                 terms of use
               </a>{" "}
