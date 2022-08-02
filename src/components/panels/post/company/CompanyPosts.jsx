@@ -124,7 +124,11 @@ const CompanyPosts = (props) => {
           selected_post_ids: checkedPosts.map((p) => p.id),
           sharedPayload,
         });
-        actions.getUnreadNotificationEntries();
+        let counterPayload = {};
+        if (sharedWs[slug]) {
+          counterPayload = { sharedPayload: { slug: slug, token: sharedWs[slug].access_token, is_shared: true } };
+        }
+        actions.getUnreadNotificationEntries(counterPayload);
       });
       setCheckedPosts([]);
       clearCheckedPost();

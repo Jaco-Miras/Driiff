@@ -25,6 +25,7 @@ const INITIAL_STATE = {
     general_post: 0,
     generate_post_comment: 0,
   },
+  sharedDriffCounters: {},
   socketMounted: false,
   searchValue: "",
   searchResults: {},
@@ -183,20 +184,42 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
     case "GET_UNREAD_NOTIFICATION_COUNTER_SUCCESS": {
-      let unreadCounter = state.unreadCounter;
+      if (action.isSharedSlug) {
+        let unreadCounter = state.unreadCounter;
 
-      for (const i in action.data) {
-        const item = action.data[i];
-        unreadCounter = {
-          ...unreadCounter,
-          [item.entity_type.toLowerCase()]: item.count,
+        for (const i in action.data) {
+          const item = action.data[i];
+          unreadCounter = {
+            ...unreadCounter,
+            [item.entity_type.toLowerCase()]: item.count,
+          };
+        }
+        return {
+          ...state,
+          sharedDriffCounters: {
+            ...state.sharedDriffCounters,
+            [action.slug]: action.data.reduce((acc, current) => {
+              acc[current.entity_type.toLowerCase()] = current.count;
+              return acc;
+            }, {}),
+          },
+        };
+      } else {
+        let unreadCounter = state.unreadCounter;
+
+        for (const i in action.data) {
+          const item = action.data[i];
+          unreadCounter = {
+            ...unreadCounter,
+            [item.entity_type.toLowerCase()]: item.count,
+          };
+        }
+
+        return {
+          ...state,
+          unreadCounter: unreadCounter,
         };
       }
-
-      return {
-        ...state,
-        unreadCounter: unreadCounter,
-      };
     }
     case "UPDATE_GENERAL_CHAT_NOTIFICATION": {
       const unreadType = action.data.entity_type ? action.data.entity_type.toLowerCase() : "";

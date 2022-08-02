@@ -319,7 +319,15 @@ const usePostActions = () => {
           }
 
           if (res) {
-            getUnreadNotificationEntries();
+            let counterPayload = {};
+            if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+              const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+              counterPayload = {
+                ...counterPayload,
+                sharedPayload: sharedPayload,
+              };
+            }
+            getUnreadNotificationEntries(counterPayload);
             if (!post.is_archived) {
               toaster.success(
                 <>
@@ -373,7 +381,15 @@ const usePostActions = () => {
         count: count === 0 ? 1 : count,
       };
       if (res) {
-        getUnreadNotificationEntries();
+        let counterPayload = {};
+        if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+          const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+          counterPayload = {
+            ...counterPayload,
+            sharedPayload: sharedPayload,
+          };
+        }
+        getUnreadNotificationEntries(counterPayload);
         if (post.recipients.some((r) => r.type === "TOPIC")) {
           dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
@@ -502,7 +518,15 @@ const usePostActions = () => {
               post_code: post.sharedSlug ? post.code : null,
             })
           );
-          getUnreadNotificationEntries();
+          let counterPayload = {};
+          if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+            const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+            counterPayload = {
+              ...counterPayload,
+              sharedPayload: sharedPayload,
+            };
+          }
+          getUnreadNotificationEntries(counterPayload);
         })
       );
     } else {
