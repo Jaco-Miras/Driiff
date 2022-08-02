@@ -4,9 +4,10 @@ import { useHistory, useRouteMatch, useParams } from "react-router-dom";
 import { sessionService } from "redux-react-session";
 import { $_GET, getUrlParams } from "../../helpers/commonFunctions";
 import { authenticateGoogleLogin, getUser } from "../../redux/actions/userAction";
-import { useUserActions } from "./index";
+import { useUserActions, useToaster } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
 import { getAPIUrl, getBaseUrl } from "../../helpers/slugHelper";
+
 //import { sessionService } from "redux-react-session";
 
 export const useUserLogin = (props) => {
@@ -17,6 +18,7 @@ export const useUserLogin = (props) => {
   const params = useParams();
 
   const userActions = useUserActions();
+  const toaster = useToaster();
 
   const checkingRef = useRef(null);
 
@@ -183,6 +185,12 @@ export const useUserLogin = (props) => {
       const payload = getUrlParams(window.location.href);
       dispatch(
         authenticateGoogleLogin(payload, (err, res) => {
+          if (err) {
+            toaster.error("Oops, can’t login you are not part of this Driff. If you feel like you should have access please contact the owner of the this Driff.", {
+              toastId: 1,
+            });
+            history.push("/login");
+          }
           if (res) {
             userActions.login(res.data, "/dashboard");
           }
