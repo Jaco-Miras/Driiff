@@ -42,12 +42,12 @@ const RadioInputWrapper = styled.div`
     width: auto;
   }
   .client-shared {
-    border-radius: 8px;
-    padding: 2px 6px;
+    border-radius: 6px;
+    padding: 0px 6px;
     background: ${(props) => props.theme.colors.fourth};
     color: #212529;
     margin-right: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     .feather {
       margin-right: 5px;
     }
@@ -56,12 +56,12 @@ const RadioInputWrapper = styled.div`
     }
   }
   .client-not-shared {
-    border-radius: 8px;
-    padding: 2px 6px;
+    border-radius: 6px;
+    padding: 4px 6px;
     background: #d6edff;
     color: #212529;
     margin-right: 5px;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     .feather {
       margin-right: 5px;
     }
@@ -71,7 +71,7 @@ const RadioInputWrapper = styled.div`
   }
 `;
 
-const LockIcon = styled(SvgIconFeather)`
+const SVGIcon = styled(SvgIconFeather)`
   width: 12px;
   margin: 0;
 `;
@@ -81,7 +81,7 @@ const Wrapper = styled.div``;
 const SelectApprover = styled(FolderSelect)``;
 
 const PostSettings = (props) => {
-  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal } = props;
+  const { dictionary, form, userOptions, isExternalUser, shareOption, setShareOption, setForm, user, setShowNestedModal, isSharedExternal = false } = props;
   const externalUsersId = userOptions.filter((o) => o.user_type === "external").map((e) => e.id);
   let options = userOptions;
   if (shareOption && shareOption.value === "internal") {
@@ -385,7 +385,7 @@ const PostSettings = (props) => {
           {form.showApprover && <SelectApprover options={approverOptions} value={form.approvers} onChange={handleSelectApprover} isMulti={true} isClearable={true} maxMenuHeight={250} menuPlacement="top" />}
         </ApproveOptions>
       </Wrapper>
-      {!isExternalUser && hasExternal && (
+      {!isExternalUser && !isSharedExternal && hasExternal && (
         <Wrapper className="mt-1">
           <ApproveOptions className="d-flex align-items-center mb-1">
             <span>{dictionary.shareWithClient}</span>
@@ -402,8 +402,8 @@ const PostSettings = (props) => {
                 name={"role"}
               >
                 <span class="receiver client-shared">
-                  <LockIcon icon="eye" />
-                  {dictionary.sharedClientBadge}
+                  <SVGIcon icon="repeat" />
+                  {dictionary.badgeShared}
                 </span>
               </RadioInput>
             </RadioInputWrapper>
@@ -418,13 +418,14 @@ const PostSettings = (props) => {
                 name={"role"}
               >
                 <span class="receiver client-not-shared">
-                  <LockIcon icon="eye-off" />
+                  {/* <LockIcon icon="eye-off" /> */}
                   {dictionary.notSharedClientBadge}
                 </span>
               </RadioInput>
             </RadioInputWrapper>
             {/* <SelectApprover options={shareOptions} value={shareOption} onChange={handleSelectShareOption} maxMenuHeight={250} menuPlacement="top" /> */}
           </ApproveOptions>
+          <p className="text-muted">{dictionary.radioRequired}</p>
         </Wrapper>
       )}
     </CheckBoxGroup>

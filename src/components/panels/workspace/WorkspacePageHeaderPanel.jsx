@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { NavLink } from "../../common";
-import { useTranslationActions } from "../../hooks";
-//import { getWorkspaceRemindersCount, updateWorkspaceRemindersCount } from "../../../redux/actions/workspaceActions";
+import { useTranslationActions, useGetSlug } from "../../hooks";
 
 const Wrapper = styled.div``;
 
@@ -75,47 +74,34 @@ const MainNavLink = styled(NavLink)`
 
 const WorkspacePageHeaderPanel = (props) => {
   const history = useHistory();
+  const location = useLocation;
   const { className = "", workspace, user } = props;
-
-  //const dispatch = useDispatch();
 
   const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
   const params = useParams();
-
-  // const fetchWsCount = () => {
-  //   let payload = {
-  //     topic_id: params.workspaceId,
-  //   };
-  //   dispatch(
-  //     getWorkspaceRemindersCount(payload, (err, res) => {
-  //       if (err) return;
-  //       dispatch(updateWorkspaceRemindersCount({ count: res.data, id: payload.topic_id }));
-  //     })
-  //   );
-  // };
-
-  // useEffect(() => {
-  //   if (!workspaceReminders.hasOwnProperty(params.workspaceId)) {
-  //     fetchWsCount();
-  //   }
-  // }, [workspaceReminders, params]);
+  const { slug } = useGetSlug();
 
   const isLoaded = typeof workspaceReminders[params.workspaceId] !== "undefined";
 
+  let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
+
   let pathname = props.match.url;
   if (
-    props.match.path === "/hub/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?" ||
-    props.match.path === "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?"
+    props.match.path === `/${ws_type}/:page/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?` ||
+    props.match.path === `/${ws_type}/:page/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?`
   ) {
-    pathname = pathname.split("/post/")[0].replace(`/hub/${props.match.params.page}`, "");
-  } else if (props.match.path === "/hub/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName" || props.match.path === "/hub/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName") {
-    pathname = pathname.split("/folder/")[0].replace(`/hub/${props.match.params.page}`, "");
-  } else if (props.match.path === "/hub/:workspaceId/:workspaceName" && typeof props.match.params.page === "undefined") {
+    pathname = pathname.split("/post/")[0].replace(`/${ws_type}/${props.match.params.page}`, "");
+  } else if (
+    props.match.path === `/${ws_type}/:page/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName` ||
+    props.match.path === `/${ws_type}/:page/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName`
+  ) {
+    pathname = pathname.split("/folder/")[0].replace(`/${ws_type}/${props.match.params.page}`, "");
+  } else if (props.match.path === `/${ws_type}/:workspaceId/:workspaceName` && typeof props.match.params.page === "undefined") {
     const split_pathname = pathname.split("/");
     split_pathname.splice(2, 0, "chat");
     history.push(split_pathname.join("/"));
   } else {
-    pathname = pathname.replace(`/hub/${props.match.params.page}`, "");
+    pathname = pathname.replace(`/${ws_type}/${props.match.params.page}`, "");
   }
 
   const { _t } = useTranslationActions();
@@ -131,48 +117,55 @@ const WorkspacePageHeaderPanel = (props) => {
     pageTitleReminders: _t("PAGE_TITLE.REMINDERS", "Reminders"),
   };
 
+  const isSameSlug = useMemo(() => {
+    const channelSlug = workspace?.slug?.slice(0, -7); //slice removes the '-share' suffix
+    return slug === channelSlug;
+  }, [workspace, slug]);
+
   return (
     <>
       <Wrapper className={`${className}`}>
         <Navbar className="navbar-nav">
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/dashboard${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/dashboard${pathname}`}>
               {dictionary.pageTitleDashboard}
             </MainNavLink>
           </li>
-          {((workspace && user.type === "internal" && workspace.is_shared) || (workspace && user.type === "internal" && workspace.team_channel.code && workspace.is_shared)) && (
+          {((workspace && user.type === "internal" && workspace.is_shared && !workspace.sharedSlug) ||
+            (workspace && user.type === "internal" && workspace.team_channel.code && workspace.is_shared && !workspace.sharedSlug) ||
+            (workspace && workspace.sharedSlug && workspace.team_channel.code && isSameSlug)) && (
             <li className="nav-item">
-              <MainNavLink isSub={true} to={`/hub/team-chat${pathname}`}>
+              <MainNavLink isSub={true} to={`/${ws_type}/team-chat${pathname}`}>
                 {dictionary.pageTitleTeamChat}
                 {workspace !== null && workspace?.team_unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.team_unread_chats}</div>}
               </MainNavLink>
             </li>
           )}
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/chat${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/chat${pathname}`}>
               {workspace && workspace.is_shared && user.type === "internal" ? dictionary.pageTitleClientChat : dictionary.pageTitleChat}
               {workspace !== null && workspace.unread_chats > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_chats}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/posts${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/posts${pathname}`}>
               {dictionary.pageTitlePosts}
               {workspace !== null && workspace.unread_posts > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspace.unread_posts}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/reminders${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/reminders${pathname}`}>
               {dictionary.pageTitleReminders}
               {isLoaded && workspaceReminders[params.workspaceId].count.todo_with_date > 0 && <div className="ml-2 badge badge-pill badge-danger">{workspaceReminders[params.workspaceId].count.todo_with_date}</div>}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/files${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/files${pathname}`}>
               {dictionary.pageTitleFiles}
             </MainNavLink>
           </li>
           <li className="nav-item">
-            <MainNavLink isSub={true} to={`/hub/people${pathname}`}>
+            <MainNavLink isSub={true} to={`/${ws_type}/people${pathname}`}>
               {dictionary.pageTitlePeople}
             </MainNavLink>
           </li>

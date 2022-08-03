@@ -86,6 +86,9 @@ const StyledBadge = styled(Badge)`
         case "WATCHER": {
           return "#FFEC59";
         }
+        case "SHARED_TEAM_LEAD": {
+          return "#33b5e5";
+        }
         default:
           return "#fb3";
       }
@@ -130,6 +133,8 @@ const PeopleListItem = (props) => {
     usersWithoutActivity = [],
     onAddUserToTeam = null,
     onDeleteTeamMember = null,
+    sharedUser = false,
+    isSharedWorkspace = false,
   } = props;
 
   //const [userNameMaxWidth, setUserNameMaxWidth] = useState(320);
@@ -298,14 +303,18 @@ const PeopleListItem = (props) => {
                   imageLink={user.profile_image_link}
                   //imageLink={user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link ? user.profile_image_link : ""}
                   showSlider={true}
+                  sharedUser={sharedUser ? user : null}
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-0">
+                    <h6 className="user-name mb-0 d-flex">
                       {renderUserName({ user })}
                       {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
-                      <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
-                      {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                      <span>
+                        <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
+                        {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
+                      </span>
                     </h6>
                   ) : (
                     <h6 className="user-name mb-0" onClick={handleOnNameClick}>
@@ -321,6 +330,8 @@ const PeopleListItem = (props) => {
 
                       <span className="label-wrapper d-inline-flex start align-items-center">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />}
+                        {isSharedWorkspace && user.is_creator && <StyledBadge role="SHARED_TEAM_LEAD" badgeClassName={"text-white"} label={dictionary.roleTeamLead} />}
+                        {user.type === "external" && loggedUser.type !== "external" && user.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                         {showWorkspaceRole && user.workspace_role && user.workspace_role !== "" && (
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
@@ -331,10 +342,10 @@ const PeopleListItem = (props) => {
 
                   {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
                   {user.external_company_name && user.type === "external" && <span className="small text-muted">{user.external_company_name}</span>}
-                  {user.invited_by && (
+                  {(user.invited_by || user.added_by) && (
                     <div>
                       <span className="small text-muted">
-                        Invited by: {user.invited_by.first_name} {user.invited_by.last_name}
+                        Invited by: {user[isSharedWorkspace ? "added_by" : "invited_by"].first_name} {user[isSharedWorkspace ? "added_by" : "invited_by"].last_name}
                       </span>
                     </div>
                   )}
@@ -342,7 +353,7 @@ const PeopleListItem = (props) => {
               </div>
               {onChatClick !== null && loggedUser.type !== "external" && (
                 <div className="button-wrapper">
-                  {user.has_accepted && (
+                  {user.has_accepted && !sharedUser && (
                     <ToolTip content={dictionary.connectedWorkspaceIcon}>
                       <WorkSpaceIcon className="mr-2" icon="compass" onClick={handleWorkspaceIconClick} />
                     </ToolTip>
@@ -354,7 +365,7 @@ const PeopleListItem = (props) => {
                       </a>
                     </ToolTip>
                   )}
-                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && (
+                  {loggedUser.id !== user.id && user.active === 1 && user.type !== "external" && !sharedUser && (
                     <ToolTip content={dictionary.messageIcon}>
                       <SvgIconFeather onClick={handleOnChatClick} icon="message-circle" />
                     </ToolTip>

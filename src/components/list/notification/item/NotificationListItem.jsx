@@ -43,7 +43,7 @@ export const NotificationListItem = (props) => {
     e.preventDefault();
     removeOverlay(e);
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read({ id: notification.id, key: notification.key });
     }
     if (notification.type === "NEW_TODO") {
       redirect.toTodos();
@@ -59,21 +59,33 @@ export const NotificationListItem = (props) => {
       let post = { id: notification.data.post_id, title: notification.data.title };
       let workspace = null;
       let focusOnMessage = null;
-      if (notification.data.workspaces && notification.data.workspaces.length) {
+      if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
+        if (notification.data.comment_id) {
+          focusOnMessage = { focusOnMessage: notification.data.comment_id };
+        }
+      }
+
+      if (notification.sharedSlug) {
         workspace = notification.data.workspaces[0];
         workspace = {
+          key: `${workspace.topic_id}-${notification.slug}`,
+          id: workspace.topic_id,
+          name: workspace.topic_name,
+          folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+          folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+        };
+      } else if (notification.data.workspaces && notification.data.workspaces.length) {
+        workspace = notification.data.workspaces[0];
+        workspace = {
+          key: workspace.topic_id,
           id: workspace.topic_id,
           name: workspace.topic_name,
           folder_id: workspace.workspace_id ? workspace.workspace_id : null,
           folder_name: workspace.workspace_name ? workspace.workspace_name : null,
         };
       }
-      if (notification.type === "POST_COMMENT" || notification.type === "POST_MENTION") {
-        if (notification.data.comment_id) {
-          focusOnMessage = { focusOnMessage: notification.data.comment_id };
-        }
-      }
-      redirect.toPost({ workspace, post }, focusOnMessage);
+
+      redirect.toPost({ workspace, post, sharedSlug: notification.sharedSlug }, focusOnMessage);
     }
   };
 
@@ -81,9 +93,9 @@ export const NotificationListItem = (props) => {
     e.preventDefault();
     e.stopPropagation();
     if (notification.is_read === 0) {
-      actions.read({ id: notification.id });
+      actions.read({ id: notification.id, key: notification.key });
     } else {
-      actions.unread({ id: notification.id });
+      actions.unread({ id: notification.id, key: notification.key });
     }
   };
 

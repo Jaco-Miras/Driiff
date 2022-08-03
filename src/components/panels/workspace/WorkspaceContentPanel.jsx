@@ -107,9 +107,19 @@ const WorkspaceContentPanel = (props) => {
             <>
               <Suspense fallback={<div></div>}>
                 <Switch>
-                  <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/hub/search"]} />
+                  <Route render={(props) => <AllWorkspace isExternal={isExternal} {...props} />} path={["/hub/search", "/shared-hub/search"]} />
                   {/* <Route render={(props) => <WorkspaceSearchPanel isExternal={isExternal} {...props} />} path={["/hub/search"]} /> */}
-                  <Route render={() => <WsDashboardPanel {...props} />} path={["/hub/dashboard/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/dashboard/:workspaceId/:workspaceName", "/hub/dashboard"]} />
+                  <Route
+                    render={() => <WsDashboardPanel {...props} />}
+                    path={[
+                      "/hub/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/dashboard/:workspaceId/:workspaceName",
+                      "/hub/dashboard",
+                      "/shared-hub/dashboard/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/dashboard/:workspaceId/:workspaceName",
+                      "/shared-hub/dashboard",
+                    ]}
+                  />
                   <Route
                     exact={true}
                     render={() => <WorkspacePostsPanel {...props} workspace={workspace} isMember={isMember} />}
@@ -119,9 +129,25 @@ const WorkspaceContentPanel = (props) => {
                       "/hub/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
                       "/hub/posts/:workspaceId/:workspaceName",
                       "/hub/posts",
+                      "/shared-hub/posts/:folderId/:folderName/:workspaceId/:workspaceName/post/:postId/:postTitle",
+                      "/shared-hub/posts/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/posts/:workspaceId/:workspaceName/post/:postId/:postTitle/:postCommentCode?",
+                      "/shared-hub/posts/:workspaceId/:workspaceName",
+                      "/shared-hub/posts",
                     ]}
                   />
-                  <Route exact={true} render={() => <WorkspaceChatPanel {...props} workspace={workspace} />} path={["/hub/chat/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/chat/:workspaceId/:workspaceName", "/hub/chat"]} />
+                  <Route
+                    exact={true}
+                    render={() => <WorkspaceChatPanel {...props} workspace={workspace} />}
+                    path={[
+                      "/hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/chat/:workspaceId/:workspaceName",
+                      "/hub/chat",
+                      "/shared-hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/chat/:workspaceId/:workspaceName",
+                      "/shared-hub/chat",
+                    ]}
+                  />
                   {!isExternal && (
                     <Route
                       exact={true}
@@ -132,6 +158,11 @@ const WorkspaceContentPanel = (props) => {
                         "/hub/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
                         "/hub/team-chat/:workspaceId/:workspaceName",
                         "/hub/chat",
+                        "/shared-hub/chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/shared-hub/chat/:workspaceId/:workspaceName",
+                        "/shared-hub/team-chat/:folderId/:folderName/:workspaceId/:workspaceName",
+                        "/shared-hub/team-chat/:workspaceId/:workspaceName",
+                        "/shared-hub/chat",
                       ]}
                     />
                   )}
@@ -145,21 +176,51 @@ const WorkspaceContentPanel = (props) => {
                       "/hub/files/:folderId/:folderName/:workspaceId/:workspaceName",
                       "/hub/files/:workspaceId/:workspaceName",
                       "/hub/files",
+                      "/shared-hub/files/:folderId/:folderName/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/files/:workspaceId/:workspaceName/folder/:fileFolderId/:fileFolderName",
+                      "/shared-hub/files/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/files/:workspaceId/:workspaceName",
+                      "/shared-hub/files",
                     ]}
                   />
                   <Route
                     render={() => <WorkspacePeoplePanel {...props} workspace={workspace} isMember={isMember} />}
-                    path={["/hub/people/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/people/:workspaceId/:workspaceName", "/hub/people"]}
+                    path={[
+                      "/hub/people/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/people/:workspaceId/:workspaceName",
+                      "/hub/people",
+                      "/shared-hub/people/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/people/:workspaceId/:workspaceName",
+                      "/shared-hub/people",
+                    ]}
                   />
                   <Route
                     render={() => <WorkspaceRemindersPanel {...props} workspace={workspace} isMember={isMember} />}
-                    path={["/hub/reminders/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/reminders/:workspaceId/:workspaceName", "/hub/reminders"]}
+                    path={[
+                      "/hub/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/reminders/:workspaceId/:workspaceName",
+                      "/hub/reminders",
+                      "/shared-hub/reminders/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/reminders/:workspaceId/:workspaceName",
+                      "/shared-hub/reminders",
+                    ]}
                   />
-                  <Route {...props} component={WorkspaceSettingsPanel} path={["/hub/settings/:folderId/:folderName/:workspaceId/:workspaceName", "/hub/settings/:workspaceId/:workspaceName", "/hub/settings"]} />
+                  <Route
+                    {...props}
+                    component={WorkspaceSettingsPanel}
+                    path={[
+                      "/hub/settings/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/hub/settings/:workspaceId/:workspaceName",
+                      "/hub/settings",
+                      "/shared-hub/settings/:folderId/:folderName/:workspaceId/:workspaceName",
+                      "/shared-hub/settings/:workspaceId/:workspaceName",
+                      "/shared-hub/settings",
+                    ]}
+                  />
                   <Redirect
                     from="*"
                     to={{
-                      pathname: "/hub/chat",
+                      pathname: "/hub/search",
                       state: { from: props.location },
                     }}
                   />

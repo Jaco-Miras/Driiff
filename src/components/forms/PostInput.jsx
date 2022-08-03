@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, forwardRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import PostInputMention from "../common/PostInputMention";
-import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons } from "../hooks";
+import { useCommentQuote, useQuillModules, useSaveInput, useCommentDraft, useTranslationActions, useEnlargeEmoticons, useGetSlug } from "../hooks";
 import QuillEditor from "./QuillEditor";
 import { setEditComment, setParentIdForUpload, addPostRecipients, addUserToPostRecipients, removeUserToPostRecipients } from "../../redux/actions/postActions";
 
@@ -126,6 +126,8 @@ const PostInput = forwardRef((props, ref) => {
     isApprover = false,
   } = props;
 
+  const { slug } = useGetSlug();
+
   const dispatch = useDispatch();
   const reactQuillRef = useRef();
   const user = useSelector((state) => state.session.user);
@@ -133,6 +135,7 @@ const PostInput = forwardRef((props, ref) => {
   const editPostComment = useSelector((state) => state.posts.editPostComment);
   const recipients = useSelector((state) => state.global.recipients);
   const users = useSelector((state) => state.users.users);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const [text, setText] = useState("");
   const [textOnly, setTextOnly] = useState("");
@@ -236,6 +239,12 @@ const PostInput = forwardRef((props, ref) => {
       approval_user_ids: approvers.find((a) => a.value === "all") ? approvers.find((a) => a.value === "all").all_ids : approvers.map((a) => a.value).filter((id) => post.author.id !== id),
     };
 
+    if (post.slug !== slug && workspace.sharedSlug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+      };
+    }
     if (quote) {
       payload.quote = {
         id: quote.id,
@@ -249,8 +258,9 @@ const PostInput = forwardRef((props, ref) => {
     }
 
     if (!editMode) {
+      const messageUser = post.slug !== slug && workspace.sharedSlug && sharedWs[workspace.slug] ? sharedWs[workspace.slug].user_auth : user;
       let commentObj = {
-        author: user,
+        author: messageUser,
         body: enlargeEmoji(text),
         clap_count: 0,
         claps: [],
@@ -279,6 +289,7 @@ const PostInput = forwardRef((props, ref) => {
         unfurls: [],
         user_clap_count: 0,
         users_approval: [],
+        post_code: post.slug !== slug ? post.code : null,
       };
 
       commentActions.add(commentObj);
@@ -306,9 +317,9 @@ const PostInput = forwardRef((props, ref) => {
       if (isApprover && !mainInput) {
         payload.has_reject = 1;
       }
-      if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
-        commentActions.markReplyRequirement(post);
-      }
+      // if (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply)) {
+      //   commentActions.markReplyRequirement(post);
+      // }
       commentActions.create(payload, onSubmitCallback);
     }
 
@@ -565,7 +576,9 @@ const PostInput = forwardRef((props, ref) => {
     mentionOrientation: "top",
     quillRef: reactQuillRef,
     members:
-      user.type === "external"
+      workspace && workspace.sharedSlug
+        ? workspace.members
+        : user.type === "external"
         ? members.filter((m) => m.id !== user.id)
         : Object.values(users).filter((u) => {
             if (u.id === user.id) {
@@ -580,10 +593,14 @@ const PostInput = forwardRef((props, ref) => {
     disableMention: false,
     setInlineImages,
     setImageLoading,
-    prioMentionIds: Object.values(users)
-      .filter((u) => prioIds.some((id) => id === u.id))
-      .map((u) => u.id),
+    prioMentionIds:
+      workspace && workspace.sharedSlug
+        ? workspace.members.map((m) => m.id)
+        : Object.values(users)
+            .filter((u) => prioIds.some((id) => id === u.id))
+            .map((u) => u.id),
     post,
+    sharedSlug: workspace && workspace.sharedSlug ? workspace.slug : null,
   });
 
   return (

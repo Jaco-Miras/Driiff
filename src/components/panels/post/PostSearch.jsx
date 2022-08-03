@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useRouteMatch } from "react-router-dom";
 import { addPostSearchResult } from "../../../redux/actions/workspaceActions";
 import { fetchPosts } from "../../../redux/actions/postActions";
 import { SvgIconFeather, Loader } from "../../common";
@@ -33,7 +33,10 @@ const Wrapper = styled.div`
 const PostSearch = (props) => {
   const { search, placeholder } = props;
   const dispatch = useDispatch();
-  const params = useParams();
+  const route = useRouteMatch();
+  const { params, url } = route;
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const [searchValue, setSearchValue] = useState(search === null ? "" : search);
   const [searching, setSearching] = useState(false);
   const cancelToken = useRef(null);
@@ -43,6 +46,10 @@ const PostSearch = (props) => {
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   };
+  const workspaceRef = useRef(null);
+  useEffect(() => {
+    if (workspace) workspaceRef.current = workspace;
+  }, [workspace]);
 
   const handleClearSearchPosts = () => {
     setSearchValue("");
@@ -51,6 +58,7 @@ const PostSearch = (props) => {
         topic_id: topic_id,
         search: "",
         search_result: [],
+        topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
       })
     );
   };
@@ -72,11 +80,18 @@ const PostSearch = (props) => {
       //Save the cancel token for the current request
       cancelToken.current = axios.CancelToken.source();
       setSearching(true);
-      const payload = {
+      let payload = {
         search: searchValue,
         cancelToken: cancelToken.current.token,
         topic_id: topic_id,
       };
+      if (workspaceRef.current && workspaceRef.current.sharedSlug && sharedWs[workspaceRef.current.slug]) {
+        const sharedPayload = { slug: workspaceRef.current.slug, token: sharedWs[workspaceRef.current.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         fetchPosts(payload, (err, res) => {
           setSearching(false);
@@ -86,6 +101,7 @@ const PostSearch = (props) => {
               topic_id: topic_id,
               search: searchValue,
               search_result: res.data.posts,
+              topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
             })
           );
         })
@@ -105,6 +121,7 @@ const PostSearch = (props) => {
           topic_id: topic_id,
           search: "",
           search_result: [],
+          topicKey: workspaceRef.current && workspaceRef.current.sharedSlug ? workspaceRef.current.key : topic_id,
         })
       );
     };

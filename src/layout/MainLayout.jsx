@@ -16,6 +16,8 @@ import {
   useVisibilityChange,
   useWorkspaceActions,
   useProfilePicUpload,
+  useLoadSharedDriff,
+  useUsers,
 } from "../components/hooks";
 import { MainContentPanel, MainHeaderPanel, MainNavigationPanel, MainSnoozePanel } from "../components/panels/main";
 import MobileOverlay from "../components/panels/MobileOverlay";
@@ -28,6 +30,10 @@ import NotificationTopBar from "../components/panels/topbar/NotificationTopBar";
 import JitsiContainer from "../components/panels/chat/JitsiContainer";
 import JitsiDraggable from "../components/panels/chat/JitsiDraggable";
 import ImpersonationTopBar from "../components/panels/topbar/ImpersonationTopBar";
+import { acceptSharedUserInvite } from "../redux/actions/userAction";
+import { getSharedWorkspaces } from "../redux/actions/workspaceActions";
+import { sessionService } from "redux-react-session";
+import { replaceChar } from "../helpers/stringFormatter";
 
 const MainContent = styled.div`
   &.top-40 .main-content {
@@ -48,6 +54,7 @@ const MainLayout = (props) => {
   useVisibilityChange();
   useSocketConnection();
   useInitialLoad();
+  useLoadSharedDriff();
   const { mounted, showNotificationBar, onClickAskUserPermission, onClickRemindLater } = usePushNotification();
 
   const { path } = useRouteMatch();
@@ -62,9 +69,15 @@ const MainLayout = (props) => {
     huddlePublished: _t("HUDDLE.HUDDLE_PUBLISHED", "Huddle published"),
     likedYourPost: _t("TOAST.LIKED_YOUR_POST", "liked your post"),
     likedYourComment: _t("TOAST.LIKED_YOUR_COMMENT", "liked your comment"),
+    invalidCode: _t("INVALID_INVITE_CODE", "Invite code is invalid."),
+    codeAlreadyAccepted: _t("CODE_ALREADY_ACCEPTED", "Invite code already used."),
+    userNotFound: _t("USER_NOT_FOUND", "User not found"),
+    userAlreadyExists: _t("USER_ALREADY_EXISTS", "User already exists"),
   };
 
   //const subscriptions = useSelector((state) => state.admin.subscriptions);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const sharedWsLoaded = useSelector((state) => state.workspaces.sharedWorkspacesLoaded);
   const user = useSelector((state) => state.session.user);
   const toaster = useToaster();
   const { localizeDate } = useTimeFormat();
@@ -73,6 +86,7 @@ const MainLayout = (props) => {
     audio: useRef(null),
     dropZoneRef: useRef(null),
   };
+  const slug = uDriff.actions.getName();
 
   const dispatch = useDispatch();
 
@@ -83,6 +97,11 @@ const MainLayout = (props) => {
   } = useSettings();
 
   const { generalSettings } = useSettings();
+
+  const {
+    loggedUser,
+    actions: { fetchById },
+  } = useUsers();
 
   const history = useHistory();
 
@@ -128,12 +147,78 @@ const MainLayout = (props) => {
   }, [notification_sound]);
 
   useEffect(() => {
+    let invite_slug = localStorage.getItem("inviteSlug");
+    let state_code = localStorage.getItem("stateCode");
+    const handleAcceptInvite = (payload) => {
+      dispatch(
+        acceptSharedUserInvite(payload, (err, res) => {
+          localStorage.removeItem("inviteSlug");
+          localStorage.removeItem("stateCode");
+          history.replace({ state: {} });
+          if (err) {
+            if (err && err.response) {
+              if (err.response.data.errors) {
+                let errorMessage = err.response.data.errors.error_message.includes("INVALID_CODE")
+                  ? dictionary.invalidCode
+                  : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
+                  ? dictionary.codeAlreadyAccepted
+                  : err.response.data.errors.error_message.includes("INVITATION_ALREADY_ACCEPTED")
+                  ? dictionary.userNotFound
+                  : err.response.data.errors.error_message.includes("USER_EXISTED")
+                  ? dictionary.userAlreadyExists
+                  : null;
+                toaster.error(errorMessage);
+              }
+            }
+          } else {
+            let redirectLink = "/dashboard";
+            if (res.data.data.current_workspace) {
+              redirectLink = `/shared-hub/dashboard/${res.data.data.current_workspace.id}/${replaceChar(res.data.data.current_workspace.name)}/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+            } else {
+              redirectLink = `/shared-hub/dashboard/${res.data.data.current_topic.id}/${replaceChar(res.data.data.current_topic.name)}`;
+            }
+            history.push(redirectLink);
+            dispatch(
+              getSharedWorkspaces({}, (error, response) => {
+                if (error) return;
+                sessionService.loadSession().then((current) => {
+                  sessionService.saveSession({ ...current, sharedWorkspaces: response.data });
+                });
+              })
+            );
+          }
+        })
+      );
+    };
+    if (invite_slug && state_code) {
+      let payload = {
+        url: `https://${invite_slug}.${process.env.REACT_APP_apiDNSName}/api/v2/shared-workspace-invite-accept`,
+        state_code: state_code,
+        slug: slug,
+        as_guest: false,
+        email: user.email,
+      };
+      handleAcceptInvite(payload);
+    } else if (history.location.state && history.location.state.state_code && history.location.state.invite_slug) {
+      let payload = {
+        url: `https://${history.location.state.invite_slug}.${process.env.REACT_APP_apiDNSName}/api/v2/shared-workspace-invite-accept`,
+        state_code: history.location.state.state_code,
+        slug: slug,
+        as_guest: false,
+        email: user.email,
+      };
+      handleAcceptInvite(payload);
+    }
     const modalTimer = setTimeout(() => {
-      if (!userCanceledProfileUpload && first_login && !user.profile_image_thumbnail_link && !isExternal) {
-        uploadModal(() => {
-          clearTimeout(modalTimer);
-        });
-      }
+      fetchById(loggedUser.id, (err, res) => {
+        if (err) return;
+        const currentUser = res.data;
+        if (!userCanceledProfileUpload && first_login && (!currentUser.profile || !currentUser.user_image) && !isExternal) {
+          uploadModal(() => {
+            clearTimeout(modalTimer);
+          });
+        }
+      });
     }, MODAL_TIMER);
 
     return () => {
@@ -188,7 +273,7 @@ const MainLayout = (props) => {
         <MainContent id="main">
           <Route render={(props) => <MainNavigationPanel isExternal={isExternal} {...props} showNotificationBar={showNotificationBar} />} path={["/:page"]} />
           <Switch>
-            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub"]} />
+            <Route render={(props) => <WorkspaceContentPanel isExternal={isExternal} {...props} />} path={["/hub", "/shared-hub"]} />
             <Route render={(props) => <MainContentPanel {...props} isExternal={isExternal} />} path={["/:page"]} />
           </Switch>
           <MainSnoozePanel />
@@ -210,9 +295,32 @@ const MainLayout = (props) => {
         </MainContent>
       )} */}
       <MobileOverlay />
-      {user.id !== undefined && window.Echo !== undefined && (
-        <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} />
+      {user.id !== undefined && window.Echo && window.Echo[slug] !== undefined && (
+        <SocketListeners dictionary={dictionary} useDriff={uDriff} localizeDate={localizeDate} toaster={toaster} soundPlay={handleSoundPlay} workspaceActions={workspaceActions} notificationsOn={notifications_on} sharedSlug={false} />
       )}
+      {sharedWsLoaded &&
+        Object.keys(sharedWs).length > 0 &&
+        Object.keys(sharedWs).map((ws) => {
+          if (window.Echo && window.Echo[ws] && sharedWs[ws].user_auth) {
+            return (
+              <SocketListeners
+                key={ws}
+                slug={ws}
+                userId={sharedWs[ws].user_auth.id}
+                dictionary={dictionary}
+                useDriff={uDriff}
+                localizeDate={localizeDate}
+                toaster={toaster}
+                soundPlay={handleSoundPlay}
+                workspaceActions={workspaceActions}
+                notificationsOn={notifications_on}
+                sharedSlug={true}
+              />
+            );
+          } else {
+            return null;
+          }
+        })}
     </>
   );
 };

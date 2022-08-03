@@ -167,9 +167,14 @@ const ChatMessageOptions = (props) => {
       {!replyData.hasOwnProperty("huddle_log") && !hasDeletedFile && <div onClick={handleForwardMessage}>{dictionary.forward}</div>}
       {isAuthor && <div onClick={handleImportant}>{replyData.is_important ? dictionary.unMarkImportant : dictionary.markImportant}</div>}
       {replyData.user && replyData.user.type === "BOT" && replyData.body.includes("<div><p>Your") && replyData.hasOwnProperty("huddle_log") && <div onClick={handleEditHuddle}>{dictionary.editHuddle}</div>}
-      {replyData.user && replyData.user.type !== "BOT" && loggedUser.type === "internal" && replyData.user.id !== loggedUser.id && selectedChannel.type !== "DIRECT" && replyData.user.code !== "huddle_bot" && isInternalUser && (
-        <div onClick={handleReply}>{dictionary.replyInPrivate}</div>
-      )}
+      {!selectedChannel.sharedSlug &&
+        replyData.user &&
+        replyData.user.type !== "BOT" &&
+        loggedUser.type === "internal" &&
+        replyData.user.id !== loggedUser.id &&
+        selectedChannel.type !== "DIRECT" &&
+        replyData.user.code !== "huddle_bot" &&
+        isInternalUser && <div onClick={handleReply}>{dictionary.replyInPrivate}</div>}
       {teamChannelId && !isExternalUser && <div onClick={handleDiscussInTeam}>{dictionary.discussOnTeamChat}</div>}
       {showDownloadAll && <div onClick={handleDownloadAll}>{dictionary.downloadAll}</div>}
     </MoreOptions>

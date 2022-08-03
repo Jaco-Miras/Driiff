@@ -55,11 +55,12 @@ const RedirectPanel = (props) => {
               if (res.data.additional_data.topic) {
                 let topic = res.data.additional_data.topic;
                 let wsFolder = res.data.additional_data.workspace;
+                let ws_type = wsFolder.sharedSlug ? "shared-hub" : "hub";
                 if (wsFolder) {
-                  let link = `/hub/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/${ws_type}/chat/${wsFolder.id}/${replaceChar(wsFolder.name)}/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 } else {
-                  let link = `/hub/chat/${topic.id}/${replaceChar(topic.name)}`;
+                  let link = `/${ws_type}/chat/${topic.id}/${replaceChar(topic.name)}`;
                   history.push(link);
                 }
               } else if (res.data.additional_data.data) {
@@ -69,11 +70,11 @@ const RedirectPanel = (props) => {
                 });
                 history.push(link);
               } else {
-                history.push("/hub/chat");
+                history.push("/hub/search");
               }
             }
           } else {
-            history.push("/hub/chat");
+            history.push("/hub/search");
           }
         }
       });

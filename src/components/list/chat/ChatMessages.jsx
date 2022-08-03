@@ -20,6 +20,22 @@ import DriffTalkMessage from "./DriffTalkMessage";
 //const ChatBubble = lazy(() => import("./ChatBubble"));
 //const SystemMessage = lazy(() => import("./SystemMessage"));
 
+const setChatBubbleArrowBG = (props) => {
+  let bgColor = "#f0f0f0";
+
+  if (props.sharedSlug && !props.isAuthor && props.isNotSameDriff) {
+    bgColor = "#fb3";
+  }
+
+  if (props.isImportant) {
+    bgColor = "#7B68EE";
+  }
+  if (props.isExternalChat) {
+    bgColor = props.theme.colors.fourth;
+  }
+  return bgColor;
+};
+
 const ChatReplyContainer = styled.div`
   background: transparent;
   background-repeat: repeat;
@@ -150,7 +166,7 @@ const ChatBubbleContainer = styled.div`
   &:before {
     ${(props) => props.showAvatar && "content: '';"};
     border: 10px solid transparent;
-    border-right-color: ${(props) => (props.isImportant ? "#7B68EE" : props.isExternalChat ? props.theme.colors.fourth : "#f0f0f0")};
+    border-right-color: ${(props) => setChatBubbleArrowBG(props)};
     position: absolute;
     top: ${(props) => (props.showAvatar && !props.isAuthor ? "45px" : "8px")};
     left: 40px;
@@ -475,7 +491,7 @@ class ChatMessages extends React.PureComponent {
     const scrollComponent = this.scrollComponent.current;
 
     //change channel
-    if (this.props.selectedChannel && prevProps.selectedChannel.id !== selectedChannel.id) {
+    if (this.props.selectedChannel && prevProps.selectedChannel.code !== selectedChannel.code) {
       // this.props.chatMessageActions.channelActions.fetchUnpublishedAnswers({ channel_id: selectedChannel.id });
       if (selectedChannel.hasMore && selectedChannel.skip === 0) this.loadReplies();
       this.handleReadChannel();
@@ -719,7 +735,10 @@ class ChatMessages extends React.PureComponent {
                       <TimestampDiv className="timestamp-container">{<span>{this.props.timeFormat.localizeChatDate(gm[1][0].created_at.timestamp, "ddd, MMM DD, YYYY")}</span>}</TimestampDiv>
 
                       {gm[1].map((reply, k, e) => {
-                        const isAuthor = reply.user && reply.user.id === this.props.user.id;
+                        let isAuthor = reply.user && reply.user.id === this.props.user.id;
+                        if (this.props.selectedChannel.slug && this.props.sharedWorkspaces[this.props.selectedChannel.slug]) {
+                          isAuthor = reply.user && reply.user.id === this.props.sharedWorkspaces[this.props.selectedChannel.slug].user_auth.id;
+                        }
 
                         let showAvatar = false;
                         let showTimestamp = false;
@@ -784,6 +803,10 @@ class ChatMessages extends React.PureComponent {
                                 isBot={isBot}
                                 isImportant={reply.is_important}
                                 isExternalChat={reply.user && this.props.users[reply.user.id] && this.props.users[reply.user.id].type === "external" && !isAuthor}
+                                sharedSlug={this.props.selectedChannel.hasOwnProperty("sharedSlug") ? this.props.selectedChannel.sharedSlug : false}
+                                isNotSameDriff={
+                                  this.props.selectedChannel.sharedSlug && this.props.selectedChannel.slug && this.props.selectedChannel.members.find((mem) => mem.id === reply.user.id)?.slug !== this.props.selectedChannel.slug.slice(0, -7)
+                                }
                               >
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
                                   <ChatBubble
@@ -827,7 +850,13 @@ class ChatMessages extends React.PureComponent {
 
                                   {reply.reactions.length > 0 && <ChatReactions reactions={reply.reactions} isAuthor={isAuthor} reply={reply} loggedUser={this.props.user} chatReactionAction={this.props.chatReactionV2Action} />}
                                   {this.props.selectedChannel.last_reply && this.props.selectedChannel.last_reply.id === reply.id && this.filterSeenMembers().length > 0 && (
-                                    <SeenIndicator isAuthor={isAuthor} onClick={this.handleShowSeenUsers} seenMembers={this.filterSeenMembers()} isPersonal={this.props.selectedChannel.members.length === 2} />
+                                    <SeenIndicator
+                                      isAuthor={isAuthor}
+                                      onClick={this.handleShowSeenUsers}
+                                      seenMembers={this.filterSeenMembers()}
+                                      isPersonal={this.props.selectedChannel.members.length === 2}
+                                      channel={this.props.selectedChannel}
+                                    />
                                   )}
                                 </ChatBubbleQuoteDiv>
 
@@ -842,6 +871,7 @@ class ChatMessages extends React.PureComponent {
                                     isBot={isBot}
                                     isHuddleBot={reply.user.code === "huddle_bot"}
                                     showSlider={true}
+                                    sharedUser={this.props.selectedChannel.sharedSlug && this.props.selectedChannel.members.find((m) => m.id === reply.user.id) ? this.props.selectedChannel.members.find((m) => m.id === reply.user.id) : null}
                                   />
                                 )}
                               </ChatBubbleContainer>
@@ -899,7 +929,14 @@ class ChatMessages extends React.PureComponent {
                             {reply.user === null && (reply.body.startsWith("DRIFF_TALK::") || reply.body.startsWith("MEETING_ENDED::")) && (
                               <ChatBubbleContainer className={`chat-reply-list-item system-reply-list-item chat-reply-list-item-${reply.id} google-meet-message justify-content-center`} isAuthor={false}>
                                 <ChatBubbleQuoteDiv isAuthor={isAuthor} showAvatar={showAvatar} className={"chat-bubble-quote-div"}>
-                                  <DriffTalkMessage reply={reply} timeFormat={this.props.timeFormat} channelId={this.props.selectedChannel.id} channelTitle={this.props.selectedChannel.title} type={this.props.selectedChannel.type} />
+                                  <DriffTalkMessage
+                                    reply={reply}
+                                    timeFormat={this.props.timeFormat}
+                                    selectedChannel={this.props.selectedChannel}
+                                    channelId={this.props.selectedChannel.id}
+                                    channelTitle={this.props.selectedChannel.title}
+                                    type={this.props.selectedChannel.type}
+                                  />
                                 </ChatBubbleQuoteDiv>
                               </ChatBubbleContainer>
                             )}
@@ -941,6 +978,7 @@ function mapStateToProps(state) {
     session: { user },
     chat: { historicalPositions, isLastChatVisible, selectedChannel },
     users: { users },
+    workspaces: { sharedWorkspaces },
   } = state;
 
   return {
@@ -952,6 +990,7 @@ function mapStateToProps(state) {
     isIdle,
     isBrowserActive,
     selectedChannel,
+    sharedWorkspaces,
   };
 }
 

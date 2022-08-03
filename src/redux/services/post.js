@@ -8,11 +8,17 @@ import { objToUrlParams } from "../../helpers/commonFunctions";
  * @returns {Promise<*>}
  */
 export function postFavorite(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/favourites";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -39,13 +45,18 @@ export function postMarkDone(payload) {
  * @returns {Promise<*>}
  */
 export function postArchive(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v2/post-toggle-archived";
 
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -56,13 +67,17 @@ export function postArchive(payload) {
  * @returns {Promise<*>}
  */
 export function postToggleRead(payload) {
+  // let sharedPayload;
+  // // if (payload.sharedPayload) {
+  // //   sharedPayload = payload.sharedPayload;
+  // //   delete payload.sharedPayload;
+  // // }
   let url = "/v2/post-toggle-unread";
-
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: payload.sharedPayload,
   });
 }
 
@@ -72,11 +87,16 @@ export function postToggleRead(payload) {
  * @returns {Promise<*>}
  */
 export function postFollow(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PATCH",
     url: `/v1/follows?post_id=${payload.post_id}`,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -86,11 +106,16 @@ export function postFollow(payload) {
  * @returns {Promise<*>}
  */
 export function postUnfollow(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v1/follows?post_id=${payload.post_id}`,
     data: payload,
-    is_shared: payload.is_shared ? true : false,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -122,11 +147,17 @@ export function postSnooze(payload) {
  * @returns {Promise<*>}
  */
 export function postCreate(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/posts";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -187,18 +218,30 @@ export function putCompanyPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/messages";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function fetchComments(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: payload.url,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -214,20 +257,32 @@ export function fetchComments(payload) {
  * @returns {Promise<*>}
  */
 export function putComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/messages/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function deletePost(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts/${payload.id}`;
   return apiCall({
     method: "DELETE",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -244,11 +299,17 @@ export function deletePost(payload) {
  * @returns {Promise<*>}
  */
 export function putPost(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts/${payload.id}`;
   return apiCall({
     method: "PUT",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -261,11 +322,17 @@ export function putPost(payload) {
  * @returns {Promise<*>}
  */
 export function postClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/post-clap";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -278,6 +345,11 @@ export function postClap(payload) {
  * @returns {Promise<*>}
  */
 export function getCompanyPosts(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   const { skip = 0, limit = 25, search = "", filters = [] } = payload;
   let url = `/v2/company/posts?&skip=${skip}&limit=${limit}`;
   if (search !== "") {
@@ -296,12 +368,14 @@ export function getCompanyPosts(payload) {
       url: url,
       data: payload,
       cancelToken: payload.cancelToken,
+      sharedPayload: sharedPayload,
     });
   } else {
     return apiCall({
       method: "GET",
       url: url,
       data: payload,
+      sharedPayload: sharedPayload,
     });
   }
 }
@@ -314,11 +388,17 @@ export function getCompanyPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postCommentClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/messages/${payload.id}/reactions`;
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -386,6 +466,11 @@ export function fetchTagCounter(payload) {
  */
 export function fetchPosts(payload) {
   const { skip = 0, limit = 15 } = payload;
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${skip}&limit=${limit}`;
   if (payload.search !== undefined) {
     url += `&search=${payload.search}`;
@@ -401,12 +486,14 @@ export function fetchPosts(payload) {
       url: url,
       data: payload,
       cancelToken: payload.cancelToken,
+      sharedPayload: sharedPayload,
     });
   } else {
     return apiCall({
       method: "GET",
       url: url,
       data: payload,
+      sharedPayload: sharedPayload,
     });
   }
 }
@@ -418,11 +505,17 @@ export function fetchPosts(payload) {
  * @returns {Promise<*>}
  */
 export function postVisit(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = "/v1/post-viewed";
   return apiCall({
     method: "POST",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -449,10 +542,16 @@ export function postMarkRead(payload) {
  * @returns {Promise<*>}
  */
 export function deleteComment(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/messages/${payload.comment_id}`;
   return apiCall({
     method: "DELETE",
     url,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -462,10 +561,16 @@ export function deleteComment(payload) {
  * @returns {Promise<*>}
  */
 export function fetchPost(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v1/posts/${payload.post_id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -478,19 +583,6 @@ export function getPostClapHover(payload) {
   return apiCall({
     method: "GET",
     url: `/v1/post-clap-hover/?${objToUrlParams(payload)}`,
-    data: payload,
-  });
-}
-
-/**
- * @param {Object} payload
- * @param {number} payload.message_id
- * @returns {Promise<*>}
- */
-export function getReplyClapHover(payload) {
-  return apiCall({
-    method: "GET",
-    url: `/v1/reply-clap-hover/?${objToUrlParams(payload)}`,
     data: payload,
   });
 }
@@ -508,10 +600,16 @@ export function getUnreadPostEntries(payload) {
  * @returns {Promise<*>}
  */
 export function markAllPostAsRead(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/marked-post-read/all",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -521,10 +619,16 @@ export function markAllPostAsRead(payload) {
  * @returns {Promise<*>}
  */
 export function archiveAllPosts(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/archived-post/all",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -582,33 +686,57 @@ export function getUnreadPostComments(payload) {
  * @returns {Promise<*>}
  */
 export function putCommentImportant(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: "/v2/set-important-comment",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getUnreadWorkspacePostEntries(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/post-unread-entries?topic_id=${payload.topic_id}`,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function postApprove(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-approve",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function commentApprove(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-comment-approve",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -631,20 +759,32 @@ export function getPostRead(payload) {
  * @returns {Promise<*>}
  */
 export function postClose(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-close",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 /**
  * @returns {Promise<*>}
  */
-export function getPostList() {
+export function getPostList(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: "/v2/user-post-list",
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -654,10 +794,16 @@ export function getPostList() {
  * @returns {Promise<*>}
  */
 export function createPostList(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/user-post-list",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -667,10 +813,16 @@ export function createPostList(payload) {
  * @returns {Promise<*>}
  */
 export function updatePostList(payload, id) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "PUT",
     url: `/v2/user-post-list/${id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -678,9 +830,15 @@ export function updatePostList(payload, id) {
  * @returns {Promise<*>}
  */
 export function deletePostList(payload, id) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: `/v2/user-post-list/${id}`,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -691,10 +849,16 @@ export function deletePostList(payload, id) {
  * @returns {Promise<*>}
  */
 export function postListConnect(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-list-connect",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -705,10 +869,16 @@ export function postListConnect(payload) {
  * @returns {Promise<*>}
  */
 export function postListDisconnect(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "DELETE",
     url: "/v2/post-list-disconnected",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -720,18 +890,30 @@ export function postListDisconnect(payload) {
  * @returns {Promise<*>}
  */
 export function postRequired(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/post-required",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function readNotification(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "POST",
     url: "/v2/toggle-notification-unread",
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -744,10 +926,16 @@ export function checkPostAccess(payload) {
 }
 
 export function getPostReadAndClap(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/get-post-read-and-clap/?post_id=${payload.post_id} `,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -775,14 +963,25 @@ export function getCompanyPostsByCategory(payload) {
 }
 
 export function getWorkspacePostCategoryCounter(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   return apiCall({
     method: "GET",
     url: `/v2/post-category-entries?topic_id=${payload.topic_id}`,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }
 
 export function getWorkspacePostsByCategory(payload) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/posts?topic_id=${payload.topic_id}&skip=${payload.skip}&limit=${payload.limit}`;
   if (payload.filters !== undefined) {
     for (var i = 0; i < payload.filters.length; i++) {
@@ -793,5 +992,6 @@ export function getWorkspacePostsByCategory(payload) {
     method: "GET",
     url: url,
     data: payload,
+    sharedPayload: sharedPayload,
   });
 }

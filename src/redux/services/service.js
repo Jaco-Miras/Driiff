@@ -6,7 +6,7 @@ import { getAPIUrl } from "../../helpers/slugHelper";
 
 //requireAxiosDebugLog();
 
-export const apiCall = async ({ method, url, data = null, register = false, mockServer = false, responseType, hasFile = false, is_shared = false, config = { timeout: 5000 }, cancelToken = null }) => {
+export const apiCall = async ({ method, url, data = null, register = false, mockServer = false, responseType, hasFile = false, is_shared = false, config = { timeout: 5000 }, cancelToken = null, sharedPayload = null }) => {
   let userLang = navigator.language || navigator.userLanguage;
   let tzOffset = new Date().getTimezoneOffset();
   let tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -24,11 +24,11 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
 
   const urls = register
     ? `${getAPIUrl({ noSlug: true })}${url}`
-    : is_shared
+    : sharedPayload
     ? `${getAPIUrl({
         is_shared: true,
-        token: data.token,
-        slug: data.slug,
+        token: sharedPayload.token,
+        slug: sharedPayload.slug,
       })}${url}`
     : `${getAPIUrl()}${url}`;
 
@@ -58,7 +58,7 @@ export const apiCall = async ({ method, url, data = null, register = false, mock
         "Access-Control-Allow-Origin": "*",
         crossorigin: true,
         "Content-Type": hasFile ? "multipart/form-data" : "application/json",
-        Authorization: is_shared && data.token ? `Bearer ${data.token}` : session.token,
+        Authorization: sharedPayload ? `Bearer ${sharedPayload.token}` : session.token,
         "Accept-Language": userLang,
         "X-Timezone-Offset": tzOffset,
         "X-Timezone-Name": tzName,

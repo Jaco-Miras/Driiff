@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 `;
 
 const CompanyPostComments = (props) => {
-  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false, postActions } = props;
+  const { className = "", comments, post, user, commentActions, onShowFileDialog, dropAction, workspace, isMember = true, dictionary, disableOptions = false, postActions, userId } = props;
 
   return (
     <Wrapper className={`post-comments card-body ${className}`}>
@@ -38,6 +38,7 @@ const CompanyPostComments = (props) => {
                 disableOptions={disableOptions}
                 isCompanyPost={true}
                 postActions={postActions}
+                userId={userId}
               />
             );
           })}

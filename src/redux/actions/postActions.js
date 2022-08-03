@@ -12,7 +12,6 @@ import {
   fetchTagCounter as fetchTagCounterService,
   getCompanyPosts as getCompanyPostsService,
   getPostClapHover as getPostClapHoverService,
-  getReplyClapHover as getReplyClapHoverService,
   getUnreadPostComments as getUnreadPostCommentsService,
   getUnreadPostEntries as getUnreadPostEntriesService,
   markAllPostAsRead as markAllPostAsReadService,
@@ -283,10 +282,6 @@ export function getPostClapHover(payload, callback) {
   return dispatchActionToReducer(getPostClapHoverService(payload), "GET_POST_CLAP_HOVER_START", "GET_POST_CLAP_HOVER_SUCCESS", "GET_POST_CLAP_HOVER_FAIL", callback);
 }
 
-export function getReplyClapHover(payload, callback) {
-  return dispatchActionToReducer(getReplyClapHoverService(payload), "GET_REPLY_CLAP_HOVER_START", "GET_REPLY_CLAP_HOVER_SUCCESS", "GET_REPLY_CLAP_HOVER_FAIL", callback);
-}
-
 export function getUnreadPostEntries(payload, callback) {
   return dispatchActionToReducer(getUnreadPostEntriesService(payload), "GET_UNREAD_POST_ENTRIES_START", "GET_UNREAD_POST_ENTRIES_SUCCESS", "GET_UNREAD_POST_ENTRIES_FAIL", callback);
 }
@@ -297,14 +292,6 @@ export function markAllPostAsRead(payload, callback) {
 
 export function archiveAllPosts(payload, callback) {
   return dispatchActionToReducer(archiveAllPostsService(payload), "ARCHIVE_ALL_POSTS_START", "ARCHIVE_ALL_POSTS_SUCCESS", "ARCHIVE_ALL_POSTS_FAIL", callback);
-}
-
-export function readAllCallback(payload, callback) {
-  return SimpleDispatchActionToReducer("READ_ALL_POSTS", payload, callback);
-}
-
-export function archiveAllCallback(payload, callback) {
-  return SimpleDispatchActionToReducer("ARCHIVE_ALL_POSTS", payload, callback);
 }
 
 export function addPostRecipients(payload, callback) {
@@ -529,4 +516,28 @@ export function setShowUnread(payload, callback) {
 
 export function incomingWorkspacePost(payload, callback) {
   return SimpleDispatchActionToReducer("INCOMING_WORKSPACE_POST", payload, callback);
+}
+
+export function getSharedCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_COMPANY_POSTS_START", "GET_SHARED_COMPANY_POSTS_SUCCESS", "GET_SHARED_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedMyCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_MY_COMPANY_POSTS_START", "GET_SHARED_MY_COMPANY_POSTS_SUCCESS", "GET_SHARED_MY_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedReadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_READ_COMPANY_POSTS_START", "GET_SHARED_READ_COMPANY_POSTS_SUCCESS", "GET_SHARED_READ_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedArchivedCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_ARCHIVED_OMPANY_POSTS_START", "GET_SHARED_ARCHIVED_COMPANY_POSTS_SUCCESS", "GET_SHARED_ARCHIVED_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedStarCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_STAR_COMPANY_POSTS_START", "GET_SHARED_STAR_COMPANY_POSTS_SUCCESS", "GET_SHARED_STAR_COMPANY_POSTS_FAIL", callback);
+}
+
+export function getSharedUnreadCompanyPosts(payload, callback) {
+  return dispatchActionToReducer(getCompanyPostsService(payload), "GET_SHARED_UNREAD_COMPANY_POSTS_START", "GET_SHARED_UNREAD_COMPANY_POSTS_SUCCESS", "GET_SHARED_UNREAD_COMPANY_POSTS_FAIL", callback);
 }

@@ -193,6 +193,7 @@ const CompanyPostItemPanel = (props) => {
 
   const user = useSelector((state) => state.session.user);
   const flipper = useSelector((state) => state.workspaces.flipper);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const { fromNow } = useTimeFormat();
 
@@ -268,6 +269,20 @@ const CompanyPostItemPanel = (props) => {
     toggleCheckbox(post);
   };
 
+  const handleClosePost = () => {
+    let sharedPayload = null;
+    if (post.sharedSlug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
+    let payload = {
+      post_id: post.id,
+      is_close: post.is_close ? 0 : 1,
+      sharedPayload: sharedPayload,
+    };
+
+    close(payload);
+  };
+
   // const toggleTooltip = () => {
   //   let tooltips = document.querySelectorAll("span.react-tooltip-lite");
   //   tooltips.forEach((tooltip) => {
@@ -340,7 +355,7 @@ const CompanyPostItemPanel = (props) => {
                 <div onClick={() => sharePost(post)}>{dictionary.share}</div>
                 {post.author && post.author.id !== user.id && <div onClick={() => followPost(post)}>{post.is_followed ? dictionary.unFollow : dictionary.follow}</div>}
                 <div onClick={handleStarPost}>{post.is_favourite ? dictionary.unStar : dictionary.star}</div>
-                <div onClick={() => close(post)}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
+                <div onClick={handleClosePost}>{post.is_close ? dictionary.openThisPost : dictionary.closeThisPost}</div>
                 {post.post_list_connect && <div onClick={() => handleAddToListModal()}>{post.post_list_connect.length === 1 ? dictionary.removeToList : dictionary.addToList}</div>}
               </MoreOptions>
             )}

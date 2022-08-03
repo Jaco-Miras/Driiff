@@ -41,7 +41,7 @@ const StyledUserListPopUp = styled(UserListPopUp)`
 `;
 
 const SeenIndicator = (props) => {
-  const { isPersonal, seenMembers, isAuthor } = props;
+  const { isPersonal, seenMembers, isAuthor, channel } = props;
   const [showUsersPopUp, setShowUsersPopUp] = useState(false);
 
   const handleShowSeenUsers = () => setShowUsersPopUp(!showUsersPopUp);
@@ -66,7 +66,7 @@ const SeenIndicator = (props) => {
           <span onClick={handleShowSeenUsers}> more</span>
         </React.Fragment>
       )}
-      {!isPersonal && seenMembers.length > 1 && showUsersPopUp && <StyledUserListPopUp className={"chat-seen-list"} users={seenMembers} isAuthor={isAuthor} onShowList={handleShowSeenUsers} />}
+      {!isPersonal && seenMembers.length > 1 && showUsersPopUp && <StyledUserListPopUp className={"chat-seen-list"} users={seenMembers} isAuthor={isAuthor} onShowList={handleShowSeenUsers} sharedUsers={channel.slug ? true : false} />}
     </SeenIndicatorContainer>
   );
 };

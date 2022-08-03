@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { addToModals } from "../../../redux/actions/globalActions";
-import { useFiles, useTranslationActions, useFetchWsCount } from "../../hooks";
+import { useFiles, useTranslationActions, useFetchWsCount, useGetSlug } from "../../hooks";
 import { FilesBody, FilesHeader, FilesSidebar } from "../files";
 
 const Wrapper = styled.div`
@@ -16,11 +16,13 @@ const Wrapper = styled.div`
 const WorkspaceFilesPanel = (props) => {
   const { className = "", isMember, workspace } = props;
 
+  const isWorkspaceMember = isMember || (workspace && workspace.sharedSlug);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const { _t } = useTranslationActions();
   const { params, wsFiles, actions, topic, fileIds, folders, folder, subFolders } = useFiles(true); // pass true to trigger fetching of files
-
+  const { slug } = useGetSlug();
   useFetchWsCount();
 
   const [filter, setFilter] = useState("");
@@ -117,7 +119,7 @@ const WorkspaceFilesPanel = (props) => {
           <>
             <FilesSidebar
               actions={actions}
-              isMember={isMember}
+              isMember={isWorkspaceMember}
               clearFilter={clearFilter}
               params={params}
               dropZoneRef={refs.dropZone}
@@ -133,7 +135,7 @@ const WorkspaceFilesPanel = (props) => {
             <div className="col-md-9 app-content mb-4">
               <div className="app-content-overlay" />
               <FilesHeader
-                isMember={isMember}
+                isMember={isWorkspaceMember}
                 clearFilter={clearFilter}
                 dropZoneRef={refs.dropZone}
                 history={history}
@@ -156,7 +158,7 @@ const WorkspaceFilesPanel = (props) => {
                 folders={folders}
                 folder={folder}
                 fileIds={fileIds}
-                isMember={isMember}
+                isMember={isWorkspaceMember}
                 subFolders={subFolders}
                 history={history}
                 actions={actions}
@@ -165,6 +167,8 @@ const WorkspaceFilesPanel = (props) => {
                 handleAddEditFolder={handleAddEditFolder}
                 dictionary={dictionary}
                 disableOptions={disableOptions}
+                sharedSlug={workspace && workspace.sharedSlug}
+                slug={workspace ? workspace.slug : slug}
               />
             </div>
           </>

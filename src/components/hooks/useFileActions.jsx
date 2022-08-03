@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
-import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useParams, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { copyTextToClipboard } from "../../helpers/commonFunctions";
 import {
   addCompanyFileSearchResults,
@@ -64,15 +64,23 @@ import {
 } from "../../redux/actions/fileActions";
 import { addToModals } from "../../redux/actions/globalActions";
 import { useToaster } from "./index";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useGetSlug } from "../hooks";
 
 const useFileActions = () => {
   const dispatch = useDispatch();
   const params = useParams();
-
+  const history = useHistory();
+  const { slug } = useGetSlug();
   const toaster = useToaster();
 
   const fileName = useRef("");
+
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace && sharedWs[workspace.slug]) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
 
   const { _t } = useTranslationActions();
 
@@ -196,22 +204,24 @@ const useFileActions = () => {
     dispatch(getWorkspacePrimaryFiles({ topic_id: id }, callback));
   };
 
-  const getGoogleDriveFiles = (id, callback) => {
+  const getGoogleDriveFiles = (payload, callback) => {
     dispatch(
       getWorkspaceGoogleFileAttachments(
         {
-          workspace_id: id,
+          ...payload,
+          workspace_id: payload.topic_id,
         },
         callback
       )
     );
   };
 
-  const getGoogleDriveFolders = (id, callback) => {
+  const getGoogleDriveFolders = (payload, callback) => {
     dispatch(
       getWorkspaceGoogleFolderAttachments(
         {
-          workspace_id: id,
+          ...payload,
+          workspace_id: payload.topic_id,
         },
         callback
       )
@@ -233,20 +243,20 @@ const useFileActions = () => {
     );
   };
 
-  const getFilesDetail = (id, callback) => {
-    dispatch(getWorkspaceFilesDetail({ topic_id: id }, callback));
+  const getFilesDetail = (payload, callback) => {
+    dispatch(getWorkspaceFilesDetail(payload, callback));
   };
 
-  const getPopularFiles = (id, callback) => {
-    dispatch(getWorkspacePopularFiles({ topic_id: id }, callback));
+  const getPopularFiles = (payload, callback) => {
+    dispatch(getWorkspacePopularFiles(payload, callback));
   };
 
-  const getEditedFiles = (id, callback) => {
-    dispatch(getWorkspaceRecentlyEditedFiles({ topic_id: id }, callback));
+  const getEditedFiles = (payload, callback) => {
+    dispatch(getWorkspaceRecentlyEditedFiles(payload, callback));
   };
 
-  const getTrashFiles = (id, callback) => {
-    dispatch(getWorkspaceTrashFiles({ topic_id: id }, callback));
+  const getTrashFiles = (payload, callback) => {
+    dispatch(getWorkspaceTrashFiles(payload, callback));
   };
 
   const createFolder = (payload, callback) => {
@@ -266,6 +276,12 @@ const useFileActions = () => {
   };
 
   const uploadFiles = (payload, callback) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(uploadWorkspaceFiles(payload, callback));
   };
 
@@ -377,8 +393,15 @@ const useFileActions = () => {
           force_delete: 1,
         };
       }
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         deleteFile(payload, (err, res) => {
+          if (err) return;
           toaster.info(`You have removed ${file.search}.`);
         })
       );
@@ -434,33 +457,37 @@ const useFileActions = () => {
 
   const renameFile = (file, callback) => {
     const handleUpdateFileName = () => {
+      let payload = {
+        id: file.id,
+        name: fileName.current,
+        topic_id: params.workspaceId,
+      };
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
-        putFile(
-          {
-            id: file.id,
-            name: fileName.current,
-            topic_id: params.workspaceId,
-          },
-          (err, res) => {
-            if (err) {
-              toaster.error(
-                <span>
-                  System failed to rename the <b>{file.search}</b> to {fileName.current}.
-                </span>
-              );
-            }
-
-            if (res) {
-              toaster.success(
-                <span>
-                  You renamed <b>{file.search}</b> to {fileName.current}.
-                </span>
-              );
-            }
-
-            callback(err, res);
+        putFile(payload, (err, res) => {
+          callback(err, res);
+          if (err) {
+            toaster.error(
+              <span>
+                System failed to rename the <b>{file.search}</b> to {fileName.current}.
+              </span>
+            );
+            return;
           }
-        )
+
+          if (res) {
+            toaster.success(
+              <span>
+                You renamed <b>{file.search}</b> to {fileName.current}.
+              </span>
+            );
+          }
+        })
       );
     };
 
@@ -575,6 +602,7 @@ const useFileActions = () => {
           file_id: file.id,
           topic_id: params.workspaceId,
           is_favorite: !file.is_favorite,
+          slug: workspace.slug,
         };
         if (params.hasOwnProperty("fileFolderId")) {
           payload = {
@@ -594,19 +622,21 @@ const useFileActions = () => {
         );
       }
     };
-    dispatch(
-      favoriteFile(
-        {
-          type_id: file.id,
-          type: "file",
-        },
-        cb
-      )
-    );
+    let payload = {
+      type_id: file.id,
+      type: "file",
+    };
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    dispatch(favoriteFile(payload, cb));
   };
 
-  const getFavoriteFiles = (id, callback) => {
-    dispatch(getWorkspaceFavoriteFiles({ topic_id: id }, callback));
+  const getFavoriteFiles = (payload, callback) => {
+    dispatch(getWorkspaceFavoriteFiles(payload, callback));
   };
 
   const viewFiles = (file, callback) => {
@@ -619,6 +649,8 @@ const useFileActions = () => {
       let payload = {
         workspace_id: params.workspaceId,
         file_id: file.id,
+        sharedSlug: workspace ? workspace.sharedSlug : false,
+        slug: workspace ? workspace.slug : slug,
       };
       dispatch(setViewFiles(payload, callback));
     }
@@ -643,6 +675,7 @@ const useFileActions = () => {
     let payload = {
       topic_id: params.workspaceId,
       search: searchValue,
+      slug: workspace.slug,
     };
     const cb = (err, res) => {
       if (err) return;
@@ -675,6 +708,7 @@ const useFileActions = () => {
   const clearSearch = () => {
     let payload = {
       topic_id: params.workspaceId,
+      slug: workspace.slug,
     };
 
     dispatch(clearFileSearchResults(payload));
@@ -689,6 +723,7 @@ const useFileActions = () => {
       dispatch(
         deleteTrash({
           topic_id: params.workspaceId,
+          sharedPayload: sharedPayload,
         })
       );
     };
@@ -730,6 +765,7 @@ const useFileActions = () => {
       file: file,
       topic_id: params.workspaceId,
       folder_id: null,
+      params: params,
     };
 
     if (params.hasOwnProperty("fileFolderId")) {
@@ -866,8 +902,15 @@ const useFileActions = () => {
           mime_type: file.mime_type,
         },
       };
+      if (sharedPayload) {
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
         deleteGoogleAttachment(payload, (err, res) => {
+          if (err) return;
           toaster.info(`You have removed ${file.search}.`);
         })
       );
@@ -924,6 +967,12 @@ const useFileActions = () => {
   };
 
   const restoreWorkspaceFile = (payload, callback = () => {}) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(
       putWorkspaceRestoreFile(
         {
@@ -991,6 +1040,9 @@ const useFileActions = () => {
 
   const deleteWorkspaceFilesUpload = (payload) => {
     dispatch(removeWorkspaceFilesUploadingBar(payload));
+  };
+  const postCompanyUploadBulkFilesDispatch = (payload, callback = () => {}) => {
+    dispatch(postCompanyUploadBulkFiles(payload, callback));
   };
 
   return {
@@ -1061,6 +1113,7 @@ const useFileActions = () => {
     setFileThumbnailSrc,
     deleteCompanyFilesUpload,
     deleteWorkspaceFilesUpload,
+    postCompanyUploadBulkFilesDispatch,
   };
 };
 

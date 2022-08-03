@@ -86,6 +86,7 @@ const MainSnooze = (props) => {
   const currentTime = currentDate.getTime();
   const dispatch = useDispatch();
 
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const users = useSelector((state) => state.users.users);
   //const users = useSelector((state) => state.users);
   //const chats = useSelector((state) => state.chat);
@@ -192,8 +193,8 @@ const MainSnooze = (props) => {
 
   const notifCLean = () => {
     return Object.values(notifications)
-      .filter(
-        (n) =>
+      .filter((n) => {
+        return (
           n.type === "POST_MENTION" ||
           n.type === "WORKSPACE_ADD_MEMBER" ||
           n.type === "POST_REQST_APPROVAL" ||
@@ -201,7 +202,8 @@ const MainSnooze = (props) => {
           n.type === "PST_CMT_REJCT_APPRVL" ||
           n.type === "POST_COMMENT" ||
           (n.type === "POST_CREATE" && (n.data.must_read || n.data.must_reply))
-      )
+        );
+      })
       .sort((a, b) => b.created_at.timestamp - a.created_at.timestamp);
   };
 
@@ -311,8 +313,18 @@ const MainSnooze = (props) => {
     var actions = type === "notification" ? notifActions : n.type === "todo" ? todoActions : huddleActions;
     e.preventDefault();
     if (n.is_read === 0) {
-      //&& n.type === "POST_MENTION"
-      notifActions.read({ id: n.id });
+      let payload = {
+        id: n.id,
+        key: n.key,
+      };
+      if (n.sharedSlug && sharedWs[n.slug]) {
+        const sharedPayload = { slug: n.slug, token: sharedWs[n.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+      notifActions.read(payload);
     }
 
     if (type === "huddle") {
@@ -326,13 +338,32 @@ const MainSnooze = (props) => {
       let workspace = null;
       let focusOnMessage = null;
       if (n.data.workspaces && n.data.workspaces.length) {
-        workspace = n.data.workspaces[0];
-        workspace = {
-          id: workspace.topic_id,
-          name: workspace.topic_name,
-          folder_id: workspace.workspace_id ? workspace.workspace_id : null,
-          folder_name: workspace.workspace_name ? workspace.workspace_name : null,
-        };
+        // workspace = n.data.workspaces[0];
+        // workspace = {
+        //   id: workspace.topic_id,
+        //   name: workspace.topic_name,
+        //   folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+        //   folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+        // };
+        if (n.sharedSlug) {
+          workspace = n.data.workspaces[0];
+          workspace = {
+            key: `${workspace.topic_id}-${n.slug}`,
+            id: workspace.topic_id,
+            name: workspace.topic_name,
+            folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+            folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+          };
+        } else if (n.data.workspaces && n.data.workspaces.length) {
+          workspace = n.data.workspaces[0];
+          workspace = {
+            key: workspace.topic_id,
+            id: workspace.topic_id,
+            name: workspace.topic_name,
+            folder_id: workspace.workspace_id ? workspace.workspace_id : null,
+            folder_name: workspace.workspace_name ? workspace.workspace_name : null,
+          };
+        }
       }
       if (n.type === "POST_MENTION") {
         if (n.data.comment_id) {
@@ -340,28 +371,36 @@ const MainSnooze = (props) => {
         }
       }
       if (n.type === "WORKSPACE_ADD_MEMBER") {
-        if (n.data.workspace_folder_id) {
-          history.push(`/hub/chat/${n.data.workspace_folder_id}/${replaceChar(n.data.workspace_folder_name)}/${n.data.id}/${replaceChar(n.data.title)}`);
-        } else {
-          history.push(`/hub/chat/${n.data.id}/${replaceChar(n.data.title)}`);
-        }
+        let key = n.sharedSlug ? `${n.data.id}-${n.slug}` : n.data.id;
+        let payload = {
+          id: key,
+          name: n.data.title,
+          folder_id: n.data.workspace_folder_id !== 0 ? n.data.workspace_folder_id : null,
+          folder_name: n.data.workspace_folder_name !== "" ? n.data.workspace_folder_name : null,
+          sharedSlug: n.sharedSlug,
+          slug: n.slug,
+        };
+        redirect.toWorkspace(payload);
       } else {
-        redirect.toPost({ workspace, post }, focusOnMessage);
+        redirect.toPost({ workspace, post, sharedSlug: n.sharedSlug }, focusOnMessage);
       }
     }
-    actions.snooze({ id: n.id, is_snooze: false });
+    actions.snooze({ id: n.id, is_snooze: false, key: n.key ? n.key : n.id });
   };
 
   const hasMustReadAction = (n) => {
-    return n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === user.id && !u.must_read);
+    const userId = n.sharedSlug && sharedWs[n.slug] ? sharedWs[n.slug].user_auth.id : user.id;
+    return n.data.must_read && n.data.must_read_users && n.data.must_read_users.some((u) => u.id === userId && !u.must_read);
   };
 
   const hasMustReplyAction = (n) => {
-    return n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === user.id && !u.must_reply);
+    const userId = n.sharedSlug && sharedWs[n.slug] ? sharedWs[n.slug].user_auth.id : user.id;
+    return n.data.must_reply && n.data.must_reply_users && n.data.must_reply_users.some((u) => u.id === userId && !u.must_reply);
   };
 
   const hasApprovalAction = (n) => {
-    return n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && user.id === u.id);
+    const userId = n.sharedSlug && sharedWs[n.slug] ? sharedWs[n.slug].user_auth.id : user.id;
+    return n.data.users_approval && n.data.users_approval.find((u) => u.ip_address === null && userId === u.id);
   };
 
   const hasCommentRejectApproval = (notification) => {
@@ -386,9 +425,14 @@ const MainSnooze = (props) => {
     snooze.map((item) => {
       const elemId = item.type + "__" + item.id;
       var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
-      const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
+      const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
       if (n) {
-        const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime) };
+        let sharedPayload = null;
+        if (sharedWs[item.slug]) {
+          sharedPayload = { slug: item.slug, token: sharedWs[item.slug].access_token, is_shared: true };
+        }
+
+        const data = { id: n.id, is_snooze: true, snooze_time: getTimestampInMins(snoozeTime), sharedPayload: sharedPayload };
         if (!n.is_snooze) {
           toast.isActive(elemId) && toast.dismiss(elemId);
           actions.snooze(data);
@@ -396,7 +440,15 @@ const MainSnooze = (props) => {
       }
     });
     if (notifs.length) {
-      snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: notifs.map((n) => n.id), type: "POST_SNOOZE" });
+      notifs.forEach((notif) => {
+        let sharedPayload = null;
+        if (notif.slug && sharedWs[notif.slug]) {
+          sharedPayload = { slug: notif.slug, token: sharedWs[notif.slug].access_token, is_shared: true };
+        }
+
+        let payload = { is_snooze: true, notification_ids: notifs.filter((n) => n.slug === notif.slug).map((n) => n.id), type: "POST_SNOOZE", sharedPayload: sharedPayload };
+        snoozeActions.snoozeAllNotif(payload);
+      });
     }
     if (reminders.length) {
       snoozeActions.snoozeAllNotif({ is_snooze: true, notification_ids: reminders.map((n) => n.id), type: "REMINDER_SNOOZE" });
@@ -443,8 +495,7 @@ const MainSnooze = (props) => {
       items.map((item) => {
         var actions = item.type === "notification" ? notifActions : item.type === "todo" ? todoActions : huddleActions;
         const elemId = item.type + "__" + item.id;
-        const n = item.type === "notification" ? notifications[item.id] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
-
+        const n = item.type === "notification" ? notifications[item.key] : item.type === "todo" ? todos.items[item.id] : Object.values(huddleBots).find((el) => el.id == item.id);
         //let ca = false;
         if (!toast.isActive(elemId)) {
           toast(
@@ -497,7 +548,7 @@ const MainSnooze = (props) => {
     const snooze = [];
     items.map((n) => {
       const elemId = type + "__" + n.id;
-      const data = { type: type, id: n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp };
+      const data = { type: type, id: n.id, key: type === "notification" ? n.key : n.id, created_at: type === "huddle" ? n.start_at.timestamp : n.created_at.timestamp, sharedSlug: n.sharedSlug, slug: n.slug };
       if (type === "notification") {
         if (n.type === "POST_MENTION") {
           if (!n.is_read && !n.is_snooze && n.data && n.data.is_close === 0) {
@@ -558,7 +609,7 @@ const MainSnooze = (props) => {
         if (n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
           counter++;
           snoozeActions.snoozeNotif({ notification_id: n.id, is_snooze: false, type: "POST_SNOOZE" });
-          actions.snooze({ id: n.id, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
+          actions.snooze({ id: n.id, key: n.key, is_snooze: false, snooze_time: null, type: "POST_SNOOZE" });
         }
       } else if (type === "todo") {
         if (n.status !== "DONE" && n.is_snooze && n.snooze_time && currentTimestamp > snoozedTime) {
@@ -643,7 +694,7 @@ const MainSnooze = (props) => {
     if (Object.keys(channels).length > 0 && huddleBotsLoaded) {
       putToSnooze();
     }
-  }, [notifications, todos, huddleBots, huddleBotsLoaded]);
+  }, [notifications, todos, huddleBots, huddleBotsLoaded, sharedWs]);
 
   const currentDay = currentDate.getDay();
 

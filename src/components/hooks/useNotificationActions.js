@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteAllNotification,
   deleteNotification,
@@ -23,6 +23,7 @@ import { useToaster } from "./index";
 const useNotificationActions = (props) => {
   const dispatch = useDispatch();
   const toaster = useToaster();
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const get = (payload, callback) => {
     dispatch(getNotifications(payload, callback));
@@ -48,6 +49,12 @@ const useNotificationActions = (props) => {
       }
     };
     dispatch(readAllNotification(payload, callback));
+    if (Object.keys(sharedWs).length) {
+      Object.keys(sharedWs).forEach((ws) => {
+        const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
+        dispatch(readAllNotification({ ...payload, sharedPayload: sharedPayload }));
+      });
+    }
   };
 
   const unread = (payload) => {
@@ -72,6 +79,12 @@ const useNotificationActions = (props) => {
       dispatch(removeAllNotificationReducer());
     };
     dispatch(deleteAllNotification({}, callback));
+    if (Object.keys(sharedWs).length) {
+      Object.keys(sharedWs).forEach((ws) => {
+        const sharedPayload = { slug: ws, token: sharedWs[ws].access_token, is_shared: true };
+        dispatch(deleteAllNotification({ sharedPayload: sharedPayload }));
+      });
+    }
   };
 
   const selectWorkspace = (workspace, callback) => {

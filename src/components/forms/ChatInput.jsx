@@ -160,13 +160,14 @@ const ChatInput = (props) => {
   const externalUsers = useSelector((state) => state.users.externalUsers);
   const users = useSelector((state) => state.users.users);
   const chatSidebarSearch = useSelector((state) => state.chat.chatSidebarSearch);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   const activeExternalUsers = externalUsers.filter((u) => u.active === 1);
 
   // const [text, setText] = useState("");
   // const [textOnly, setTextOnly] = useState("");
   // const [quillContents, setQuillContents] = useState([]);
-  const [slug] = useState(getSlug());
+  // const [slug] = useState(getSlug());
   const [quillData, setQuillData] = useState({
     text: "",
     textOnly: "",
@@ -341,6 +342,12 @@ const ChatInput = (props) => {
       is_shared: selectedChannel.is_shared ? selectedChannel.entity_id : null,
       code_data: { mention_ids: mention_ids },
     };
+    if (selectedChannel.slug) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: selectedChannel.slug, token: sharedWs[selectedChannel.slug].access_token, is_shared: true },
+      };
+    }
 
     if (quote) {
       if (quote.user) {
@@ -361,12 +368,12 @@ const ChatInput = (props) => {
         };
       }
     }
-
+    const messageUser = selectedChannel.slug && sharedWs[selectedChannel.slug] ? sharedWs[selectedChannel.slug].user_auth : user;
     let obj = {
       message: el.innerHTML,
       body: body,
       mention_ids: mention_ids,
-      user: user,
+      user: messageUser,
       original_body: quillData.text,
       is_read: true,
       editable: true,
@@ -384,6 +391,7 @@ const ChatInput = (props) => {
       quote: quote ? payload.quote : null,
       unfurls: [],
       g_date: localizeDate(timestamp, "YYYY-MM-DD"),
+      slug: selectedChannel.slug,
     };
 
     if (!editMode) {
@@ -488,18 +496,29 @@ const ChatInput = (props) => {
           .map((i) => i.insert.mention.type_id)
       );
     }
-
+    const slug = selectedChannel.slug ? selectedChannel.slug : getSlug();
     if (slug) {
-      window.Echo.private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
-        user: {
-          id: user.id,
-          name: user.name,
-          profile_image_link: user.profile_image_thumbnail_link ? user.profile_image_thumbnail_link : user.profile_image_link,
-          email: user.email,
-        },
-        typing: true,
-        channel_id: selectedChannel.id,
-      });
+      let currentUser = {
+        id: user.id,
+        name: user.name,
+        profile_image_link: user.profile_image_link,
+        email: user.email,
+      };
+      if (selectedChannel.slug && sharedWs[slug]) {
+        currentUser = {
+          id: sharedWs[slug].user_auth.id,
+          name: sharedWs[slug].user_auth.name,
+          profile_image_link: sharedWs[slug].user_auth.profile_image_link,
+          email: sharedWs[slug].user_auth.email,
+        };
+      }
+      if (window.Echo && window.Echo[slug]) {
+        window.Echo[slug].private(slug + `.App.Channel.${selectedChannel.id}`).whisper("typing", {
+          user: currentUser,
+          typing: true,
+          channel_id: selectedChannel.id,
+        });
+      }
     }
   };
 
@@ -759,6 +778,8 @@ const ChatInput = (props) => {
           replies: [],
           selected: true,
           search: res.data.search,
+          sharedSlug: false,
+          slug: null,
         };
 
         dispatch(addToChannels(payload));
@@ -827,19 +848,21 @@ const ChatInput = (props) => {
     callback: handleSubmit,
     mentionOrientation: "top",
     quillRef: reactQuillRef,
-    members:
-      user.type === "external"
-        ? selectedChannel.members.filter((m) => m.id !== user.id)
-        : Object.values(users).filter((u) => {
-            if (u.id === user.id) {
-              return false;
-            } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
-              return true;
-            } else {
-              return false;
-            }
-          }),
+    members: selectedChannel.sharedSlug
+      ? selectedChannel.members
+      : user.type === "external"
+      ? selectedChannel.members.filter((m) => m.id !== user.id)
+      : Object.values(users).filter((u) => {
+          if (u.id === user.id) {
+            return false;
+          } else if ((u.type === "external" && selectedChannel.members.some((m) => m.id === u.id)) || (u.type === "internal" && u.role !== null)) {
+            return true;
+          } else {
+            return false;
+          }
+        }),
     prioMentionIds: selectedChannel.members.filter((m) => m.id !== user.id).map((m) => m.id),
+    sharedSlug: selectedChannel.sharedSlug,
   });
 
   //to be converted into hooks
@@ -867,6 +890,7 @@ const ChatInput = (props) => {
           type={selectedChannel.type === "TOPIC" ? "workspace" : "chat"}
           basedOnUserId={true}
           userMentionOnly={true}
+          sharedSlug={selectedChannel.sharedSlug}
         />
       )}
       <StyledQuillEditor className={"chat-input"} modules={modules} ref={reactQuillRef} onChange={handleQuillChange} editMode={editMode} showFileIcon={editMode && editChatMessage && editChatMessage.files.length > 0} />

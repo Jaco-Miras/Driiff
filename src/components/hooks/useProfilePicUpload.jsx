@@ -121,6 +121,10 @@ const useProfilePicUpload = () => {
     );
   };
 
+  const resetPreview = () => {
+    setPreviewImage(avatarSvg);
+  };
+
   const renderDropDocument = () => {
     return (
       <DropDocument
@@ -176,6 +180,8 @@ const useProfilePicUpload = () => {
     batchEditUploadExternalUserProfilePic,
     updateMembers,
     previewImage,
+    resetPreview,
+    setPreviewImage,
   };
 };
 

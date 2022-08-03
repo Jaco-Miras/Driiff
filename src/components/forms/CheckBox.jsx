@@ -2,10 +2,9 @@ import React, { forwardRef } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
-  cursor: pointer;
-
+  cursor: ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
   label {
-    cursor: pointer;
+    cursor: ${(props) => (props.isDisabled ? "not-allowed" : "pointer")};
   }
   &.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
     background-color: ${({ theme }) => theme.colors.primary};
@@ -25,7 +24,7 @@ const CheckBox = forwardRef((props, ref) => {
   }
 
   return (
-    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={onClick}>
+    <Wrapper data-name={name} className={`custom-control custom-checkbox ${classType}${className}`} onClick={onClick} isDisabled={props.disabled && props.disabled === true}>
       <input ref={ref} name={name} data-name={name} type="checkbox" className="custom-control-input" checked={checked} readOnly {...otherProps} />
       <label data-name={name} className="custom-control-label">
         {children}

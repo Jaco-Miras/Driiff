@@ -91,14 +91,14 @@ const ItemList = styled.li`
   }
 `;
 
-const ReminderDescription = styled.div`
-  max-height: 50px;
-  > * {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-`;
+// const ReminderDescription = styled.div`
+//   max-height: 50px;
+//   > * {
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     white-space: nowrap;
+//   }
+// `;
 
 const DateWrapper = styled.div`
   display: flex;
@@ -121,17 +121,17 @@ const RightSectionWrapper = styled.div`
 `;
 
 const TodosList = (props) => {
-  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace } = props;
+  const { todo, todoActions, handleLinkClick, dictionary, todoFormat, todoFormatShortCode, getFileIcon, showWsBadge, handleRedirectToWorkspace, workspace } = props;
 
   const dispatch = useDispatch();
-  //const user = useSelector((state) => state.session.user);
+  const user = useSelector((state) => state.session.user);
 
   const [isDone, setIsDone] = useState(todo.status === "DONE");
 
   //const bodyDescription = quillHelper.parseEmoji(todo.description);
 
   const fileBlobs = useSelector((state) => state.files.fileBlobs);
-
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const descriptionRef = useRef(null);
 
   const handlePreviewFile = (e, files, file) => {
@@ -150,7 +150,22 @@ const TodosList = (props) => {
   };
 
   const handleDoneClick = (e) => {
+    let payload = {
+      ...todo,
+    };
+    if (workspace && workspace.sharedSlug) {
+      const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     setIsDone(!isDone);
+    if (todo.status === "DONE" && isDone) {
+      todoActions.markUnDone(payload);
+    } else if (todo.status !== "DONE" && !isDone) {
+      todoActions.markDone(payload);
+    }
   };
 
   const getTextColorClass = (todo) => {
@@ -240,13 +255,13 @@ const TodosList = (props) => {
     }
   }, [todo.files, todo.description, descriptionRef]);
 
-  useEffect(() => {
-    if (todo.status === "DONE" && !isDone) {
-      todoActions.markUnDone(todo);
-    } else if (todo.status !== "DONE" && isDone) {
-      todoActions.markDone(todo);
-    }
-  }, [isDone]);
+  // useEffect(() => {
+  //   if (todo.status === "DONE" && !isDone) {
+  //     todoActions.markUnDone(todo);
+  //   } else if (todo.status !== "DONE" && isDone) {
+  //     todoActions.markDone(todo);
+  //   }
+  // }, [isDone]);
 
   const handleEdit = (e) => {
     e.stopPropagation();
@@ -257,7 +272,17 @@ const TodosList = (props) => {
   const handleRemove = (e) => {
     e.stopPropagation();
     e.preventDefault();
-    todoActions.removeConfirmation(todo);
+    let payload = {
+      ...todo,
+    };
+    if (workspace && workspace.sharedSlug) {
+      const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    todoActions.removeConfirmation(payload);
   };
 
   const handleTitleClick = (e) => {
@@ -325,7 +350,7 @@ const TodosList = (props) => {
                 )}
               </div>
               <div className="avatars-container">
-                {todo.author !== null && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} />}
+                {todo.author && <Avatar name={todo.author.name} tooltipName={dictionary.reminderAuthor} imageLink={todo.author.profile_image_link} id={todo.author.id} sharedUser={workspace?.sharedSlug ? todo.author : null} />}
                 {showAssignedTo && (
                   <>
                     <Icon icon="chevron-right" />
@@ -336,6 +361,7 @@ const TodosList = (props) => {
                       id={todo.assigned_to ? todo.assigned_to.id : todo.workspace.id}
                       type={todo.assigned_to ? "USER" : "TOPIC"}
                       noDefaultClick={todo.assigned_to ? false : true}
+                      sharedUser={workspace?.sharedSlug ? todo.assigned_to : null}
                     />
                   </>
                 )}

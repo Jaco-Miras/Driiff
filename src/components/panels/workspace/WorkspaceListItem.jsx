@@ -79,6 +79,7 @@ const WorkspaceListItem = (props) => {
       name: item.topic.name,
       folder_id: item.workspace ? item.workspace.id : null,
       folder_name: item.workspace ? item.workspace.name : null,
+      slug: item.slug ? item.slug : null,
     };
     actions.toWorkspace(payload);
   };
@@ -89,7 +90,7 @@ const WorkspaceListItem = (props) => {
         <Avatar forceThumbnail={false} type={"TOPIC"} imageLink={item.topic.icon_link} id={item.topic.id} name={item.topic.name} onClick={(e) => handleRedirect(e, item)} showSlider={false} />
       </div>
       <WorkspaceListItemDetails dictionary={dictionary} isExternal={isExternal} isMember={isMember} members={uniqueMembers} item={item} onRedirect={handleRedirect} />
-      <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />
+      {!item.slug && <WorkspaceListItemButtons actions={actions} dictionary={dictionary} isExternal={isExternal} isMember={isMember} item={item} />}
     </Wrapper>
   );
 };

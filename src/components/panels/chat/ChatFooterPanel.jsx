@@ -296,7 +296,9 @@ const ChatFooterPanel = (props) => {
     setShowEmojiPicker(false);
   }, []);
 
-  const isMember = useIsMember(selectedChannel && selectedChannel.members && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
+  const isChannelMember = useIsMember(selectedChannel && selectedChannel.members && selectedChannel.members.length ? selectedChannel.members.map((m) => m.id) : []);
+  const isSharedChannel = selectedChannel && selectedChannel.hasOwnProperty("slug");
+  const isMember = isChannelMember || isSharedChannel;
 
   const toggleTooltip = () => {
     let tooltips = document.querySelectorAll("span.react-tooltip-lite");

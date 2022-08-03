@@ -9,7 +9,6 @@ import {
   addCommentReact,
   addPostReact,
   addUserToPostRecipients,
-  //archiveAllCallback,
   archiveAllPosts,
   archiveReducer,
   commentApprove,
@@ -44,7 +43,6 @@ import {
   postVisit,
   putCompanyPosts,
   putPost,
-  //readAllCallback,
   removeDraftPost,
   removePost,
   removePostReact,
@@ -68,10 +66,16 @@ import {
   readNotification,
   getPostReadAndClap,
   setShowUnread,
+  getSharedCompanyPosts,
+  getSharedMyCompanyPosts,
+  getSharedReadCompanyPosts,
+  getSharedArchivedCompanyPosts,
+  getSharedStarCompanyPosts,
+  getSharedUnreadCompanyPosts,
 } from "../../redux/actions/postActions";
 import { getUnreadWorkspacePostEntries, updateWorkspacePostCount, getFavoriteWorkspaceCounters, updateWorkspacePostFilterSort } from "../../redux/actions/workspaceActions";
 import { useToaster, useTodoActions } from "./index";
-import { useTranslationActions } from "../hooks";
+import { useTranslationActions, useGetSlug } from "../hooks";
 
 const usePostActions = () => {
   const dispatch = useDispatch();
@@ -83,6 +87,13 @@ const usePostActions = () => {
   const { _t } = useTranslationActions();
 
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const workspace = useSelector((state) => state.workspaces.activeTopic);
+  const { slug } = useGetSlug();
+  let sharedPayload = null;
+  if (params.workspaceId && history.location.pathname.startsWith("/shared-hub") && workspace) {
+    sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+  }
 
   const dictionary = {
     headerRemoveDraftHeader: _t("MODAL.REMOVE_DRAFT_HEADER", "Remove post draft?"),
@@ -166,9 +177,21 @@ const usePostActions = () => {
 
   const starPost = (post, callback = () => {}) => {
     if (post.type === "draft_post") return;
+    let payload = {
+      type: "post",
+      type_id: post.id,
+    };
     let topic_id = typeof params.workspaceId !== "undefined" ? parseInt(params.workspaceId) : null;
+    if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+      topic_id = params.workspaceId ? `${params.workspaceId}-${post.slug}` : `${post.recipient_ids[0]}-${post.slug}`;
+    }
     dispatch(
-      postFavorite({ type: "post", type_id: post.id }, (err, res) => {
+      postFavorite(payload, (err, res) => {
         callback(err, res);
         //@todo reverse the action/data in the reducer
         if (err) {
@@ -185,12 +208,8 @@ const usePostActions = () => {
         }
       })
     );
-    dispatch(
-      starPostReducer({
-        post_id: post.id,
-        topic_id,
-      })
-    );
+
+    dispatch(starPostReducer({ post_id: post.id, topic_id, post_code: post.sharedSlug ? post.code : null }));
   };
 
   const markPost = (post) => {
@@ -278,46 +297,61 @@ const usePostActions = () => {
         )
       );
     } else {
+      let payload = {
+        post_id: post.id,
+        is_archived: post.is_archived === 1 ? 0 : 1,
+      };
+      if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
+
       dispatch(
-        postArchive(
-          {
-            post_id: post.id,
-            is_archived: post.is_archived === 1 ? 0 : 1,
-          },
-          (err, res) => {
-            callback(err, res);
+        postArchive(payload, (err, res) => {
+          callback(err, res);
 
-            if (err) {
-              toaster.error(<>Action failed.</>);
-              return;
+          if (err) {
+            toaster.error(<>Action failed.</>);
+            return;
+          }
+
+          if (res) {
+            let counterPayload = {};
+            if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+              const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+              counterPayload = {
+                ...counterPayload,
+                sharedPayload: sharedPayload,
+              };
             }
-
-            if (res) {
-              getUnreadNotificationEntries();
-              if (!post.is_archived) {
-                toaster.success(
-                  <>
-                    <b>{post.title}</b> {dictionary.postArchivedMuted}
-                  </>
-                );
-              } else {
-                toaster.success(
-                  <>
-                    <b>{post.title}</b> is unarchived.
-                  </>
-                );
-              }
-
-              dispatch(
-                archiveReducer({
-                  post_id: post.id,
-                  //topic_id: parseInt(params.workspaceId),
-                  is_archived: post.is_archived === 1 ? 0 : 1,
-                })
+            getUnreadNotificationEntries(counterPayload);
+            if (!post.is_archived) {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> {dictionary.postArchivedMuted}
+                </>
+              );
+            } else {
+              toaster.success(
+                <>
+                  <b>{post.title}</b> is unarchived.
+                </>
               );
             }
+
+            dispatch(
+              archiveReducer({
+                post_id: post.id,
+                post_code: post.sharedSlug ? post.code : null,
+                //topic_id: parseInt(params.workspaceId),
+                is_archived: post.is_archived === 1 ? 0 : 1,
+              })
+            );
           }
-        )
+        })
       );
     }
   };
@@ -328,6 +362,13 @@ const usePostActions = () => {
       unread: 0,
       topic_id: parseInt(params.workspaceId),
     };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     let count = post.unread_count;
     let cb = (err, res) => {
       if (err) {
@@ -340,9 +381,17 @@ const usePostActions = () => {
         count: count === 0 ? 1 : count,
       };
       if (res) {
-        getUnreadNotificationEntries();
+        let counterPayload = {};
+        if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+          const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+          counterPayload = {
+            ...counterPayload,
+            sharedPayload: sharedPayload,
+          };
+        }
+        getUnreadNotificationEntries(counterPayload);
         if (post.recipients.some((r) => r.type === "TOPIC")) {
-          dispatch(getFavoriteWorkspaceCounters());
+          dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
         if (showToaster)
           toaster.success(
@@ -356,6 +405,9 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 0,
             user_id: user.id,
+            post_code: payload.sharedPayload ? post.code : null,
+            sharedSlug: post.sharedSlug,
+            slug: post.slug,
           })
         );
       }
@@ -369,6 +421,15 @@ const usePostActions = () => {
       unread: 1,
       topic_id: params.workspaceId,
     };
+
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+
     let cb = (err, res) => {
       if (err) {
         toaster.error(<>Action failed.</>);
@@ -381,7 +442,7 @@ const usePostActions = () => {
 
       if (res) {
         if (post.recipients.some((r) => r.type === "TOPIC")) {
-          dispatch(getFavoriteWorkspaceCounters());
+          dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
         if (showToaster)
           toaster.success(
@@ -395,40 +456,58 @@ const usePostActions = () => {
             post_id: post.id,
             unread: 1,
             user_id: user.id,
+            post_code: post.sharedSlug ? post.code : null,
+            sharedSlug: post.sharedSlug,
+            slug: post.slug,
           })
         );
       }
     };
+
     dispatch(postToggleRead(payload, cb));
   };
 
   const sharePost = (post) => {
     let link = "";
-    if (params.folderId) {
-      link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
-    } else if (params.workspaceId) {
-      link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+    if (post.sharedSlug) {
+      if (params.workspaceId) {
+        if (params.folderId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        } else if (params.workspaceId) {
+          link = `${getBaseUrl()}/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+        }
+      } else {
+        //get the workspace
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     } else {
-      link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      if (params.folderId) {
+        link = `${getBaseUrl()}/hub/posts/${params.folderId}/${replaceChar(params.folderName)}/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else if (params.workspaceId) {
+        link = `${getBaseUrl()}/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}/post/${post.id}/${replaceChar(post.title)}`;
+      } else {
+        link = `${getBaseUrl()}/posts/${post.id}/${replaceChar(post.title)}`;
+      }
     }
+
     copyTextToClipboard(toaster, link);
   };
 
-  const snoozePost = (post) => {
-    let payload = {
-      type: "snooze_post",
-      post: post,
-      topic_id: params.workspaceId,
-    };
-
-    dispatch(addToModals(payload));
-  };
-
   const followPost = (post) => {
+    let payload = {
+      post_id: post.id,
+    };
+    if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+      const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     if (post.is_followed) {
       //When: The user is following/recipient of the post - and not the creator.
       dispatch(
-        postUnfollow({ post_id: post.id }, (err, res) => {
+        postUnfollow(payload, (err, res) => {
           if (err) return;
           let notification = `${dictionary.notificationStopFollow} ${post.title}`;
           toaster.info(notification);
@@ -436,15 +515,24 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: false,
+              post_code: post.sharedSlug ? post.code : null,
             })
           );
-          getUnreadNotificationEntries();
+          let counterPayload = {};
+          if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+            const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+            counterPayload = {
+              ...counterPayload,
+              sharedPayload: sharedPayload,
+            };
+          }
+          getUnreadNotificationEntries(counterPayload);
         })
       );
     } else {
       //When: The user not following the post and the post is in an open topic.
       dispatch(
-        postFollow({ post_id: post.id }, (err, res) => {
+        postFollow(payload, (err, res) => {
           if (err) return;
           let notification = `${dictionary.notificationStartFollow} ${post.title}`;
           toaster.info(notification);
@@ -452,6 +540,7 @@ const usePostActions = () => {
             setPostToggleFollow({
               post_id: post.id,
               is_followed: true,
+              post_code: post.sharedSlug ? post.code : null,
             })
           );
         })
@@ -461,37 +550,57 @@ const usePostActions = () => {
 
   const trash = (post) => {
     const onConfirm = () => {
+      let payload = {
+        id: post.id,
+      };
+      if (post.slug && slug !== post.slug && sharedWs[post.slug]) {
+        const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+        payload = {
+          ...payload,
+          sharedPayload: sharedPayload,
+        };
+      }
       dispatch(
-        deletePost(
-          {
-            id: post.id,
-          },
-          (err, res) => {
-            if (err) return;
-            toaster.success(
-              <>
-                {dictionary.toasterDeletedPost} - {post.title}
-              </>
-            );
-            dispatch(
-              removePost({
-                post_id: post.id,
-                topic_id: parseInt(params.workspaceId),
-                recipients: post.recipients,
-                id: post.id,
-              })
-            );
-          }
-        )
+        deletePost(payload, (err, res) => {
+          if (err) return;
+          toaster.success(
+            <>
+              {dictionary.toasterDeletedPost} - {post.title}
+            </>
+          );
+          dispatch(
+            removePost({
+              post_id: post.id,
+              topic_id: parseInt(params.workspaceId),
+              recipients: post.recipients,
+              id: post.id,
+              post_code: post.slug && slug !== post.slug ? post.code : null,
+              sharedSlug: post.slug && slug !== post.slug,
+            })
+          );
+        })
       );
       if (params.workspaceId) {
         let payload = {
           topic_id: parseInt(params.workspaceId),
           filter: "inbox",
           tag: null,
+          isSharedSlug: post.slug && slug !== post.slug,
         };
         dispatch(updateWorkspacePostFilterSort(payload));
-        history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+        if (post.slug && slug !== post.slug) {
+          if (params.folderId) {
+            history.push(`/shared-hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          } else {
+            history.push(`/shared-hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          }
+        } else {
+          if (params.folderId) {
+            history.push(`/hub/posts/${params.folderId}/${params.folderName}/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          } else {
+            history.push(`/hub/posts/${params.workspaceId}/${replaceChar(params.workspaceName)}`);
+          }
+        }
       } else {
         let payload = {
           filter: "inbox",
@@ -517,7 +626,10 @@ const usePostActions = () => {
 
   const showModal = (mode = "create", post = null, comment = null, rewardRef = null, cb = () => {}) => {
     let payload = {};
-
+    let sharedPayload = null;
+    if (post && post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     switch (mode) {
       case "create_company": {
         payload = {
@@ -608,7 +720,7 @@ const usePostActions = () => {
                   dispatch(
                     postComment(cpayload, (err, res) => {
                       if (err) return;
-                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
+                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id, sharedPayload: sharedPayload }, (err, res) => {
                         if (err) return;
                         dispatch(
                           addCommentReact(
@@ -618,6 +730,7 @@ const usePostActions = () => {
                               parent_id: comment.parent_id,
                               post_id: post.id,
                               reaction: "clap",
+                              post_code: post.code,
                             },
                             cb
                           )
@@ -626,7 +739,7 @@ const usePostActions = () => {
                     })
                   );
                 } else {
-                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, sharedPayload: sharedPayload }, (err, res) => {
                     if (err) return;
                     dispatch(
                       addCommentReact(
@@ -636,6 +749,7 @@ const usePostActions = () => {
                           parent_id: comment.parent_id,
                           post_id: post.id,
                           reaction: "clap",
+                          post_code: post.code,
                         },
                         cb
                       )
@@ -655,7 +769,7 @@ const usePostActions = () => {
                 const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
                 const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
                 setTimeout(() => {
-                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                  approve({ post_id: post.id, approved: 1, sharedPayload: sharedPayload }, (err, res) => {
                     if (err) return;
                     if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
                       generateSystemMessage(
@@ -695,6 +809,7 @@ const usePostActions = () => {
         payload = {
           type: "post_list",
           mode: "create",
+          params: params,
         };
         break;
       }
@@ -705,6 +820,7 @@ const usePostActions = () => {
           item: {
             post: post,
           },
+          params: params,
         };
         break;
       }
@@ -715,6 +831,7 @@ const usePostActions = () => {
           item: {
             post: post,
           },
+          params: params,
         };
         break;
       }
@@ -836,6 +953,18 @@ const usePostActions = () => {
       must_reply: 0,
       is_approved: 0,
     };
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    if (post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      payload = {
+        ...payload,
+        sharedPayload: { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true },
+      };
+    }
 
     dispatch(postRequired(payload));
     //markAsRead(post);
@@ -849,6 +978,12 @@ const usePostActions = () => {
       is_approved: 0,
     };
 
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(postRequired(payload));
   };
 
@@ -880,6 +1015,8 @@ const usePostActions = () => {
       actions: {
         onSubmit: onConfirm,
       },
+      params: params,
+      isSharedWs: post.sharedSlug ? true : false,
     };
 
     dispatch(addToModals(payload));
@@ -901,25 +1038,11 @@ const usePostActions = () => {
   };
 
   const archiveAll = (payload = {}, callback) => {
-    dispatch(
-      archiveAllPosts(payload, (err, res) => {
-        if (err) return;
-
-        // if (callback) callback();
-        // dispatch(archiveAllCallback(payload))
-      })
-    );
+    dispatch(archiveAllPosts(payload));
   };
 
   const readAll = (payload = {}, callback) => {
-    dispatch(
-      markAllPostAsRead(payload, (err, res) => {
-        if (err) return;
-
-        // if (callback) callback();
-        // dispatch(readAllCallback(payload))
-      })
-    );
+    dispatch(markAllPostAsRead(payload));
   };
 
   const addUserToPost = (payload = {}, callback) => {
@@ -957,7 +1080,7 @@ const usePostActions = () => {
         if (err) return;
         dispatch(
           updateWorkspacePostCount({
-            topic_id: parseInt(payload.topic_id),
+            topic_id: payload.topic_id,
             count: res.data.result,
           })
         );
@@ -970,11 +1093,17 @@ const usePostActions = () => {
   };
 
   const approveComment = (payload = {}, callback) => {
+    if (sharedPayload) {
+      payload = {
+        ...payload,
+        sharedPayload: sharedPayload,
+      };
+    }
     dispatch(commentApprove(payload, callback));
   };
 
-  const close = (post, callback) => {
-    dispatch(postClose({ post_id: post.id, is_close: post.is_close ? 0 : 1 }, callback));
+  const close = (payload, callback) => {
+    dispatch(postClose(payload, callback));
   };
 
   const generateSystemMessage = (post, accepted_ids, rejected_ids) => {
@@ -1038,6 +1167,30 @@ const usePostActions = () => {
     dispatch(setShowUnread(value));
   };
 
+  const fetchSharedCompanyPosts = (payload, callback) => {
+    dispatch(getSharedCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedMyCompanyPosts = (payload, callback) => {
+    dispatch(getSharedMyCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedArchivedCompanyPosts = (payload, callback) => {
+    dispatch(getSharedArchivedCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedStarCompanyPosts = (payload, callback) => {
+    dispatch(getSharedStarCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedReadCompanyPosts = (payload, callback) => {
+    dispatch(getSharedReadCompanyPosts(payload, callback));
+  };
+
+  const fetchSharedUnreadCompanyPosts = (payload, callback) => {
+    dispatch(getSharedUnreadCompanyPosts(payload, callback));
+  };
+
   return {
     approve,
     approveComment,
@@ -1049,7 +1202,6 @@ const usePostActions = () => {
     markAsRead,
     markAsUnread,
     sharePost,
-    snoozePost,
     followPost,
     trash,
     showModal,
@@ -1094,6 +1246,12 @@ const usePostActions = () => {
     readPostNotification,
     fetchPostReadAndClap,
     setShowUnreadPosts,
+    fetchSharedCompanyPosts,
+    fetchSharedMyCompanyPosts,
+    fetchSharedReadCompanyPosts,
+    fetchSharedUnreadCompanyPosts,
+    fetchSharedArchivedCompanyPosts,
+    fetchSharedStarCompanyPosts,
   };
 };
 

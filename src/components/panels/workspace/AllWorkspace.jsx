@@ -192,6 +192,7 @@ const AllWorkspace = (props) => {
     workspaceYouShareWith: _t("WORKSPACE_BODY.WORKSPACE_YOUR_SHARE_WITH", "Workspaces you share with"),
     noSharedWorkspace: _t("WORKSPACE_BODY.NO_SHARED_WORKSPACE", "You have no shared workspace with"),
     loadingWorkspaces: _t("LABEL.LOADING_WORKSPACES", "Loading workspaces"),
+    sharedClient: _t("PAGE.SHARED_CLIENT", "Shared"),
   };
 
   return (

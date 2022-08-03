@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { useGetSlug } from "../../hooks";
 
 const PostBadge = (props) => {
   const { className = "", isBadgePill = false, post, dictionary, user, cbGetWidth = () => {} } = props;
 
-  // const hasRead = post.user_reads.some((u) => u.id === user.id);
-  // const hasReplied = typeof post.has_replied === "undefined" || !post.has_replied ? false : true;
-
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const refs = {
     container: useRef(null),
   };
@@ -16,9 +16,10 @@ const PostBadge = (props) => {
     }
   }, [post]);
 
-  //const hasPendingAproval = post.users_approval.length > 0 && post.users_approval.filter((u) => u.ip_address === null).length === post.users_approval.length;
-  // const hasRequestedChange = post.users_approval.filter((u) => u.ip_address !== null && !u.is_approved).length > 0;
-  const isApprover = post.users_approval.some((ua) => ua.id === user.id && ua.is_approved === false);
+  const { slug } = useGetSlug();
+  const userId = post.slug && post.slug !== slug && sharedWs[post.slug] ? sharedWs[post.slug].user_auth.id : user.id;
+
+  const isApprover = post.users_approval.some((ua) => ua.id === userId && ua.is_approved === false);
   const usersApproval = post.users_approval;
   const usersPending = usersApproval.filter((u) => u.ip_address === null);
 
@@ -32,14 +33,14 @@ const PostBadge = (props) => {
         else return null;
       }
       case "REQUEST_UPDATE": {
-        if (post.author.id === user.id) return dictionary.changeRequested;
+        if (post.author.id === userId) return dictionary.changeRequested;
         return null;
       }
       case "SPLIT": {
         return "Split";
       }
       case "REQUEST_APPROVAL": {
-        if (post.author.id === user.id && usersPending.length === usersApproval.length) return dictionary.requestForApproval;
+        if (post.author.id === userId && usersPending.length === usersApproval.length) return dictionary.requestForApproval;
         return null;
       }
       default:
@@ -66,13 +67,13 @@ const PostBadge = (props) => {
               <div className={`badge badge-light text-white ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.draft}</div>
             </div>
           )}
-          {!post.is_close && ((post.author.id === user.id && post.is_must_read) || (post.must_read_users && post.must_read_users.some((u) => u.id === user.id && !u.must_read))) && (
-            <div className={`${className} mr-3 d-sm-inline ${post.author.id === user.id ? "opacity-2" : ""}`}>
+          {!post.is_close && ((post.author.id === userId && post.is_must_read) || (post.must_read_users && post.must_read_users.some((u) => u.id === userId && !u.must_read))) && (
+            <div className={`${className} mr-3 d-sm-inline ${post.author.id === userId ? "opacity-2" : ""}`}>
               <div className={`badge badge-danger ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.mustRead}</div>
             </div>
           )}
-          {!post.is_close && ((post.author.id === user.id && post.is_must_reply) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === user.id && !u.must_reply))) && (
-            <div className={`${className} mr-3 d-sm-inline ${post.author.id === user.id ? "opacity-2" : ""}`}>
+          {!post.is_close && ((post.author.id === userId && post.is_must_reply) || (post.must_reply_users && post.must_reply_users.some((u) => u.id === userId && !u.must_reply))) && (
+            <div className={`${className} mr-3 d-sm-inline ${post.author.id === userId ? "opacity-2" : ""}`}>
               <div className={`badge badge-warning ${isBadgePill ? "badge-pill" : ""}`}>{dictionary.replyRequired}</div>
             </div>
           )}

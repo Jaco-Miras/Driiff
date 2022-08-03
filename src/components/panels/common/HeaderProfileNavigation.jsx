@@ -156,11 +156,11 @@ const HomeProfileNavigation = (props) => {
     driffSettings,
     userSettings,
   } = useSettings();
-  const onlineUsers = useSelector((state) => state.users.onlineUsers);
+  //const onlineUsers = useSelector((state) => state.users.onlineUsers);
   //const uniqueOnlineUsers = [...new Set(onlineUsers.map((ou) => ou.user_id))];
 
   const [currentPopUp, setCurrentPopUp] = useState(null);
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState(loggedUser);
   const [dropDown, setDropDown] = useState({});
   const [showUserProfileDropdown, setShowUserProfileDropdown] = useState(false);
 
@@ -216,12 +216,21 @@ const HomeProfileNavigation = (props) => {
     } else {
       fetchById(loggedUser.id, (err, res) => {
         if (err) return;
-        if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
-          sessionService.saveUser({ ...res.data });
-        }
+        setForm(res.data);
+        sessionService.saveUser({ ...loggedUser, ...res.data });
+        // if (loggedUser.role && loggedUser.role.id !== res.data.role.id) {
+        //   sessionService.saveUser({ ...loggedUser, ...res.data });
+        // }
       });
     }
   }, []);
+
+  // useEffect(() => {
+  //   const selectedUser = users[loggedUser.id] ? users[loggedUser.id] : null;
+  //   if (selectedUser) {
+  //     setForm(selectedUser);
+  //   }
+  // }, [users, loggedUser]);
 
   const history = useHistory();
   const gotoNotifications = (e) => {
@@ -237,11 +246,11 @@ const HomeProfileNavigation = (props) => {
 
   useOutsideClick(currentPopUp, hidePopUp, currentPopUp !== null);
 
-  const handleGiftClick = (e) => {
-    e.preventDefault();
-    window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
-    // history.push("/releases");
-  };
+  // const handleGiftClick = (e) => {
+  //   e.preventDefault();
+  //   window.open("https://support.getdriff.com/hc/en-us/sections/4409918501905-Software-updates", "_blank");
+  //   // history.push("/releases");
+  // };
 
   const hideSearch = () => {
     const name = "search";
@@ -253,14 +262,15 @@ const HomeProfileNavigation = (props) => {
   };
 
   const renderGifIcon = () => {
-    if (loggedUser.type === "external") return null;
-    return (
-      <li className="nav-item dropdown">
-        <a href="/" className={"nav-link"} onClick={handleGiftClick}>
-          <SvgIconFeather icon="gift" />
-        </a>
-      </li>
-    );
+    return null;
+    // if (loggedUser.type === "external") return null;
+    // return (
+    //   <li className="nav-item dropdown">
+    //     <a href="/" className={"nav-link"} onClick={handleGiftClick}>
+    //       <SvgIconFeather icon="gift" />
+    //     </a>
+    //   </li>
+    // );
   };
 
   return (
@@ -308,7 +318,7 @@ const HomeProfileNavigation = (props) => {
             <Avatar name={form.name} id={form.id} type="USER" className="avatar-top-bar" imageLink={form.profile_image_link} noDefaultClick={true} />
           </ToolTip>
         </span>
-        {showUserProfileDropdown && <UserProfileDropDown user={loggedUser} closeDropdown={toggleShowProfileDropdown} />}
+        {showUserProfileDropdown && <UserProfileDropDown user={form} closeDropdown={toggleShowProfileDropdown} />}
       </li>
     </Wrapper>
   );

@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { ChatContentPanel } from "../chat";
-import { useRouteMatch, useParams } from "react-router-dom";
+import { useRouteMatch } from "react-router-dom";
 import { SvgEmptyState } from "../../common";
 import { createWorkspaceTeamChannel } from "../../../redux/actions/workspaceActions";
 import { useFetchWsCount } from "../../hooks";
-import { fetchRecentPosts } from "../../../redux/actions/postActions";
 import { isMobile } from "react-device-detect";
 
 const Wrapper = styled.div``;
@@ -35,7 +34,6 @@ const EmptyState = styled.div`
 const WorkspaceChatPanel = (props) => {
   const { className = "", workspace } = props;
   const route = useRouteMatch();
-  const params = useParams();
   const dispatch = useDispatch();
   const selectedChannel = useSelector((state) => state.chat.selectedChannel);
   const user = useSelector((state) => state.session.user);
@@ -61,16 +59,12 @@ const WorkspaceChatPanel = (props) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (params.hasOwnProperty("workspaceId")) {
-      dispatch(fetchRecentPosts({ topic_id: params.workspaceId }));
-    }
-  }, [params.workspaceId]);
+  let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
 
   return (
     <Wrapper className={`workspace-chat container-fluid ${className}`}>
       <Chatblock className="row no-gutters chat-block">
-        {workspace && !workspace.team_channel.code && route.path.startsWith("/hub/team-chat/") && user.type === "internal" && (
+        {workspace && !workspace.team_channel.code && route.path.startsWith(`/${ws_type}/team-chat/`) && user.type === "internal" && (
           <EmptyState>
             <SvgEmptyState icon={3} height={252} />
             <button className="btn btn-outline-primary btn-block" disable={activating} onClick={handleActivateTeamChat}>
@@ -78,9 +72,9 @@ const WorkspaceChatPanel = (props) => {
             </button>
           </EmptyState>
         )}
-        {((route.path.startsWith("/hub/chat") && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) ||
-          (route.path.startsWith("/hub/chat") && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
-          (route.path.startsWith("/hub/team-chat") && workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.id === workspace.team_channel.id)) && (
+        {((route.path.startsWith(`/${ws_type}/chat`) && selectedChannel && workspace.is_shared && selectedChannel.id === workspace.channel.id) ||
+          (route.path.startsWith(`/${ws_type}/chat`) && selectedChannel && !workspace.is_shared && selectedChannel.id === workspace.team_channel.id) ||
+          (route.path.startsWith(`/${ws_type}/team-chat`) && workspace && workspace.team_channel.code && user.type === "internal" && selectedChannel && selectedChannel.id === workspace.team_channel.id)) && (
           <ChatContentPanel className={"col-lg-12"} isWorkspace={true} selectedChannel={selectedChannel} />
         )}
       </Chatblock>

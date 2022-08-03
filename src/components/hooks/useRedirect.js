@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { replaceChar } from "../../helpers/stringFormatter";
@@ -11,7 +12,13 @@ const useRedirect = () => {
   const workspaces = useSelector((state) => state.workspaces.workspaces);
   const channels = useSelector((state) => state.chat.channels);
   const user = useSelector((state) => state.session.user);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
   const toaster = useToaster();
+
+  const workspacesRef = useRef({});
+  useEffect(() => {
+    workspacesRef.current = workspaces;
+  }, [workspaces]);
 
   const fetchSelectChannel = (code, callback) => {
     dispatch(
@@ -34,8 +41,9 @@ const useRedirect = () => {
       if (user.type === "external") {
         let ws = Object.values(workspaces).find((ws) => ws.channel.id === cnl.id || (ws.team_channel && ws.team_channel.id === cnl.id));
         if (ws) {
+          let ws_type = ws.sharedSlug ? "shared-hub" : "hub";
           history.push({
-            pathname: ws.folder_id ? `/hub/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/hub/chat/${ws.id}/${ws.name}`,
+            pathname: ws.folder_id ? `/${ws_type}/chat/${ws.folder_id}/${ws.folder_name}/${ws.id}/${ws.name}` : `/${ws_type}/chat/${ws.id}/${ws.name}`,
             state: { focusOn: message.code },
           });
         }
@@ -57,6 +65,13 @@ const useRedirect = () => {
           before_chat_id: message.id,
           limit: 10,
         };
+        if (cnl.slug && sharedWs[cnl.slug]) {
+          const sharedPayload = { slug: cnl.slug, token: sharedWs[cnl.slug].access_token, is_shared: true };
+          payload = {
+            ...payload,
+            sharedPayload: sharedPayload,
+          };
+        }
         dispatch(getChatMessages(payload));
         dispatch(setLastVisitedChannel(channel, cb));
       }
@@ -89,32 +104,34 @@ const useRedirect = () => {
   };
 
   const toPost = (payload, locationState = null) => {
-    const { post, workspace } = payload;
-    if (workspace && workspaces[workspace.id]) {
-      dispatch(setActiveTopic(workspace));
+    const { post, workspace, sharedSlug = false } = payload;
+    if (workspace && workspaces[workspace.key]) {
+      dispatch(setActiveTopic(workspaces[workspace.key]));
+      let wsType = sharedSlug ? "shared-hub" : "hub";
       if (workspace.folder_id) {
-        history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/${wsType}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       } else {
-        history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
+        history.push(`/${wsType}/posts/${workspace.id}/${replaceChar(workspace.name)}/post/${post.id}/${replaceChar(post.title)}`, locationState);
       }
-    } else if (workspace && typeof workspaces[workspace.id] === "undefined") {
-      fetchWorkspaceAndRedirect(workspace, post);
+    } else if (workspace && typeof workspaces[workspace.key] === "undefined") {
+      if (!sharedSlug) fetchWorkspaceAndRedirect(workspace, post);
     } else {
       history.push(`/posts/${post.id}/${replaceChar(post.title)}`, locationState);
     }
   };
 
   const toWorkspace = (ws, page = "chat") => {
-    if (workspaces[ws.id]) {
-      let workspace = { ...workspaces[ws.id] };
+    if (workspacesRef.current[ws.id]) {
+      let workspace = { ...workspacesRef.current[ws.id] };
+      let wsType = workspace.sharedSlug ? "shared-hub" : "hub";
       dispatch(setActiveTopic(workspace));
       if (workspace.folder_id) {
-        history.push(`/hub/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/${page}/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
       } else {
-        history.push(`/hub/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
+        history.push(`/${wsType}/${page}/${workspace.id}/${replaceChar(workspace.name)}`);
       }
     } else {
-      fetchWorkspaceAndRedirect(ws);
+      if (!ws.sharedSlug) fetchWorkspaceAndRedirect(ws);
     }
   };
 

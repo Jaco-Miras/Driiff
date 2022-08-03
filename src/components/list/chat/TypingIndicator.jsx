@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Avatar } from "../../common";
-import { useIsUserTyping, useTypingIndicator } from "../../hooks";
+import { useTypingIndicator } from "../../hooks";
 
 const TypingContainer = styled.div`
   display: inline-flex;

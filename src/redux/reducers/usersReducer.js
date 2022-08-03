@@ -26,6 +26,7 @@ const INITIAL_STATE = {
       lastPage: 0,
     },
   },
+  sharedUsers: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -545,6 +546,38 @@ export default (state = INITIAL_STATE, action) => {
             data: action.data.data,
             lastPage: action.data.last_page,
           },
+        },
+      };
+    }
+    case "GET_SHARED_USERS_SUCCESS": {
+      return {
+        ...state,
+        sharedUsers: {
+          ...state.sharedUsers,
+          [action.slug]: {
+            users: action.data.users.map((u) => {
+              return { ...u, slug: action.slug };
+            }),
+          },
+        },
+      };
+    }
+    case "INCOMING_ACCEPTED_SHARED_USER": {
+      return {
+        ...state,
+        sharedUsers: {
+          ...state.sharedUsers,
+          ...(state.sharedUsers[action.data.shared_slug] && {
+            [action.data.shared_slug]: {
+              users: state.sharedUsers[action.data.shared_slug].users.map((m) => {
+                if (m.id === action.data.current_user.id) {
+                  return { ...m, active: 1, has_accepted: true, external_id: action.data.current_user.external_id };
+                } else {
+                  return m;
+                }
+              }),
+            },
+          }),
         },
       };
     }

@@ -217,7 +217,7 @@ const ChatSidebarPanel = (props) => {
   const dictionary = {
     chats: _t("CHAT.CHATS", "Chats"),
     contacts: _t("CHAT.CONTACTS", "Contacts"),
-    workspaceChats: _t("CHAT.WORKSPACE_CHATS", "Workspace chats"),
+    workspaceChats: _t("CHAT.WORKSPACE_CHATS", "Hub chats"),
     recentChats: _t("CHAT.RECENT_CHATS", "Recent chats"),
     newGroupChat: _t("CHAT.NEW_GROUP_CHAT", "New group chat"),
     searchChatPlaceholder: _t("CHAT.SEARCH_CHAT_PLACEHOLDER", "Search contacts or chats"),
@@ -226,7 +226,7 @@ const ChatSidebarPanel = (props) => {
     hidden: _t("CHAT.HIDDEN", "Hidden"),
     pinned: _t("CHAT.PINNED", "Pinned"),
     startNew: _t("CHAT.START_NEW", "Start new"),
-    viewOpenWorkspace: _t("CHAT.VIEW_OPEN_WORKSPACE", "View open workspace"),
+    viewOpenWorkspace: _t("CHAT.VIEW_OPEN_WORKSPACE", "View open hub"),
     archived: _t("CHAT.ARCHIVED", "Archived"),
     nothingToSeeHere: _t("CHAT.NOTHING_TO_SEE_HERE", "Nothing to see here!"),
     noMatchingChats: _t("CHAT.NO_MATCHING_CHATS", "No matching chats found"),
@@ -236,9 +236,9 @@ const ChatSidebarPanel = (props) => {
     showArchived: _t("CHAT.SHOW_ARCHIVED", "Show archived"),
     withTeam: _t("CHANNEL.WITH_TEAM", "Team Chat"),
     withClient: _t("CHANNEL.WITH_CLIENT", "Client Chat"),
+    withShared: _t("CHANNEL.WITH_SHARED", "Shared"),
     team: _t("TEAM", "Team"),
     personalNotes: _t("CHANNEL.PERSONAL_NOTES", "Personal Notes"),
-    withShared: _t("CHANNEL.SHARED", "Shared"),
   };
 
   const handleOpenGroupChatModal = () => {

@@ -9,6 +9,7 @@ import { useChatReply } from "../../hooks";
 import MessageFiles from "./Files/MessageFiles";
 import useChatTranslate from "../../hooks/useChatTranslate";
 import useChatFancyLink from "../../hooks/useChatFancyLink";
+import Tooltip from "react-tooltip-lite";
 
 const ChatBubbleContainer = styled.div`
   position: relative;
@@ -433,7 +434,7 @@ const ChatBubble = (props) => {
 
   useChatFancyLink({ message: reply, actions: chatMessageActions });
 
-  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions });
+  useChatTranslate({ message: reply, isAuthor, translate: selectedChannel.is_translate, chat_language, actions: chatMessageActions, channel: selectedChannel });
 
   const { quoteAuthor, quoteBody, replyBody, hasMessage, isGifOnly, isEmoticonOnly } = useChatReply({
     reply,
@@ -567,16 +568,38 @@ const ChatBubble = (props) => {
       }
     }
   };
-
   const isExternalUser = reply.user && users[reply.user.id] && users[reply.user.id].type === "external" && !isAuthor;
+
+  const isNotSameDriff = selectedChannel && selectedChannel.slug && selectedChannel.members.find((mem) => mem.id === reply.user.id)?.slug !== selectedChannel.slug.slice(0, -7);
+
+  const setChatBubbleBG = () => {
+    let bgClassName = "";
+
+    if (selectedChannel.sharedSlug && !isAuthor && isNotSameDriff) {
+      bgClassName = "bg-warning";
+    }
+
+    if (reply.is_important) {
+      bgClassName = "important";
+    }
+    return bgClassName;
+  };
+
   //const theme = useTheme()
+
+  const toggleTooltip = () => {
+    let tooltips = document.querySelectorAll("span.react-tooltip-lite");
+    tooltips.forEach((tooltip) => {
+      tooltip.parentElement.classList.toggle("tooltip-active");
+    });
+  };
 
   return (
     <ChatBubbleContainer
       ref={refs.container}
       tabIndex={reply.id}
       hasFiles={hasFiles}
-      className={`chat-bubble ql-editor ${reply.is_important && "important"} ${isExternalUser && "external-chat"}`}
+      className={`chat-bubble ql-editor ${setChatBubbleBG()}  ${isExternalUser && "external-chat"}`}
       showAvatar={showAvatar}
       isAuthor={isAuthor}
       hideBg={isEmoticonOnly || isGifOnly || (hasFiles && !hasMessage)}
@@ -595,8 +618,18 @@ const ChatBubble = (props) => {
             <ChatContent showAvatar={showAvatar} isAuthor={isAuthor} isEmoticonOnly={isEmoticonOnly} className={"chat-content animated slower"} ref={contentRef}>
               {!isAuthor && showAvatar && (
                 <>
-                  <ChatNameNotAuthor isEmoticonOnly={isEmoticonOnly} hasFiles={hasFiles} isGifOnly={isGifOnly} className={`chat-name-not-author-mobile ${reply.is_important && "important"}`}>
+                  <ChatNameNotAuthor
+                    isEmoticonOnly={isEmoticonOnly}
+                    hasFiles={hasFiles}
+                    isGifOnly={isGifOnly}
+                    className={`chat-name-not-author-mobile ${reply.is_important && "important"} ${selectedChannel.sharedSlug && "text-dark font-weight-bold"}`}
+                  >
                     {reply.user.type === "BOT" && reply.user.code && reply.user.code.includes("huddle") ? dictionary.teamFeedback : reply.user.name}
+                    {selectedChannel.sharedSlug && isNotSameDriff && (
+                      <Tooltip onToggle={toggleTooltip} content={dictionary.sharedIconTooltip} styles={{ display: "inline", cursor: "pointer" }}>
+                        <SvgIconFeather icon="repeat" height={14} />
+                      </Tooltip>
+                    )}
                   </ChatNameNotAuthor>
                 </>
               )}

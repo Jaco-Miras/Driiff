@@ -270,6 +270,7 @@ const CompanyPostsPanel = (props) => {
   }, []);
 
   useEffect(() => {
+    //need to revisit
     if (params.postId && !post) {
       actions.fetchPostDetail({ post_id: parseInt(params.postId) }, (err, res) => {
         if (componentIsMounted.current) {

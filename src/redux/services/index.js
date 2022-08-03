@@ -67,7 +67,6 @@ export {
   getLastChannel,
   getChannelLastReply,
   putChatStar,
-  getChatStar,
   getHuddleChatbot,
   postHuddleChatbot,
   putHuddleChatbot,
@@ -134,6 +133,8 @@ export {
   getCurrentUserImpersonation,
   impersonationLogout,
   impersonationLists,
+  getSharedUserInfo,
+  acceptSharedUserInvite,
 } from "./user";
 
 export {
@@ -264,7 +265,6 @@ export {
   postCompanyPosts,
   putCompanyPosts,
   getPostClapHover,
-  getReplyClapHover,
   getUnreadPostEntries,
   getUnreadPostComments,
   archiveAllPosts,
@@ -324,6 +324,7 @@ export {
   getWorkspaceQuickLinks,
   putWorkspaceQuickLinks,
   getRelatedWorkspace,
+  getSharedWorkspaces,
 } from "./workspace";
 
 export { postRegisterDriff, patchCheckDriff, getCompanyDashboardTimeline, getCompanyDashboardRecentPosts, getCompanyDashboardMembers, patchUpdateDriffVersion } from "./driff";

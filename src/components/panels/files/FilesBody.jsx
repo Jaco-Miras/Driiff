@@ -73,7 +73,7 @@ const EmptyStateLabel = styled.div`
 `;
 
 const FilesBody = (props) => {
-  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions } = props;
+  const { className = "", dropZoneRef, filter, search, wsFiles, isMember, handleAddEditFolder, actions, params, folders, folder, fileIds, history, subFolders, dictionary, disableOptions, sharedSlug = false, slug } = props;
 
   const toaster = useToaster();
   const scrollRef = document.querySelector(".app-content-body");
@@ -127,6 +127,7 @@ const FilesBody = (props) => {
       folder_id: folder ? folder.id : null,
       topic_id: parseInt(params.workspaceId),
       workspace_id: params.hasOwnProperty("folderId") ? parseInt(params.fileFolderId) : null,
+      slug: slug,
     };
     actions.uploadingFiles(uploads);
     let formData = new FormData();
@@ -150,7 +151,7 @@ const FilesBody = (props) => {
     }
     const ids = uploads.files.map((f) => f.id);
     const cb = (err, res) => {
-      actions.deleteWorkspaceFilesUpload({ topic_id: parseInt(params.workspaceId), fileIds: ids });
+      actions.deleteWorkspaceFilesUpload({ topic_id: parseInt(params.workspaceId), fileIds: ids, slug: slug });
     };
     actions.uploadFiles(payload, cb);
   };

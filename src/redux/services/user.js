@@ -429,10 +429,16 @@ export function getOnlineUsers(payload) {
 }
 
 export function getUsers(payload = {}) {
+  let sharedPayload;
+  if (payload.sharedPayload) {
+    sharedPayload = payload.sharedPayload;
+    delete payload.sharedPayload;
+  }
   let url = `/v1/users?${objToUrlParams(payload)}`;
   return apiCall({
     method: "GET",
     url: url,
+    sharedPayload: sharedPayload,
   });
 }
 
@@ -457,6 +463,7 @@ export function batchUploadProfileImage(payload) {
       data: {
         file: p.profile_pic,
       },
+      sharedPayload: p.sharedPayload,
     });
   });
 
@@ -724,5 +731,21 @@ export function impersonationLists(payload) {
   return apiCall({
     method: "GET",
     url: `/impersonation/lists?page=${payload.page}&limit=${payload.limit}`,
+  });
+}
+
+export function getSharedUserInfo(payload) {
+  return apiNoTokenCall({
+    method: "POST",
+    url: "/v2/shared-workspace-invite",
+    data: payload,
+  });
+}
+
+export function acceptSharedUserInvite(payload) {
+  return apiNoTokenCall({
+    method: "PUT",
+    actualUrl: payload.url,
+    data: payload,
   });
 }

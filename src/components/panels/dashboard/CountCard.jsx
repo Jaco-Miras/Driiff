@@ -32,40 +32,70 @@ const CountCard = (props) => {
   const dispatch = useDispatch();
   const unreadCounter = useSelector((state) => state.global.unreadCounter);
   const todosCount = useSelector((state) => state.global.todos.count);
-  const wsReminders = useSelector((state) => state.workspaces.workspaceReminders[params.workspaceId]);
+  const workspaceReminders = useSelector((state) => state.workspaces.workspaceReminders);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
+  const onSharedWsURL = history.location.pathname.startsWith("/shared-hub");
+  const wsKey = workspace && onSharedWsURL ? workspace.key : params.workspaceId;
+  const wsReminders = workspaceReminders[workspace && onSharedWsURL ? workspace.key : params.workspaceId];
 
   useEffect(() => {
-    if (params.workspaceId && !wsReminders) {
-      //fetch the workspace reminders count
-      dispatch(
-        getWorkspaceRemindersCount({ topic_id: params.workspaceId }, (err, res) => {
-          if (err) return;
-          dispatch(updateWorkspaceRemindersCount({ count: res.data, id: parseInt(params.workspaceId) }));
-        })
-      );
+    if (history.location.pathname.startsWith("/shared-hub")) {
+      if (params.workspaceId && workspace && !workspaceReminders[workspace.key]) {
+        //fetch the workspace reminders count
+        let payload = {
+          topic_id: params.workspaceId,
+        };
+        if (workspace && workspace.sharedSlug && sharedWs[workspace.slug]) {
+          payload = {
+            ...payload,
+            sharedPayload: { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true },
+          };
+        }
+        dispatch(
+          getWorkspaceRemindersCount(payload, (err, res) => {
+            if (err) return;
+            dispatch(updateWorkspaceRemindersCount({ count: res.data, id: wsKey }));
+          })
+        );
+      }
+    } else {
+      if (params.workspaceId && !workspaceReminders[params.workspaceId]) {
+        //fetch the workspace reminders count
+        let payload = {
+          topic_id: params.workspaceId,
+        };
+
+        dispatch(
+          getWorkspaceRemindersCount(payload, (err, res) => {
+            if (err) return;
+            dispatch(updateWorkspaceRemindersCount({ count: res.data, id: wsKey }));
+          })
+        );
+      }
     }
   }, []);
 
   const handleRedirect = () => {
+    let ws_type = workspace && workspace.sharedSlug ? "shared-hub" : "hub";
     if (isWorkspace) {
       if (!workspace) return;
       if (type === "chat") {
         if (workspace.folder_id) {
-          history.push(`/hub/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/chat/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/hub/chat/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/chat/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else if (type === "posts") {
         if (workspace.folder_id) {
-          history.push(`/hub/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/posts/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/hub/posts/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/posts/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       } else {
         if (workspace.folder_id) {
-          history.push(`/hub/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/reminders/${workspace.folder_id}/${replaceChar(workspace.folder_name)}/${workspace.id}/${replaceChar(workspace.name)}`);
         } else {
-          history.push(`/hub/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
+          history.push(`/${ws_type}/reminders/${workspace.id}/${replaceChar(workspace.name)}`);
         }
       }
     } else {
