@@ -121,6 +121,8 @@ const WorkspacePeoplePanel = (props) => {
     connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
     phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
     messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
+    invitedGuestBadge: _t("BADGE.INVITED", "Invited"),
+    guestBadge: _t("BADGE.GUEST", "Guest"),
   };
 
   useFocusInput(refs.search.current);

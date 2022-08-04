@@ -307,28 +307,31 @@ const PeopleListItem = (props) => {
                 />
                 <div className="user-info-wrapper ml-3">
                   {user.email !== "" && user.hasOwnProperty("has_accepted") && !user.has_accepted && user.type === "external" ? (
-                    <h6 className="user-name mb-0 d-flex">
-                      {renderUserName({ user })}
-                      {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
-                      <span>
-                        <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />
-                        {user.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
+                    <>
+                      <h6 className="user-name mb-0 d-flex">
+                        {renderUserName({ user })}
+                        {/* <Badge label={dictionary.peopleInvited} badgeClassName="badge badge-info text-white" /> */}
+                      </h6>
+                      <span className="d-block">
+                        {<Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" />}
+                        {user.type === "external" && loggedUser.type !== "external" && <Badge badgeClassName="badge-warning text-white" label={dictionary.guestBadge} />}
                         {user.active === 0 && <Badge label="Inactive" badgeClassName="badge badge-light text-white" />}
                       </span>
-                    </h6>
+                    </>
                   ) : (
-                    <h6 className="user-name mb-0" onClick={handleOnNameClick}>
-                      <div className="mr-2 d-flex">
-                        {renderUserName({ user })}
-                        {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" /> : null}
-                        {user.role && user.role.id === 1 && (
-                          <ToolTip content={dictionary.thisIsAnAdminAccount}>
-                            <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
-                          </ToolTip>
-                        )}
-                      </div>
-
-                      <span className="label-wrapper d-inline-flex start align-items-center">
+                    <>
+                      <h6 className="user-name mb-0" onClick={handleOnNameClick}>
+                        <div className="mr-2 d-flex">
+                          {renderUserName({ user })}
+                          {user.hasOwnProperty("has_accepted") && !user.has_accepted && user.active ? <Badge label={dictionary.invitedGuestBadge} badgeClassName="badge badge-info badge-external text-white" /> : null}
+                          {user.role && user.role.id === 1 && (
+                            <ToolTip content={dictionary.thisIsAnAdminAccount}>
+                              <SvgIconFeather icon="settings" className="ml-1" width={10} height={10} />
+                            </ToolTip>
+                          )}
+                        </div>
+                      </h6>
+                      <span className="label-wrapper d-block start">
                         {user.type === "external" && loggedUser.type !== "external" && <Badge label={dictionary.guestBadge} badgeClassName="badge badge-info badge-external text-white" />}
                         {isSharedWorkspace && user.is_creator && <StyledBadge role="SHARED_TEAM_LEAD" badgeClassName={"text-white"} label={dictionary.roleTeamLead} />}
                         {user.type === "external" && loggedUser.type !== "external" && user.has_accepted && <Badge badgeClassName="badge-warning text-white" label={dictionary.peopleExternal} />}
@@ -337,7 +340,7 @@ const PeopleListItem = (props) => {
                           <StyledBadge role={user.workspace_role} badgeClassName={user.workspace_role === "WATCHER" || user.workspace_role === "TEAM_LEAD" ? "text-dark" : "text-white"} label={roleDisplay()} />
                         )}
                       </span>
-                    </h6>
+                    </>
                   )}
 
                   {user.role && user.type === "internal" && <span className="small text-muted">{user.role.display_name}</span>}
