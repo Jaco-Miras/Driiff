@@ -143,7 +143,7 @@ const WorkspacePeoplePanel = (props) => {
   return (
     <Wrapper className={`workspace-people fadeIn container-fluid ${className}`}>
       <div className="card">
-        <div className="card-body">
+        <div className="card-body" style={{ height: "100vh" }}>
           <div className="people-header">
             <Search ref={refs.search} value={search} closeButton="true" onClickEmpty={emptySearchInput} placeholder={dictionary.searchPeoplePlaceholder} onChange={handleSearchChange} autoFocus />
             {showInviteButton && (
