@@ -374,7 +374,7 @@ const TeamListItem = (props) => {
           </button>
         </ShowMoreBtn>
       )}
-      {!hideOptions && isUser && !isSharedWorkspace && (
+      {!hideOptions && isUser && (
         <MoreOptions moreButton="more-horizontal" width={250} className="ml-auto">
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
