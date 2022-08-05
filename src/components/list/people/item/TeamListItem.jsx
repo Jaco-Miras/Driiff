@@ -328,7 +328,7 @@ const TeamListItem = (props) => {
               <h6 className="profile-name mr-2" onClick={handleClickName}>
                 {!member.has_accepted && member.name === "" ? member.email : member.name}
               </h6>
-              {isNotSameDriff && <SvgIconFeather icon="repeat" />}
+              {isSharedWorkspace && isNotSameDriff && <SvgIconFeather icon="repeat" />}
             </div>
           )}
           {!isUser && (

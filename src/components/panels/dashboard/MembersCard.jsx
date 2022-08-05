@@ -145,7 +145,7 @@ const MembersCard = (props) => {
   };
 
   if (!workspace) return null;
-  const sharedWorkspace = workspace && workspace.slug ? workspace.slug !== slug : false;
+  const sharedWorkspace = workspace && workspace.slug ? workspace.slug !== slug.slug : false;
   return (
     <Wrapper>
       <span>
