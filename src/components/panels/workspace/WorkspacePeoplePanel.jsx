@@ -126,7 +126,6 @@ const WorkspacePeoplePanel = (props) => {
     moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
     moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
     unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
-    unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
     deactivateUser: _t("PEOPLE.DEACTIVATE_USER", "Deactivate user"),
     activateUser: _t("PEOPLE.ACTIVATE_USER", "Activate user"),
     deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
@@ -137,6 +136,8 @@ const WorkspacePeoplePanel = (props) => {
     addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
     removeTeamMember: _t("PEOPLE.REMOVE_TEAM_MEMBER", "Remove team member"),
     sendEmailInviteLink: _t("TOOLTIP.SEND_EMAIL_INVITE", "Mail Invite Link"),
+    invitedGuestBadge: _t("BADGE.INVITED", "Invited"),
+    guestBadge: _t("BADGE.GUEST", "Guest"),
   };
 
   useFocusInput(refs.search.current);
