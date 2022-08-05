@@ -96,10 +96,10 @@ const Wrapper = styled.div`
 const CenterContainer = styled.div`
   display: flex;
   justify-content: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100vh;
 `;
 
 const StyledLink = styled.a`
@@ -139,6 +139,32 @@ const DriffLogo = styled(SvgIcon)`
   path {
     color: ${(props) => props.theme.colors.primary};
     fill: ${(props) => props.theme.colors.primary};
+  }
+`;
+
+const SpacerBefore = styled.div`
+  &::before {
+    content: " ";
+    display: flex;
+    flex: 1;
+    flex-grow: 1;
+    min-height: 1.5rem;
+    width: 100%;
+
+    @media (max-width: 576px) {
+      min-height: 0rem;
+    }
+  }
+`;
+
+const SpacerAfter = styled.div`
+  &::after {
+    content: " ";
+    display: flex;
+    flex: 1;
+    flex-grow: 1;
+    min-height: 1.5rem;
+    width: 100%;
   }
 `;
 
@@ -294,6 +320,7 @@ const GuestLayout = (props) => {
   return (
     <>
       <CenterContainer>
+        <SpacerBefore />
         {showSideBanner && (
           <SideImageContainer>
             <SideImage />
@@ -343,6 +370,7 @@ const GuestLayout = (props) => {
             </div>
           )}
         </Wrapper>
+        <SpacerAfter />
       </CenterContainer>
     </>
   );

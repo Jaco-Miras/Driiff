@@ -717,13 +717,14 @@ const useChannelActions = () => {
 
     dispatch(
       getChannels(params, (err, res) => {
+        if (res) {
+          dispatch(
+            addChannels({
+              channels: res.data.results,
+            })
+          );
+        }
         if (callback) callback();
-        if (err) return;
-        dispatch(
-          addChannels({
-            channels: res.data.results,
-          })
-        );
       })
     );
   };
