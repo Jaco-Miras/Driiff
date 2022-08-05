@@ -6,7 +6,7 @@ import { useSharedCompanyPosts } from "./index";
 import { replaceChar } from "../../helpers/stringFormatter";
 
 const useCompanyPosts = () => {
-  //useSharedCompanyPosts();
+  useSharedCompanyPosts();
   const params = useParams();
   const actions = usePostActions();
   const user = useSelector((state) => state.session.user);

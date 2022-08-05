@@ -256,7 +256,7 @@ export default (state = INITIAL_STATE, action) => {
     }
     case "INCOMING_WORKSPACE_POST":
     case "INCOMING_POST": {
-      if (action.data.sharedSlug) return state;
+      //if (action.data.sharedSlug) return state;
       let postKey = action.data.id;
       if (action.data.sharedSlug && action.data.code) {
         postKey = action.data.code;
