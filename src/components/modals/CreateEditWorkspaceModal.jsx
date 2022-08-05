@@ -2026,7 +2026,7 @@ const CreateEditWorkspaceModal = (props) => {
           },
         };
       });
-      const filteredSharedUsers = uniqBy(allSharedUsersOptions, "email");
+      const filteredSharedUsers = uniqBy(allSharedUsersOptions, "email").filter((u) => u.type === "external");
       setSharedUserOptions(filteredSharedUsers);
     }
   }, [sharedUsers]);

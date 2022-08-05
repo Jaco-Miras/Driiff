@@ -118,7 +118,7 @@ const PostRecipients = (props) => {
     const recipientSize = winSize.width > 576 ? (hasMe ? 4 : 5) : hasMe ? 0 : 1;
     let recipient_names = "";
     const otherPostRecipients = post.recipients.filter((r) => !(r.type === "USER" && r.type_id === user.id));
-    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
+    if (post.shared_with_client && hasExternalWorkspace && !isExternalUser && !(post.slug in user.sharedWorkspaces)) {
       recipient_names += `<span class="receiver client-shared">${dictionary.sharedClientBadge}</span>`;
     } else if (!post.shared_with_client && hasExternalWorkspace && !isExternalUser) {
       recipient_names += `<span class="receiver client-not-shared">${dictionary.notSharedClientBadge}</span>`;

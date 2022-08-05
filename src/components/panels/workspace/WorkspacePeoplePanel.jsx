@@ -121,6 +121,23 @@ const WorkspacePeoplePanel = (props) => {
     connectedWorkspaceIcon: _t("TOOLTIP.CONNECTED_WORKSPACE", "Connected workspace"),
     phoneIcon: _t("TOOLTIP.PHONE", "Call profile phone number"),
     messageIcon: _t("TOOLTIP.MESSAGE_BUBBLE", "Send a chat to this person"),
+    assignAsAdmin: _t("PEOPLE.ASSIGN_AS_ADMIN", "Assign as administrator"),
+    assignAsEmployee: _t("PEOPLE.ASSIGN_AS_EMPLOYEE", "Assign as employee"),
+    moveToInternal: _t("PEOPLE.MOVE_TO_INTERNAL", "Move to internal"),
+    moveToExternal: _t("PEOPLE.MOVE_TO_EXTERNAL", "Move to external"),
+    unarchiveUser: _t("PEOPLE.UNARCHIVE_USER", "Unarchive user"),
+    deactivateUser: _t("PEOPLE.DEACTIVATE_USER", "Deactivate user"),
+    activateUser: _t("PEOPLE.ACTIVATE_USER", "Activate user"),
+    deleteUser: _t("PEOPLE.DELETE_USER", "Delete user"),
+    resendInvitation: _t("PEOPLE.RESEND_INVITATION", "Resend invitation"),
+    removeInvitedInternal: _t("PEOPLE.REMOVE_INVITED_INTERNAL", "Remove invited internal user"),
+    sendInviteManually: _t("PEOPLE.SEND_INVITE_MANUALLY", "Send invite manually"),
+    copyInviteLink: _t("PEOPLE.COPY_INVITE_LINK", "Copy Invite link"),
+    addUserToTeam: _t("PEOPLE.ADD_USER_TEAM", "Add user to team"),
+    removeTeamMember: _t("PEOPLE.REMOVE_TEAM_MEMBER", "Remove team member"),
+    sendEmailInviteLink: _t("TOOLTIP.SEND_EMAIL_INVITE", "Mail Invite Link"),
+    invitedGuestBadge: _t("BADGE.INVITED", "Invited"),
+    guestBadge: _t("BADGE.GUEST", "Guest"),
   };
 
   useFocusInput(refs.search.current);
@@ -167,6 +184,7 @@ const WorkspacePeoplePanel = (props) => {
                   showWorkspaceRole={true}
                   sharedUser={workspace.sharedSlug}
                   isSharedWorkspace={sharedWorkspace}
+                  showOptions
                 />
               );
             })}

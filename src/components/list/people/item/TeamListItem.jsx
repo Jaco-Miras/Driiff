@@ -328,7 +328,7 @@ const TeamListItem = (props) => {
               <h6 className="profile-name mr-2" onClick={handleClickName}>
                 {!member.has_accepted && member.name === "" ? member.email : member.name}
               </h6>
-              {isNotSameDriff && <SvgIconFeather icon="repeat" />}
+              {isSharedWorkspace && isNotSameDriff && <SvgIconFeather icon="repeat" />}
             </div>
           )}
           {!isUser && (
@@ -374,7 +374,7 @@ const TeamListItem = (props) => {
           </button>
         </ShowMoreBtn>
       )}
-      {!hideOptions && isUser && !isSharedWorkspace && (
+      {!hideOptions && isUser && (
         <MoreOptions moreButton="more-horizontal" width={250} className="ml-auto">
           {/* {member.workspace_role !== "ADVISOR" && <div onClick={() => onAddRole(member, "advisor")}>{dictionary.assignAsAdvisor}</div>}
           {member.workspace_role === "ADVISOR" && <div onClick={handleRemoveRole}>{dictionary.revokeAsAdvisor}</div>} */}
