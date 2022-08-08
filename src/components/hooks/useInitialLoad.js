@@ -8,7 +8,7 @@ import { getNotificationSettings, getSecuritySettings } from "../../redux/action
 import { useChannelActions } from "../hooks";
 
 const useInitialLoad = () => {
-  const notifications = useSelector((state) => state.notifications.notifications);
+  //const notifications = useSelector((state) => state.notifications.notifications);
   const user = useSelector((state) => state.session.user);
 
   const channelActions = useChannelActions();
@@ -30,6 +30,7 @@ const useInitialLoad = () => {
     document.body.classList.remove("form-membership");
     const fetchChannelCb = () => {
       dispatch(setChannelInitialLoad());
+      dispatch(getSecuritySettings({}));
       dispatch(getAllRecipients());
       dispatch(
         getUsers({}, () => {
@@ -38,18 +39,17 @@ const useInitialLoad = () => {
         })
       );
       dispatch(getExternalUsers());
-      if (Object.keys(notifications).length === 0) {
-        dispatch(
-          getAllSnoozedNotification({}, () => {
-            dispatch(getNotifications({ skip: 0, limit: 50 }));
-            dispatch(getHuddleChatbot({}));
-          })
-        );
-      }
-      dispatch(getUnreadNotificationCounterEntries());
-      dispatch(getGlobalRecipients());
-      dispatch(getNotificationSettings());
-      dispatch(getSecuritySettings());
+
+      dispatch(
+        getAllSnoozedNotification({}, () => {
+          dispatch(getNotifications({ skip: 0, limit: 50 }));
+          dispatch(getHuddleChatbot({}));
+        })
+      );
+
+      dispatch(getUnreadNotificationCounterEntries({}));
+      dispatch(getGlobalRecipients({}));
+      dispatch(getNotificationSettings({}));
       if (user && user.type === "internal") dispatch(getCompanyChannel());
     };
 
