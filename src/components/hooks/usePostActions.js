@@ -319,7 +319,15 @@ const usePostActions = () => {
           }
 
           if (res) {
-            getUnreadNotificationEntries();
+            let counterPayload = {};
+            if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+              const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+              counterPayload = {
+                ...counterPayload,
+                sharedPayload: sharedPayload,
+              };
+            }
+            getUnreadNotificationEntries(counterPayload);
             if (!post.is_archived) {
               toaster.success(
                 <>
@@ -373,7 +381,15 @@ const usePostActions = () => {
         count: count === 0 ? 1 : count,
       };
       if (res) {
-        getUnreadNotificationEntries();
+        let counterPayload = {};
+        if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+          const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+          counterPayload = {
+            ...counterPayload,
+            sharedPayload: sharedPayload,
+          };
+        }
+        getUnreadNotificationEntries(counterPayload);
         if (post.recipients.some((r) => r.type === "TOPIC")) {
           dispatch(getFavoriteWorkspaceCounters({ sharedPayload: payload.sharedPayload }));
         }
@@ -502,7 +518,15 @@ const usePostActions = () => {
               post_code: post.sharedSlug ? post.code : null,
             })
           );
-          getUnreadNotificationEntries();
+          let counterPayload = {};
+          if (post.slug && post.sharedSlug && sharedWs[post.slug]) {
+            const sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+            counterPayload = {
+              ...counterPayload,
+              sharedPayload: sharedPayload,
+            };
+          }
+          getUnreadNotificationEntries(counterPayload);
         })
       );
     } else {
@@ -602,7 +626,10 @@ const usePostActions = () => {
 
   const showModal = (mode = "create", post = null, comment = null, rewardRef = null, cb = () => {}) => {
     let payload = {};
-
+    let sharedPayload = null;
+    if (post && post.sharedSlug && post.slug && sharedWs[post.slug]) {
+      sharedPayload = { slug: post.slug, token: sharedWs[post.slug].access_token, is_shared: true };
+    }
     switch (mode) {
       case "create_company": {
         payload = {
@@ -693,7 +720,7 @@ const usePostActions = () => {
                   dispatch(
                     postComment(cpayload, (err, res) => {
                       if (err) return;
-                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id }, (err, res) => {
+                      approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, transfer_comment_id: res.data.id, sharedPayload: sharedPayload }, (err, res) => {
                         if (err) return;
                         dispatch(
                           addCommentReact(
@@ -712,7 +739,7 @@ const usePostActions = () => {
                     })
                   );
                 } else {
-                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id }, (err, res) => {
+                  approveComment({ post_id: post.id, approved: 1, comment_id: comment.id, sharedPayload: sharedPayload }, (err, res) => {
                     if (err) return;
                     dispatch(
                       addCommentReact(
@@ -742,7 +769,7 @@ const usePostActions = () => {
                 const isLastUserToAnswer = post.users_approval.filter((u) => u.ip_address === null).length === 1;
                 const allUsersAgreed = post.users_approval.filter((u) => u.ip_address !== null && u.is_approved).length === post.users_approval.length - 1;
                 setTimeout(() => {
-                  approve({ post_id: post.id, approved: 1 }, (err, res) => {
+                  approve({ post_id: post.id, approved: 1, sharedPayload: sharedPayload }, (err, res) => {
                     if (err) return;
                     if (isLastUserToAnswer && allUsersAgreed && post.users_approval.length > 1) {
                       generateSystemMessage(
@@ -1062,12 +1089,6 @@ const usePostActions = () => {
   };
 
   const approve = (payload, callback) => {
-    if (sharedPayload) {
-      payload = {
-        ...payload,
-        sharedPayload: sharedPayload,
-      };
-    }
     dispatch(postApprove(payload, callback));
   };
 

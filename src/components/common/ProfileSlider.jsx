@@ -11,6 +11,7 @@ const ProfileWrapper = styled.div`
   .info-details span {
     min-height: 14px;
   }
+  margin-top: -7rem;
 `;
 const Icon = styled(SvgIconFeather)`
   opacity: ${(props) => (props.loading ? "0" : "1")};

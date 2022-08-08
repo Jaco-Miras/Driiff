@@ -5,6 +5,7 @@ import { CompanyPostItemPanel } from "./index";
 import { useTranslationActions } from "../../../hooks";
 import { useDispatch } from "react-redux";
 import { setSelectedCompanyPost, setShowUnread } from "../../../../redux/actions/postActions";
+import { useSelector } from "react-redux";
 
 const PostsBtnWrapper = styled.div`
   margin-bottom: 10px;
@@ -99,31 +100,56 @@ const CompanyPosts = (props) => {
   const [showPosts, setShowPosts] = useState({ showUnread: unreadPosts.length > 0, showRead: unreadPosts.length === 0 });
   //const [showPosts, setShowPosts] = useState({ showUnread: true, showRead: true });
   const [checkedPosts, setCheckedPosts] = useState([]);
+  const sharedWs = useSelector((state) => state.workspaces.sharedWorkspaces);
 
   useEffect(() => {
     dispatch(setShowUnread(unreadPosts.length > 0));
   }, []);
 
   const handleToggleCheckbox = (post) => {
-    let postIds = !post.is_selected ? [...checkedPosts, post.id] : checkedPosts.filter((id) => id !== post.id);
-    setCheckedPosts(postIds);
+    let selectedPosts = !post.is_selected ? [...checkedPosts, post] : checkedPosts.filter((p) => p.id !== post.id);
+    setCheckedPosts(selectedPosts);
     dispatch(setSelectedCompanyPost({ companyPostId: post.sharedSlug ? post.code : post.id, isSelected: !post.is_selected }));
   };
 
   const handleMarkAllAsRead = () => {
-    actions.readAll({
-      selected_post_ids: checkedPosts,
-    });
-    setCheckedPosts([]);
-    actions.getUnreadNotificationEntries();
-    clearCheckedPost();
+    const slugs = [...new Set(checkedPosts.map((p) => p.slug))].filter((slug) => slug !== null || slug !== undefined);
+    if (slugs.length) {
+      slugs.forEach((slug) => {
+        let sharedPayload = null;
+        if (sharedWs[slug]) {
+          sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+        }
+        actions.readAll({
+          selected_post_ids: checkedPosts.map((p) => p.id),
+          sharedPayload,
+        });
+        let counterPayload = {};
+        if (sharedWs[slug]) {
+          counterPayload = { sharedPayload: { slug: slug, token: sharedWs[slug].access_token, is_shared: true } };
+        }
+        actions.getUnreadNotificationEntries(counterPayload);
+      });
+      setCheckedPosts([]);
+      clearCheckedPost();
+    }
   };
 
   const handleArchiveAll = () => {
-    actions.archiveAll({
-      selected_post_ids: checkedPosts,
-    });
-    clearCheckedPost();
+    const slugs = [...new Set(checkedPosts.map((p) => p.slug))].filter((slug) => slug !== null || slug !== undefined);
+    if (slugs.length) {
+      slugs.forEach((slug) => {
+        let sharedPayload = null;
+        if (sharedWs[slug]) {
+          sharedPayload = { slug: slug, token: sharedWs[slug].access_token, is_shared: true };
+        }
+        actions.archiveAll({
+          selected_post_ids: checkedPosts.map((p) => p.id),
+          sharedPayload,
+        });
+      });
+      clearCheckedPost();
+    }
   };
 
   const handleShowUnread = () => {
@@ -233,7 +259,7 @@ const CompanyPosts = (props) => {
             <ul className="list-group list-group-flush ui-sortable fadeIn">
               <div>
                 {posts.map((p) => {
-                  return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
+                  return <CompanyPostItemPanel key={p.code} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
                 })}
               </div>
             </ul>
@@ -252,7 +278,7 @@ const CompanyPosts = (props) => {
               {unreadPosts.length > 0 && (
                 <UnreadPostsContainer className={`unread-posts-container collapse ${showPosts.showUnread ? "show" : ""} fadeIn`} id={"unread-posts-container"} showPosts={showPosts.showUnread}>
                   {unreadPosts.map((p) => {
-                    return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
+                    return <CompanyPostItemPanel key={p.code} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
                   })}
                 </UnreadPostsContainer>
               )}
@@ -273,7 +299,7 @@ const CompanyPosts = (props) => {
               {readPosts.length > 0 && (
                 <ReadPostsContainer className={`read-posts-container collapse ${showPosts.showRead ? "show" : ""} fadeIn`} showPosts={showPosts.showRead}>
                   {readPosts.map((p) => {
-                    return <CompanyPostItemPanel key={p.id} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
+                    return <CompanyPostItemPanel key={p.code} post={p} postActions={actions} dictionary={dictionary} toggleCheckbox={handleToggleCheckbox} checked={!!p.is_selected} isExternalUser={isExternalUser} />;
                   })}
                 </ReadPostsContainer>
               )}

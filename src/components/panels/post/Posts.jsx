@@ -154,7 +154,15 @@ const Posts = (props) => {
     }
     actions.readAll(payload);
     setCheckedPosts([]);
-    actions.getUnreadNotificationEntries();
+    let counterPayload = {};
+    if (workspace.sharedSlug && sharedWs[workspace.slug]) {
+      const sharedPayload = { slug: workspace.slug, token: sharedWs[workspace.slug].access_token, is_shared: true };
+      counterPayload = {
+        ...counterPayload,
+        sharedPayload: sharedPayload,
+      };
+    }
+    actions.getUnreadNotificationEntries(counterPayload);
     clearCheckedPost();
   };
 
