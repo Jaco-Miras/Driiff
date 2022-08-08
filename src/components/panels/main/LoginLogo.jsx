@@ -1,7 +1,9 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { useTheme } from "styled-components";
 import { useSelector } from "react-redux";
 import { SvgIconFeather, SvgIcon } from "../../common";
+import { darkTheme, lightTheme } from "../../../helpers/selectTheme";
+import { useSettings } from "../../hooks";
 
 const LogoWrapper = styled.div`
   position: relative;
@@ -47,10 +49,10 @@ const CompanyLogoWrapper = styled.div`
     max-height: 100px;
     max-width: 100px;
   }
+  background-color: ${(props) => (props.dark_mode === "0" ? "#29323F" : "#f47373")};
   ${(props) =>
     props.hasCompanyLogo &&
-    `background-color: ${props.theme.colors.fifth}; 
-      border-radius: 6px;
+    ` border-radius: 6px;
       .feather-heart {
         color: #fff;
       }
@@ -84,23 +86,28 @@ const SmallDriffLogo = styled(SvgIcon)`
 
 const LoginLogo = (props) => {
   const companyLogo = useSelector((state) => state.settings.driff.logo);
-
+  const {
+    generalSettings: { dark_mode }, // driffSettings,
+  } = useSettings();
   return (
     <LogoWrapper hasCompanyLogo={companyLogo.trim() !== ""} className="mb-3">
       {companyLogo.trim() !== "" && (
-        <CompanyLogoWrapper hasCompanyLogo={companyLogo.trim() !== ""}>
-          <img className="company-logo" src={companyLogo} alt="company logo" />
-          <SvgIconFeather icon="heart" />
-          <div style={{ position: "relative" }}>
-            <SmallDriffLogo icon="driff-logo2" />
-          </div>
+        <CompanyLogoWrapper hasCompanyLogo={companyLogo.trim() !== ""} dark_mode={dark_mode}>
+          {companyLogo ? (
+            <>
+              <img className="company-logo" src={companyLogo} alt="company logo" />
+              {/*   <SvgIconFeather icon="heart" /> */}
+            </>
+          ) : (
+            <DriffLogo icon="driff-logo2" />
+          )}
         </CompanyLogoWrapper>
       )}
-      {companyLogo.trim() === "" && (
+      {/*   {companyLogo.trim() === "" && (
         <>
           <DriffLogo icon="driff-logo2" />
         </>
-      )}
+      )} */}
     </LogoWrapper>
   );
 };
